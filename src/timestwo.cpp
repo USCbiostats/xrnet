@@ -11,6 +11,7 @@ using namespace Rcpp;
 //   http://gallery.rcpp.org/
 //
 
+//' @export
 // [[Rcpp::export]]
 NumericVector timesTwo(NumericVector x) {
   return x * 2;
