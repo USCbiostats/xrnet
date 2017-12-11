@@ -10,3 +10,7 @@ using namespace Rcpp;
 NumericVector timesTwo(NumericVector x) {
   return x * 2;
 }
+<<<<<<< HEAD:src/timestwo.cpp
+=======
+
+>>>>>>> f53ac40f66e3d39abbaa039b299563f44a44a086:src/timesTwo.cpp
