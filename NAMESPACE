@@ -2,5 +2,3 @@
 
 export(definePenalty)
 export(hierr)
-importFrom(Rcpp,sourceCpp)
-useDynLib(hierr, .registration = TRUE)
