@@ -4,9 +4,9 @@ NULL
 
 #' Fit hierarchical regularized regression model
 #'
-#' @param x predictor design matrix of dimension n x p
-#' @param y outcome vector of length n
-#' @param external external data design matrix of dimension p x q
+#' @param x predictor design matrix of dimension \eqn{n x p}
+#' @param y outcome vector of length \eqn{n}
+#' @param external external data design matrix of dimension \eqn{p x q}
 #' @param family error distribution for outcome variable
 #' @param penalty specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
@@ -36,6 +36,47 @@ hierr <- function(x,
     nr_ext <- nrow(external)
     nc_ext <- ncol(external)
 
+    # check dimensions
+    if (nc_x < 2 || nc_ext < 2) {
+        stop("Error: Both x and external must have at least 2 columns")
+    }
+
+    y_len <- ifelse(is.null(dim(y)), length(y), dim(y)[1])
+
+    if (y_len != nr_x) {
+        stop(paste("Error: Number of observations in y (", y_len, ") not equal to the number of rows of x (", nr_x, ")", sep = ""))
+    }
+
+    if (nc_x != nr_ext) {
+        stop(paste("Error: Number of columns in x (", nc_x, ") not equal to the number of rows in external (", nr_ext, ")", sep = ""))
+    }
+
+    # set weights
+    if (is.null(weights)) {
+        weights <- as.double(rep(1, nr_x))
+    } else if (length(weights) != nr_x) {
+        stop(paste("Error: Number of elements in weights (", length(weights), ") not equal to the number of rows of x (", nr_x, ")", sep = ""))
+    } else if (any(weights) < 0) {
+        stop("Error: weights can only contain non-negative values")
+    } else {
+        weights <- as.double(weights)
+    }
+
+    # convert to matrices
+    if (!(class(x)) != "matrix") {
+        x <- as.matrix(x)
+    }
+    if (typeof(x) != "double") {
+        stop("Error: x contains non-numeric values")
+    }
+
+    if (!(class(external)) != "matrix") {
+        external <- as.matrix(external)
+    }
+    if (typeof(external) != "double") {
+        stop("Error: external contains non-numeric values")
+    }
+
     # check penalty object
     if (penalty$user_penalty == 0 && is.null(penalty$penalty_ratio)) {
         if (nr_x > nc_x) {
@@ -57,7 +98,7 @@ hierr <- function(x,
         penalty$custom_multiplier <- as.double(rep(1, nc_x))
     } else {
         if (length(penalty$custom_multiplier) != nc_x) {
-            stop("Length of custom_multiplier (", length(penalty$custom_multiplier),") not equal to number of columns of x (", nc_x, ")")
+            stop("Error: Length of custom_multiplier (", length(penalty$custom_multiplier),") not equal to number of columns of x (", nc_x, ")")
         }
     }
 
@@ -65,50 +106,12 @@ hierr <- function(x,
         penalty$custom_multiplier_ext <- as.double(rep(1, nc_ext))
     } else {
         if (length(penalty$custom_multiplier_ext) != nc_ext) {
-            stop("Length of custom_multiplier_ext (", length(penalty$custom_multiplier_ext),") not equal to number of columns of external (", nc_ext, ")")
+            stop("Error: Length of custom_multiplier_ext (", length(penalty$custom_multiplier_ext),") not equal to number of columns of external (", nc_ext, ")")
         }
     }
 
-    # check dimensions
-    if (nc_x < 2 || nc_ext < 2) {
-        stop("Both x and external must have at least 2 columns")
-    }
-
-    y_len <- ifelse(is.null(dim(y)), length(y), dim(y)[1])
-
-    if (y_len != nr_x) {
-        stop(paste("Number of observations in y (", y_len, ") not equal to the number of rows of x (", nr_x, ")", sep = ""))
-    }
-
-    if (nc_x != nr_ext) {
-        stop(paste("Number of columns in x (", nc_x, ") not equal to the number of rows in external (", nr_ext, ")", sep = ""))
-    }
-
-    # set weights
-    if (is.null(weights)) {
-        weights <- as.double(rep(1, nr_x))
-    } else if (length(weights) != nr_x) {
-        stop(paste("Number of elements in weights (", length(weights), ") not equal to the number of rows of x (", nr_x, ")", sep = ""))
-    } else if (any(weights) < 0) {
-        stop("weights can only contain non-negative values")
-    } else {
-        weights <- as.double(weights)
-    }
-
-    # convert to matrices
-    if (!(class(x)) != "matrix") {
-        x <- as.matrix(x)
-    }
-    if (typeof(x) != "double") {
-        stop("x contains non-numeric values")
-    }
-
-    if (!(class(external)) != "matrix") {
-        external <- as.matrix(external)
-    }
-    if (typeof(external) != "double") {
-        stop("external contains non-numeric values")
-    }
+    penalty$penalty_type <- rep(penalty$penalty_type, nc_x)
+    penalty$penalty_type_ext <- rep(penalty$penalty_type_ext, nc_ext)
 
     # check control object
     control <- do.call("hierr.control", control)
@@ -128,13 +131,13 @@ hierr <- function(x,
     if (is.null(control$lower_limits)) {
         control$lower_limits <- rep(-Inf, nc_x + nc_ext)
     } else if (length(control$lower_limits) != nc_x + nc_ext) {
-        stop("Length of lower_limits (", length(control$lower_limits), ") not equal to sum of number of columns in x and external (", nc_x + nc_ext, ")")
+        stop("Error: Length of lower_limits (", length(control$lower_limits), ") not equal to sum of number of columns in x and external (", nc_x + nc_ext, ")")
     }
 
     if (is.null(control$upper_limits)) {
         control$upper_limits <- rep(Inf, nc_x + nc_ext)
     } else if (length(control$upper_limits) != nc_x + nc_ext) {
-        stop("Length of upper_limits (", length(control$upper_limits), ") not equal to sum of number of columns in x and external (", nc_x + nc_ext, ")")
+        stop("Error: Length of upper_limits (", length(control$upper_limits), ") not equal to sum of number of columns in x and external (", nc_x + nc_ext, ")")
     }
 
     fit <- do.call(family, list(x = x,
@@ -154,8 +157,8 @@ hierr <- function(x,
 #'
 #' @param tolerance positive convergence criterion. Default is 1e-08.
 #' @param max_iterations maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.
-#' @param dfmax maximum number of variables allowed in model. Default is \eqn{p + 1}.
-#' @param pmax maximum number of variables with nonzero coefficient estimate. Default is \eqn{min(2*dfmax + 20, p)}.
+#' @param dfmax maximum number of variables allowed in model. Default is \eqn{p + q + 1}.
+#' @param pmax maximum number of variables with nonzero coefficient estimate. Default is \eqn{min(2*dfmax + 20, p + q)}.
 #' @param lower_limits vector of lower limits for each coefficient. Default is -Inf.
 #' @param upper_limits vector of upper limits for each coefficient. Default is Inf.
 

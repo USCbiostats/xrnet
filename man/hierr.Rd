@@ -9,11 +9,11 @@ hierr(x, y, external, family = c("gaussian", "binomial", "poisson"),
   TRUE), intercept = c(TRUE, TRUE), control = list())
 }
 \arguments{
-\item{x}{predictor design matrix of dimension n x p}
+\item{x}{predictor design matrix of dimension \eqn{n x p}}
 
-\item{y}{outcome vector of length n}
+\item{y}{outcome vector of length \eqn{n}}
 
-\item{external}{external data design matrix of dimension p x q}
+\item{external}{external data design matrix of dimension \eqn{p x q}}
 
 \item{family}{error distribution for outcome variable}
 

@@ -12,9 +12,9 @@ hierr.control(tolerance = 1e-08, max_iterations = 1e+05, dfmax = NULL,
 
 \item{max_iterations}{maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.}
 
-\item{dfmax}{maximum number of variables allowed in model. Default is \eqn{p + 1}.}
+\item{dfmax}{maximum number of variables allowed in model. Default is \eqn{p + q + 1}.}
 
-\item{pmax}{maximum number of variables with nonzero coefficient estimate. Default is \eqn{min(2*dfmax + 20, p)}.}
+\item{pmax}{maximum number of variables with nonzero coefficient estimate. Default is \eqn{min(2*dfmax + 20, p + q)}.}
 
 \item{lower_limits}{vector of lower limits for each coefficient. Default is -Inf.}
 
