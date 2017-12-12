@@ -1,5 +1,5 @@
-# @useDynLib hierr, .registration = TRUE
-# @importFrom Rcpp sourceCpp
+#' @useDynLib hierr, .registration = TRUE
+#' @importFrom Rcpp sourceCpp
 NULL
 
 #' Fit hierarchical regularized regression model
@@ -117,15 +117,17 @@ hierr <- function(x,
     control <- do.call("hierr.control", control)
 
     if (is.null(control$dfmax)) {
-        control$dfmax <- as.integer(nc_x + nc_ext + intercept[1] + intercept[2])
-    } else {
-        control$dfmax <- as.integer(control$dfmax)
+        control$dfmax[1] <- as.integer(nc_x + intercept[1])
+        control$dfmax[2] <- as.integer(nc_ext + intercept[2])
+    } else if (any(control$dfmax) < 0) {
+        stop("Error: dfmax can only contain non-negative integers")
     }
 
     if (is.null(control$pmax)) {
-        control$pmax <- as.integer(min(2 * control$dfmax + 20, nc_x + nc_ext + 1))
-    } else {
-        control$pmax <- as.integer(control$pmax)
+        control$pmax[1] <- as.integer(min(2 * control$dfmax[1] + 20, nc_x))
+        control$pmax[2] <- as.integer(min(2 * control$dfmax[2] + 20, nc_ext))
+    } else if (any(control$pmax) < 0) {
+        stop("Error: pmax can only contain non-negative integers")
     }
 
     if (is.null(control$lower_limits)) {
@@ -157,15 +159,16 @@ hierr <- function(x,
 #'
 #' @param tolerance positive convergence criterion. Default is 1e-08.
 #' @param max_iterations maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.
-#' @param dfmax maximum number of variables allowed in model. Default is \eqn{p + q + 1}.
-#' @param pmax maximum number of variables with nonzero coefficient estimate. Default is \eqn{min(2*dfmax + 20, p + q)}.
+#' @param dfmax maximum number of variables allowed in model. Default is c(\eqn{p + 1}, \eqn{q+1}).
+#' @param pmax maximum number of variables with nonzero coefficient estimate. Default is c(\eqn{min(2*dfmax + 20, p)}, \eqn{min(2*dfmax + 20, q)}).
 #' @param lower_limits vector of lower limits for each coefficient. Default is -Inf.
 #' @param upper_limits vector of upper limits for each coefficient. Default is Inf.
 
+#' @export
 hierr.control <- function(tolerance = 1e-08,
                           max_iterations = 1e+05,
-                          dfmax = NULL,
-                          pmax = NULL,
+                          dfmax = c(NULL, NULL),
+                          pmax = c(NULL, NULL),
                           lower_limits = NULL,
                           upper_limits = NULL) {
 
