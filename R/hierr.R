@@ -153,7 +153,7 @@ hierr <- function(x,
 
 #' Control function for hierr fitting
 #'
-#'@description Control function for \code{\link{hierr}} fitting.
+#' @description Control function for \code{\link{hierr}} fitting.
 #'
 #' @param tolerance positive convergence criterion. Default is 1e-08.
 #' @param max_iterations maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.
