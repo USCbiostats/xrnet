@@ -15,6 +15,7 @@ Suggests: knitr,
     testthat
 VignetteBuilder: knitr
 LinkingTo: 
-    Rcpp
+    Rcpp,
+    RcppArmadillo
 Imports: 
     Rcpp
