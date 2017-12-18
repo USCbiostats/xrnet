@@ -4,6 +4,134 @@
 using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 
+/*
+// [[Rcpp::export]]
+NumericMatrix create_data(int & nobs,
+                               int & nvar,
+                               int & nvar_total,
+                               NumericMatrix & x,
+                               NumericMatrix & ext,
+                               NumericVector & w,
+                               bool & isd,
+                               bool & isd_ext,
+                               bool & intr,
+                               bool & intr_ext,
+                               NumericVector & xm,
+                               NumericVector & xv,
+                               NumericVector & xs) {
+
+    NumericVector v = sqrt(w);
+    NumericMatrix xnew(nobs, nvar_total);
+
+    if (intr == true) {
+        for (int j = 0; j < nvar; j++) {
+            xm[j] = std::inner_product(x(_, j).begin(), x(_, j).end(), w.begin(), 0.0);
+            xnew(_, j) = x(_, j) - xm[j];
+            xv[j] = std::inner_product(x(_, j).begin(), x(_, j).end(), x(_, j).begin(), 0.0) / nobs;
+            if (isd == true) {
+                xs[j] = sqrt(xv[j]);
+                xnew(_, j) = xnew(_, j) / xs[j];
+                xv[j] = 1.0;
+            } else {
+                xs[j] = 1.0;
+            }
+        }
+    } else {
+        for (int j = 0; j < nvar; j++) {
+            NumericVector xj = v * x(_, j);
+            xv[j] = std::inner_product(xj.begin(), xj.end(), xj.begin(), 0.0);
+            if (isd == true) {
+                double xm = std::inner_product(v.begin(), v.end(), xj.begin(), 0.0);
+                double vc = xv[j] - xm*xm;
+                xs[j] = sqrt(vc);
+                xnew(_, j) = x(_, j) / xs[j];
+                xv[j] = 1.0 + xm*xm / vc;
+            } else {
+                xs[j] = 1.0;
+            }
+        }
+    }
+
+    if (intr_ext == true) {
+
+        for (int j = nvar; j < nvar_total; j++) {
+            if (j == nvar) {
+
+            }
+        }
+
+    } else {
+
+    }
+
+    return(xnew);
+}
+
+*/
+
+// [[Rcpp::export]]
+NumericMatrix create_data(int & nobs,
+                          int & nvar,
+                          int & nvar_total,
+                          arma::mat & x,
+                          arma::mat & ext,
+                          arma::vec & w,
+                          bool & isd,
+                          bool & isd_ext,
+                          bool & intr,
+                          bool & intr_ext,
+                          arma::vec & xm,
+                          arma::vec & xv,
+                          arma::vec & xs) {
+
+    arma::vec v = sqrt(w);
+    arma::mat xnew(nobs, nvar_total);
+
+    xm.subvec(0, nvar - 1) = x.t() * w;
+    if (intr == true) {
+        for (int j = 0; j < nvar; j++) {
+            xnew.col(j) = x.col(j) - xm[j];
+            xv[j] = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
+            if (isd == true) {
+                xs[j] = sqrt(xv[j]);
+                xnew.col(j) = xnew.col(j) / xs[j];
+                xv[j] = 1.0;
+            } else {
+                xs[j] = 1.0;
+            }
+        }
+    } else {
+        for (int j = 0; j < nvar; j++) {
+            xv[j] = arma::dot(x.col(j), x.col(j)) / nobs;
+            if (isd == true) {
+
+            }
+        }
+    }
+
+    arma::vec ext_temp(nvar);
+
+    if (intr_ext) {
+        xnew.col(nvar) = xnew.submat(0, 0, nobs - 1, nvar - 1) * arma::ones<arma::mat>(nvar, 1);
+        xm.subvec(nvar + 1, nvar_total - 1) = arma::mean(ext).t();
+        for (int j = nvar + 1; j < nvar_total; j++) {
+            ext_temp = ext.col(j - nvar - 1) - xm[j];
+            xv[j] = arma::dot(ext_temp, ext_temp) / nvar;
+            if (isd_ext == true) {
+                xs[j] = sqrt(xv[j]);
+                ext_temp = ext_temp / xs[j];
+                xv[j] = 1.0;
+            } else {
+                xs[j] = 1.0;
+
+            }
+            xnew.col(j) = xnew.submat(0, 0, nobs - 1, nvar - 1) * ext_temp;
+        }
+    }
+
+    return(wrap(xnew));
+}
+
 // [[Rcpp::export]]
 void standardize_mat(int & nobs,
                      int & nvar,
@@ -171,6 +299,10 @@ void coord_desc(NumericMatrix & x,
                 }
             }
             nlp += 1;
+            if (nlp > maxit) {
+                jerr = 1;
+                errcode = -10000;
+            }
             if (dlx < thr) {
                 converge = 1;
             }
@@ -297,7 +429,6 @@ List gaussian_fit(int ka,
     NumericVector rsq(nlam_total);
 
     // ---------run coordinate descent for all penalties ----------
-    NumericVector coef_cur(nvar_total, 0.0);
     NumericVector g(nvar_total, 0.0);
     IntegerVector mm(nvar_total, 0);
 
@@ -317,11 +448,17 @@ List gaussian_fit(int ka,
     double errcode = 0.0;
     NumericVector lam_cur(nvar_total, 0.0);
 
+    double rsq_outer = 0.0;
+    double rsq_inner = 0.0;
+    //double rsq_old = 0.0;
+
+    NumericVector outer_resid = Rcpp::clone(y);
+    NumericVector inner_resid(nobs);
+
+    NumericVector coef_outer(nvar_total, 0.0);
+    NumericVector coef_inner(nvar_total, 0.0);
+
     for (int m = 0; m < nlam; m++) {
-
-        NumericVector resid = Rcpp::clone(y);
-        double rsq_cur = 0.0;
-
         for (int m2 = 0; m2 < nlam_ext; m2++) {
 
             for (int j = 0; j < nvar; j++) {
@@ -332,9 +469,26 @@ List gaussian_fit(int ka,
                 lam_cur[j] = lam_path_ext[m2];
             }
 
-            coord_desc(xnew, resid, ptype, nobs, nvar_total, cmult, upper_cl, lower_cl, ne_total, nx_total,
-                       lam_cur, thr, maxit, xv, coef, coef_cur, g, rsq, rsq_cur, mm,
-                       errcode, nlp, idx_lam);
+            if (m2 == 0) {
+                coord_desc(xnew, outer_resid, ptype, nobs, nvar_total, cmult, upper_cl, lower_cl, ne_total, nx_total,
+                           lam_cur, thr, maxit, xv, coef, coef_outer, g, rsq, rsq_outer, mm, errcode, nlp, idx_lam);
+
+                inner_resid = outer_resid;
+                coef_inner = coef_outer;
+                rsq_inner = rsq_outer;
+
+            } else {
+                coord_desc(xnew, inner_resid, ptype, nobs, nvar_total, cmult, upper_cl, lower_cl, ne_total, nx_total,
+                           lam_cur, thr, maxit, xv, coef, coef_inner, g, rsq, rsq_inner, mm, errcode, nlp, idx_lam);
+            }
+
+            // stop if max iterations or no change in r-squared
+            //if ((rsq_inner - rsq_old) < 1e-05 * rsq_inner || rsq_inner > 0.999 || errcode != 0.0) {
+            //    flag = true;
+            //} else {
+            //    rsq_old = rsq_inner;
+            //    ++idx_lam;
+            //}
 
             ++idx_lam;
         }

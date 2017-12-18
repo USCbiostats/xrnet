@@ -6,6 +6,29 @@
 
 using namespace Rcpp;
 
+// create_data
+NumericMatrix create_data(int& nobs, int& nvar, int& nvar_total, arma::mat& x, arma::mat& ext, arma::vec& w, bool& isd, bool& isd_ext, bool& intr, bool& intr_ext, arma::vec& xm, arma::vec& xv, arma::vec& xs);
+RcppExport SEXP _hierr_create_data(SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_totalSEXP, SEXP xSEXP, SEXP extSEXP, SEXP wSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP, SEXP xmSEXP, SEXP xvSEXP, SEXP xsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int& >::type nobs(nobsSEXP);
+    Rcpp::traits::input_parameter< int& >::type nvar(nvarSEXP);
+    Rcpp::traits::input_parameter< int& >::type nvar_total(nvar_totalSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type ext(extSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type w(wSEXP);
+    Rcpp::traits::input_parameter< bool& >::type isd(isdSEXP);
+    Rcpp::traits::input_parameter< bool& >::type isd_ext(isd_extSEXP);
+    Rcpp::traits::input_parameter< bool& >::type intr(intrSEXP);
+    Rcpp::traits::input_parameter< bool& >::type intr_ext(intr_extSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type xm(xmSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type xv(xvSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type xs(xsSEXP);
+    rcpp_result_gen = Rcpp::wrap(create_data(nobs, nvar, nvar_total, x, ext, w, isd, isd_ext, intr, intr_ext, xm, xv, xs));
+    return rcpp_result_gen;
+END_RCPP
+}
 // standardize_mat
 void standardize_mat(int& nobs, int& nvar, NumericMatrix& x, NumericVector& w, bool& isd, bool& intr, NumericVector& xm, NumericVector& xv, NumericVector& xs);
 RcppExport SEXP _hierr_standardize_mat(SEXP nobsSEXP, SEXP nvarSEXP, SEXP xSEXP, SEXP wSEXP, SEXP isdSEXP, SEXP intrSEXP, SEXP xmSEXP, SEXP xvSEXP, SEXP xsSEXP) {
@@ -110,6 +133,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_hierr_create_data", (DL_FUNC) &_hierr_create_data, 13},
     {"_hierr_standardize_mat", (DL_FUNC) &_hierr_standardize_mat, 9},
     {"_hierr_standardize_vec", (DL_FUNC) &_hierr_standardize_vec, 5},
     {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 23},
