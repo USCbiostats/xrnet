@@ -5,10 +5,6 @@ create_data <- function(nobs, nvar, nvar_total, x, ext, w, isd, isd_ext, intr, i
     .Call(`_hierr_create_data`, nobs, nvar, nvar_total, x, ext, w, isd, isd_ext, intr, intr_ext, xm, xv, xs)
 }
 
-standardize_mat <- function(nobs, nvar, x, w, isd, intr, xm, xv, xs) {
-    invisible(.Call(`_hierr_standardize_mat`, nobs, nvar, x, w, isd, intr, xm, xv, xs))
-}
-
 standardize_vec <- function(y, w, ym, ys, intr) {
     invisible(.Call(`_hierr_standardize_vec`, y, w, ym, ys, intr))
 }

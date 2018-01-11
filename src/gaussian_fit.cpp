@@ -42,7 +42,13 @@ NumericMatrix create_data(int & nobs,
         for (int j = 0; j < nvar; j++) {
             xv[j] = arma::dot(x.col(j), x.col(j)) / nobs;
             if (isd == true) {
-
+                double xm2 = pow(arma::dot(v, x.col(j)), 2);
+                double vc = xv[j] - xm2;
+                xs[j] = sqrt(vc);
+                xnew.col(j) = xnew.col(j) / xs[j];
+                xv[j] = 1.0 + xm2 / vc;
+            } else {
+                xs[j] = 1.0;
             }
         }
     }
@@ -78,6 +84,7 @@ NumericMatrix create_data(int & nobs,
     return(wrap(xnew));
 }
 
+/*
 // [[Rcpp::export]]
 void standardize_mat(int & nobs,
                      int & nvar,
@@ -121,6 +128,7 @@ void standardize_mat(int & nobs,
         }
     }
 }
+*/
 
 // [[Rcpp::export]]
 void standardize_vec(NumericVector & y,

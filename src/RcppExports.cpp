@@ -29,24 +29,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// standardize_mat
-void standardize_mat(int& nobs, int& nvar, NumericMatrix& x, NumericVector& w, bool& isd, bool& intr, NumericVector& xm, NumericVector& xv, NumericVector& xs);
-RcppExport SEXP _hierr_standardize_mat(SEXP nobsSEXP, SEXP nvarSEXP, SEXP xSEXP, SEXP wSEXP, SEXP isdSEXP, SEXP intrSEXP, SEXP xmSEXP, SEXP xvSEXP, SEXP xsSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int& >::type nobs(nobsSEXP);
-    Rcpp::traits::input_parameter< int& >::type nvar(nvarSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< bool& >::type isd(isdSEXP);
-    Rcpp::traits::input_parameter< bool& >::type intr(intrSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type xm(xmSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type xv(xvSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type xs(xsSEXP);
-    standardize_mat(nobs, nvar, x, w, isd, intr, xm, xv, xs);
-    return R_NilValue;
-END_RCPP
-}
 // standardize_vec
 void standardize_vec(NumericVector& y, NumericVector& w, double& ym, double& ys, bool& intr);
 RcppExport SEXP _hierr_standardize_vec(SEXP ySEXP, SEXP wSEXP, SEXP ymSEXP, SEXP ysSEXP, SEXP intrSEXP) {
@@ -135,7 +117,6 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_hierr_create_data", (DL_FUNC) &_hierr_create_data, 13},
-    {"_hierr_standardize_mat", (DL_FUNC) &_hierr_standardize_mat, 9},
     {"_hierr_standardize_vec", (DL_FUNC) &_hierr_standardize_vec, 5},
     {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 24},
     {"_hierr_gaussian_fit", (DL_FUNC) &_hierr_gaussian_fit, 28},
