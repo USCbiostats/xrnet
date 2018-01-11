@@ -48,8 +48,8 @@ test_that("hierr and CVX give same solution",{
     # for (i in 1:q) {
     #     zscaled[, i] <- (z[, i] - mean_z[i]) / sd_z[i]
     # }
-    load(file = "x.rds")
-    load(file = "y.rda")
+    load(file = "x.Rdata")
+    load(file = "y.Rdata")
     load(file = "z.Rdata")
     load(file = "alphas_cvx.Rdata")
     myPenalty <- hierr::definePenalty(0, 1, user_penalty = 1, user_penalty_ext = 0.1)
