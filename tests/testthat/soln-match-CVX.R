@@ -53,7 +53,7 @@ test_that("hierr and CVX give same solution",{
     load(file = "z.Rdata")
     load(file = "alphas_cvx.Rdata")
     myPenalty <- hierr::definePenalty(0, 1, user_penalty = 1, user_penalty_ext = 0.1)
-    coef_hierr <- hierr(x = x, y = y, ext = z, penalty = myPenalty, control = list(tolerance = 1e-20))
-    alphas_hierr <- coef_hierr$coef[52:56, 1]
-    expect_equal(alphas_cvx, alphas_hierr, tolerance = 1e-6)
+    expect_equal(alphas_cvx,
+                 hierr(x = x, y = y, ext = z, penalty = myPenalty, control = list(tolerance = 1e-20))$coef[52:56, 1],
+                 tolerance = 1e-6)
 })
