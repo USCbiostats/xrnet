@@ -20,10 +20,11 @@ NumericMatrix create_data(int & nobs,
                           arma::vec & xs) {
 
     arma::vec v = sqrt(w);
-    arma::mat xnew(nobs, nvar_total);
+    arma::mat xnew(nobs, nvar_total); // new design matrix n x (p + q)
 
-    xm.subvec(0, nvar - 1) = x.t() * w;
+    // standardize x (predictor variables)
     if (intr == true) {
+        xm.subvec(0, nvar - 1) = x.t() * w;
         if (isd == true) {
             for (int j = 0; j < nvar; j++) {
                 xnew.col(j) = x.col(j) - xm[j];
@@ -31,55 +32,115 @@ NumericMatrix create_data(int & nobs,
                 xnew.col(j) = xnew.col(j) / xs[j];
                 xv[j] = 1.0;
             }
-        } else {
+        }
+        else {
             for (int j = 0; j < nvar; j++) {
                 xnew.col(j) = x.col(j) - xm[j];
                 xv[j] = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
                 xs[j] = 1.0;
             }
         }
-    } else {
+    }
+    else {
         for (int j = 0; j < nvar; j++) {
+            xm[j] = 0.0;
             xv[j] = arma::dot(x.col(j), x.col(j)) / nobs;
             if (isd == true) {
-                double xm2 = pow(arma::dot(v, x.col(j)), 2);
-                double vc = xv[j] - xm2;
+                double xm = arma::dot(v, x.col(j));
+                double vc = xv[j] - xm * xm;
                 xs[j] = sqrt(vc);
                 xnew.col(j) = xnew.col(j) / xs[j];
-                xv[j] = 1.0 + xm2 / vc;
-            } else {
+                xv[j] = 1.0 + xm * xm / vc;
+            }
+            else {
                 xs[j] = 1.0;
             }
         }
     }
 
+    // standarize external data variables
     double xm_col;
     double xv_col;
     arma::vec ext_temp(nvar);
     arma::mat xsub = xnew.submat(0, 0, nobs - 1, nvar - 1);
 
     if (intr_ext == true) {
-        xnew.col(nvar) = xnew.submat(0, 0, nobs - 1, nvar - 1) * arma::ones<arma::mat>(nvar, 1);
+        // create intercept column for external data
+        xnew.col(nvar) = xsub * arma::ones<arma::mat>(nvar, 1);
         xm_col = arma::dot(xnew.col(nvar), w) / nobs;
         xv_col = arma::dot(xnew.col(nvar), xnew.col(nvar)) / nobs;
         xv[nvar] = xv_col - xm_col * xm_col;
         xs[nvar] = 1.0;
+
         xm.subvec(nvar + 1, nvar_total - 1) = arma::mean(ext).t();
-        for (int j = nvar + 1; j < nvar_total; j++) {
-            ext_temp = ext.col(j - nvar - 1) - xm[j];
-            if (isd_ext == true) {
+        if (isd_ext == true) {
+            for (int j = nvar + 1; j < nvar_total; j++) {
+                ext_temp = ext.col(j - nvar - 1) - xm[j];
                 xs[j] = sqrt(arma::dot(ext_temp, ext_temp) / nvar);
                 ext_temp = ext_temp / xs[j];
-            } else {
-                xs[j] = 1.0;
-
+                xnew.col(j) = xsub * ext_temp;
+                xm_col = arma::dot(xnew.col(j), w) / nobs;
+                xv_col = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
+                xv[j] = xv_col - xm_col * xm_col;
             }
-            xnew.col(j) = xsub * ext_temp;
-            xm_col = arma::dot(xnew.col(j), w) / nobs;
-            xv_col = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
-            xv[j] = xv_col - xm_col * xm_col;
+        }
+        else {
+            for (int j = nvar + 1; j < nvar_total; j++) {
+                ext_temp = ext.col(j - nvar - 1)  - xm[j];
+                xs[j] = 1.0;
+                xnew.col(j) = xsub * ext_temp;
+                xm_col = arma::dot(xnew.col(j), w) / nobs;
+                xv_col = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
+                xv[j] = xv_col - xm_col * xm_col;
+            }
         }
     }
+    else {
+        if (isd_ext == true) {
+            for (int j = nvar; j < nvar_total; j++) {
+                ext_temp = ext.col(j - nvar);
+                xm[j] = arma::mean(ext_temp);
+                ext_temp = ext_temp - xm[j];
+                xs[j] = sqrt(arma::dot(ext_temp, ext_temp) / nvar);
+                ext_temp = ext_temp / xs[j];
+                xnew.col(j) = xsub * ext_temp;
+                xm_col = arma::dot(xnew.col(j), w) / nobs;
+                xv_col = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
+                xv[j] = xv_col - xm_col * xm_col;
+            }
+        }
+        else {
+            for (int j = nvar; j < nvar_total; j++) {
+                ext_temp = ext.col(j - nvar);
+                xm[j] = arma::mean(ext_temp);
+                ext_temp = ext_temp - xm[j];
+                xs[j] = 1.0;
+                xnew.col(j) = xsub * ext_temp;
+                xm_col = arma::dot(xnew.col(j), w) / nobs;
+                xv_col = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
+                xv[j] = xv_col - xm_col * xm_col;
+            }
+        }
+    }
+
+    /*
+    for (int j = start_ext; j < nvar_total; j++) {
+        ext_temp = ext.col(j - start_ext);
+        if (isd_ext == true) {
+            xm[j] = arma::mean(ext_temp);
+            ext_temp = ext_temp - xm[j];
+            xs[j] = sqrt(arma::dot(ext_temp, ext_temp) / nvar);
+            ext_temp = ext_temp / xs[j];
+        } else {
+            xm[j] = 0.0;
+            xs[j] = 1.0;
+        }
+        xnew.col(j) = xsub * ext_temp;
+        xm_col = arma::dot(xnew.col(j), w) / nobs;
+        xv_col = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
+        xv[j] = xv_col - xm_col * xm_col;
+    }
+     */
 
     return(wrap(xnew));
 }
@@ -285,13 +346,19 @@ void unstandardize_coef(NumericMatrix & coef,
                         arma::vec & xm,
                         arma::vec & xs,
                         double & ys,
-                        NumericVector & a0) {
+                        NumericVector & a0,
+                        bool & intr_ext) {
+
+    int start_idx = nvar;
+    if (intr_ext == true) {
+        start_idx += 1;
+    }
 
     for (int i = 0; i < nvar; i++) {
         for (int j = 0; j < nlam_total; j++) {
             double z_alpha = a0[j];
-            for (int k = nvar + 1; k < nvar_total; k++) {
-                z_alpha += (ext_(i, k - nvar - 1) - xm[k]) / xs[k] * coef(k, j);
+            for (int k = start_idx; k < nvar_total; k++) {
+                z_alpha += (ext_(i, k - start_idx) - xm[k]) / xs[k] * coef(k, j);
             }
             coef(i, j) = ys * (z_alpha + coef(i, j)) / xs[i];
         }
@@ -347,7 +414,7 @@ List gaussian_fit(int ka,
     double ym;
     double ys;
     int nlam_total = nlam * nlam_ext;
-    arma::vec xm(nvar_total);
+    arma::vec xm(nvar_total, arma::fill::zeros);
     arma::vec xv(nvar_total);
     arma::vec xs(nvar_total);
 
@@ -472,10 +539,10 @@ List gaussian_fit(int ka,
     if (intr_ext == true) {
         a0 = coef(nvar, _);
     }
-    unstandardize_coef(coef, ext_, nvar, nvar_total, nlam_total, xm, xs, ys, a0);
+    unstandardize_coef(coef, ext_, nvar, nvar_total, nlam_total, xm, xs, ys, a0, intr_ext);
 
     // unstandardize external variables
-    for (int i = (nvar + 1); i < nvar_total; i++) {
+    for (int i = nvar; i < nvar_total; i++) {
         for(int j = 0; j < nlam_total; j++) {
                 coef(i, j) = ys * coef(i, j) / xs[i];
         }
