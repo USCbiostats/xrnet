@@ -19,8 +19,9 @@ NumericMatrix create_data(int & nobs,
                           arma::vec & xv,
                           arma::vec & xs) {
 
+    // initialize new design matrix n x (p + q)
+    arma::mat xnew(nobs, nvar_total);
     arma::vec v = sqrt(w);
-    arma::mat xnew(nobs, nvar_total); // new design matrix n x (p + q)
 
     // standardize x (predictor variables)
     if (intr == true) {
@@ -112,8 +113,8 @@ NumericMatrix create_data(int & nobs,
         else {
             for (int j = nvar; j < nvar_total; j++) {
                 ext_temp = ext.col(j - nvar);
-                xm[j] = arma::mean(ext_temp);
-                ext_temp = ext_temp - xm[j];
+                xm[j] = 0.0;
+                //ext_temp = ext_temp - xm[j];
                 xs[j] = 1.0;
                 xnew.col(j) = xsub * ext_temp;
                 xm_col = arma::dot(xnew.col(j), w) / nobs;

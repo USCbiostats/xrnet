@@ -60,10 +60,10 @@ test_that("x and ext standardized, both intercepts",{
 
     expect_equal(alphas_cvx,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, control = list(tolerance = 1e-20))$coef[52:56, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
     expect_equal(betas_cvx,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, control = list(tolerance = 1e-20))$coef[1:50, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
 })
 
 test_that("x NOT standardized, ext standardized, both intercepts",{
@@ -75,11 +75,11 @@ test_that("x NOT standardized, ext standardized, both intercepts",{
 
     expect_equal(alphas_cvx2,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, standardize = c(FALSE, TRUE), control = list(tolerance = 1e-20))$coef[52:56, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
 
     expect_equal(betas_cvx2,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, standardize = c(FALSE, TRUE), control = list(tolerance = 1e-20))$coef[1:50, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
 })
 
 test_that("x standardized, ext NOT standardized, both intercepts",{
@@ -91,11 +91,11 @@ test_that("x standardized, ext NOT standardized, both intercepts",{
 
     expect_equal(alphas_cvx3,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, standardize = c(TRUE, FALSE), control = list(tolerance = 1e-20))$coef[52:56, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
 
     expect_equal(betas_cvx3,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, standardize = c(TRUE, FALSE), control = list(tolerance = 1e-20))$coef[1:50, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
 })
 
 test_that("x and ext NOT standardized, both intercepts",{
@@ -107,11 +107,11 @@ test_that("x and ext NOT standardized, both intercepts",{
 
     expect_equal(alphas_cvx4,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, standardize = c(FALSE, FALSE), control = list(tolerance = 1e-20))$coef[52:56, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
 
     expect_equal(betas_cvx4,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, standardize = c(FALSE, FALSE), control = list(tolerance = 1e-20))$coef[1:50, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
 })
 
 test_that("x NOT standardized, ext NOT standardized, both intercepts",{
@@ -123,14 +123,14 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts",{
 
     expect_equal(alphas_cvx4,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, standardize = c(FALSE, FALSE), control = list(tolerance = 1e-20))$coef[52:56, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
 
     expect_equal(betas_cvx4,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, standardize = c(FALSE, FALSE), control = list(tolerance = 1e-20))$coef[1:50, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
 })
 
-test_that("x standardized, ext standardized, no 2nd level intercept",{
+test_that("x standardized, ext standardized, no 1st level intercept",{
 
     load(file = "Test-Data/alphas_cvx5.Rdata")
     load(file = "Test-Data/betas_cvx5.Rdata")
@@ -138,10 +138,26 @@ test_that("x standardized, ext standardized, no 2nd level intercept",{
     myPenalty <- hierr::definePenalty(0, 1, user_penalty = 1, user_penalty_ext = 0.1)
 
     expect_equal(alphas_cvx5,
-                 hierr(x = x, y = y, ext = z, penalty = myPenalty, intercept = c(TRUE, FALSE), standardize = c(TRUE, TRUE), control = list(tolerance = 1e-20))$coef[51:55, 1],
-                 tolerance = 1e-6)
+                 hierr(x = x, y = y, ext = z, penalty = myPenalty, intercept = c(FALSE, TRUE), standardize = c(TRUE, TRUE), control = list(tolerance = 1e-20))$coef[52:56, 1],
+                 tolerance = 1e-5)
 
     expect_equal(betas_cvx5,
+                 hierr(x = x, y = y, ext = z, penalty = myPenalty, intercept = c(FALSE, TRUE), standardize = c(TRUE, TRUE), control = list(tolerance = 1e-20))$coef[1:50, 1],
+                 tolerance = 1e-5)
+})
+
+test_that("x standardized, ext standardized, no 2nd level intercept",{
+
+    load(file = "Test-Data/alphas_cvx6.Rdata")
+    load(file = "Test-Data/betas_cvx6.Rdata")
+
+    myPenalty <- hierr::definePenalty(0, 1, user_penalty = 1, user_penalty_ext = 0.1)
+
+    expect_equal(alphas_cvx6,
+                 hierr(x = x, y = y, ext = z, penalty = myPenalty, intercept = c(TRUE, FALSE), standardize = c(TRUE, TRUE), control = list(tolerance = 1e-20))$coef[51:55, 1],
+                 tolerance = 1e-5)
+
+    expect_equal(betas_cvx6,
                  hierr(x = x, y = y, ext = z, penalty = myPenalty, intercept = c(TRUE, FALSE), standardize = c(TRUE, TRUE), control = list(tolerance = 1e-20))$coef[1:50, 1],
-                 tolerance = 1e-6)
+                 tolerance = 1e-5)
 })
