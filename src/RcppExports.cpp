@@ -7,21 +7,21 @@
 using namespace Rcpp;
 
 // create_data
-NumericMatrix create_data(int& nobs, int& nvar, int& nvar_total, arma::mat& x, arma::mat& ext, arma::vec& w, bool& isd, bool& isd_ext, bool& intr, bool& intr_ext, arma::vec& xm, arma::vec& xv, arma::vec& xs);
+NumericMatrix create_data(const int& nobs, const int& nvar, const int& nvar_total, const arma::mat& x, const arma::mat& ext, const arma::vec& w, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext, arma::vec& xm, arma::vec& xv, arma::vec& xs);
 RcppExport SEXP _hierr_create_data(SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_totalSEXP, SEXP xSEXP, SEXP extSEXP, SEXP wSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP, SEXP xmSEXP, SEXP xvSEXP, SEXP xsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int& >::type nobs(nobsSEXP);
-    Rcpp::traits::input_parameter< int& >::type nvar(nvarSEXP);
-    Rcpp::traits::input_parameter< int& >::type nvar_total(nvar_totalSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type ext(extSEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< bool& >::type isd(isdSEXP);
-    Rcpp::traits::input_parameter< bool& >::type isd_ext(isd_extSEXP);
-    Rcpp::traits::input_parameter< bool& >::type intr(intrSEXP);
-    Rcpp::traits::input_parameter< bool& >::type intr_ext(intr_extSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nobs(nobsSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nvar(nvarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nvar_total(nvar_totalSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type ext(extSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type isd(isdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type isd_ext(isd_extSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type intr(intrSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type intr_ext(intr_extSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type xm(xmSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type xv(xvSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type xs(xsSEXP);
@@ -44,25 +44,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // coord_desc
-void coord_desc(NumericMatrix& x, NumericVector& resid, NumericVector& ptype, int& no, int& nvar, int& nvar_total, NumericVector& cmult, NumericVector& upper_cl, NumericVector& lower_cl, int& ne, int& nx, NumericVector cur_lam, double& thr, int& maxit, NumericVector& xv, NumericMatrix& coef, NumericVector& b, NumericVector& g, NumericVector& rsq, double& rsq_cur, IntegerVector& mm, double& errcode, int& nlp, int& idx_lam);
+void coord_desc(const NumericMatrix& x, NumericVector& resid, const NumericVector& ptype, const int& no, const int& nvar, const int& nvar_total, const NumericVector& cmult, const NumericVector& upper_cl, const NumericVector& lower_cl, const int& ne, const int& nx, NumericVector cur_lam, const double& thr, const int& maxit, const NumericVector& xv, NumericMatrix& coef, NumericVector& b, NumericVector& g, NumericVector& rsq, double& rsq_cur, IntegerVector& mm, double& errcode, int& nlp, int& idx_lam);
 RcppExport SEXP _hierr_coord_desc(SEXP xSEXP, SEXP residSEXP, SEXP ptypeSEXP, SEXP noSEXP, SEXP nvarSEXP, SEXP nvar_totalSEXP, SEXP cmultSEXP, SEXP upper_clSEXP, SEXP lower_clSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP cur_lamSEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP xvSEXP, SEXP coefSEXP, SEXP bSEXP, SEXP gSEXP, SEXP rsqSEXP, SEXP rsq_curSEXP, SEXP mmSEXP, SEXP errcodeSEXP, SEXP nlpSEXP, SEXP idx_lamSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type x(xSEXP);
     Rcpp::traits::input_parameter< NumericVector& >::type resid(residSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type ptype(ptypeSEXP);
-    Rcpp::traits::input_parameter< int& >::type no(noSEXP);
-    Rcpp::traits::input_parameter< int& >::type nvar(nvarSEXP);
-    Rcpp::traits::input_parameter< int& >::type nvar_total(nvar_totalSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type cmult(cmultSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type upper_cl(upper_clSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type lower_cl(lower_clSEXP);
-    Rcpp::traits::input_parameter< int& >::type ne(neSEXP);
-    Rcpp::traits::input_parameter< int& >::type nx(nxSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type ptype(ptypeSEXP);
+    Rcpp::traits::input_parameter< const int& >::type no(noSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nvar(nvarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nvar_total(nvar_totalSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type cmult(cmultSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type upper_cl(upper_clSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type lower_cl(lower_clSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ne(neSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nx(nxSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type cur_lam(cur_lamSEXP);
-    Rcpp::traits::input_parameter< double& >::type thr(thrSEXP);
-    Rcpp::traits::input_parameter< int& >::type maxit(maxitSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type xv(xvSEXP);
+    Rcpp::traits::input_parameter< const double& >::type thr(thrSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type xv(xvSEXP);
     Rcpp::traits::input_parameter< NumericMatrix& >::type coef(coefSEXP);
     Rcpp::traits::input_parameter< NumericVector& >::type b(bSEXP);
     Rcpp::traits::input_parameter< NumericVector& >::type g(gSEXP);
@@ -77,19 +77,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // gaussian_fit
-List gaussian_fit(int ka, NumericVector ptype, int nobs, int nvar, int nvar_ext, arma::mat x_, NumericVector y_, arma::mat ext_, NumericVector w, NumericVector cmult, NumericVector lower_cl, NumericVector upper_cl, int ne, int ne_ext, int nx, int nx_ext, int nlam, int nlam_ext, double pratio, double pratio_ext, NumericVector ulam_, NumericVector ulam_ext_, double thr, int maxit, bool isd, bool isd_ext, bool intr, bool intr_ext);
+List gaussian_fit(const int ka, NumericVector ptype, const int nobs, const int nvar, const int nvar_ext, const arma::mat& x_, NumericVector y_, const arma::mat& ext_, NumericVector w, NumericVector cmult, NumericVector lower_cl, NumericVector upper_cl, int ne, int ne_ext, int nx, int nx_ext, int nlam, int nlam_ext, double pratio, double pratio_ext, NumericVector ulam_, NumericVector ulam_ext_, double thr, int maxit, bool isd, bool isd_ext, bool intr, bool intr_ext);
 RcppExport SEXP _hierr_gaussian_fit(SEXP kaSEXP, SEXP ptypeSEXP, SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP x_SEXP, SEXP y_SEXP, SEXP ext_SEXP, SEXP wSEXP, SEXP cmultSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP neSEXP, SEXP ne_extSEXP, SEXP nxSEXP, SEXP nx_extSEXP, SEXP nlamSEXP, SEXP nlam_extSEXP, SEXP pratioSEXP, SEXP pratio_extSEXP, SEXP ulam_SEXP, SEXP ulam_ext_SEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type ka(kaSEXP);
+    Rcpp::traits::input_parameter< const int >::type ka(kaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ptype(ptypeSEXP);
-    Rcpp::traits::input_parameter< int >::type nobs(nobsSEXP);
-    Rcpp::traits::input_parameter< int >::type nvar(nvarSEXP);
-    Rcpp::traits::input_parameter< int >::type nvar_ext(nvar_extSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type x_(x_SEXP);
+    Rcpp::traits::input_parameter< const int >::type nobs(nobsSEXP);
+    Rcpp::traits::input_parameter< const int >::type nvar(nvarSEXP);
+    Rcpp::traits::input_parameter< const int >::type nvar_ext(nvar_extSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type x_(x_SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type y_(y_SEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type ext_(ext_SEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type ext_(ext_SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type cmult(cmultSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type lower_cl(lower_clSEXP);

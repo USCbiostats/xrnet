@@ -5,50 +5,45 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-NumericMatrix create_data(int & nobs,
-                          int & nvar,
-                          int & nvar_total,
-                          arma::mat & x,
-                          arma::mat & ext,
-                          arma::vec & w,
-                          bool & isd,
-                          bool & isd_ext,
-                          bool & intr,
-                          bool & intr_ext,
+NumericMatrix create_data(const int & nobs,
+                          const int & nvar,
+                          const int & nvar_total,
+                          const arma::mat & x,
+                          const arma::mat & ext,
+                          const arma::vec & w,
+                          const bool & isd,
+                          const bool & isd_ext,
+                          const bool & intr,
+                          const bool & intr_ext,
                           arma::vec & xm,
                           arma::vec & xv,
                           arma::vec & xs) {
 
-    // initialize new design matrix n x (p + q)
+    // initialize new design matrix
     arma::mat xnew(nobs, nvar_total);
-    arma::vec v = sqrt(w);
 
     // standardize x (predictor variables)
     if (intr == true) {
-        xm.subvec(0, nvar - 1) = x.t() * w;
         if (isd == true) {
             for (int j = 0; j < nvar; j++) {
-                xnew.col(j) = x.col(j) - xm[j];
-                xs[j] = sqrt(arma::dot(xnew.col(j), xnew.col(j)) / nobs);
-                xnew.col(j) = xnew.col(j) / xs[j];
-                xv[j] = 1.0;
+                xm[j] = arma::dot(w, x.col(j));
+                xs[j] = sqrt(arma::dot(x.col(j) - xm[j], (x.col(j) - xm[j]) % w));
+                xnew.col(j) = (x.col(j) - xm[j]) / xs[j];
             }
         }
         else {
             for (int j = 0; j < nvar; j++) {
+                xm[j] = arma::dot(x.col(j), w);
                 xnew.col(j) = x.col(j) - xm[j];
-                xv[j] = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
-                xs[j] = 1.0;
+                xv[j] = arma::dot(xnew.col(j), xnew.col(j) % w);
             }
         }
     }
     else {
-        xm.subvec(0, nvar - 1).fill(0.0);
         if (isd == true) {
             for (int j = 0; j < nvar; j++) {
                 double xm_j = arma::dot(w, x.col(j));
-                double xm2_j = arma::dot(x.col(j), x.col(j)) / nobs;
-                double vc = xm2_j - xm_j * xm_j;
+                double vc = arma::dot(x.col(j) - xm_j, (x.col(j) - xm_j) % w);
                 xs[j] = sqrt(vc);
                 xnew.col(j) = x.col(j) / xs[j];
                 xv[j] = 1.0 + xm_j * xm_j / vc;
@@ -57,52 +52,47 @@ NumericMatrix create_data(int & nobs,
         else {
             for (int j = 0; j < nvar; j++) {
                 xnew.col(j) = x.col(j);
-                xv[j] = arma::dot(x.col(j), x.col(j)) / nobs;
-                xs[j] = 1.0;
+                xv[j] = arma::dot(x.col(j), x.col(j) % w);
             }
         }
     }
 
     // standarize ext (external data variables)
-    arma::vec ext_temp(nvar);
-    arma::mat xsub = xnew.submat(0, 0, nobs - 1, nvar - 1);
+    const arma::mat xsub = xnew.submat(0, 0, nobs - 1, nvar - 1);
 
     if (intr_ext == true) {
+
         // create intercept column for external data
         xnew.col(nvar) = xsub * arma::ones<arma::mat>(nvar, 1);
         xv[nvar] = arma::dot(xnew.col(nvar), xnew.col(nvar)) / nobs;
         xs[nvar] = 1.0;
-        xm.subvec(nvar + 1, nvar_total - 1) = arma::mean(ext).t();
+
         if (isd_ext == true) {
             for (int j = nvar + 1; j < nvar_total; j++) {
-                ext_temp = ext.col(j - nvar - 1) - xm[j];
-                xs[j] = sqrt(arma::dot(ext_temp, ext_temp) / nvar);
-                xnew.col(j) = xsub * (ext_temp / xs[j]);
+                xm[j] = arma::mean(ext.col(j - nvar - 1));
+                xs[j] = sqrt(arma::dot(ext.col(j - nvar - 1) - xm[j], ext.col(j - nvar - 1) - xm[j]) / nvar);
+                xnew.col(j) = xsub * ((ext.col(j - nvar - 1) - xm[j]) / xs[j]);
                 xv[j] = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
             }
         }
         else {
             for (int j = nvar + 1; j < nvar_total; j++) {
-                ext_temp = ext.col(j - nvar - 1)  - xm[j];
-                xs[j] = 1.0;
-                xnew.col(j) = xsub * ext_temp;
+                xm[j] = arma::mean(ext.col(j - nvar - 1));
+                xnew.col(j) = xsub * (ext.col(j - nvar - 1)  - xm[j]);
                 xv[j] = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
             }
         }
     }
     else {
-        xm.subvec(nvar, nvar_total - 1).fill(0.0);
         if (isd_ext == true) {
             for (int j = nvar; j < nvar_total; j++) {
                 double xm_j = arma::mean(ext.col(j - nvar));
-                double xm2_j = arma::dot(ext.col(j - nvar), ext.col(j - nvar)) / nvar;
-                xs[j] = sqrt(xm2_j - xm_j * xm_j);
+                xs[j] = sqrt(arma::dot(ext.col(j - nvar) - xm_j, ext.col(j - nvar) - xm_j) / nvar);
                 xnew.col(j) = xsub * (ext.col(j - nvar) / xs[j]);
                 xv[j] = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
             }
         }
         else {
-            xs.subvec(nvar, nvar_total - 1).fill(1.0);
             for (int j = nvar; j < nvar_total; j++) {
                 xnew.col(j) = xsub * ext.col(j - nvar);
                 xv[j] = arma::dot(xnew.col(j), xnew.col(j)) / nobs;
@@ -111,52 +101,6 @@ NumericMatrix create_data(int & nobs,
     }
     return(wrap(xnew));
 }
-
-/*
-// [[Rcpp::export]]
-void standardize_mat(int & nobs,
-                     int & nvar,
-                     NumericMatrix & x,
-                     NumericVector & w,
-                     bool & isd,
-                     bool & intr,
-                     NumericVector & xm,
-                     NumericVector & xv,
-                     NumericVector & xs) {
-
-    NumericVector v = sqrt(w);
-
-    if (intr == true) {
-        for (int j = 0; j < nvar; j++) {
-            xm[j] = std::inner_product(x(_, j).begin(), x(_, j).end(), w.begin(), 0.0);
-            x(_, j) = x(_, j) - xm[j];
-            xv[j] = std::inner_product(x(_, j).begin(), x(_, j).end(), x(_, j).begin(), 0.0) / nobs;
-            if (isd) {
-                xs[j] = sqrt(xv[j]);
-                x(_, j) = x(_, j) / xs[j];
-                xv[j] = 1.0;
-            } else {
-                xs[j] = 1.0;
-            }
-        }
-    } else {
-        for (int j = 0; j < nvar; j++) {
-            NumericVector xj = v * x(_, j);
-            xv[j] = std::inner_product(xj.begin(), xj.end(), xj.begin(), 0.0);
-            if (isd) {
-                double xm = std::inner_product(v.begin(), v.end(), xj.begin(), 0.0);
-                double xm_sqd = xm*xm;
-                double vc = xv[j] - xm_sqd;
-                xs[j] = sqrt(vc);
-                x(_, j) = x(_, j) / xs[j];
-                xv[j] = 1.0 + xm_sqd / vc;
-            } else {
-                xs[j] = 1.0;
-            }
-        }
-    }
-}
-*/
 
 // [[Rcpp::export]]
 void standardize_vec(NumericVector & y,
@@ -183,13 +127,13 @@ void standardize_vec(NumericVector & y,
 
 //[[Rcpp:export]]
 NumericVector compute_penalty(NumericVector & ulam,
-                              int & nlam,
-                              double & ptype,
-                              double & pratio,
+                              const int & nlam,
+                              const double & ptype,
+                              const double & pratio,
                               NumericVector & g,
                               NumericVector & cmult,
-                              int & start,
-                              int & stop) {
+                              const int & start,
+                              const int & stop) {
 
     NumericVector lambdas;
     if (ulam[0] == 0.0) {
@@ -215,21 +159,21 @@ NumericVector compute_penalty(NumericVector & ulam,
 }
 
 // [[Rcpp::export]]
-void coord_desc(NumericMatrix & x,
+void coord_desc(const NumericMatrix & x,
                 NumericVector & resid,
-                NumericVector & ptype,
-                int & no,
-                int & nvar,
-                int & nvar_total,
-                NumericVector & cmult,
-                NumericVector & upper_cl,
-                NumericVector & lower_cl,
-                int & ne,
-                int & nx,
+                const NumericVector & ptype,
+                const int & no,
+                const int & nvar,
+                const int & nvar_total,
+                const NumericVector & cmult,
+                const NumericVector & upper_cl,
+                const NumericVector & lower_cl,
+                const int & ne,
+                const int & nx,
                 NumericVector cur_lam,
-                double & thr,
-                int & maxit,
-                NumericVector & xv,
+                const double & thr,
+                const int & maxit,
+                const NumericVector & xv,
                 NumericMatrix & coef,
                 NumericVector & b,
                 NumericVector & g,
@@ -306,12 +250,12 @@ void coord_desc(NumericMatrix & x,
 }
 
 void unstandardize_coef(NumericMatrix & coef,
-                        arma::mat & ext_,
-                        int & nvar,
-                        int & nvar_total,
+                        const arma::mat & ext_,
+                        const int & nvar,
+                        const int & nvar_total,
                         int & nlam_total,
-                        arma::vec & xm,
-                        arma::vec & xs,
+                        const arma::vec & xm,
+                        const arma::vec & xs,
                         double & ys,
                         NumericVector & a0,
                         bool & intr_ext) {
@@ -334,14 +278,14 @@ void unstandardize_coef(NumericMatrix & coef,
 }
 
 // [[Rcpp::export]]
-List gaussian_fit(int ka,
+List gaussian_fit(const int ka,
                   NumericVector ptype,
-                  int nobs,
-                  int nvar,
-                  int nvar_ext,
-                  arma::mat x_,
+                  const int nobs,
+                  const int nvar,
+                  const int nvar_ext,
+                  const arma::mat & x_,
                   NumericVector y_,
-                  arma::mat ext_,
+                  const arma::mat & ext_,
                   NumericVector w,
                   NumericVector cmult,
                   NumericVector lower_cl,
@@ -382,15 +326,15 @@ List gaussian_fit(int ka,
     double ys;
     int nlam_total = nlam * nlam_ext;
     arma::vec xm(nvar_total, arma::fill::zeros);
-    arma::vec xv(nvar_total);
-    arma::vec xs(nvar_total);
+    arma::vec xv(nvar_total, arma::fill::ones);
+    arma::vec xs(nvar_total, arma::fill::ones);
 
     // copies of R objects to avoid modifying original
     NumericVector y = Rcpp::clone(y_);
     NumericVector wgt = w / sum(w);
     NumericVector ulam = Rcpp::clone(ulam_);
     NumericVector ulam_ext = Rcpp::clone(ulam_ext_);
-    arma::vec w_arma = as<arma::vec>(wgt);
+    const arma::vec w_arma = as<arma::vec>(wgt);
 
     // determine non-constant variables
 
@@ -400,7 +344,7 @@ List gaussian_fit(int ka,
 
     // determine which variables are non-constant
 
-    // standardize y, confidence limits --> user penalties??
+    // standardize y, confidence limits, user penalties
     standardize_vec(y, wgt, ym, ys, intr);
     lower_cl = lower_cl / ys;
     upper_cl = upper_cl / ys;
@@ -449,13 +393,14 @@ List gaussian_fit(int ka,
 
     // loop through all penalty combinations
     int nlp = 0;
-    bool flag = false;
+    //bool flag = false;
     int idx_lam = 0;
     double errcode = 0.0;
     NumericVector lam_cur(2, 0.0);
 
     double rsq_outer = 0.0;
     double rsq_inner = 0.0;
+    double rsq_old = 0.0;
 
     NumericVector outer_resid = Rcpp::clone(y);
     NumericVector inner_resid(nobs);
@@ -464,38 +409,38 @@ List gaussian_fit(int ka,
     NumericVector coef_inner(nvar_total, 0.0);
 
     for (int m = 0; m < nlam; m++) {
-
         lam_cur[0] = lam_path[m];
 
         for (int m2 = 0; m2 < nlam_ext; m2++) {
-
             lam_cur[1] = lam_path_ext[m2];
 
             if (m2 == 0) {
-                coord_desc(xnew, outer_resid, ptype, nobs, nvar, nvar_total, cmult, upper_cl, lower_cl, ne_total, nx_total,
-                           lam_cur, thr, maxit, xvnew, coef, coef_outer, g, rsq, rsq_outer, mm, errcode, nlp, idx_lam);
+                coord_desc(xnew, outer_resid, ptype, nobs, nvar, nvar_total,
+                           cmult, upper_cl, lower_cl, ne_total, nx_total,
+                           lam_cur, thr, maxit, xvnew, coef, coef_outer, g,
+                           rsq, rsq_outer, mm, errcode, nlp, idx_lam);
 
                 inner_resid = Rcpp::clone(outer_resid);
                 coef_inner = Rcpp::clone(coef_outer);
                 rsq_inner = rsq_outer;
+                rsq_old = rsq_outer;
 
-            } else {
-                coord_desc(xnew, inner_resid, ptype, nobs, nvar, nvar_total, cmult, upper_cl, lower_cl, ne_total, nx_total,
-                           lam_cur, thr, maxit, xvnew, coef, coef_inner, g, rsq, rsq_inner, mm, errcode, nlp, idx_lam);
             }
+            else {
+                coord_desc(xnew, inner_resid, ptype, nobs, nvar, nvar_total,
+                           cmult, upper_cl, lower_cl, ne_total, nx_total,
+                           lam_cur, thr, maxit, xvnew, coef, coef_inner, g,
+                           rsq, rsq_inner, mm, errcode, nlp, idx_lam);
 
-            // stop if max iterations or no change in r-squared
-            //if ((rsq_inner - rsq_old) < 1e-05 * rsq_inner || rsq_inner > 0.999 || errcode != 0.0) {
-            //    flag = true;
-            //} else {
-            //    rsq_old = rsq_inner;
-            //    ++idx_lam;
-            //}
-
-            ++idx_lam;
-        }
-        if (flag) {
-            break;
+                //stop if max iterations or no change in r-squared
+                if ((rsq_inner - rsq_old) < (1e-05 * rsq_inner) || rsq_inner > 0.999 || errcode != 0.0) {
+                    break;
+                }
+                else {
+                    rsq_old = rsq_inner;
+                    ++idx_lam;
+                }
+            }
         }
     }
 
@@ -521,7 +466,5 @@ List gaussian_fit(int ka,
                               Named("lam_ext") = lam_path_ext,
                               Named("coef") = coef,
                               Named("nlp") = nlp,
-                              Named("pratioext") = pratio_ext,
-                              Named("xnew") = xnew,
                               Named("rsq") = rsq);
 }
