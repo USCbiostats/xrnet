@@ -7,6 +7,7 @@
 #' @param penalty vector of penalty values to apply to predictor variables
 #' @param penalty_ext vector of penalty values to apply to external data variables
 #' @param type type of prediction to make using the hierr model
+#' @param ... pass other arguments to hierr function (if needed)
 
 #' @export
 predict.hierr <- function(object,

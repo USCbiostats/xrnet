@@ -5,8 +5,7 @@
 \title{Predict function for "hierr" object}
 \usage{
 \method{predict}{hierr}(object, newdata = NULL, penalty = NULL,
-  penalty_ext = NULL, type = c("link", "response", "coefficients",
-  "nonzero", "class"), ...)
+  penalty_ext = NULL, type = c("response", "coefficients"), ...)
 }
 \arguments{
 \item{object}{A \code{\link{hierr}} object}
@@ -18,6 +17,8 @@
 \item{penalty_ext}{vector of penalty values to apply to external data variables}
 
 \item{type}{type of prediction to make using the hierr model}
+
+\item{...}{pass other arguments to hierr function (if needed)}
 }
 \description{
 Predict coefficients or response in new data
