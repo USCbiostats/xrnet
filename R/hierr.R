@@ -56,7 +56,7 @@ hierr <- function(x,
         weights <- as.double(rep(1, nr_x))
     } else if (length(weights) != nr_x) {
         stop(paste("Error: Number of elements in weights (", length(weights), ") not equal to the number of rows of x (", nr_x, ")", sep = ""))
-    } else if (any(weights) < 0) {
+    } else if (any(weights < 0)) {
         stop("Error: weights can only contain non-negative values")
     } else {
         weights <- as.double(weights)
@@ -119,14 +119,14 @@ hierr <- function(x,
     if (is.null(control$dfmax)) {
         control$dfmax[1] <- as.integer(nc_x + intercept[1])
         control$dfmax[2] <- as.integer(nc_ext + intercept[2])
-    } else if (any(control$dfmax) < 0) {
+    } else if (any(control$dfmax < 0)) {
         stop("Error: dfmax can only contain non-negative integers")
     }
 
     if (is.null(control$pmax)) {
         control$pmax[1] <- as.integer(min(2 * control$dfmax[1] + 20, nc_x))
         control$pmax[2] <- as.integer(min(2 * control$dfmax[2] + 20, nc_ext))
-    } else if (any(control$pmax) < 0) {
+    } else if (any(control$pmax < 0)) {
         stop("Error: pmax can only contain non-negative integers")
     }
 
@@ -151,6 +151,17 @@ hierr <- function(x,
                                 intr = intercept,
                                 control = control)
                    )
+
+    # Create arrays ordering coefficients by 1st level penalty / 2nd level penalty
+    fit$alpha0 <- matrix(fit$alpha0, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext)
+    fit$alphas <- aperm(array(t(fit$alphas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_ext)), c(3, 2, 1))
+
+    fit$beta0 <- matrix(fit$beta0, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext)
+    fit$betas <- aperm(array(t(fit$betas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_x)), c(3, 2, 1))
+
+    fit$call <- this.call
+    class(fit) <- "hierr"
+    return(fit)
 }
 
 #' Control function for hierr fitting

@@ -4,8 +4,8 @@
 \alias{definePenalty}
 \title{Define regularization object for predictor and external data}
 \usage{
-definePenalty(penalty_type, penalty_type_ext, num_penalty = 50,
-  num_penalty_ext = 50, penalty_ratio = NULL, penalty_ratio_ext = NULL,
+definePenalty(penalty_type, penalty_type_ext, num_penalty = 20,
+  num_penalty_ext = 20, penalty_ratio = NULL, penalty_ratio_ext = NULL,
   user_penalty = NULL, user_penalty_ext = NULL, custom_multiplier = NULL,
   custom_multiplier_ext = NULL)
 }
@@ -15,7 +15,6 @@ definePenalty(penalty_type, penalty_type_ext, num_penalty = 50,
    \item 0 = Ridge
    \item (0,1) = Elastic-Net
    \item 1 = Lasso
-   \item 2 = Quantile
 }}
 
 \item{penalty_type_ext}{type of regularization for external data. See penalty_type for options. Default is 1 (Lasso).}
@@ -32,9 +31,9 @@ definePenalty(penalty_type, penalty_type_ext, num_penalty = 50,
 
 \item{user_penalty_ext}{user-defined vector of penalty values to fit for external data.}
 
-\item{custom_multiplier}{variable-specific penalty multipliers for x. Default is 1 for all variables.}
+\item{custom_multiplier}{variable-specific penalty multipliers for x. Default is 1 for all variables. 0 is no penalization.}
 
-\item{custom_multiplier_ext}{variable-specific penalty multipliers for external data. Default is 1 for all variables.}
+\item{custom_multiplier_ext}{variable-specific penalty multipliers for external data. Default is 1 for all variables. 0 is no penalization.}
 }
 \description{
 Defines regularization terms for predictor and external data in \code{\link{hierr}} fitting.

@@ -7,7 +7,6 @@
 #'    \item 0 = Ridge
 #'    \item (0,1) = Elastic-Net
 #'    \item 1 = Lasso
-#'    \item 2 = Quantile
 #' }
 #' @param penalty_type_ext type of regularization for external data. See penalty_type for options. Default is 1 (Lasso).
 #' @param num_penalty number of penalty values to fit in grid for x. Default is 50.
@@ -16,14 +15,14 @@
 #' @param penalty_ratio_ext ratio between minimum and maximum penalty for external data. Default is 1e-04 if \eqn{p > q} and 0.01 if \eqn{p <= q}.
 #' @param user_penalty user-defined vector of penalty values to fit for x.
 #' @param user_penalty_ext user-defined vector of penalty values to fit for external data.
-#' @param custom_multiplier variable-specific penalty multipliers for x. Default is 1 for all variables.
-#' @param custom_multiplier_ext variable-specific penalty multipliers for external data. Default is 1 for all variables.
+#' @param custom_multiplier variable-specific penalty multipliers for x. Default is 1 for all variables. 0 is no penalization.
+#' @param custom_multiplier_ext variable-specific penalty multipliers for external data. Default is 1 for all variables. 0 is no penalization.
 
 #' @export
 definePenalty <- function(penalty_type,
                           penalty_type_ext,
-                          num_penalty = 50,
-                          num_penalty_ext = 50,
+                          num_penalty = 20,
+                          num_penalty_ext = 20,
                           penalty_ratio = NULL,
                           penalty_ratio_ext = NULL,
                           user_penalty = NULL,
