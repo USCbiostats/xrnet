@@ -1,4 +1,4 @@
-context("compare coefficent estimates to CVX")
+context("compare coefficent estimates to CVX (manual penalty)")
 
 ##### Code used to generate data files for all tests #####
 
