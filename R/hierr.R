@@ -18,7 +18,7 @@ NULL
 hierr <- function(x,
                   y,
                   external,
-                  family = c("gaussian", "binomial", "poisson"),
+                  family = c("gaussian"),
                   penalty = definePenalty(0, 1),
                   weights = NULL,
                   standardize = c(TRUE, TRUE),

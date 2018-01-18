@@ -26,7 +26,7 @@ cvhierr <- function(x,
                     family = c("gaussian", "binomial"),
                     penalty = definePenalty(0, 1),
                     weights = NULL,
-                    type.measure = c("mse", "mae", "deviance", "class", "auc"),
+                    type.measure = c("mse", "mae", "deviance"),
                     nfolds = 5,
                     parallel = FALSE, ...)
 {
@@ -53,7 +53,7 @@ cvhierr <- function(x,
     }
     hierr_call[[1]] <- as.name("hierr")
 
-    # Set sample size/ weights
+    # Set sample size / weights
     n <- length(y)
     if (is.null(weights)) {
         weights <- rep(1, n)
