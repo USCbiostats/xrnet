@@ -409,7 +409,7 @@ List gaussian_fit(const int ka,
     }
 
     // initialize objects to hold fitting results
-    arma::mat coef(nx_total, nlam_total);
+    arma::mat coef(nx_total, nlam_total, arma::fill::zeros);
     NumericVector rsq(nlam_total);
 
     // ---------run coordinate descent for all penalties ----------
@@ -463,12 +463,14 @@ List gaussian_fit(const int ka,
                            rsq, rsq_inner, mm, errcode, nlp, idx_lam);
 
                 //stop if max r-squared or no change in r-squared
-                if ((rsq_inner - rsq_old) < (1e-05 * rsq_inner) || rsq_inner > 0.999 || errcode > 0.0) {
-                    idx_lam += nlam_ext - m2;
-                    break;
-                }
-                else {
-                    rsq_old = rsq_inner;
+                if (pratio_ext > 0.0) {
+                    if ((rsq_inner - rsq_old) < (1e-05 * rsq_inner) || rsq_inner > 0.999 || errcode > 0.0) {
+                        idx_lam += nlam_ext - m2;
+                        break;
+                    }
+                    else {
+                        rsq_old = rsq_inner;
+                    }
                 }
             }
             ++idx_lam;
@@ -508,8 +510,12 @@ List gaussian_fit(const int ka,
                               Named("betas") = coef.head_rows(nvar),
                               Named("alpha0") = a0,
                               Named("alphas") = coef.tail_rows(nvar_ext),
-                              Named("lam") = lam_path,
-                              Named("lam_ext") = lam_path_ext,
+                              Named("penalty") = lam_path,
+                              Named("penalty_ext") = lam_path_ext,
+                              Named("penalty_type") = ptype[0],
+                              Named("penalty_type_ext") = ptype[nvar_total - 1],
+                              Named("penalty_ratio") = pratio,
+                              Named("penalty_ratio_ext") = pratio_ext,
                               Named("deviance") = rsq,
                               Named("nlp") = nlp);
 }

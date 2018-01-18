@@ -20,11 +20,11 @@
 
 
 #' @export
-cvhierr <- function(x = x,
-                    y = y,
-                    external = ext,
+cvhierr <- function(x,
+                    y,
+                    external,
                     family = c("gaussian", "binomial"),
-                    penalty = definePenalty(),
+                    penalty = definePenalty(0, 1),
                     weights = NULL,
                     type.measure = c("mse", "mae", "deviance", "class", "auc"),
                     nfolds = 5,
@@ -54,21 +54,23 @@ cvhierr <- function(x = x,
     hierr_call[[1]] <- as.name("hierr")
 
     # Set sample size/ weights
-    n <- nrow(x)
+    n <- length(y)
     if (is.null(weights)) {
         weights <- rep(1, n)
     }
 
     # Create hierr object
-    hierr_object <- hierr(x = x, y = y, external = ext, family = family, weights = weights, penalty = penalty, ...)
+    hierr_object <- hierr(x = x, y = y, external = external, family = family, weights = weights, penalty = penalty, ...)
     hierr_object$call <- hierr_call
-    penalty_fixed <- definePenalty(penalty$penalty_type, penalty$penalty_type_ext, user_penalty = hierr_object$lam, user_penalty_ext = hierr_object$lam_ext)
+    penalty_fixed <- definePenalty(penalty$penalty_type, penalty$penalty_type_ext, user_penalty = hierr_object$penalty, user_penalty_ext = hierr_object$penalty_ext)
+    num_pen <- length(hierr_object$penalty)
+    num_pen_ext <- length(hierr_object$penalty_ext)
 
     # Randomly sample observations into folds
     foldid <- sample(rep(seq(nfolds), length = n))
 
     # Vector to collect results of CV
-    errormat <- matrix(NA, nrow = length(y), ncol = length(hierr_object$lam)*length(hierr_object$lam_ext))
+    errormat <- matrix(NA, nrow = n, ncol = num_pen * num_pen_ext)
 
     # Run k-fold CV
     if (parallel) {
@@ -87,20 +89,20 @@ cvhierr <- function(x = x,
             weights_train <- weights[!subset]
 
             # Fit model on k-th training fold
-            fit_fold <- hierr(x = x_train, y = y_train, external = ext, weights = weights_train, penalty = penalty_fixed, ...)[c("beta0", "betas")]
+            fit_fold <- hierr(x = x_train, y = y_train, external = external, weights = weights_train, penalty = penalty_fixed, ...)[c("beta0", "betas")]
             fit_fold$betas <- rbind(as.vector(t(fit_fold$beta0)), `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)), c(dim(fit_fold$betas)[1], dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
             errormat[subset, ] <- calc_error(fit_fold$betas, y[subset], cbind(1, x[subset, ]), weights[subset])
         }
     }
     cv_mean <- apply(errormat, 2, stats::weighted.mean, w = weights)
-    cv_sd <- sqrt(apply(sweep(errormat, 2L, cv_mean, FUN = "-")^2, 2, stats::weighted.mean, w = weights, na.rm = TRUE) / (length(y) - 1))
-    cv_mean <- matrix(cv_mean, nrow = length(hierr_object$lam), byrow = TRUE)
-    cv_sd <- matrix(cv_sd, nrow = length(hierr_object$lam), byrow = TRUE)
+    cv_sd <- sqrt(apply(sweep(errormat, 2L, cv_mean, FUN = "-")^2, 2, stats::weighted.mean, w = weights, na.rm = TRUE) / (n - 1))
+    cv_mean <- matrix(cv_mean, nrow = num_pen, byrow = TRUE)
+    cv_sd <- matrix(cv_sd, nrow = num_pen, byrow = TRUE)
     rm(errormat)
-    row.names(cv_mean) <- rev(sort(hierr_object$lam))
-    colnames(cv_mean) <- rev(sort(hierr_object$lam_ext))
-    row.names(cv_sd) <- rev(sort(hierr_object$lam))
-    colnames(cv_sd) <- rev(sort(hierr_object$lam_ext))
+    row.names(cv_mean) <- rev(sort(hierr_object$penalty))
+    colnames(cv_mean) <- rev(sort(hierr_object$penalty_ext))
+    row.names(cv_sd) <- rev(sort(hierr_object$penalty))
+    colnames(cv_sd) <- rev(sort(hierr_object$penalty_ext))
 
     min_error <- min(cv_mean, na.rm = TRUE)
     optIndex <- which(min_error == cv_mean, arr.ind = TRUE)
@@ -118,8 +120,8 @@ cvhierr <- function(x = x,
          min_error = min_error,
          minl1 = minl1,
          minl2 = minl2,
-         lambda1 = hierr_object$lam,
-         lambda2 = hierr_object$lam_ext
+         penalty = hierr_object$penalty,
+         penalty_ext = hierr_object$penalty_ext
         )
 }
 

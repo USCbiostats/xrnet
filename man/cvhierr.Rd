@@ -4,10 +4,9 @@
 \alias{cvhierr}
 \title{k-fold cross-validation for hierarchical regularized regression}
 \usage{
-cvhierr(x = x, y = y, external = ext, family = c("gaussian",
-  "binomial"), penalty = definePenalty(), weights = NULL,
-  type.measure = c("mse", "mae", "deviance", "class", "auc"), nfolds = 5,
-  parallel = FALSE, ...)
+cvhierr(x, y, external, family = c("gaussian", "binomial"),
+  penalty = definePenalty(0, 1), weights = NULL, type.measure = c("mse",
+  "mae", "deviance", "class", "auc"), nfolds = 5, parallel = FALSE, ...)
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}}
