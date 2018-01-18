@@ -495,7 +495,9 @@ List gaussian_fit(const int ka,
             coef.at(i, j) = ys * coef.at(i, j) / xs[i];
         }
     }
-    a0 = (arma::mean(coef.head_rows(nvar)) - (xm.tail(nvar_ext)).t() * coef.tail_rows(nvar_ext)).t();
+    if (intr_ext == true) {
+        a0 = (arma::mean(coef.head_rows(nvar)) - (xm.tail(nvar_ext)).t() * coef.tail_rows(nvar_ext)).t();
+    }
 
     // fix first penalties
     if (ulam_[0] == 0.0) {
