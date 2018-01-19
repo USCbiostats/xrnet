@@ -72,4 +72,4 @@ To visualize the results of the cross-validation we provide a contour plot of th
 plot(cv_hierr)
 ```
 
-![](readme_files/README-plot%20k-fold%20cv%20results-1.png)
+![](readme_files/readmecv_results-1.png)

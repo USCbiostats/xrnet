@@ -9,7 +9,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "readme_files/README-"
+  fig.path = "readme_files/readme"
 )
 ```
 
@@ -79,6 +79,6 @@ cv_hierr <- cvhierr(x = x, y = y, external = ext, family = "gaussian")
 ```
 To visualize the results of the cross-validation we provide a contour plot of the mean cross-validation error across the grid of penalties with the `plot` function.
 
-```{r plot k-fold cv results}
+```{r cv_results}
 plot(cv_hierr)
 ```
