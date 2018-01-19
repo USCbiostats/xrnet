@@ -32,7 +32,7 @@ To fit a linear hierarchical regularized regression model, you can use the main 
 hierr_model <- hierr(x = x, y = y, external = ext, family = "gaussian")
 ```
 
-To modify the regularization terms and penalty path associated with the predictors or external data, you can use the `definePenalty` function. This function allows you to configure the following regularization attributes for both the predictors (x) and the external data variables (external):
+To modify the regularization terms and penalty path associated with the predictors or external data, you can use the `definePenalty` function. This function allows you to configure the following regularization attributes for both:
 
 * Regularization type 
     - Ridge = 0
