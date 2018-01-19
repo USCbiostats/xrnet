@@ -37,8 +37,9 @@ To modify the regularization terms and penalty path associated with the predicto
     - Ridge = 0
     - Elastic Net = (0, 1)
     - Lasso = 1
-* Number of penalty values in the full penalty path (default = 20)
-* Ratio of min(penalty) / max(penalty) 
+* Penalty path
+    - Number of penalty values in the full penalty path (default = 20)
+    - Ratio of min(penalty) / max(penalty) 
 * User-defined set of penalties
 
 As an example, we may want to apply a ridge penalty to both x and external. In addition, we may want to have 30 penalty values computed for the regularization terms associated with both x and external. We modify our model fitting as follows.
