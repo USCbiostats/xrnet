@@ -18,6 +18,7 @@ LinkingTo:
     Rcpp,
     RcppArmadillo
 Imports: 
-    Rcpp
+    Rcpp,
+    foreach
 Depends:
     R (>= 2.10)

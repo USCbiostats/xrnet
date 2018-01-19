@@ -4,7 +4,7 @@
 \alias{definePenalty}
 \title{Define regularization object for predictor and external data}
 \usage{
-definePenalty(penalty_type, penalty_type_ext, num_penalty = 20,
+definePenalty(penalty_type = 0, penalty_type_ext = 1, num_penalty = 20,
   num_penalty_ext = 20, penalty_ratio = NULL, penalty_ratio_ext = NULL,
   user_penalty = NULL, user_penalty_ext = NULL, custom_multiplier = NULL,
   custom_multiplier_ext = NULL)

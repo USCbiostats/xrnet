@@ -15,11 +15,13 @@
 #'    \item mae (Mean Absolute Error)
 #' }
 #' @param nfolds number of folds for cross-validation. Default is 5.
-#' @param parallel Use \code{foreach} function to fit folds in parallel if TRUE, must register cluster before using.
+#' @param parallel Use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.
 #' @param ... list of additional arguments to pass to function \code{\link{hierr}}.
 
 
 #' @export
+#' @importFrom foreach foreach
+#' @importFrom foreach %dopar%
 cvhierr <- function(x,
                     y,
                     external,
@@ -74,6 +76,25 @@ cvhierr <- function(x,
 
     # Run k-fold CV
     if (parallel) {
+        cvout <- foreach(k = seq(nfolds), .packages = c("hierr")) %dopar% {
+            subset <- (foldid == k)
+            if (is.vector(drop(y))) {
+                y_train <- y[!subset]
+            } else {
+                y_train <- y[!subset, ]
+            }
+            x_train <- x[!subset, ]
+            weights_train <- weights[!subset]
+
+            # Fit model on k-th training fold
+            hierr(x = x_train, y = y_train, external = external, weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas")]
+        }
+        for (k in 1:nfolds) {
+            subset <- (foldid == k)
+            betas <- rbind(as.vector(t(cvout[[k]]$beta0)), `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)), c(dim(cvout[[k]]$betas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])))
+            errormat[subset, ] <- calc_error(betas, y[subset], cbind(1, x[subset, ]), weights[subset])
+
+        }
 
     } else {
         for (k in seq_along(1:nfolds)) {
@@ -89,7 +110,7 @@ cvhierr <- function(x,
             weights_train <- weights[!subset]
 
             # Fit model on k-th training fold
-            fit_fold <- hierr(x = x_train, y = y_train, external = external, weights = weights_train, penalty = penalty_fixed, ...)[c("beta0", "betas")]
+            fit_fold <- hierr(x = x_train, y = y_train, external = external, weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas")]
             fit_fold$betas <- rbind(as.vector(t(fit_fold$beta0)), `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)), c(dim(fit_fold$betas)[1], dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
             errormat[subset, ] <- calc_error(fit_fold$betas, y[subset], cbind(1, x[subset, ]), weights[subset])
         }

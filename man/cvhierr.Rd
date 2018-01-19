@@ -30,7 +30,7 @@ cvhierr(x, y, external, family = c("gaussian", "binomial"),
 
 \item{nfolds}{number of folds for cross-validation. Default is 5.}
 
-\item{parallel}{Use \code{foreach} function to fit folds in parallel if TRUE, must register cluster before using.}
+\item{parallel}{Use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.}
 
 \item{...}{list of additional arguments to pass to function \code{\link{hierr}}.}
 }
