@@ -1,3 +1,5 @@
+hierr: An R Package for Hierarchcial Regularized Regression
+================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 Setup
@@ -70,4 +72,4 @@ To visualize the results of the cross-validation we provide a contour plot of th
 plot(cv_hierr)
 ```
 
-![](README-plot%20k-fold%20cv%20results-1.png)
+![](readme_files/README-plot%20k-fold%20cv%20results-1.png)
