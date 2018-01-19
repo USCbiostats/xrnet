@@ -25,7 +25,7 @@
 cvhierr <- function(x,
                     y,
                     external,
-                    family = c("gaussian", "binomial"),
+                    family = c("gaussian"),
                     penalty = definePenalty(0, 1),
                     weights = NULL,
                     type.measure = c("mse", "mae", "deviance"),
