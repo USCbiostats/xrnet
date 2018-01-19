@@ -4,9 +4,9 @@
 \alias{hierr}
 \title{Fit hierarchical regularized regression model}
 \usage{
-hierr(x, y, external, family = c("gaussian", "binomial", "poisson"),
-  penalty = definePenalty(0, 1), weights = NULL, standardize = c(TRUE,
-  TRUE), intercept = c(TRUE, TRUE), control = list())
+hierr(x, y, external, family = c("gaussian"), penalty = definePenalty(0, 1),
+  weights = NULL, standardize = c(TRUE, TRUE), intercept = c(TRUE, TRUE),
+  control = list())
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}}

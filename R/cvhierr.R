@@ -98,7 +98,6 @@ cvhierr <- function(x,
     cv_sd <- sqrt(apply(sweep(errormat, 2L, cv_mean, FUN = "-")^2, 2, stats::weighted.mean, w = weights, na.rm = TRUE) / (n - 1))
     cv_mean <- matrix(cv_mean, nrow = num_pen, byrow = TRUE)
     cv_sd <- matrix(cv_sd, nrow = num_pen, byrow = TRUE)
-    rm(errormat)
     row.names(cv_mean) <- rev(sort(hierr_object$penalty))
     colnames(cv_mean) <- rev(sort(hierr_object$penalty_ext))
     row.names(cv_sd) <- rev(sort(hierr_object$penalty))
@@ -115,7 +114,8 @@ cvhierr <- function(x,
         minl2 <- as.numeric(colnames(cv_mean)[optIndex[1,2]])
     }
 
-    list(cv_mean = cv_mean,
+    list(errormat = errormat,
+         cv_mean = cv_mean,
          cv_sd = cv_sd,
          min_error = min_error,
          minl1 = minl1,
