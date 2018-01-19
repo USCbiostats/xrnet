@@ -43,7 +43,7 @@ To modify the regularization terms and penalty path associated with the predicto
     - Ratio of min(penalty) / max(penalty) 
 * User-defined set of penalties
 
-As an example, we may want to apply a ridge penalty to both x and external. In addition, we may want to have 30 penalty values computed for the regularization terms associated with both x and external. We modify our model fitting as follows.
+As an example, we may want to apply a ridge penalty to both the x variables and external data variables. In addition, we may want to have 30 penalty values computed for the regularization path associated with both x and external. We modify our model fitting as follows.
 
 ```R
 myPenalty <- definePenalty(penalty_type = 0, penalty_type_ext = 0, num_penalty = 30, num_penalty_ext = 30)
