@@ -4,7 +4,7 @@ load(file = "Test-Data/y.Rdata")
 load(file = "Test-Data/z.Rdata")
 sd_y <- sqrt(var(y) * (length(y)-1) / length(y))
 
-test_that("obtain correct min(penalty) compared to glmnet (large 2nd level penalty set alpha = 0)",{
+test_that("obtain correct min(penalty) compared to glmnet (large 2nd level penalty that sets all alpha = 0)",{
     # glmnet code used to find min(lambda)
     #set.seed(123)
     #cv_glmnet <- cv.glmnet(x, y, family = "gaussian", nfolds = 5, alpha = 0, thresh = 1e-15, keep = T)
