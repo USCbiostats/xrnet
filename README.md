@@ -20,12 +20,12 @@ library(hierr)
 As an example of how you might use the hierr package, we have provided a small example with simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:
 
 ```R
-load("x.rda")
-load("y.rda")
-load("ext.rda")
+x <- hierr::x
+y <- hierr::y
+ext <- hierr::ext
 ```
 
-To fit a linear hierarchical regularized regression model, you can use the `hierr` function. At a minimum, you must specify the predictor matrix, outcome variable, external data matrix, and outcome distribution. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.
+To fit a linear hierarchical regularized regression model, you can use the `hierr` function. At a minimum, you must specify the predictor matrix (x), outcome variable (y), external data matrix (ext), and outcome distribution. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.
 
 ```R
 hierr_model <- hierr(x = x, y = y, external = ext, family = "gaussian")

@@ -10,6 +10,7 @@
 #' @param ... pass other arguments to hierr function (if needed)
 
 #' @export
+#' @importFrom stats update
 predict.hierr <- function(object,
                          newdata = NULL,
                          penalty = NULL,
