@@ -5,19 +5,20 @@
 
 # Setup
 
-1. Install [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an R package) and the R package devtools
-2. Install hierr by using the devtools function install_github
-3. Load the package
+1. For Windows users, install [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an R package)
+2. Install the R package [devtools](https://github.com/hadley/devtools)
+2. Install hierr package with the install_github function
+3. Load the package 
 
 ```R
 library(devtools)
-install_github(gmweaver/hierr)
+install_github("gmweaver/hierr")
 library(hierr)
 ```
 
 # Getting Started
 
-As an example of how you might use the hierr package, we have provided a small example with simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:
+As a first example of how you might use the hierr package, we have provided a small example with simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:
 
 ```R
 x <- hierr::x
@@ -25,7 +26,7 @@ y <- hierr::y
 ext <- hierr::ext
 ```
 
-To fit a linear hierarchical regularized regression model, you can use the `hierr` function. At a minimum, you must specify the predictor matrix (x), outcome variable (y), external data matrix (ext), and outcome distribution. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.
+To fit a linear hierarchical regularized regression model, you can use the main `hierr` function. At a minimum, you must specify the predictor matrix (x), outcome variable (y), external data matrix (ext), and outcome distribution. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.
 
 ```R
 hierr_model <- hierr(x = x, y = y, external = ext, family = "gaussian")

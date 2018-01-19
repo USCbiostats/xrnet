@@ -114,14 +114,15 @@ cvhierr <- function(x,
         minl2 <- as.numeric(colnames(cv_mean)[optIndex[1,2]])
     }
 
-    list(errormat = errormat,
-         cv_mean = cv_mean,
-         cv_sd = cv_sd,
-         min_error = min_error,
-         minl1 = minl1,
-         minl2 = minl2,
-         penalty = hierr_object$penalty,
-         penalty_ext = hierr_object$penalty_ext
-        )
+    cvfit <- list(errormat = errormat,
+                cv_mean = cv_mean,
+                cv_sd = cv_sd,
+                min_error = min_error,
+                minl1 = minl1,
+                minl2 = minl2,
+                penalty = hierr_object$penalty,
+                penalty_ext = hierr_object$penalty_ext)
+    class(cvfit) <- "cvhierr"
+    return(cvfit)
 }
 

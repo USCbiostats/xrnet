@@ -19,8 +19,8 @@
 #' @param custom_multiplier_ext variable-specific penalty multipliers for external data. Default is 1 for all variables. 0 is no penalization.
 
 #' @export
-definePenalty <- function(penalty_type,
-                          penalty_type_ext,
+definePenalty <- function(penalty_type = 0,
+                          penalty_type_ext = 1,
                           num_penalty = 20,
                           num_penalty_ext = 20,
                           penalty_ratio = NULL,
