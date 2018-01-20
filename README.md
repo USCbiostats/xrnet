@@ -1,4 +1,4 @@
-hierr: An R Package for Hierarchcial Regularized Regression
+hierr: An R Package for Hierarchical Regularized Regression
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
