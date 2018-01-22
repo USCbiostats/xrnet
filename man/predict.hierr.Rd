@@ -4,17 +4,17 @@
 \alias{predict.hierr}
 \title{Predict function for "hierr" object}
 \usage{
-\method{predict}{hierr}(object, newdata = NULL, penalty = NULL,
-  penalty_ext = NULL, type = c("response", "coefficients"), ...)
+\method{predict}{hierr}(object, newdata = NULL, p = NULL, pext = NULL,
+  type = c("response", "coefficients"), ...)
 }
 \arguments{
 \item{object}{A \code{\link{hierr}} object}
 
 \item{newdata}{matrix with new X values}
 
-\item{penalty}{vector of penalty values to apply to predictor variables}
+\item{p}{vector of penalty values to apply to predictor variables}
 
-\item{penalty_ext}{vector of penalty values to apply to external data variables}
+\item{pext}{vector of penalty values to apply to external data variables}
 
 \item{type}{type of prediction to make using the hierr model}
 

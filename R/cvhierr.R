@@ -48,7 +48,6 @@ cvhierr <- function(x,
 
     # Get arguments to cvhirr() function and filter for calls to fitting procedure
     hierr_call <- match.call(expand.dots = TRUE)
-    print(hierr_call)
     cv_args <- match(c("type.measure", "nfolds", "foldid"), names(hierr_call), FALSE)
 
     if (any(cv_args)) {
