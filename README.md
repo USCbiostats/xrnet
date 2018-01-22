@@ -21,10 +21,10 @@ install_github("gmweaver/hierr")
 library(hierr)
 ```
 
-Getting Started
+A First Example
 ===============
 
-As a first example of how you might use the hierr package, we have provided a small example with simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:
+As an example of how you might use the hierr package, we have provided a small set of simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:
 
 ``` r
 x <- hierr::x
@@ -42,7 +42,7 @@ hierr_model <- hierr(x = x, y = y, external = ext, family = "gaussian")
 
 #### Modifying Regularization Terms
 
-To modify the regularization terms and penalty path associated with the predictors or external data, you can use the `definePenalty` function. This function allows you to configure the following regularization attributes for both:
+To modify the regularization terms and penalty path associated with the predictors or external data, you can use the `definePenalty` function. This function allows you to configure the following regularization attributes:
 
 -   Regularization type
     -   Ridge = 0
@@ -66,6 +66,7 @@ In general, we need a method to determine the penalty values that produce the op
 
 ``` r
 cv_hierr <- cvhierr(x = x, y = y, external = ext, family = "gaussian")
+#> cvhierr(x = x, y = y, external = ext, family = "gaussian")
 ```
 
 To visualize the results of the cross-validation we provide a contour plot of the mean cross-validation error across the grid of penalties with the `plot` function.
