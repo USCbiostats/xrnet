@@ -48,6 +48,7 @@ cvhierr <- function(x,
 
     # Get arguments to cvhirr() function and filter for calls to fitting procedure
     hierr_call <- match.call(expand.dots = TRUE)
+    print(hierr_call)
     cv_args <- match(c("type.measure", "nfolds", "foldid"), names(hierr_call), FALSE)
 
     if (any(cv_args)) {
@@ -142,8 +143,9 @@ cvhierr <- function(x,
                 minl1 = minl1,
                 minl2 = minl2,
                 penalty = hierr_object$penalty,
-                penalty_ext = hierr_object$penalty_ext)
-    class(cvfit) <- "cvhierr"
+                penalty_ext = hierr_object$penalty_ext,
+                call = hierr_object$call)
+    class(cvfit) <- c("cvhierr", "hierr")
     return(cvfit)
 }
 
