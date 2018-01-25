@@ -9,8 +9,9 @@ test_that("obtain correct min(penalty) compared to glmnet (large 2nd level penal
     #set.seed(123)
     #cv_glmnet <- cv.glmnet(x, y, family = "gaussian", nfolds = 5, alpha = 0, thresh = 1e-15, keep = T)
     set.seed(123)
-
-    expect_equal(cvhierr(x, y, z, family = "gaussian", intercept = c(T, F), penalty = definePenalty(0, 1, num_penalty = 100, user_penalty_ext = 100), control = list(tolerance = 1e-15))$minl1,
+    myPenalty <- definePenalty(0, 1, num_penalty = 100, user_penalty_ext = 100)
+    myControl <- list(tolerance = 1e-15)
+    expect_equal(cvhierr(x, y, z, family = "gaussian", intercept = c(T, F), penalty = myPenalty, control = myControl)$minl1,
                  0.2445511, tolerance = 1e-6)
 
 })

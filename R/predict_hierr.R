@@ -12,11 +12,11 @@
 #' @export
 #' @importFrom stats update
 predict.hierr <- function(object,
-                         newdata = NULL,
-                         p = NULL,
-                         pext = NULL,
-                         type = c("response", "coefficients"),
-                         ...)
+                          newdata = NULL,
+                          p = NULL,
+                          pext = NULL,
+                          type = c("response", "coefficients"),
+                          ...)
 {
     if (missing(type)) {
         type <- "response"
@@ -29,24 +29,51 @@ predict.hierr <- function(object,
             stop("Error: 'newdata' needs to be specified")
     }
 
-    if (!(all(p %in% object$penalty > 0)) | !(all(pext %in% object$penalty_ext > 0))) {
-        tryCatch(object <- update(object, penalty = definePenalty(penalty_type = object$penalty_type,
-                                                                  penalty_type_ext = object$penalty_type_ext,
-                                                                  user_penalty = c(object$penalty, p),
-                                                                  user_penalty_ext = c(object$penalty, pext)), ...),
+    if (!(all(p %in% object$penalty > 0)) || !(all(pext %in% object$penalty_ext > 0))) {
+
+        if (!is.null(object$penalty_ext)) {
+            if (is.null(p)) {
+                stop("Error: p not specified")
+            }
+            if (is.null(pext)) {
+                stop("Error: pext not specified")
+            }
+            penalty <- definePenalty(penalty_type = object$penalty_type,
+                                     penalty_type_ext = object$penalty_type_ext,
+                                     user_penalty = c(object$penalty, p),
+                                     user_penalty_ext = c(object$penalty_ext, pext))
+        } else {
+            if (is.null(p)) {
+                stop("error: p not specified")
+            }
+            penalty <- definePenalty(penalty_type = object$penalty_type,
+                                     penalty_type_ext = 0,
+                                     user_penalty = c(object$penalty, p),
+                                     user_penalty_ext = 0)
+            if(!is.null(pext)) {
+                warning(paste("Warning: No external data variables in model fit, ignoring supplied external penalties pext = ", pext))
+                pext <- NULL
+            }
+        }
+
+        tryCatch(object <- update(object, penalty = penalty, ...),
                  error = function(e) stop("Error: Unable to refit 'hierr' object, please supply arguments used in original function call")
         )
     }
 
+    p <- rev(sort(p))
     idxl1 <- which(object$penalty %in% p)
-    idxl2 <- which(object$penalty_ext %in% pext)
+    if (!is.null(object$penalty_ext)) {
+        pext <- rev(sort(pext))
+        idxl2 <- which(object$penalty_ext %in% pext)
+    } else {
+        idxl2 <- 1
+    }
 
     beta0 <- object$beta0[idxl1, idxl2, drop = F]
     betas <- object$betas[ , idxl1, idxl2, drop = F]
     alpha0 <- object$alpha0[idxl1, idxl2, drop = F]
     alphas <- object$alphas[ , idxl1, idxl2, drop = F]
-    p <- rev(sort(p))
-    pext <- rev(sort(pext))
 
     if (type == "coefficients") {
         return(list(

@@ -4,21 +4,21 @@
 \alias{hierr.control}
 \title{Control function for hierr fitting}
 \usage{
-hierr.control(tolerance = 1e-08, max_iterations = 1e+05, dfmax = c(NULL,
-  NULL), pmax = c(NULL, NULL), lower_limits = NULL, upper_limits = NULL)
+hierr.control(tolerance = 1e-08, max_iterations = 1e+05, dfmax = NULL,
+  pmax = NULL, lower_limits = NULL, upper_limits = NULL)
 }
 \arguments{
 \item{tolerance}{positive convergence criterion. Default is 1e-08.}
 
 \item{max_iterations}{maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.}
 
-\item{dfmax}{maximum number of variables allowed in model. Default is c(\eqn{p + 1}, \eqn{q+1}).}
+\item{dfmax}{maximum number of variables allowed in model. Default is \eqn{ncol(x) + ncol(external) + intercept[1] + intercept[2]}.}
 
-\item{pmax}{maximum number of variables with nonzero coefficient estimate. Default is c(\eqn{min(2*dfmax + 20, p)}, \eqn{min(2*dfmax + 20, q)}).}
+\item{pmax}{maximum number of variables with nonzero coefficient estimate. Default is \eqn{min(2 * dfmax + 20, ncol(x) + ncol(external) + intercept[2])}.}
 
-\item{lower_limits}{vector of lower limits for each coefficient. Default is -Inf.}
+\item{lower_limits}{vector of lower limits for each coefficient. Default is -Inf for all variables.}
 
-\item{upper_limits}{vector of upper limits for each coefficient. Default is Inf.}
+\item{upper_limits}{vector of upper limits for each coefficient. Default is Inf for all variables.}
 }
 \description{
 Control function for \code{\link{hierr}} fitting.

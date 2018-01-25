@@ -4,16 +4,16 @@
 \alias{hierr}
 \title{Fit hierarchical regularized regression model}
 \usage{
-hierr(x, y, external, family = c("gaussian"), penalty = definePenalty(0, 1),
-  weights = NULL, standardize = c(TRUE, TRUE), intercept = c(TRUE, TRUE),
-  control = list())
+hierr(x, y, external = NULL, family = c("gaussian"),
+  penalty = definePenalty(0, 1), weights = NULL, standardize = c(TRUE,
+  TRUE), intercept = c(TRUE, TRUE), control = list())
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}}
 
 \item{y}{outcome vector of length \eqn{n}}
 
-\item{external}{external data design matrix of dimension \eqn{p x q}}
+\item{external}{(optional) external data design matrix of dimension \eqn{p x q}}
 
 \item{family}{error distribution for outcome variable}
 

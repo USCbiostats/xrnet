@@ -7,13 +7,14 @@
 using namespace Rcpp;
 
 // create_data
-arma::mat create_data(const int& nobs, const int& nvar, const int& nvar_total, const arma::mat& x, const arma::mat& ext, const arma::vec& w, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext, arma::vec& xm, arma::vec& xv, arma::vec& xs);
-RcppExport SEXP _hierr_create_data(SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_totalSEXP, SEXP xSEXP, SEXP extSEXP, SEXP wSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP, SEXP xmSEXP, SEXP xvSEXP, SEXP xsSEXP) {
+arma::mat create_data(const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_total, const arma::mat& x, const arma::mat& ext, const arma::vec& w, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext, arma::vec& xm, arma::vec& xv, arma::vec& xs);
+RcppExport SEXP _hierr_create_data(SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP nvar_totalSEXP, SEXP xSEXP, SEXP extSEXP, SEXP wSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP, SEXP xmSEXP, SEXP xvSEXP, SEXP xsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int& >::type nobs(nobsSEXP);
     Rcpp::traits::input_parameter< const int& >::type nvar(nvarSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nvar_ext(nvar_extSEXP);
     Rcpp::traits::input_parameter< const int& >::type nvar_total(nvar_totalSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type ext(extSEXP);
@@ -25,7 +26,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec& >::type xm(xmSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type xv(xvSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type xs(xsSEXP);
-    rcpp_result_gen = Rcpp::wrap(create_data(nobs, nvar, nvar_total, x, ext, w, isd, isd_ext, intr, intr_ext, xm, xv, xs));
+    rcpp_result_gen = Rcpp::wrap(create_data(nobs, nvar, nvar_ext, nvar_total, x, ext, w, isd, isd_ext, intr, intr_ext, xm, xv, xs));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -78,12 +79,11 @@ BEGIN_RCPP
 END_RCPP
 }
 // gaussian_fit
-List gaussian_fit(const int ka, NumericVector ptype, const int& nobs, const int& nvar, const int& nvar_ext, const arma::mat& x_, const arma::vec& y_, const arma::mat& ext_, const arma::vec& w, NumericVector& cmult, NumericVector& lower_cl, NumericVector& upper_cl, int ne, int ne_ext, int nx, int nx_ext, int nlam, int nlam_ext, double pratio, double pratio_ext, NumericVector ulam_, NumericVector ulam_ext_, double thr, int maxit, bool isd, bool isd_ext, bool intr, bool intr_ext);
-RcppExport SEXP _hierr_gaussian_fit(SEXP kaSEXP, SEXP ptypeSEXP, SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP x_SEXP, SEXP y_SEXP, SEXP ext_SEXP, SEXP wSEXP, SEXP cmultSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP neSEXP, SEXP ne_extSEXP, SEXP nxSEXP, SEXP nx_extSEXP, SEXP nlamSEXP, SEXP nlam_extSEXP, SEXP pratioSEXP, SEXP pratio_extSEXP, SEXP ulam_SEXP, SEXP ulam_ext_SEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP) {
+List gaussian_fit(NumericVector ptype, const int& nobs, const int& nvar, const int& nvar_ext, const arma::mat& x_, const arma::vec& y_, const arma::mat& ext_, const arma::vec& w, NumericVector& cmult, NumericVector& lower_cl, NumericVector& upper_cl, int ne, int nx, int nlam, int nlam_ext, double pratio, double pratio_ext, NumericVector ulam_, NumericVector ulam_ext_, double thr, int maxit, bool isd, bool isd_ext, bool intr, bool intr_ext);
+RcppExport SEXP _hierr_gaussian_fit(SEXP ptypeSEXP, SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP x_SEXP, SEXP y_SEXP, SEXP ext_SEXP, SEXP wSEXP, SEXP cmultSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP nlamSEXP, SEXP nlam_extSEXP, SEXP pratioSEXP, SEXP pratio_extSEXP, SEXP ulam_SEXP, SEXP ulam_ext_SEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int >::type ka(kaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ptype(ptypeSEXP);
     Rcpp::traits::input_parameter< const int& >::type nobs(nobsSEXP);
     Rcpp::traits::input_parameter< const int& >::type nvar(nvarSEXP);
@@ -96,9 +96,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector& >::type lower_cl(lower_clSEXP);
     Rcpp::traits::input_parameter< NumericVector& >::type upper_cl(upper_clSEXP);
     Rcpp::traits::input_parameter< int >::type ne(neSEXP);
-    Rcpp::traits::input_parameter< int >::type ne_ext(ne_extSEXP);
     Rcpp::traits::input_parameter< int >::type nx(nxSEXP);
-    Rcpp::traits::input_parameter< int >::type nx_ext(nx_extSEXP);
     Rcpp::traits::input_parameter< int >::type nlam(nlamSEXP);
     Rcpp::traits::input_parameter< int >::type nlam_ext(nlam_extSEXP);
     Rcpp::traits::input_parameter< double >::type pratio(pratioSEXP);
@@ -111,16 +109,16 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type isd_ext(isd_extSEXP);
     Rcpp::traits::input_parameter< bool >::type intr(intrSEXP);
     Rcpp::traits::input_parameter< bool >::type intr_ext(intr_extSEXP);
-    rcpp_result_gen = Rcpp::wrap(gaussian_fit(ka, ptype, nobs, nvar, nvar_ext, x_, y_, ext_, w, cmult, lower_cl, upper_cl, ne, ne_ext, nx, nx_ext, nlam, nlam_ext, pratio, pratio_ext, ulam_, ulam_ext_, thr, maxit, isd, isd_ext, intr, intr_ext));
+    rcpp_result_gen = Rcpp::wrap(gaussian_fit(ptype, nobs, nvar, nvar_ext, x_, y_, ext_, w, cmult, lower_cl, upper_cl, ne, nx, nlam, nlam_ext, pratio, pratio_ext, ulam_, ulam_ext_, thr, maxit, isd, isd_ext, intr, intr_ext));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_hierr_create_data", (DL_FUNC) &_hierr_create_data, 13},
+    {"_hierr_create_data", (DL_FUNC) &_hierr_create_data, 14},
     {"_hierr_standardize_vec", (DL_FUNC) &_hierr_standardize_vec, 5},
     {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 25},
-    {"_hierr_gaussian_fit", (DL_FUNC) &_hierr_gaussian_fit, 28},
+    {"_hierr_gaussian_fit", (DL_FUNC) &_hierr_gaussian_fit, 25},
     {NULL, NULL, 0}
 };
 

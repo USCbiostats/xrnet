@@ -19,9 +19,9 @@ definePenalty(penalty_type = 0, penalty_type_ext = 1, num_penalty = 20,
 
 \item{penalty_type_ext}{type of regularization for external data. See penalty_type for options. Default is 1 (Lasso).}
 
-\item{num_penalty}{number of penalty values to fit in grid for x. Default is 50.}
+\item{num_penalty}{number of penalty values to fit in grid for x. Default is 20.}
 
-\item{num_penalty_ext}{number of penalty values to fit in grid for external data. Default is 50.}
+\item{num_penalty_ext}{number of penalty values to fit in grid for external data. Default is 20.}
 
 \item{penalty_ratio}{ratio between minimum and maximum penalty for x. Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.}
 
