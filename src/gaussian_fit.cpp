@@ -22,14 +22,15 @@ arma::mat create_data(const int & nobs,
                       const bool & intr_ext,
                       arma::vec & xm,
                       arma::vec & xv,
-                      arma::vec & xs) {
+                      arma::vec & xs,
+                      int & ext_start) {
 
     // initialize new design matrix
     arma::mat xnew(nobs, nvar_total);
 
     // standardize x (predictor variables)
-    if (intr == true) {
-        if (isd == true) {
+    if (intr) {
+        if (isd) {
             for (int j = 0; j < nvar; ++j) {
                 xm[j] = arma::dot(w, x.unsafe_col(j));
                 xs[j] = sqrt(arma::dot(x.unsafe_col(j) - xm[j], (x.unsafe_col(j) - xm[j]) % w));
@@ -38,14 +39,14 @@ arma::mat create_data(const int & nobs,
         }
         else {
             for (int j = 0; j < nvar; ++j) {
-                xm[j] = arma::dot(x.unsafe_col(j), w);
+                xm[j] = arma::dot(w, x.unsafe_col(j));
                 xnew.col(j) = x.unsafe_col(j) - xm[j];
                 xv[j] = arma::dot(xnew.unsafe_col(j), xnew.unsafe_col(j) % w);
             }
         }
     }
     else {
-        if (isd == true) {
+        if (isd) {
             for (int j = 0; j < nvar; ++j) {
                 double xm_j = arma::dot(w, x.unsafe_col(j));
                 double vc = arma::dot(x.unsafe_col(j) - xm_j, (x.unsafe_col(j) - xm_j) % w);
@@ -61,22 +62,27 @@ arma::mat create_data(const int & nobs,
             }
         }
     }
+    int cur_col = nvar;
 
     // Create reference to standardized x variables in xnew
     arma::mat xsub(xnew.memptr(), nobs, nvar, false, true);
 
+    // add unpenalized variables to matrix --> to be done
+
     // add 2nd level intercept column
-    if (intr_ext == true) {
-        xnew.col(nvar) = xsub * arma::ones<arma::mat>(nvar, 1);
-        xv[nvar] = arma::dot(xnew.unsafe_col(nvar), xnew.unsafe_col(nvar)) / nobs;
-        xs[nvar] = 1.0;
+    if (intr_ext) {
+        xnew.col(cur_col) = xsub * arma::ones<arma::mat>(nvar, 1);
+        xv[cur_col] = arma::dot(xnew.unsafe_col(nvar), xnew.unsafe_col(nvar)) / nobs;
+        xs[cur_col] = 1.0;
+        ++cur_col;
     }
 
     // Standardize external variables (ext)
+    ext_start = cur_col;
     if (nvar_ext > 0) {
-        if (intr_ext == true) {
-            if (isd_ext == true) {
-                for (int j = nvar + 1; j < nvar_total; ++j) {
+        if (intr_ext) {
+            if (isd_ext) {
+                for (int j = cur_col; j < nvar_total; ++j) {
                     xm[j] = arma::mean(ext.unsafe_col(j - nvar - 1));
                     xs[j] = sqrt(arma::dot(ext.unsafe_col(j - nvar - 1) - xm[j], ext.unsafe_col(j - nvar - 1) - xm[j]) / nvar);
                     xnew.col(j) = xsub * ((ext.unsafe_col(j - nvar - 1) - xm[j]) / xs[j]);
@@ -84,7 +90,7 @@ arma::mat create_data(const int & nobs,
                 }
             }
             else {
-                for (int j = nvar + 1; j < nvar_total; ++j) {
+                for (int j = cur_col; j < nvar_total; ++j) {
                     xm[j] = arma::mean(ext.unsafe_col(j - nvar - 1));
                     xnew.col(j) = xsub * (ext.unsafe_col(j - nvar - 1) - xm[j]);
                     xv[j] = arma::dot(xnew.unsafe_col(j), xnew.unsafe_col(j)) / nobs;
@@ -92,8 +98,8 @@ arma::mat create_data(const int & nobs,
             }
         }
         else {
-            if (isd_ext == true) {
-                for (int j = nvar; j < nvar_total; ++j) {
+            if (isd_ext) {
+                for (int j = cur_col; j < nvar_total; ++j) {
                     double xm_j = arma::mean(ext.unsafe_col(j - nvar));
                     xs[j] = sqrt(arma::dot(ext.unsafe_col(j - nvar) - xm_j, ext.unsafe_col(j - nvar) - xm_j) / nvar);
                     xnew.col(j) = xsub * (ext.unsafe_col(j - nvar) / xs[j]);
@@ -101,7 +107,7 @@ arma::mat create_data(const int & nobs,
                 }
             }
             else {
-                for (int j = nvar; j < nvar_total; ++j) {
+                for (int j = cur_col; j < nvar_total; ++j) {
                     xnew.col(j) = xsub * ext.unsafe_col(j - nvar);
                     xv[j] = arma::dot(xnew.unsafe_col(j), xnew.unsafe_col(j)) / nobs;
                 }
@@ -121,8 +127,8 @@ void standardize_vec(arma::vec & y,
                      const arma::vec & w,
                      double & ym,
                      double & ys,
-                     bool & intr) {
-    if (intr == true) {
+                     const bool & intr) {
+    if (intr) {
         ym = arma::dot(y, w);
         ys = sqrt(arma::dot(y - ym, (y - ym) % w));
         y = (y - ym) / ys;
@@ -146,8 +152,8 @@ NumericVector compute_penalty(NumericVector & ulam,
                               const int & nlam,
                               const double & ptype,
                               const double & pratio,
-                              NumericVector & g,
-                              NumericVector & cmult,
+                              arma::vec & g,
+                              const arma::vec & cmult,
                               const int & start,
                               const int & stop) {
 
@@ -167,7 +173,6 @@ NumericVector compute_penalty(NumericVector & ulam,
         for (int l = 2; l < nlam; l++) {
             lambdas[l] = alf * lambdas[l - 1];
         }
-
     } else {
         lambdas = ulam;
     }
@@ -188,7 +193,7 @@ void coord_desc(const arma::mat & x,
                 const int & no,
                 const int & nvar,
                 const int & nvar_total,
-                const NumericVector & cmult,
+                const arma::vec & cmult,
                 const NumericVector & upper_cl,
                 const NumericVector & lower_cl,
                 const int & ne,
@@ -199,7 +204,7 @@ void coord_desc(const arma::mat & x,
                 const arma::vec & xv,
                 arma::mat & coef,
                 arma::vec & b,
-                NumericVector & g,
+                arma::vec & g,
                 NumericVector & rsq,
                 double & rsq_cur,
                 IntegerVector & mm,
@@ -300,18 +305,14 @@ void compute_coef(arma::mat & coef,
                   const arma::vec & xs,
                   const double & ys,
                   const arma::vec & a0,
-                  const bool & intr_ext) {
-
-    int start_idx = nvar;
-    if (intr_ext == true) {
-        ++start_idx;
-    }
+                  const bool & intr_ext,
+                  const int & ext_start) {
 
     for (int j = 0; j < nlam_total; ++j) {
         for (int i = 0; i < nvar; ++i) {
             double z_alpha = a0[j];
-            for (int k = start_idx; k < nvar_total; ++k) {
-                z_alpha += coef.at(k, j) * (ext_.at(i, k - start_idx) - xm[k]) / xs[k];
+            for (int k = ext_start; k < nvar_total; ++k) {
+                z_alpha += coef.at(k, j) * (ext_.at(i, k - ext_start) - xm[k]) / xs[k];
             }
             coef.at(i, j) = ys * (z_alpha + coef.at(i, j)) / xs[i];
         }
@@ -324,41 +325,42 @@ void compute_coef(arma::mat & coef,
  */
 
 // [[Rcpp::export]]
-List gaussian_fit(NumericVector ptype,
+List gaussian_fit(const arma::mat & x_,
+                  const arma::vec & y_,
+                  const arma::mat & ext_,
                   const int & nobs,
                   const int & nvar,
                   const int & nvar_ext,
-                  const arma::mat & x_,
-                  const arma::vec & y_,
-                  const arma::mat & ext_,
                   const arma::vec & w,
-                  NumericVector & cmult,
+                  const NumericVector & ptype,
+                  const arma::vec & cmult,
                   NumericVector & lower_cl,
                   NumericVector & upper_cl,
-                  int ne,
-                  int nx,
-                  int nlam,
-                  int nlam_ext,
-                  double pratio,
-                  double pratio_ext,
+                  const int & ne,
+                  const int & nx,
+                  const int & nlam,
+                  const int & nlam_ext,
+                  const double & pratio,
+                  const double & pratio_ext,
                   NumericVector ulam_,
                   NumericVector ulam_ext_,
-                  double thr,
-                  int maxit,
-                  bool isd,
-                  bool isd_ext,
-                  bool intr,
-                  bool intr_ext) {
+                  const double & thr,
+                  const int & maxit,
+                  const bool & isd,
+                  const bool & isd_ext,
+                  const bool & intr,
+                  const bool & intr_ext) {
 
     int nvar_total = nvar + nvar_ext;
-    if (intr_ext == true) {++nvar_total;}
+    if (intr_ext) {++nvar_total;}
 
     // Create single level regression matrix
     arma::vec xm(nvar_total, arma::fill::zeros);
     arma::vec xv(nvar_total, arma::fill::ones);
     arma::vec xs(nvar_total, arma::fill::ones);
     const arma::vec wgt = w / sum(w);
-    const arma::mat xnew = create_data(nobs, nvar, nvar_ext, nvar_total, x_, ext_, wgt, isd, isd_ext, intr, intr_ext, xm, xv, xs);
+    int ext_start;
+    const arma::mat xnew = create_data(nobs, nvar, nvar_ext, nvar_total, x_, ext_, wgt, isd, isd_ext, intr, intr_ext, xm, xv, xs, ext_start);
 
     // determine non-constant variables -- still to be done
 
@@ -366,16 +368,15 @@ List gaussian_fit(NumericVector ptype,
     double ym = 0.0;
     double ys = 1.0;
     arma::vec outer_resid = y_;
-    NumericVector ulam = Rcpp::clone(ulam_);
-    NumericVector ulam_ext = Rcpp::clone(ulam_ext_);
-
     standardize_vec(outer_resid, wgt, ym, ys, intr);
     lower_cl = lower_cl / ys;
     upper_cl = upper_cl / ys;
+    NumericVector ulam = Rcpp::clone(ulam_);
+    NumericVector ulam_ext = Rcpp::clone(ulam_ext_);
     //ulam = ulam_ / ys;
     //ulam_ext = ulam_ext_ / ys;
 
-    if (isd == true) {
+    if (isd) {
         for (int i = 0; i < nvar; ++i) {
             if (lower_cl[i] != R_NegInf) {
                 lower_cl[i] *= xs[i];
@@ -385,8 +386,8 @@ List gaussian_fit(NumericVector ptype,
             }
         }
     }
-    if (isd_ext == true) {
-        for (int i = nvar; i < nvar_total; ++i) {
+    if (isd_ext) {
+        for (int i = ext_start; i < nvar_total; ++i) {
             if (lower_cl[i] != R_NegInf) {
                 lower_cl[i] *= xs[i];
             }
@@ -404,18 +405,15 @@ List gaussian_fit(NumericVector ptype,
     // ---------run coordinate descent for all penalties ----------
 
     // compute gradient vector
-    NumericVector g(nvar_total, 0.0);
-    for (int k = 0; k < nvar_total; ++k) {
-        g[k] = std::abs(arma::dot(xnew.unsafe_col(k), outer_resid % wgt));
-    }
+    arma::vec g(nvar_total, arma::fill::zeros);
+    g = arma::abs(xnew.t() * (wgt % outer_resid));
 
     // compute penalty paths
     int start = 0;
     NumericVector lam_path = compute_penalty(ulam, nlam, ptype[1], pratio, g, cmult, start, nvar);
     NumericVector lam_path_ext = 0.0;
     if (nvar_ext > 0) {
-        start = nvar + 1;
-        lam_path_ext = compute_penalty(ulam_ext, nlam_ext, ptype[nvar + 1], pratio_ext, g, cmult, start, nvar_total);
+        lam_path_ext = compute_penalty(ulam_ext, nlam_ext, ptype[nvar + 1], pratio_ext, g, cmult, ext_start, nvar_total);
     }
 
     // loop through all penalty combinations
@@ -428,9 +426,9 @@ List gaussian_fit(NumericVector ptype,
     arma::vec coef_inner(nvar_total, arma::fill::zeros);
     IntegerVector mm(nvar_total, 0);
 
-    int idx_lam = 0; // column index for coef results
-    int nlp = 0; // counts # of passes over data
-    double errcode = 0.0; // stores error code info
+    int idx_lam = 0;
+    int nlp = 0;
+    double errcode = 0.0;
 
     for (int m = 0; m < nlam; ++m) {
         lam_cur[0] = lam_path[m];
@@ -478,13 +476,13 @@ List gaussian_fit(NumericVector ptype,
     arma::vec b0(nlam_total, arma::fill::zeros);
     arma::vec a0(nlam_total, arma::fill::zeros);
 
-    if (intr_ext == true) {
+    if (intr_ext) {
         a0 = arma::conv_to<arma::colvec>::from(coef.row(nvar));
     }
 
-    compute_coef(coef, ext_, nvar, nvar_ext, nvar_total, nlam_total, xm, xs, ys, a0, intr_ext);
+    compute_coef(coef, ext_, nvar, nvar_ext, nvar_total, nlam_total, xm, xs, ys, a0, intr_ext, ext_start);
 
-    if (intr == true) {
+    if (intr) {
         b0 = ym - ((xm.head(nvar)).t() * coef.head_rows(nvar)).t();
     }
 
@@ -492,11 +490,11 @@ List gaussian_fit(NumericVector ptype,
     arma::mat alphas;
     if (nvar_ext > 0) {
         for (int j = 0; j < nlam_total; ++j) {
-            for (int i = (nvar + intr_ext); i < nvar_total; ++i) {
+            for (int i = ext_start; i < nvar_total; ++i) {
                 coef.at(i, j) = ys * coef.at(i, j) / xs[i];
             }
         }
-        if (intr_ext == true) {
+        if (intr_ext) {
             a0 = (arma::mean(coef.head_rows(nvar)) - (xm.tail(nvar_ext)).t() * coef.tail_rows(nvar_ext)).t();
         }
         alphas = coef.tail_rows(nvar_ext);
@@ -516,7 +514,7 @@ List gaussian_fit(NumericVector ptype,
     return Rcpp::List::create(Named("beta0") = b0,
                               Named("betas") = coef.head_rows(nvar),
                               Named("alpha0") = a0,
-                              Named("alphas") = coef.tail_rows(nvar_ext),
+                              Named("alphas") = alphas,
                               Named("penalty") = lam_path,
                               Named("penalty_ext") = lam_path_ext,
                               Named("penalty_type") = ptype[0],

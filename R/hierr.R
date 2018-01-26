@@ -67,7 +67,9 @@ hierr <- function(x,
     }
 
     ## Prepare external ##
+    ext_exist = FALSE
     if (!is.null(external)) {
+        ext_exist = TRUE
 
         # check dimensions
         nr_ext <- nrow(external)
@@ -85,7 +87,7 @@ hierr <- function(x,
             stop("Error: external contains non-numeric values")
         }
     } else {
-        external <- matrix(0.0)
+        external <- matrix(numeric(0), nrow = 0, ncol = 0)
         nr_ext <- as.integer(0)
         nc_ext <- as.integer(0)
     }
@@ -106,7 +108,7 @@ hierr <- function(x,
     }
 
     # check penalty object for ext
-    if (nc_ext > 0) {
+    if (ext_exist) {
         if (penalty$user_penalty_ext == 0 && is.null(penalty$penalty_ratio_ext)) {
             if (nr_ext > nc_ext) {
                 penalty$penalty_ratio_ext <- 1e-04
@@ -166,11 +168,8 @@ hierr <- function(x,
 
     # fit model based on distribution
     fit <- do.call(family, list(x = x,
-                                nr_x = nr_x,
-                                nc_x = nc_x,
                                 y = y,
                                 external = external,
-                                nc_ext = nc_ext,
                                 weights = weights,
                                 penalty = penalty,
                                 isd = standardize,
@@ -189,7 +188,7 @@ hierr <- function(x,
         fit$alpha0 <- NULL
     }
 
-    if (nc_ext > 0) {
+    if (ext_exist) {
         fit$custom_mult_ext <- penalty$custom_multiplier_ext
         fit$alphas <- aperm(array(t(fit$alphas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_ext)), c(3, 2, 1))
     } else {
