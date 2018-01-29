@@ -4,7 +4,8 @@
 #'
 #' @param x predictor design matrix of dimension \eqn{n x p}
 #' @param y outcome vector of length \eqn{n}
-#' @param external external data design matrix of dimension \eqn{p x q}
+#' @param external (optional) external data design matrix of dimension \eqn{p x q}
+#' @param unpen (optional) unpenalized predictor design matrix
 #' @param family error distribution for outcome variable
 #' @param penalty specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
@@ -24,7 +25,8 @@
 #' @importFrom foreach %dopar%
 cvhierr <- function(x,
                     y,
-                    external,
+                    external = NULL,
+                    unpen = NULL,
                     family = c("gaussian"),
                     penalty = definePenalty(0, 1),
                     weights = NULL,
@@ -62,11 +64,19 @@ cvhierr <- function(x,
     }
 
     # Create hierr object
-    hierr_object <- hierr(x = x, y = y, external = external, family = family, weights = weights, penalty = penalty, ...)
+    hierr_object <- hierr(x = x, y = y, external = external, unpen = unpen, family = family, weights = weights, penalty = penalty, ...)
     hierr_object$call <- hierr_call
-    penalty_fixed <- definePenalty(penalty$penalty_type, penalty$penalty_type_ext, user_penalty = hierr_object$penalty, user_penalty_ext = hierr_object$penalty_ext)
+    penalty_fixed <- definePenalty(penalty$penalty_type,
+                                   penalty$penalty_type_ext,
+                                   user_penalty = hierr_object$penalty,
+                                   user_penalty_ext = hierr_object$penalty_ext)
+
     num_pen <- length(hierr_object$penalty)
-    num_pen_ext <- length(hierr_object$penalty_ext)
+    if (!is.null(external)) {
+        num_pen_ext <- length(hierr_object$penalty_ext)
+    } else {
+        num_pen_ext <- 1
+    }
 
     # Randomly sample observations into folds
     foldid <- sample(rep(seq(nfolds), length = n))
@@ -84,10 +94,15 @@ cvhierr <- function(x,
                 y_train <- y[!subset, ]
             }
             x_train <- x[!subset, ]
+            if (!is.null(unpen)) {
+                unpen_train <- unpen[!subset, ]
+            } else {
+                unpen_train <- NULL
+            }
             weights_train <- weights[!subset]
 
             # Fit model on k-th training fold
-            hierr(x = x_train, y = y_train, external = external, weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas")]
+            hierr(x = x_train, y = y_train, external = external, unpen = unpen_train, weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas")]
         }
         for (k in 1:nfolds) {
             subset <- (foldid == k)
@@ -107,12 +122,24 @@ cvhierr <- function(x,
                 y_train <- y[!subset, ]
             }
             x_train <- x[!subset, ]
+            if (!is.null(unpen)) {
+                unpen_train <- unpen[!subset, ]
+            } else {
+                unpen_train <- NULL
+            }
             weights_train <- weights[!subset]
 
             # Fit model on k-th training fold
-            fit_fold <- hierr(x = x_train, y = y_train, external = external, weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas")]
-            fit_fold$betas <- rbind(as.vector(t(fit_fold$beta0)), `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)), c(dim(fit_fold$betas)[1], dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
-            errormat[subset, ] <- calc_error(fit_fold$betas, y[subset], cbind(1, x[subset, ]), weights[subset])
+            fit_fold <- hierr(x = x_train, y = y_train, external = external, unpen = unpen_train, weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
+            if (!is.null(fit_fold$gammas)) {
+                betas <- rbind(as.vector(t(fit_fold$beta0)),
+                               `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)), c(dim(fit_fold$betas)[1], dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])),
+                               `dim<-`(aperm(fit_fold$gammas, c(1, 3, 2)), c(dim(fit_fold$gammas)[1], dim(fit_fold$gammas)[2] * dim(fit_fold$gammas)[3])))
+            } else {
+                betas <- rbind(as.vector(t(fit_fold$beta0)),
+                               `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)), c(dim(fit_fold$betas)[1], dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
+            }
+            errormat[subset, ] <- calc_error(betas, y[subset], cbind(1, x[subset, ], unpen[subset, ]), weights[subset])
         }
     }
     cv_mean <- apply(errormat, 2, stats::weighted.mean, w = weights)
@@ -135,15 +162,15 @@ cvhierr <- function(x,
         minl2 <- as.numeric(colnames(cv_mean)[optIndex[1,2]])
     }
 
-    cvfit <- list(errormat = errormat,
-                cv_mean = cv_mean,
-                cv_sd = cv_sd,
-                min_error = min_error,
-                minl1 = minl1,
-                minl2 = minl2,
-                penalty = hierr_object$penalty,
-                penalty_ext = hierr_object$penalty_ext,
-                call = hierr_object$call)
+    cvfit <- list(cv_mean = cv_mean,
+                  cv_sd = cv_sd,
+                  min_error = min_error,
+                  minl1 = minl1,
+                  minl2 = minl2,
+                  penalty = hierr_object$penalty,
+                  penalty_ext = hierr_object$penalty_ext,
+                  call = hierr_object$call)
+
     class(cvfit) <- c("cvhierr", "hierr")
     return(cvfit)
 }

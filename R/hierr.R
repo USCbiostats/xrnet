@@ -7,6 +7,7 @@ NULL
 #' @param x predictor design matrix of dimension \eqn{n x p}
 #' @param y outcome vector of length \eqn{n}
 #' @param external (optional) external data design matrix of dimension \eqn{p x q}
+#' @param unpen (optional) unpenalized predictor design matrix
 #' @param family error distribution for outcome variable
 #' @param penalty specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
@@ -18,6 +19,7 @@ NULL
 hierr <- function(x,
                   y,
                   external = NULL,
+                  unpen = NULL,
                   family = c("gaussian"),
                   penalty = definePenalty(0, 1),
                   weights = NULL,
@@ -47,17 +49,6 @@ hierr <- function(x,
         stop(paste("Error: Length of y (", y_len, ") not equal to the number of rows of x (", nr_x, ")", sep = ""))
     }
 
-    # set weights
-    if (is.null(weights)) {
-        weights <- as.double(rep(1, nr_x))
-    } else if (length(weights) != nr_x) {
-        stop(paste("Error: Length of weights (", length(weights), ") not equal to the number of rows of x (", nr_x, ")", sep = ""))
-    } else if (any(weights < 0)) {
-        stop("Error: weights can only contain non-negative values")
-    } else {
-        weights <- as.double(weights)
-    }
-
     # convert x to matrix
     if (!(class(x)) != "matrix") {
         x <- as.matrix(x)
@@ -67,9 +58,7 @@ hierr <- function(x,
     }
 
     ## Prepare external ##
-    ext_exist = FALSE
     if (!is.null(external)) {
-        ext_exist = TRUE
 
         # check dimensions
         nr_ext <- nrow(external)
@@ -92,6 +81,41 @@ hierr <- function(x,
         nc_ext <- as.integer(0)
     }
 
+    ## Prepare unpenalized covariates ##
+    if (!is.null(unpen)) {
+
+        # check dimensions
+        nr_unpen <- nrow(unpen)
+        nc_unpen <- ncol(unpen)
+
+        if (y_len != nr_unpen) {
+            stop(paste("Error: Length of y (", y_len, ") not equal to the number of rows of unpen (", nr_unpen, ")", sep = ""))
+        }
+
+        # convert x to matrix
+        if (!(class(unpen)) != "matrix") {
+            unpen <- as.matrix(unpen)
+        }
+        if (typeof(unpen) != "double") {
+            stop("Error: unpen contains non-numeric values")
+        }
+    } else {
+        unpen <- matrix(numeric(0), nrow = 0, ncol = 0)
+        nr_unpen <- as.integer(0)
+        nc_unpen <- as.integer(0)
+    }
+
+    # set weights
+    if (is.null(weights)) {
+        weights <- as.double(rep(1, nr_x))
+    } else if (length(weights) != y_len) {
+        stop(paste("Error: Length of weights (", length(weights), ") not equal to length of y (", y_len, ")", sep = ""))
+    } else if (any(weights < 0)) {
+        stop("Error: weights can only contain non-negative values")
+    } else {
+        weights <- as.double(weights)
+    }
+
     # check penalty object for x
     if (penalty$user_penalty == 0 && is.null(penalty$penalty_ratio)) {
         if (nr_x > nc_x) {
@@ -108,7 +132,7 @@ hierr <- function(x,
     }
 
     # check penalty object for ext
-    if (ext_exist) {
+    if (nc_ext > 0) {
         if (penalty$user_penalty_ext == 0 && is.null(penalty$penalty_ratio_ext)) {
             if (nr_ext > nc_ext) {
                 penalty$penalty_ratio_ext <- 1e-04
@@ -128,48 +152,50 @@ hierr <- function(x,
         penalty$custom_multiplier_ext <- numeric(0)
     }
 
+    # vectors holding penalty type and multipliers across all variables
     if (intercept[2]) {
-        penalty$cmult <- c(penalty$custom_multiplier, 0.0, penalty$custom_multiplier_ext)
+        penalty$cmult <- c(penalty$custom_multiplier, rep(0.0, nc_unpen), 0.0, penalty$custom_multiplier_ext)
     } else {
-        penalty$cmult <- c(penalty$custom_multiplier, penalty$custom_multiplier_ext)
+        penalty$cmult <- c(penalty$custom_multiplier, rep(0.0, nc_unpen), penalty$custom_multiplier_ext)
     }
-    penalty$ptype <- c(rep(penalty$penalty_type, nc_x), rep(penalty$penalty_type_ext, nc_ext + intercept[2]))
+    penalty$ptype <- c(rep(penalty$penalty_type, nc_x), rep(0, nc_unpen), rep(penalty$penalty_type_ext, nc_ext + intercept[2]))
 
     # check control object
     control <- do.call("hierr.control", control)
 
     if (is.null(control$dfmax)) {
-        control$dfmax <- as.integer(nc_x + nc_ext + intercept[1] + intercept[2])
+        control$dfmax <- as.integer(nc_x + nc_ext + nc_unpen + intercept[1] + intercept[2])
     } else if (control$dfmax < 0) {
         stop("Error: dfmax can only contain postive integers")
     }
 
     if (is.null(control$pmax)) {
-        control$pmax <- as.integer(min(2 * control$dfmax + 20, nc_x + nc_ext + intercept[2]))
+        control$pmax <- as.integer(min(2 * control$dfmax + 20, nc_x + nc_ext + nc_unpen + intercept[2]))
     } else if (control$pmax < 0) {
         stop("Error: pmax can only contain positive integers")
     }
 
     if (is.null(control$lower_limits)) {
-        control$lower_limits <- rep(-Inf, nc_x + nc_ext + intercept[2])
-    } else if (length(control$lower_limits) != nc_x + nc_ext) {
-        stop("Error: Length of lower_limits (", length(control$lower_limits), ") not equal to sum of number of columns in x and external (", nc_x + nc_ext, ")")
+        control$lower_limits <- rep(-Inf, nc_x + nc_ext + nc_unpen + intercept[2])
+    } else if (length(control$lower_limits) != nc_x + nc_ext + nc_unpen) {
+        stop("Error: Length of lower_limits (", length(control$lower_limits), ") not equal to sum of number of columns in x, unpen, and external (", nc_x + nc_ext + nc_unpen, ")")
     } else if (intercept[2]) {
-        control$lower_limits <- c(control$lower_limits[1:nc_x], -Inf, control$lower_limits[(nc_x + 1):(nc_x + nc_ext)])
+        control$lower_limits <- c(control$lower_limits[1:(nc_x + nc_unpen)], -Inf, control$lower_limits[(nc_x + nc_unpen + 1):length(control$lower_limits)])
     }
 
     if (is.null(control$upper_limits)) {
-        control$upper_limits <- rep(Inf, nc_x + nc_ext + intercept[2])
-    } else if (length(control$upper_limits) != nc_x + nc_ext) {
-        stop("Error: Length of upper_limits (", length(control$upper_limits), ") not equal to sum of number of columns in x and external (", nc_x + nc_ext, ")")
+        control$upper_limits <- rep(Inf, nc_x + nc_ext + nc_unpen + intercept[2])
+    } else if (length(control$upper_limits) != nc_x + nc_ext + nc_unpen) {
+        stop("Error: Length of upper_limits (", length(control$upper_limits), ") not equal to sum of number of columns in x, unpen, and external (", nc_x + nc_ext + nc_unpen, ")")
     } else if (intercept[2]) {
-        control$upper_limits <- c(control$upper_limits[1:nc_x], -Inf, control$upper_limits[(nc_x + 1):(nc_x + nc_ext)])
+        control$upper_limits <- c(control$upper_limits[1:(nc_x + nc_unpen)], -Inf, control$upper_limits[(nc_x + nc_unpen + 1):length(control$upper_limits)])
     }
 
     # fit model based on distribution
     fit <- do.call(family, list(x = x,
                                 y = y,
                                 external = external,
+                                unpen = unpen,
                                 weights = weights,
                                 penalty = penalty,
                                 isd = standardize,
@@ -188,7 +214,7 @@ hierr <- function(x,
         fit$alpha0 <- NULL
     }
 
-    if (ext_exist) {
+    if (nc_ext > 0) {
         fit$custom_mult_ext <- penalty$custom_multiplier_ext
         fit$alphas <- aperm(array(t(fit$alphas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_ext)), c(3, 2, 1))
     } else {
@@ -196,6 +222,12 @@ hierr <- function(x,
         fit$penalty_type_ext <- NULL
         fit$penalty_ext <- NULL
         fit$penalty_ratio_ext <- NULL
+    }
+
+    if (nc_unpen > 0) {
+        fit$gammas <- aperm(array(t(fit$gammas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_unpen)), c(3, 2, 1))
+    } else {
+        fit$gammas <- NULL
     }
 
     fit$call <- this.call
