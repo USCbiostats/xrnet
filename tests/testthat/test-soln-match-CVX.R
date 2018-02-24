@@ -51,7 +51,7 @@ load(file = "Test-Data/x.Rdata")
 load(file = "Test-Data/y.Rdata")
 load(file = "Test-Data/z.Rdata")
 
-myPenalty <- hierr::definePenalty(0, 1, user_penalty = 1, user_penalty_ext = 0.1)
+myPenalty <- hierr::definePenalty(penalty_type = 0, penalty_type_ext = 1, user_penalty = 1, user_penalty_ext = 0.1)
 
 test_that("x and ext standardized, both intercepts",{
 
