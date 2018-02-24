@@ -64,10 +64,12 @@ cvhierr <- function(x,
     }
 
     # Create hierr object
-    hierr_object <- hierr(x = x, y = y, external = external, unpen = unpen, family = family, weights = weights, penalty = penalty, ...)
+    hierr_object <- hierr(x = x, y = y, external = external, unpen = unpen,
+                          family = family, weights = weights, penalty = penalty, ...)
     hierr_object$call <- hierr_call
-    penalty_fixed <- definePenalty(penalty$penalty_type,
-                                   penalty$penalty_type_ext,
+
+    penalty_fixed <- definePenalty(penalty_type = penalty$penalty_type,
+                                   penalty_type_ext = penalty$penalty_type_ext,
                                    user_penalty = hierr_object$penalty,
                                    user_penalty_ext = hierr_object$penalty_ext)
 
@@ -102,15 +104,27 @@ cvhierr <- function(x,
             weights_train <- weights[!subset]
 
             # Fit model on k-th training fold
-            hierr(x = x_train, y = y_train, external = external, unpen = unpen_train, weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas")]
+            hierr(x = x_train, y = y_train, external = external, unpen = unpen_train,
+                  weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
         }
-        for (k in 1:nfolds) {
-            subset <- (foldid == k)
-            betas <- rbind(as.vector(t(cvout[[k]]$beta0)), `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)), c(dim(cvout[[k]]$betas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])))
-            errormat[subset, ] <- calc_error(betas, y[subset], cbind(1, x[subset, ]), weights[subset])
+        if (!is.null(unpen)) {
+            for (k in 1:nfolds) {
+                subset <- (foldid == k)
+                betas <- rbind(as.vector(t(cvout[[k]]$beta0)),
+                               `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)), c(dim(cvout[[k]]$betas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])),
+                               `dim<-`(aperm(cvout[[k]]$gammas, c(1, 3, 2)), c(dim(cvout[[k]]$gammas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])))
+                errormat[subset, ] <- calc_error(betas, y[subset], cbind(1, x[subset, ]), weights[subset])
 
+            }
+        } else {
+            for (k in 1:nfolds) {
+                subset <- (foldid == k)
+                betas <- rbind(as.vector(t(cvout[[k]]$beta0)),
+                               `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)), c(dim(cvout[[k]]$betas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])))
+                errormat[subset, ] <- calc_error(betas, y[subset], cbind(1, x[subset, ]), weights[subset])
+
+            }
         }
-
     } else {
         for (k in seq_along(1:nfolds)) {
 
@@ -130,7 +144,8 @@ cvhierr <- function(x,
             weights_train <- weights[!subset]
 
             # Fit model on k-th training fold
-            fit_fold <- hierr(x = x_train, y = y_train, external = external, unpen = unpen_train, weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
+            fit_fold <- hierr(x = x_train, y = y_train, external = external, unpen = unpen_train,
+                              weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
             if (!is.null(fit_fold$gammas)) {
                 betas <- rbind(as.vector(t(fit_fold$beta0)),
                                `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)), c(dim(fit_fold$betas)[1], dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])),
@@ -147,19 +162,21 @@ cvhierr <- function(x,
     cv_mean <- matrix(cv_mean, nrow = num_pen, byrow = TRUE)
     cv_sd <- matrix(cv_sd, nrow = num_pen, byrow = TRUE)
     row.names(cv_mean) <- rev(sort(hierr_object$penalty))
-    colnames(cv_mean) <- rev(sort(hierr_object$penalty_ext))
     row.names(cv_sd) <- rev(sort(hierr_object$penalty))
-    colnames(cv_sd) <- rev(sort(hierr_object$penalty_ext))
+    if (num_pen_ext > 1) {
+        colnames(cv_mean) <- rev(sort(hierr_object$penalty_ext))
+        colnames(cv_sd) <- rev(sort(hierr_object$penalty_ext))
+    }
 
     min_error <- min(cv_mean, na.rm = TRUE)
     optIndex <- which(min_error == cv_mean, arr.ind = TRUE)
 
     if (is.null(dim(optIndex))) {
-        minl1 <- as.numeric(row.names(cv_mean)[optIndex[1]])
-        minl2 <- as.numeric(colnames(cv_mean)[optIndex[2]])
+        minl1 <- hierr_object$penalty[optIndex[1]]
+        minl2 <- hierr_object$penalty_ext[optIndex[2]]
     } else {
-        minl1 <- as.numeric(row.names(cv_mean)[optIndex[1,1]])
-        minl2 <- as.numeric(colnames(cv_mean)[optIndex[1,2]])
+        minl1 <- hierr_object$penalty[optIndex[1, 1]]
+        minl2 <- hierr_object$penalty_ext[optIndex[1, 2]]
     }
 
     cvfit <- list(cv_mean = cv_mean,
@@ -169,9 +186,10 @@ cvhierr <- function(x,
                   minl2 = minl2,
                   penalty = hierr_object$penalty,
                   penalty_ext = hierr_object$penalty_ext,
+                  hierr_fit = hierr_object,
                   call = hierr_object$call)
 
-    class(cvfit) <- c("cvhierr", "hierr")
+    class(cvfit) <- c("cvhierr")
     return(cvfit)
 }
 

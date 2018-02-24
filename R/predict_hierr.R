@@ -29,7 +29,7 @@ predict.hierr <- function(object,
             stop("Error: 'newdata' needs to be specified")
     }
 
-    if (!(all(p %in% object$penalty > 0)) || !(all(pext %in% object$penalty_ext > 0))) {
+    if (!(all(p %in% object$penalty)) || !(all(pext %in% object$penalty_ext))) {
 
         if (!is.null(object$penalty_ext)) {
             if (is.null(p)) {
@@ -99,7 +99,7 @@ predict.hierr <- function(object,
             betas <- rbind(as.vector(t(beta0)),
                            `dim<-`(aperm(betas, c(1, 3, 2)), c(dim(betas)[1], dim(betas)[2] * dim(betas)[3])))
         }
-        result <- cbind(1, newdata) %*% betas
+        result <- cbind2(1, newdata) %*% betas
         result <- aperm(array(t(result), c(length(pext), length(p), dim(result)[1])), c(3, 2, 1))
         return(drop(result))
     }

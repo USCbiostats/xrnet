@@ -92,7 +92,7 @@ hierr <- function(x,
             stop(paste("Error: Length of y (", y_len, ") not equal to the number of rows of unpen (", nr_unpen, ")", sep = ""))
         }
 
-        # convert x to matrix
+        # convert unpen to matrix
         if (!(class(unpen)) != "matrix") {
             unpen <- as.matrix(unpen)
         }
@@ -117,6 +117,14 @@ hierr <- function(x,
     }
 
     # check penalty object for x
+    if (length(penalty$penalty_type) > 1) {
+        if (length(penalty$penalty_type) != nc_x) {
+            stop("Error: Length of penalty_type (", length(penalty$penalty_type),") not equal to number of columns in x (", nc_x, ")")
+        }
+    } else {
+        penalty$penalty_type <- rep(penalty$penalty_type, nc_x)
+    }
+
     if (penalty$user_penalty == 0 && is.null(penalty$penalty_ratio)) {
         if (nr_x > nc_x) {
             penalty$penalty_ratio <- 1e-04
@@ -128,11 +136,21 @@ hierr <- function(x,
     if (is.null(penalty$custom_multiplier)) {
         penalty$custom_multiplier <- rep(1.0, nc_x)
     } else if (length(penalty$custom_multiplier) != nc_x) {
-        stop("Error: Length of custom_multiplier (", length(penalty$custom_multiplier),") not equal to number of columns of x (", nc_x, ")")
+        stop("Error: Length of custom_multiplier (", length(penalty$custom_multiplier),") not equal to number of columns in x (", nc_x, ")")
     }
 
-    # check penalty object for ext
+    # check penalty object for external
     if (nc_ext > 0) {
+        if (length(penalty$penalty_type_ext) > 1) {
+            if (length(penalty$penalty_type_ext) != nc_ext) {
+                stop("Error: Length of penalty_type_ext (", length(penalty$penalty_type_ext),") not equal to number of columns in external (", nc_ext, ")")
+            } else if (intercept[2]) {
+                penalty$penalty_type_ext <- c(penalty$penalty_type_ext, 0)
+            }
+        } else {
+            penalty$penalty_type_ext <- rep(penalty$penalty_type_ext, nc_ext + intercept[2])
+        }
+
         if (penalty$user_penalty_ext == 0 && is.null(penalty$penalty_ratio_ext)) {
             if (nr_ext > nc_ext) {
                 penalty$penalty_ratio_ext <- 1e-04
@@ -144,7 +162,7 @@ hierr <- function(x,
         if (is.null(penalty$custom_multiplier_ext)) {
             penalty$custom_multiplier_ext <- rep(1.0, nc_ext)
         } else if (length(penalty$custom_multiplier_ext) != nc_ext && !is.null(external)) {
-            stop("Error: Length of custom_multiplier_ext (", length(penalty$custom_multiplier_ext),") not equal to number of columns of external (", nc_ext, ")")
+            stop("Error: Length of custom_multiplier_ext (", length(penalty$custom_multiplier_ext),") not equal to number of columns in external (", nc_ext, ")")
         }
     } else {
         penalty$num_penalty_ext <- 1
@@ -158,7 +176,7 @@ hierr <- function(x,
     } else {
         penalty$cmult <- c(penalty$custom_multiplier, rep(0.0, nc_unpen), penalty$custom_multiplier_ext)
     }
-    penalty$ptype <- c(rep(penalty$penalty_type, nc_x), rep(0, nc_unpen), rep(penalty$penalty_type_ext, nc_ext + intercept[2]))
+    penalty$ptype <- c(penalty$penalty_type, rep(0, nc_unpen), penalty$penalty_type_ext)
 
     # check control object
     control <- do.call("hierr.control", control)
@@ -220,6 +238,7 @@ hierr <- function(x,
     } else {
         fit$alphas <- NULL
         fit$penalty_type_ext <- NULL
+        fit$quantile_ext <- NULL
         fit$penalty_ext <- NULL
         fit$penalty_ratio_ext <- NULL
     }

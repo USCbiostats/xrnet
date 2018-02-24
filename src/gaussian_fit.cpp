@@ -237,6 +237,8 @@ void coord_desc(const arma::mat & x,
                 arma::vec & resid,
                 const arma::vec & w,
                 const NumericVector & ptype,
+                const double & tau,
+                const double & tau_ext,
                 const int & no,
                 const int & nvar,
                 const int & nvar_total,
@@ -252,8 +254,8 @@ void coord_desc(const arma::mat & x,
                 arma::mat & coef,
                 arma::vec & b,
                 arma::vec & g,
-                NumericVector & rsq,
-                double & rsq_cur,
+                NumericVector & dev,
+                double & dev_cur,
                 IntegerVector & mm,
                 double & errcode,
                 int & nlp,
@@ -262,15 +264,18 @@ void coord_desc(const arma::mat & x,
     int nin = 0;
     bool jerr = 0;
     NumericVector lasso_part(nvar_total);
+    NumericVector lasso_part2(nvar_total);
     NumericVector ridge_part(nvar_total);
 
     for (int k = 0; k < nvar; k++) {
-        lasso_part[k] = cmult[k] * ptype[k] * cur_lam[0];
+        lasso_part[k] = 2 * cmult[k] * ptype[k] * cur_lam[0] * tau;
+        lasso_part2[k] = 2 * ptype[k] * cur_lam[0];
         ridge_part[k] = xv[k] + cmult[k] * (1 - ptype[k]) * cur_lam[0];
     }
 
     for (int k = nvar; k < nvar_total; k++) {
-            lasso_part[k] = cmult[k] * ptype[k] * cur_lam[1];
+            lasso_part[k] = 2 * cmult[k] * ptype[k] * cur_lam[1] * tau_ext;
+            lasso_part2[k] = 2 * ptype[k] * cur_lam[1];
             ridge_part[k] = xv[k] + cmult[k] * (1 - ptype[k]) * cur_lam[1];
     }
 
@@ -286,13 +291,13 @@ void coord_desc(const arma::mat & x,
                     double gk = arma::dot(x.unsafe_col(k), resid % w);
                     double bk = b[k];
                     double u = gk + bk * xv[k];
-                    double v = std::abs(u) - lasso_part[k];
+                    double v = std::abs(u) - ((u > 0.0) ? 1 : -1) * lasso_part[k] - lasso_part2[k] * (u < 0.0);
                     if (v > 0.0) {
                         b[k] = std::max(lower_cl[k], std::min(upper_cl[k], copysign(v, u) / ridge_part[k]));
                     } else {
                         b[k] = 0.0;
                     }
-                    if (std::abs(b[k] - bk) > 1e-10) {
+                    if (std::abs(b[k] - bk) > 1e-15) {
                         if (mm[k] == 0) {
                             nin += 1;
                             mm[k] = nin;
@@ -300,7 +305,7 @@ void coord_desc(const arma::mat & x,
                         if (nin <= nx) {
                             double del = b[k] - bk;
                             resid -= del * x.unsafe_col(k);
-                            rsq_cur += del * (2.0 * gk - del * xv[k]);
+                            dev_cur += del * (2.0 * gk - del * xv[k]);
                             dlx = std::max(xv[k] * del * del, dlx);
                         } else {
                             jerr = 1;
@@ -333,7 +338,7 @@ void coord_desc(const arma::mat & x,
         kkt_satisfied = 1;
     }
     coef.col(idx_lam) = b;
-    rsq[idx_lam] = rsq_cur;
+    dev[idx_lam] = dev_cur;
 }
 
 /*
@@ -382,6 +387,8 @@ List gaussian_fit(const arma::mat & x_,
                   const int & nvar_unpen,
                   const arma::vec & w,
                   const NumericVector & ptype,
+                  const double & tau,
+                  const double & tau_ext,
                   const arma::vec & cmult,
                   NumericVector & lower_cl,
                   NumericVector & upper_cl,
@@ -450,7 +457,7 @@ List gaussian_fit(const arma::mat & x_,
     // initialize objects to hold fitting results
     int nlam_total = nlam * nlam_ext;
     arma::mat coef(nvar_total, nlam_total, arma::fill::zeros);
-    NumericVector rsq(nlam_total);
+    NumericVector dev(nlam_total);
 
     // ---------run coordinate descent for all penalties ----------
 
@@ -469,9 +476,9 @@ List gaussian_fit(const arma::mat & x_,
 
     // loop through all penalty combinations
     NumericVector lam_cur(2, 0.0);
-    double rsq_outer = 0.0;
-    double rsq_inner = 0.0;
-    double rsq_old = 0.0;
+    double dev_outer = 0.0;
+    double dev_inner = 0.0;
+    double dev_old = 0.0;
     arma::vec inner_resid(nobs);
     arma::vec coef_outer(nvar_total, arma::fill::zeros);
     arma::vec coef_inner(nvar_total, arma::fill::zeros);
@@ -488,31 +495,31 @@ List gaussian_fit(const arma::mat & x_,
             lam_cur[1] = lam_path_ext[m2];
 
             if (m2 == 0) {
-                coord_desc(xnew, outer_resid, wgt, ptype, nobs, nvar, nvar_total,
+                coord_desc(xnew, outer_resid, wgt, ptype, tau, tau_ext, nobs, nvar, nvar_total,
                            cmult, upper_cl, lower_cl, ne, nx,
                            lam_cur, thr, maxit, xv, coef, coef_outer, g,
-                           rsq, rsq_outer, mm, errcode, nlp, idx_lam);
+                           dev, dev_outer, mm, errcode, nlp, idx_lam);
 
                 inner_resid = outer_resid;
                 coef_inner = coef_outer;
-                rsq_inner = rsq_outer;
-                rsq_old = rsq_outer;
+                dev_inner = dev_outer;
+                dev_old = dev_outer;
 
             }
             else {
-                coord_desc(xnew, inner_resid, wgt, ptype, nobs, nvar, nvar_total,
+                coord_desc(xnew, inner_resid, wgt, ptype, tau, tau_ext, nobs, nvar, nvar_total,
                            cmult, upper_cl, lower_cl, ne, nx,
                            lam_cur, thr, maxit, xv, coef, coef_inner, g,
-                           rsq, rsq_inner, mm, errcode, nlp, idx_lam);
+                           dev, dev_inner, mm, errcode, nlp, idx_lam);
 
-                //stop if max r-squared or no change in r-squared
+                //stop if max deviance or no appreciable change in deviance
                 if (pratio_ext > 0.0) {
-                    if ((rsq_inner - rsq_old) < (1e-05 * rsq_inner) || rsq_inner > 0.999 || errcode > 0.0) {
+                    if ((dev_inner - dev_old) < (1e-05 * dev_inner) || dev_inner > 0.999 || errcode > 0.0) {
                         idx_lam += nlam_ext - m2;
                         break;
                     }
                     else {
-                        rsq_old = rsq_inner;
+                        dev_old = dev_inner;
                     }
                 }
             }
@@ -583,9 +590,11 @@ List gaussian_fit(const arma::mat & x_,
                               Named("penalty") = lam_path,
                               Named("penalty_ext") = lam_path_ext,
                               Named("penalty_type") = ptype[0],
+                              Named("quantile") = tau,
                               Named("penalty_type_ext") = ptype[nvar_total - 1],
+                              Named("quantile_ext") = tau_ext,
                               Named("penalty_ratio") = pratio,
                               Named("penalty_ratio_ext") = pratio_ext,
-                              Named("deviance") = rsq,
+                              Named("deviance") = dev,
                               Named("nlp") = nlp);
 }

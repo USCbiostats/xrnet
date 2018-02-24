@@ -4,20 +4,25 @@
 \alias{definePenalty}
 \title{Define regularization object for predictor and external data}
 \usage{
-definePenalty(penalty_type = 0, penalty_type_ext = 1, num_penalty = 20,
-  num_penalty_ext = 20, penalty_ratio = NULL, penalty_ratio_ext = NULL,
-  user_penalty = NULL, user_penalty_ext = NULL, custom_multiplier = NULL,
+definePenalty(penalty_type = 0, quantile = 0.5, penalty_type_ext = 1,
+  quantile_ext = 0.5, num_penalty = 20, num_penalty_ext = 20,
+  penalty_ratio = NULL, penalty_ratio_ext = NULL, user_penalty = NULL,
+  user_penalty_ext = NULL, custom_multiplier = NULL,
   custom_multiplier_ext = NULL)
 }
 \arguments{
-\item{penalty_type}{type of regularization for x. Default is 0 (Ridge).
+\item{penalty_type}{type of regularization for x. Default is 0 (Ridge). Can supply either a scalar value or vector with length equal to the number of variables in x.
 \itemize{
    \item 0 = Ridge
    \item (0,1) = Elastic-Net
-   \item 1 = Lasso
+   \item 1 = Lasso / Quantile
 }}
 
-\item{penalty_type_ext}{type of regularization for external data. See penalty_type for options. Default is 1 (Lasso).}
+\item{quantile}{specifies quantile for predictors. Default of 0.5 reduces to lasso.}
+
+\item{penalty_type_ext}{type of regularization for external data. See penalty_type for options. Default is 1 (lasso). Can supply either a scalar value or vector with length equal to the number of variables in external.}
+
+\item{quantile_ext}{specifies quantile for external data. Default of 0.5 reduces to lasso.}
 
 \item{num_penalty}{number of penalty values to fit in grid for x. Default is 20.}
 

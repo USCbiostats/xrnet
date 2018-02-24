@@ -9,11 +9,11 @@ standardize_vec <- function(y, w, ym, ys, intr) {
     invisible(.Call(`_hierr_standardize_vec`, y, w, ym, ys, intr))
 }
 
-coord_desc <- function(x, resid, w, ptype, no, nvar, nvar_total, cmult, upper_cl, lower_cl, ne, nx, cur_lam, thr, maxit, xv, coef, b, g, rsq, rsq_cur, mm, errcode, nlp, idx_lam) {
-    invisible(.Call(`_hierr_coord_desc`, x, resid, w, ptype, no, nvar, nvar_total, cmult, upper_cl, lower_cl, ne, nx, cur_lam, thr, maxit, xv, coef, b, g, rsq, rsq_cur, mm, errcode, nlp, idx_lam))
+coord_desc <- function(x, resid, w, ptype, tau, tau_ext, no, nvar, nvar_total, cmult, upper_cl, lower_cl, ne, nx, cur_lam, thr, maxit, xv, coef, b, g, dev, dev_cur, mm, errcode, nlp, idx_lam) {
+    invisible(.Call(`_hierr_coord_desc`, x, resid, w, ptype, tau, tau_ext, no, nvar, nvar_total, cmult, upper_cl, lower_cl, ne, nx, cur_lam, thr, maxit, xv, coef, b, g, dev, dev_cur, mm, errcode, nlp, idx_lam))
 }
 
-gaussian_fit <- function(x_, y_, ext_, fixed_, nobs, nvar, nvar_ext, nvar_unpen, w, ptype, cmult, lower_cl, upper_cl, ne, nx, nlam, nlam_ext, pratio, pratio_ext, ulam_, ulam_ext_, thr, maxit, isd, isd_ext, intr, intr_ext) {
-    .Call(`_hierr_gaussian_fit`, x_, y_, ext_, fixed_, nobs, nvar, nvar_ext, nvar_unpen, w, ptype, cmult, lower_cl, upper_cl, ne, nx, nlam, nlam_ext, pratio, pratio_ext, ulam_, ulam_ext_, thr, maxit, isd, isd_ext, intr, intr_ext)
+gaussian_fit <- function(x_, y_, ext_, fixed_, nobs, nvar, nvar_ext, nvar_unpen, w, ptype, tau, tau_ext, cmult, lower_cl, upper_cl, ne, nx, nlam, nlam_ext, pratio, pratio_ext, ulam_, ulam_ext_, thr, maxit, isd, isd_ext, intr, intr_ext) {
+    .Call(`_hierr_gaussian_fit`, x_, y_, ext_, fixed_, nobs, nvar, nvar_ext, nvar_unpen, w, ptype, tau, tau_ext, cmult, lower_cl, upper_cl, ne, nx, nlam, nlam_ext, pratio, pratio_ext, ulam_, ulam_ext_, thr, maxit, isd, isd_ext, intr, intr_ext)
 }
 

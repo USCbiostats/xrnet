@@ -2,13 +2,15 @@
 #'
 #' @description Defines regularization terms for predictor and external data in \code{\link{hierr}} fitting.
 #'
-#' @param penalty_type type of regularization for x. Default is 0 (Ridge).
+#' @param penalty_type type of regularization for x. Default is 0 (Ridge). Can supply either a scalar value or vector with length equal to the number of variables in x.
 #' \itemize{
 #'    \item 0 = Ridge
 #'    \item (0,1) = Elastic-Net
-#'    \item 1 = Lasso
+#'    \item 1 = Lasso / Quantile
 #' }
-#' @param penalty_type_ext type of regularization for external data. See penalty_type for options. Default is 1 (Lasso).
+#' @param quantile specifies quantile for predictors. Default of 0.5 reduces to lasso.
+#' @param penalty_type_ext type of regularization for external data. See penalty_type for options. Default is 1 (lasso). Can supply either a scalar value or vector with length equal to the number of variables in external.
+#' @param quantile_ext specifies quantile for external data. Default of 0.5 reduces to lasso.
 #' @param num_penalty number of penalty values to fit in grid for x. Default is 20.
 #' @param num_penalty_ext number of penalty values to fit in grid for external data. Default is 20.
 #' @param penalty_ratio ratio between minimum and maximum penalty for x. Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.
@@ -20,7 +22,9 @@
 
 #' @export
 definePenalty <- function(penalty_type = 0,
+                          quantile = 0.5,
                           penalty_type_ext = 1,
+                          quantile_ext = 0.5,
                           num_penalty = 20,
                           num_penalty_ext = 20,
                           penalty_ratio = NULL,
@@ -30,16 +34,28 @@ definePenalty <- function(penalty_type = 0,
                           custom_multiplier = NULL,
                           custom_multiplier_ext = NULL) {
 
-    if (penalty_type < 0 | penalty_type > 1) {
+    if (any(penalty_type < 0) || any(penalty_type > 1)) {
         stop("Error: Invalid penalty type for x")
     } else {
         penalty_type <- as.double(penalty_type)
     }
 
-    if (penalty_type_ext < 0 | penalty_type_ext > 1) {
+    if (quantile < 0 || quantile > 1) {
+        stop("Error: invalid value for quantile, must be between 0 and 1")
+    } else {
+        quantile <- as.double(quantile)
+    }
+
+    if (any(penalty_type_ext < 0) || any(penalty_type_ext > 1)) {
         stop("Error: Invalid penalty type for external")
     } else {
         penalty_type_ext <- as.double(penalty_type_ext)
+    }
+
+    if (quantile_ext < 0 || quantile_ext > 1) {
+        stop("Error: invalid value for quantile_ext, must be between 0 and 1")
+    } else {
+        quantile_ext <- as.double(quantile_ext)
     }
 
     if (is.null(user_penalty)) {
@@ -87,7 +103,9 @@ definePenalty <- function(penalty_type = 0,
     }
 
     structure(list(penalty_type = penalty_type,
+                   tau = quantile,
                    penalty_type_ext = penalty_type_ext,
+                   tau_ext = quantile_ext,
                    num_penalty = num_penalty,
                    num_penalty_ext = num_penalty_ext,
                    penalty_ratio = penalty_ratio,
