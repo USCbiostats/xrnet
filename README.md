@@ -9,12 +9,17 @@ Setup
 
 1.  For Windows users, install [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an R package)
 2.  Install the R package [devtools](https://github.com/hadley/devtools)
-3.  Install hierr package with the install\_github function
+3.  Install hierr package with the install\_github function (optionally you can install the most recent / potentially unstable development branch)
 4.  Load the package
 
 ``` r
 library(devtools)
+
+# Master branch
 install_github("gmweaver/hierr")
+
+# Or the development branch
+install_github("gmweaver/hierr", ref = "development")
 ```
 
 ``` r
@@ -47,7 +52,7 @@ To modify the regularization terms and penalty path associated with the predicto
 -   Regularization type
     -   Ridge = 0
     -   Elastic Net = (0, 1)
-    -   Lasso = 1
+    -   Lasso / Quantile = 1 (quantile only on development branch currently)
 -   Penalty path
     -   Number of penalty values in the full penalty path (default = 20)
     -   Ratio of min(penalty) / max(penalty)
@@ -66,7 +71,6 @@ In general, we need a method to determine the penalty values that produce the op
 
 ``` r
 cv_hierr <- cvhierr(x = x, y = y, external = ext, family = "gaussian")
-#> cvhierr(x = x, y = y, external = ext, family = "gaussian")
 ```
 
 To visualize the results of the cross-validation we provide a contour plot of the mean cross-validation error across the grid of penalties with the `plot` function.
