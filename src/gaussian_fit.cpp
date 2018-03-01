@@ -112,10 +112,8 @@ List gaussian_fit(const arma::mat & x_,
                   const bool & intr,
                   const bool & intr_ext) {
 
-    int nvar_total = nvar + nvar_ext + nvar_unpen;
-    if (intr_ext) {++nvar_total;}
-
     // Create single level regression matrix
+    int nvar_total = nvar + nvar_ext + nvar_unpen + intr_ext;
     arma::vec xm(nvar_total, arma::fill::zeros);
     arma::vec xv(nvar_total, arma::fill::ones);
     arma::vec xs(nvar_total, arma::fill::ones);
@@ -159,12 +157,12 @@ List gaussian_fit(const arma::mat & x_,
         }
     }
 
+    // ---------run coordinate descent for all penalties ----------
+
     // initialize objects to hold fitting results
     int nlam_total = nlam * nlam_ext;
     arma::mat coef(nvar_total, nlam_total, arma::fill::zeros);
     NumericVector dev(nlam_total);
-
-    // ---------run coordinate descent for all penalties ----------
 
     // compute gradient vector
     arma::vec g(nvar_total, arma::fill::zeros);
@@ -238,11 +236,9 @@ List gaussian_fit(const arma::mat & x_,
     // compute and unstandardize predictor variables
     arma::vec b0(nlam_total, arma::fill::zeros);
     arma::vec a0(nlam_total, arma::fill::zeros);
-
     if (intr_ext) {
         a0 = arma::conv_to<arma::colvec>::from(coef.row(nvar + nvar_unpen));
     }
-
     compute_coef(coef, ext_, nvar, nvar_ext, nvar_total, nlam_total, xm, xs, ys, a0, intr_ext, ext_start);
 
     // unstandardize unpenalized variables
