@@ -19,7 +19,6 @@
 #' @param parallel Use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.
 #' @param ... list of additional arguments to pass to function \code{\link{hierr}}.
 
-
 #' @export
 #' @importFrom foreach foreach
 #' @importFrom foreach %dopar%
@@ -64,8 +63,7 @@ cvhierr <- function(x,
     }
 
     # Create hierr object
-    hierr_object <- hierr(x = x, y = y, external = external, unpen = unpen,
-                          family = family, weights = weights, penalty = penalty, ...)
+    hierr_object <- hierr(x = x, y = y, external = external, unpen = unpen, family = family, weights = weights, penalty = penalty, ...)
     hierr_object$call <- hierr_call
 
     penalty_fixed <- definePenalty(penalty_type = penalty$penalty_type,
@@ -83,12 +81,12 @@ cvhierr <- function(x,
     # Randomly sample observations into folds
     foldid <- sample(rep(seq(nfolds), length = n))
 
-    # Vector to collect results of CV
+    # Matrix to collect results of CV
     errormat <- matrix(NA, nrow = n, ncol = num_pen * num_pen_ext)
 
     # Run k-fold CV
     if (parallel) {
-        cvout <- foreach(k = seq(nfolds), .packages = c("hierr")) %dopar% {
+        cvout <- foreach(k = seq.int(nfolds), .packages = c("hierr")) %dopar% {
             subset <- (foldid == k)
             if (is.vector(drop(y))) {
                 y_train <- y[!subset]
@@ -108,7 +106,7 @@ cvhierr <- function(x,
                   weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
         }
         if (!is.null(unpen)) {
-            for (k in 1:nfolds) {
+            for (k in seq.int(nfolds)) {
                 subset <- (foldid == k)
                 betas <- rbind(as.vector(t(cvout[[k]]$beta0)),
                                `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)), c(dim(cvout[[k]]$betas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])),
@@ -117,7 +115,7 @@ cvhierr <- function(x,
 
             }
         } else {
-            for (k in 1:nfolds) {
+            for (k in seq.int(nfolds)) {
                 subset <- (foldid == k)
                 betas <- rbind(as.vector(t(cvout[[k]]$beta0)),
                                `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)), c(dim(cvout[[k]]$betas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])))
@@ -126,7 +124,7 @@ cvhierr <- function(x,
             }
         }
     } else {
-        for (k in seq_along(1:nfolds)) {
+        for (k in seq.int(nfolds)) {
 
             # Split into test and train for k-th fold
             subset <- (foldid == k)

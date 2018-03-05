@@ -84,8 +84,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // gaussian_fit
-List gaussian_fit(const arma::mat& x_, const arma::vec& y_, const arma::mat& ext_, const arma::mat& fixed_, const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_unpen, const arma::vec& w, const NumericVector& ptype, const double& tau, const double& tau_ext, const arma::vec& cmult, NumericVector& lower_cl, NumericVector& upper_cl, const int& ne, const int& nx, const int& nlam, const int& nlam_ext, const double& pratio, const double& pratio_ext, NumericVector ulam_, NumericVector ulam_ext_, const double& thr, const int& maxit, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext);
-RcppExport SEXP _hierr_gaussian_fit(SEXP x_SEXP, SEXP y_SEXP, SEXP ext_SEXP, SEXP fixed_SEXP, SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP nvar_unpenSEXP, SEXP wSEXP, SEXP ptypeSEXP, SEXP tauSEXP, SEXP tau_extSEXP, SEXP cmultSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP nlamSEXP, SEXP nlam_extSEXP, SEXP pratioSEXP, SEXP pratio_extSEXP, SEXP ulam_SEXP, SEXP ulam_ext_SEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP) {
+List gaussian_fit(const arma::mat& x_, const arma::vec& y_, const arma::mat& ext_, const arma::mat& fixed_, const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_unpen, const arma::vec& w, const NumericVector& ptype, const double& tau, const double& tau_ext, const arma::vec& cmult, NumericVector& lower_cl, NumericVector& upper_cl, const int& ne, const int& nx, const int& nlam, const int& nlam_ext, const double& pratio, const double& pratio_ext, NumericVector ulam_, NumericVector ulam_ext_, const double& thr, const int& maxit, const bool& earlyStop, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext);
+RcppExport SEXP _hierr_gaussian_fit(SEXP x_SEXP, SEXP y_SEXP, SEXP ext_SEXP, SEXP fixed_SEXP, SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP nvar_unpenSEXP, SEXP wSEXP, SEXP ptypeSEXP, SEXP tauSEXP, SEXP tau_extSEXP, SEXP cmultSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP nlamSEXP, SEXP nlam_extSEXP, SEXP pratioSEXP, SEXP pratio_extSEXP, SEXP ulam_SEXP, SEXP ulam_ext_SEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP earlyStopSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -114,11 +114,12 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type ulam_ext_(ulam_ext_SEXP);
     Rcpp::traits::input_parameter< const double& >::type thr(thrSEXP);
     Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type earlyStop(earlyStopSEXP);
     Rcpp::traits::input_parameter< const bool& >::type isd(isdSEXP);
     Rcpp::traits::input_parameter< const bool& >::type isd_ext(isd_extSEXP);
     Rcpp::traits::input_parameter< const bool& >::type intr(intrSEXP);
     Rcpp::traits::input_parameter< const bool& >::type intr_ext(intr_extSEXP);
-    rcpp_result_gen = Rcpp::wrap(gaussian_fit(x_, y_, ext_, fixed_, nobs, nvar, nvar_ext, nvar_unpen, w, ptype, tau, tau_ext, cmult, lower_cl, upper_cl, ne, nx, nlam, nlam_ext, pratio, pratio_ext, ulam_, ulam_ext_, thr, maxit, isd, isd_ext, intr, intr_ext));
+    rcpp_result_gen = Rcpp::wrap(gaussian_fit(x_, y_, ext_, fixed_, nobs, nvar, nvar_ext, nvar_unpen, w, ptype, tau, tau_ext, cmult, lower_cl, upper_cl, ne, nx, nlam, nlam_ext, pratio, pratio_ext, ulam_, ulam_ext_, thr, maxit, earlyStop, isd, isd_ext, intr, intr_ext));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -127,7 +128,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 27},
     {"_hierr_create_data", (DL_FUNC) &_hierr_create_data, 17},
     {"_hierr_standardize_vec", (DL_FUNC) &_hierr_standardize_vec, 5},
-    {"_hierr_gaussian_fit", (DL_FUNC) &_hierr_gaussian_fit, 29},
+    {"_hierr_gaussian_fit", (DL_FUNC) &_hierr_gaussian_fit, 30},
     {NULL, NULL, 0}
 };
 

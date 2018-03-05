@@ -107,6 +107,7 @@ List gaussian_fit(const arma::mat & x_,
                   NumericVector ulam_ext_,
                   const double & thr,
                   const int & maxit,
+                  const bool & earlyStop,
                   const bool & isd,
                   const bool & isd_ext,
                   const bool & intr,
@@ -216,7 +217,7 @@ List gaussian_fit(const arma::mat & x_,
                            dev, dev_inner, mm, errcode, nlp, idx_lam);
 
                 //stop if max deviance or no appreciable change in deviance
-                if (pratio_ext > 0.0) {
+                if (pratio_ext > 0.0 && earlyStop) {
                     if ((dev_inner - dev_old) < (1e-05 * dev_inner) || dev_inner > 0.999 || errcode > 0.0) {
                         idx_lam += nlam_ext - m2;
                         break;

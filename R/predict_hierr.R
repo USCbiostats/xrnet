@@ -99,7 +99,7 @@ predict.hierr <- function(object,
             betas <- rbind(as.vector(t(beta0)),
                            `dim<-`(aperm(betas, c(1, 3, 2)), c(dim(betas)[1], dim(betas)[2] * dim(betas)[3])))
         }
-        result <- cbind2(1, newdata) %*% betas
+        result <- cbind(1, newdata) %*% betas
         result <- aperm(array(t(result), c(length(pext), length(p), dim(result)[1])), c(3, 2, 1))
         return(drop(result))
     }

@@ -268,6 +268,7 @@ hierr <- function(x,
 #' @export
 hierr.control <- function(tolerance = 1e-08,
                           max_iterations = 1e+05,
+                          earlyStop = TRUE,
                           dfmax = NULL,
                           pmax = NULL,
                           lower_limits = NULL,
@@ -281,10 +282,11 @@ hierr.control <- function(tolerance = 1e-08,
         stop("Error: max_iterations must be a postive integer")
     }
 
-    structure(list(tolerance = tolerance,
-                   max_iterations = max_iterations,
-                   dfmax = dfmax,
-                   pmax = pmax,
-                   lower_limits = lower_limits,
-                   upper_limits = upper_limits))
+    control_obj <- list(tolerance = tolerance,
+                        max_iterations = max_iterations,
+                        earlyStop = earlyStop,
+                        dfmax = dfmax,
+                        pmax = pmax,
+                        lower_limits = lower_limits,
+                        upper_limits = upper_limits)
 }

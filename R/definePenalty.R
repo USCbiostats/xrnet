@@ -102,16 +102,16 @@ definePenalty <- function(penalty_type = 0,
         stop("Error: custom_multiplier_ext can only contain non-negative values")
     }
 
-    structure(list(penalty_type = penalty_type,
-                   tau = quantile,
-                   penalty_type_ext = penalty_type_ext,
-                   tau_ext = quantile_ext,
-                   num_penalty = num_penalty,
-                   num_penalty_ext = num_penalty_ext,
-                   penalty_ratio = penalty_ratio,
-                   penalty_ratio_ext = penalty_ratio_ext,
-                   user_penalty = user_penalty,
-                   user_penalty_ext = user_penalty_ext,
-                   custom_multiplier = custom_multiplier,
-                   custom_multiplier_ext = custom_multiplier_ext))
+    penalty_obj <- list(penalty_type = penalty_type,
+                        tau = quantile,
+                        penalty_type_ext = penalty_type_ext,
+                        tau_ext = quantile_ext,
+                        num_penalty = num_penalty,
+                        num_penalty_ext = num_penalty_ext,
+                        penalty_ratio = penalty_ratio,
+                        penalty_ratio_ext = penalty_ratio_ext,
+                        user_penalty = user_penalty,
+                        user_penalty_ext = user_penalty_ext,
+                        custom_multiplier = custom_multiplier,
+                        custom_multiplier_ext = custom_multiplier_ext)
 }
