@@ -164,6 +164,7 @@ List gaussian_fit(const arma::mat & x_,
     int nlam_total = nlam * nlam_ext;
     arma::mat coef(nvar_total, nlam_total, arma::fill::zeros);
     NumericVector dev(nlam_total);
+    NumericVector num_passes(nlam_total);
 
     // compute gradient vector
     arma::vec g(nvar_total, arma::fill::zeros);
@@ -208,6 +209,7 @@ List gaussian_fit(const arma::mat & x_,
                 coef_inner = coef_outer;
                 dev_inner = dev_outer;
                 dev_old = dev_outer;
+                num_passes[idx_lam] = nlp;
 
             }
             else {
@@ -216,6 +218,7 @@ List gaussian_fit(const arma::mat & x_,
                            lam_cur, thr, maxit, xv, coef, coef_inner, g,
                            dev, dev_inner, mm, errcode, nlp, idx_lam);
 
+                num_passes[idx_lam] = nlp;
                 //stop if max deviance or no appreciable change in deviance
                 if (pratio_ext > 0.0 && earlyStop) {
                     if ((dev_inner - dev_old) < (1e-05 * dev_inner) || dev_inner > 0.999 || errcode > 0.0) {
@@ -298,5 +301,6 @@ List gaussian_fit(const arma::mat & x_,
                               Named("penalty_ratio") = pratio,
                               Named("penalty_ratio_ext") = pratio_ext,
                               Named("deviance") = dev,
+                              Named("num_passes") = num_passes,
                               Named("nlp") = nlp);
 }

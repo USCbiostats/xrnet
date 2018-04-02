@@ -53,7 +53,7 @@ hierr <- function(x,
     if (!(class(x)) != "matrix") {
         x <- as.matrix(x)
     }
-    if (typeof(x) != "double") {
+    if (!(typeof(x) %in% c("double", "integer"))) {
         stop("Error: x contains non-numeric values")
     }
 
@@ -72,7 +72,7 @@ hierr <- function(x,
         if (!(class(external)) != "matrix") {
             external <- as.matrix(external)
         }
-        if (typeof(external) != "double") {
+        if (!(typeof(x) %in% c("double", "integer"))) {
             stop("Error: external contains non-numeric values")
         }
     } else {
@@ -96,7 +96,7 @@ hierr <- function(x,
         if (!(class(unpen)) != "matrix") {
             unpen <- as.matrix(unpen)
         }
-        if (typeof(unpen) != "double") {
+        if (!(typeof(x) %in% c("double", "integer"))) {
             stop("Error: unpen contains non-numeric values")
         }
     } else {
@@ -249,6 +249,7 @@ hierr <- function(x,
         fit$gammas <- NULL
     }
 
+    fit$num_passes <- matrix(fit$num_passes, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
     fit$call <- this.call
     class(fit) <- "hierr"
     return(fit)
