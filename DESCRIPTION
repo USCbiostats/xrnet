@@ -12,7 +12,8 @@ LazyData: true
 RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown,
-    testthat
+    testthat,
+    glmnet
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,
