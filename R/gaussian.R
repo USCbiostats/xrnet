@@ -42,5 +42,4 @@ gaussian <- function(x,
                         isd_ext = isd[2],
                         intr = intr[1],
                         intr_ext = intr[2])
-
 }
