@@ -16,10 +16,10 @@ Setup
 library(devtools)
 
 # Master branch
-install_github("gmweaver/hierr")
+install_github("USCbiostats/hierr")
 
 # Or the development branch
-install_github("gmweaver/hierr", ref = "development")
+install_github("USCbiostats/hierr", ref = "development")
 ```
 
 ``` r
