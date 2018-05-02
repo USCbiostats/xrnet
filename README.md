@@ -7,9 +7,21 @@ hierr: An R Package for Hierarchical Regularized Regression
 Introduction
 ============
 
-The hierr R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of the predictors on an outcome of interest. Let *y* ∈ ℝ<sup>*n*</sup> be the observed outcome vector, *X* ∈ ℝ<sup>*n* × *p*</sup> be the set of p predictors observed from n observations, and *Z* ∈ ℝ<sup>*p* × *q*</sup> be the set of q external features available for the p predictors. Assuming that the outcome is continuous, we minimize the following objective function:
+The hierr R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of the predictors on an outcome of interest. Let *y* ∈ ℝ<sup>*n*</sup> be the observed outcome vector, *X* ∈ ℝ<sup>*n* × *p*</sup> the set of p predictors observed for the n observations, and *Z* ∈ ℝ<sup>*p* × *q*</sup> the set of q external features available for the p predictors. We extend the standard two-stage regression model:
 
-min<sub>*β*, *α*</sub>||*y* − *X**β*||<sub>2</sub><sup>2</sup>
+![img](https://latex.codecogs.com/gif.latex?y%20%3D%20X%5Cbeta%20+%20%5Cepsilon)
+
+![img](https://latex.codecogs.com/gif.latex?%5Cbeta%20%3D%20Z%5Calpha%20+%20%5Cgamma)
+
+to allow regularization of both the predictors and the external features. As an example, Assume that the outcome is continuous and that we want to apply a ridge penalty to the predictors and lasso penalty to the external features. We minimize the following objective function (ignoring intercept terms):
+
+![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cbeta%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cbeta%7C%7C%5E2_2%20+%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cbeta%20-%20Z%5Calpha%7C%7C%5E2_2%20+%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
+
+where *β* is a *p* × 1 vector of coefficients describing the association of each predictor with the outcome and *α* is a *q* × 1 vector of coefficients describing the association of each external feature with the predictor coefficients, *β*. Rewriting this convex optimization with the variable subsitution *γ* = *β* − *Z* *α*, we see that this is a generalization of standard regularized regression in which we allow the penalty value (*λ*<sub>1</sub> / *λ*<sub>2</sub>) and type (ridge / lasso) to be variable-specific:
+
+![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cgamma%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cgamma%20-%20XZ%5Calpha%7C%7C%5E2_2%20+%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cgamma%7C%7C%5E2_2%20+%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
+
+This package extends the coordinate descent algorithm of Friedman et al. 2010 to allow for this generalization and to fit the model described above. Currently, we allow for continuous outcomes, but plan to extend to the standard GLM framework.
 
 Setup
 =====
