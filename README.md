@@ -4,6 +4,13 @@ hierr: An R Package for Hierarchical Regularized Regression
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Build Status](https://travis-ci.org/USCbiostats/hierr.svg?branch=master)](https://travis-ci.org/USCbiostats/hierr) [![codecov](https://codecov.io/gh/USCbiostats/hierr/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/hierr)
 
+Introduction
+============
+
+The hierr R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of the predictors on an outcome of interest. Let *y* ∈ ℝ<sup>*n*</sup> be the observed outcome vector, *X* ∈ ℝ<sup>*n* × *p*</sup> be the set of p predictors observed from n observations, and *Z* ∈ ℝ<sup>*p* × *q*</sup> be the set of q external features available for the p predictors. Assuming that the outcome is continuous, we minimize the following objective function:
+
+min<sub>*β*, *α*</sub>||*y* − *X**β*||<sub>2</sub><sup>2</sup>
+
 Setup
 =====
 
@@ -39,7 +46,7 @@ ext <- hierr::ext
 
 #### Fitting a Model
 
-To fit a linear hierarchical regularized regression model, you can use the main `hierr` function. At a minimum, you must specify the predictor matrix (x), outcome variable (y), external data matrix (ext), and outcome distribution. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.
+To fit a linear hierarchical regularized regression model, you can use the main `hierr` function. At a minimum, you should specify the predictor matrix (x), outcome variable (y), external data matrix (ext), and outcome distribution. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.
 
 ``` r
 hierr_model <- hierr(x = x, y = y, external = ext, family = "gaussian")
