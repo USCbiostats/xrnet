@@ -18,21 +18,21 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The hierr R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of the predictors on an outcome of interest. Let $y\in\mathbb{R}^n$ be the observed outcome vector, $X\in\mathbb{R}^{n \times p}$ the set of p predictors observed for the n observations, and $Z\in\mathbb{R}^{p \times q}$ the set of q external features available for the p predictors. We extend the standard two-stage regression model:
+The **hierr** R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of predictors on an outcome of interest. Let $y\in\mathbb{R}^n$ be the observed outcome vector, $X\in\mathbb{R}^{n \times p}$ be a set of *p* potential predictors observed on the *n* observations, and $Z\in\mathbb{R}^{p \times q}$ be a set of *q* external features available for the *p* predictors. Our model builds off the standard two-stage regression model,
 
 ![img](https://latex.codecogs.com/gif.latex?y%20%3D%20X%5Cbeta%20&plus;%20%5Cepsilon)
 
 ![img](https://latex.codecogs.com/gif.latex?%5Cbeta%20%3D%20Z%5Calpha%20&plus;%20%5Cgamma)
 
-to allow regularization of both the predictors and the external features. As an example, Assume that the outcome is continuous and that we want to apply a ridge penalty to the predictors and lasso penalty to the external features. We minimize the following objective function (ignoring intercept terms):
+but allows regularization of both the predictors and the external features, where $\beta$ is a $p \times 1$ vector of coefficients describing the association of each predictor with the outcome and $\alpha$ is a $q \times 1$ vector of coefficients describing the association of each external feature with the predictor coefficients, $\beta$. As an example, assume that the outcome is continuous and that we want to apply a ridge penalty to the predictors and lasso penalty to the external features. We minimize the following objective function (ignoring intercept terms):
 
 ![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cbeta%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cbeta%7C%7C%5E2_2%20&plus;%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cbeta%20-%20Z%5Calpha%7C%7C%5E2_2%20&plus;%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
 
-where $\beta$ is a $p \times 1$ vector of coefficients describing the association of each predictor with the outcome and $\alpha$ is a $q \times 1$ vector of coefficients describing the association of each external feature with the predictor coefficients, $\beta$. Rewriting this convex optimization with the variable subsitution $\gamma = \beta - Z$ $\alpha$, we see that this is a generalization of standard regularized regression in which we allow the penalty value ($\lambda_1$ / $\lambda_2$) and type (ridge / lasso) to be variable-specific:
+Note that our model allows for the predictor coefficients, $\beta$, to shrink towards potentially informative values, $Z$ $\alpha$. In the event the external data is not informative, we can shrink $\alpha$ towards zero, returning back to a standard regularized regression. To efficiently fit the model, we rewrite this convex optimization with the variable subsitution $\gamma = \beta - Z$ $\alpha$, and find it is a standard regularized regression in which we allow the penalty value ($\lambda_1$ / $\lambda_2$) and type (ridge / lasso) to be variable-specific:
 
 ![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cgamma%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cgamma%20-%20XZ%5Calpha%7C%7C%5E2_2%20&plus;%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cgamma%7C%7C%5E2_2%20&plus;%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
 
-This package extends the coordinate descent algorithm of Friedman et al. 2010 to allow for this generalization and to fit the model described above. Currently, we allow for continuous outcomes, but plan to extend to the standard GLM framework.  
+This package extends the coordinate descent algorithm of Friedman et al. 2010 (used in the R package **glmnet**) to allow for this variable-specific generalization and to fit the model described above. Currently, we allow for continuous outcomes, but plan to extend to other outcomes (i.e. binomial, count).  
 
 # Setup
 
