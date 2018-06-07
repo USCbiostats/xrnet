@@ -14,6 +14,25 @@ NULL
 #' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
 #' @param intercept indicates whether an intercept term is included for x and/or external. Default is c(TRUE, TRUE).
 #' @param control specifies hierr control object. See \code{\link{hierr.control}} for more details.
+#' @return A list of class \code{hierr} with components
+#' \item{beta0}{matrix of first-level intercepts indexed by penalty values}
+#' \item{betas}{3-dimensional array of first-level penalized coefficients indexed by penalty values}
+#' \item{gammas}{3-dimensional array of first-level non-penalized coefficients indexed by penalty values}
+#' \item{alpha0}{matrix of second-level intercepts indexed by penalty values}
+#' \item{alphas}{3-dimensional array of second-level external data coefficients indexed by penalty values}
+#' \item{penalty}{vector of first-level penalty values}
+#' \item{penalty_ext}{vector of second-level penalty values}
+#' \item{penalty_type}{type of penalty applied to first-level predictors}
+#' \item{quantile}{quantile for penalty on first-level predictors}
+#' \item{penalty_type_ext}{type of penalty applied to second-level external data}
+#' \item{quantile_ext}{quantile for penalty on second-level external data}
+#' \item{penalty_ratio}{ratio between minimum and maximum penalty (predictors)}
+#' \item{penalty_ratio_ext}{ratio between minimum and maximum penalty (external data)}
+#' \item{deviance}{fraction of deviance explaned, \eqn{2 x (loglike(saturated model) - loglike(model))}}
+#' \item{nlp}{total number of passes over data}
+#' \item{custom_mult}{vector of variable-specific penalty multipliers for predictors}
+#' \item{custom_mult_ext}{vector of variable-specific penalty multipliers for external data}
+
 
 #' @export
 hierr <- function(x,
