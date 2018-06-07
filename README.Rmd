@@ -1,5 +1,5 @@
 ---
-title: hierr:\ An R Package for Hierarchical Regularized Regression
+title: hierr:\ R Package for Hierarchical Regularized Regression
 output: github_document
 ---
 
