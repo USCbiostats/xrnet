@@ -17,7 +17,7 @@ but allows regularization of both the predictors and the external features, wher
 
 ![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cbeta%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cbeta%7C%7C%5E2_2%20+%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cbeta%20-%20Z%5Calpha%7C%7C%5E2_2%20+%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
 
-Note that our model allows for the predictor coefficients, *β*, to shrink towards potentially informative values, *Z* *α*. In the event the external data is not informative, we can shrink *α* towards zero, returning back to a standard regularized regression. To efficiently fit the model, we rewrite this convex optimization with the variable subsitution *γ* = *β* − *Z* *α*, and find it is a standard regularized regression in which we allow the penalty value (*λ*<sub>1</sub> / *λ*<sub>2</sub>) and type (ridge / lasso) to be variable-specific:
+Note that our model allows for the predictor coefficients, *β*, to shrink towards potentially informative values, *Z* *α*. In the event the external data is not informative, we can shrink *α* towards zero, returning back to a standard regularized regression. To efficiently fit the model, we rewrite this convex optimization with the variable subsitution *γ* = *β* − *Z* *α*. The problem is then solved as a standard regularized regression in which we allow the penalty value (*λ*<sub>1</sub> / *λ*<sub>2</sub>) and type (ridge / lasso) to be variable-specific:
 
 ![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cgamma%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cgamma%20-%20XZ%5Calpha%7C%7C%5E2_2%20+%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cgamma%7C%7C%5E2_2%20+%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
 
