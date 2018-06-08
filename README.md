@@ -71,7 +71,7 @@ To modify the regularization terms and penalty path associated with the predicto
 -   Regularization type
     -   Ridge = 0
     -   Elastic Net = (0, 1)
-    -   Lasso / Quantile = 1 (additional parameter `tau` used to specify quantile)
+    -   Lasso / Quantile = 1 (additional parameter `quantile` used to specify quantile)
 -   Penalty path
     -   Number of penalty values in the full penalty path (default = 20)
     -   Ratio of min(penalty) / max(penalty)
