@@ -1,8 +1,27 @@
-hierr: An R Package for Hierarchical Regularized Regression
+hierr: R Package for Hierarchical Regularized Regression
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Build Status](https://travis-ci.org/gmweaver/hierr.svg?branch=master)](https://travis-ci.org/gmweaver/hierr) [![codecov](https://codecov.io/gh/gmweaver/hierr/branch/master/graph/badge.svg)](https://codecov.io/gh/gmweaver/hierr)
+[![Build Status](https://travis-ci.org/USCbiostats/hierr.svg?branch=master)](https://travis-ci.org/USCbiostats/hierr) [![codecov](https://codecov.io/gh/USCbiostats/hierr/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/hierr)
+
+Introduction
+============
+
+The **hierr** R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of predictors on an outcome of interest. Let *y* ∈ ℝ<sup>*n*</sup> be the observed outcome vector, *X* ∈ ℝ<sup>*n* × *p*</sup> be a set of *p* potential predictors observed on the *n* observations, and *Z* ∈ ℝ<sup>*p* × *q*</sup> be a set of *q* external features available for the *p* predictors. Our model builds off the standard two-stage regression model,
+
+![img](https://latex.codecogs.com/gif.latex?y%20%3D%20X%5Cbeta%20+%20%5Cepsilon)
+
+![img](https://latex.codecogs.com/gif.latex?%5Cbeta%20%3D%20Z%5Calpha%20+%20%5Cgamma)
+
+but allows regularization of both the predictors and the external features, where *β* is a *p* × 1 vector of coefficients describing the association of each predictor with the outcome and *α* is a *q* × 1 vector of coefficients describing the association of each external feature with the predictor coefficients, *β*. As an example, assume that the outcome is continuous and that we want to apply a ridge penalty to the predictors and lasso penalty to the external features. We minimize the following objective function (ignoring intercept terms):
+
+![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cbeta%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cbeta%7C%7C%5E2_2%20+%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cbeta%20-%20Z%5Calpha%7C%7C%5E2_2%20+%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
+
+Note that our model allows for the predictor coefficients, *β*, to shrink towards potentially informative values, *Z* *α*. In the event the external data is not informative, we can shrink *α* towards zero, returning back to a standard regularized regression. To efficiently fit the model, we rewrite this convex optimization with the variable subsitution *γ* = *β* − *Z* *α*. The problem is then solved as a standard regularized regression in which we allow the penalty value (*λ*<sub>1</sub> / *λ*<sub>2</sub>) and type (ridge / lasso) to be variable-specific:
+
+![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cgamma%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cgamma%20-%20XZ%5Calpha%7C%7C%5E2_2%20+%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cgamma%7C%7C%5E2_2%20+%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
+
+This package extends the coordinate descent algorithm of Friedman et al. 2010 (used in the R package **glmnet**) to allow for this variable-specific generalization and to fit the model described above. Currently, we allow for continuous outcomes, but plan to extend to other outcomes (i.e. binomial, count).
 
 Setup
 =====
@@ -16,10 +35,10 @@ Setup
 library(devtools)
 
 # Master branch
-install_github("gmweaver/hierr")
+install_github("USCbiostats/hierr")
 
 # Or the development branch
-install_github("gmweaver/hierr", ref = "development")
+install_github("USCbiostats/hierr", ref = "development")
 ```
 
 ``` r
@@ -39,7 +58,7 @@ ext <- hierr::ext
 
 #### Fitting a Model
 
-To fit a linear hierarchical regularized regression model, you can use the main `hierr` function. At a minimum, you must specify the predictor matrix (x), outcome variable (y), external data matrix (ext), and outcome distribution. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.
+To fit a linear hierarchical regularized regression model, use the main `hierr` function. At a minimum, you should specify the predictor matrix `x`, outcome variable `y`, and `family` (outcome distribution). The `external` option allows you to incorporate external data in the regularized regression model. If you do not include external data, a standard regularized regression model will be fit. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.
 
 ``` r
 hierr_model <- hierr(x = x, y = y, external = ext, family = "gaussian")
@@ -52,7 +71,7 @@ To modify the regularization terms and penalty path associated with the predicto
 -   Regularization type
     -   Ridge = 0
     -   Elastic Net = (0, 1)
-    -   Lasso / Quantile = 1 (quantile only on development branch currently)
+    -   Lasso / Quantile = 1 (additional parameter `quantile` used to specify quantile)
 -   Penalty path
     -   Number of penalty values in the full penalty path (default = 20)
     -   Ratio of min(penalty) / max(penalty)

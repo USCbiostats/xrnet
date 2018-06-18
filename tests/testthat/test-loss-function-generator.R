@@ -1,4 +1,5 @@
 context("test error function generator for CV function")
+library(hierr)
 
 load("Test-Data/x.Rdata")
 load("Test-Data/y.Rdata")

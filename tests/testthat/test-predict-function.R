@@ -1,4 +1,5 @@
 context("test predict function works correctly")
+library(hierr)
 
 load(file = "Test-Data/x.Rdata")
 load(file = "Test-Data/y.Rdata")

@@ -132,10 +132,8 @@ List gaussian_fit(const arma::mat & x_,
     standardize_vec(outer_resid, wgt, ym, ys, intr);
     lower_cl = lower_cl / ys;
     upper_cl = upper_cl / ys;
-    NumericVector ulam = Rcpp::clone(ulam_);
-    NumericVector ulam_ext = Rcpp::clone(ulam_ext_);
-    //ulam = ulam_ / ys;
-    //ulam_ext = ulam_ext_ / ys;
+    NumericVector ulam = Rcpp::clone(ulam_) / ys;
+    NumericVector ulam_ext = Rcpp::clone(ulam_ext_) / ys;
 
     if (isd) {
         for (int i = 0; i < nvar; ++i) {
@@ -175,8 +173,7 @@ List gaussian_fit(const arma::mat & x_,
     NumericVector lam_path = compute_penalty(ulam, nlam, ptype[0], pratio, g, cmult, start, nvar);
     NumericVector lam_path_ext = 0.0;
     if (nvar_ext > 0) {
-        lam_path_ext = compute_penalty(ulam_ext, nlam_ext, ptype[ext_start],
-                                       pratio_ext, g, cmult, ext_start, nvar_total);
+        lam_path_ext = compute_penalty(ulam_ext, nlam_ext, ptype[ext_start], pratio_ext, g, cmult, ext_start, nvar_total);
     }
 
     // loop through all penalty combinations
@@ -292,8 +289,8 @@ List gaussian_fit(const arma::mat & x_,
                               Named("gammas") = gammas,
                               Named("alpha0") = a0,
                               Named("alphas") = alphas,
-                              Named("penalty") = lam_path,
-                              Named("penalty_ext") = lam_path_ext,
+                              Named("penalty") = lam_path * ys,
+                              Named("penalty_ext") = lam_path_ext * ys,
                               Named("penalty_type") = ptype[0],
                               Named("quantile") = tau,
                               Named("penalty_type_ext") = ptype[nvar_total - 1],

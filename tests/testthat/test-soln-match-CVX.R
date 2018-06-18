@@ -1,4 +1,5 @@
 context("compare coefficent estimates to CVX (manual penalty)")
+library(hierr)
 
 ##### Code used to generate data files for all tests #####
 
@@ -50,8 +51,9 @@ context("compare coefficent estimates to CVX (manual penalty)")
 load(file = "Test-Data/x.Rdata")
 load(file = "Test-Data/y.Rdata")
 load(file = "Test-Data/z.Rdata")
+sdy <- sqrt(var(y) * (length(y) - 1) / length(y))
 
-myPenalty <- hierr::definePenalty(penalty_type = 0, penalty_type_ext = 1, user_penalty = 1, user_penalty_ext = 0.1)
+myPenalty <- hierr::definePenalty(penalty_type = 0, penalty_type_ext = 1, user_penalty = 1 * sdy, user_penalty_ext = 0.1 * sdy)
 
 test_that("x and ext standardized, both intercepts",{
 
