@@ -3,7 +3,7 @@ Type: Package
 Title: Hierarchical Regularized Regression
 Version: 0.1.0
 Author: Garrett M. Weaver
-Maintainer: Garrett M. Weaver <gmweaver@usc.edu>
+Maintainer: Garrett M. Weaver <gmweaver.usc@gmail.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: MIT + file LICENSE
@@ -12,8 +12,7 @@ LazyData: true
 RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown,
-    testthat,
-    glmnet
+    testthat
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,

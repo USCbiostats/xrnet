@@ -1,4 +1,5 @@
 context("compare coefficent estimates to CVX (automatic penalty)")
+library(hierr)
 
 ##### Code used to generate data files for all tests #####
 
@@ -59,10 +60,20 @@ test_that("x and ext standardized, both intercepts",{
     load(file = "Test-Data/betas_cvx13.Rdata")
 
     expect_equal(alphas_cvx13,
-                 hierr(x = x, y = y, external = z, family = "gaussian", penalty = myPenalty, control = list(tolerance = 1e-20))$alphas[1:5, 4, 2],
+                 hierr(x = x,
+                       y = y,
+                       external = z,
+                       family = "gaussian",
+                       penalty = myPenalty,
+                       control = list(tolerance = 1e-20))$alphas[1:5, 4, 2],
                  tolerance = 1e-5)
     expect_equal(betas_cvx13,
-                 hierr(x = x, y = y, external = z, family = "gaussian", penalty = myPenalty, control = list(tolerance = 1e-20))$betas[1:50, 4, 2],
+                 hierr(x = x,
+                       y = y,
+                       external = z,
+                       family = "gaussian",
+                       penalty = myPenalty,
+                       control = list(tolerance = 1e-20))$betas[1:50, 4, 2],
                  tolerance = 1e-5)
 })
 
@@ -72,10 +83,20 @@ test_that("x Not standardized, ext IS standardized, both intercepts",{
     load(file = "Test-Data/betas_cvx14.Rdata")
 
     expect_equal(alphas_cvx14,
-                 hierr(x = x, y = y, external = z, family = "gaussian", penalty = myPenalty, standardize = c(F, T), control = list(tolerance = 1e-20))$alphas[1:5, 4, 2],
+                 hierr(x = x,
+                       y = y,
+                       external = z,
+                       family = "gaussian",
+                       penalty = myPenalty, standardize = c(F, T),
+                       control = list(tolerance = 1e-20))$alphas[1:5, 4, 2],
                  tolerance = 1e-5)
     expect_equal(betas_cvx14,
-                 hierr(x = x, y = y, external = z, family = "gaussian", penalty = myPenalty, standardize = c(F, T), control = list(tolerance = 1e-20))$betas[1:50, 4, 2],
+                 hierr(x = x,
+                       y = y,
+                       external = z,
+                       family = "gaussian",
+                       penalty = myPenalty, standardize = c(F, T),
+                       control = list(tolerance = 1e-20))$betas[1:50, 4, 2],
                  tolerance = 1e-5)
 })
 
@@ -85,10 +106,22 @@ test_that("x IS standardized, ext NOT standardized, both intercepts",{
     load(file = "Test-Data/betas_cvx15.Rdata")
 
     expect_equal(alphas_cvx15,
-                 hierr(x = x, y = y, external = z, family = "gaussian", penalty = myPenalty, standardize = c(T, F), control = list(tolerance = 1e-20))$alphas[1:5, 4, 2],
+                 hierr(x = x,
+                       y = y,
+                       external = z,
+                       family = "gaussian",
+                       penalty = myPenalty,
+                       standardize = c(T, F),
+                       control = list(tolerance = 1e-20))$alphas[1:5, 4, 2],
                  tolerance = 1e-5)
     expect_equal(betas_cvx15,
-                 hierr(x = x, y = y, external = z, family = "gaussian", penalty = myPenalty, standardize = c(T, F), control = list(tolerance = 1e-20))$betas[1:50, 4, 2],
+                 hierr(x = x,
+                       y = y,
+                       external = z,
+                       family = "gaussian",
+                       penalty = myPenalty,
+                       standardize = c(T, F),
+                       control = list(tolerance = 1e-20))$betas[1:50, 4, 2],
                  tolerance = 1e-5)
 })
 
@@ -183,7 +216,7 @@ test_that("x Not standardized, ext IS standardized, no 1st level intercept",{
                  hierr(x = x, y = y, external = z, family = "gaussian", penalty = myPenalty, intercept = c(F, T), standardize = c(F, T), control = list(tolerance = 1e-20))$alphas[1:5, 4, 2],
                  tolerance = 1e-5)
     expect_equal(betas_cvx22,
-                 hierr(x = x, y = y, external = z, family = "gaussian", penalty = myPenalty, intercept = c(F, T), standardize = c(F, T), control = list(tolerance = 1e-20))$betas[1:50, 4, 2],
+                 hierr(x = x, y = y, external = z, family = "gaussian", penalty = myPenalty, intercept = c(F, T), standardize = c(F, T), control = list(tolerance = 1e-15))$betas[1:50, 4, 2],
                  tolerance = 1e-5)
 })
 

@@ -1,4 +1,5 @@
 context("compare coefficent estimates to CVX (manual penalty)")
+library(hierr)
 
 ##### Code used to generate data files for all tests #####
 

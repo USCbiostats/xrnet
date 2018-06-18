@@ -1,5 +1,6 @@
 #' @useDynLib hierr, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
+#' @importFrom stats predict
 NULL
 
 #' Fit hierarchical regularized regression model

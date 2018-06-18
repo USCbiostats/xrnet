@@ -1,4 +1,6 @@
 context("test k-fold cross-validation function")
+library(hierr)
+
 load(file = "Test-Data/x.Rdata")
 load(file = "Test-Data/y.Rdata")
 load(file = "Test-Data/z.Rdata")
@@ -10,7 +12,14 @@ test_that("obtain correct min(penalty) compared to glmnet (no external data) -- 
     set.seed(123)
     myPenalty <- definePenalty(penalty_type = 0, num_penalty = 100)
     myControl <- list(tolerance = 1e-15)
-    expect_equal(cvhierr(x = x, y = y, family = "gaussian", intercept = c(T, F), penalty = myPenalty, control = myControl)$minl1, 0.5597391, tolerance = 1e-6)
+    expect_equal(cvhierr(x = x,
+                         y = y,
+                         family = "gaussian",
+                         intercept = c(T, F),
+                         penalty = myPenalty,
+                         control = myControl)$minl1,
+                 0.5597391,
+                 tolerance = 1e-5)
 
 })
 
@@ -21,7 +30,14 @@ test_that("obtain correct min(penalty) compared to glmnet (no external data) -- 
     set.seed(123)
     myPenalty <- definePenalty(penalty_type = 1, num_penalty = 100)
     myControl <- list(tolerance = 1e-15)
-    expect_equal(cvhierr(x = x, y = y, family = "gaussian", intercept = c(T, F), penalty = myPenalty, control = myControl)$minl1, 0.08507537, tolerance = 1e-6)
+    expect_equal(cvhierr(x = x,
+                         y = y,
+                         family = "gaussian",
+                         intercept = c(T, F),
+                         penalty = myPenalty,
+                         control = myControl)$minl1,
+                 0.08507537,
+                 tolerance = 1e-5)
 
 })
 
@@ -32,6 +48,13 @@ test_that("obtain correct min(penalty) compared to glmnet (no external data) -- 
     set.seed(123)
     myPenalty <- definePenalty(penalty_type = 0.5, num_penalty = 100)
     myControl <- list(tolerance = 1e-15)
-    expect_equal(cvhierr(x = x, y = y, family = "gaussian", intercept = c(T, F), penalty = myPenalty, control = myControl)$minl1, 0.155035, tolerance = 1e-6)
+    expect_equal(cvhierr(x = x,
+                         y = y,
+                         family = "gaussian",
+                         intercept = c(T, F),
+                         penalty = myPenalty,
+                         control = myControl)$minl1,
+                 0.155035,
+                 tolerance = 1e-5)
 
 })
