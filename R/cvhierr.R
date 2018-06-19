@@ -86,7 +86,7 @@ cvhierr <- function(x,
 
     # Run k-fold CV
     if (parallel) {
-        cvout <- foreach(k = seq.int(nfolds), .packages = c("hierr")) %dopar% {
+        cvout <- foreach(k = 1:nfolds, .packages = c("hierr")) %dopar% {
             subset <- (foldid == k)
             if (is.vector(drop(y))) {
                 y_train <- y[!subset]
@@ -106,7 +106,7 @@ cvhierr <- function(x,
                   weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
         }
         if (!is.null(unpen)) {
-            for (k in seq.int(nfolds)) {
+            for (k in 1:nfolds) {
                 subset <- (foldid == k)
                 betas <- rbind(as.vector(t(cvout[[k]]$beta0)),
                                `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)), c(dim(cvout[[k]]$betas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])),
@@ -115,7 +115,7 @@ cvhierr <- function(x,
 
             }
         } else {
-            for (k in seq.int(nfolds)) {
+            for (k in 1:nfolds) {
                 subset <- (foldid == k)
                 betas <- rbind(as.vector(t(cvout[[k]]$beta0)),
                                `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)), c(dim(cvout[[k]]$betas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])))
@@ -124,7 +124,7 @@ cvhierr <- function(x,
             }
         }
     } else {
-        for (k in seq.int(nfolds)) {
+        for (k in 1:nfolds) {
 
             # Split into test and train for k-th fold
             subset <- (foldid == k)
