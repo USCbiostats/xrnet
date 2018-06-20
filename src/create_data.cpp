@@ -66,7 +66,7 @@ arma::mat create_data(const int & nobs,
     }
 
     // Create reference to standardized x variables in xnew
-    arma::mat xsub(xnew.memptr(), nobs, nvar, false, true);
+    arma::mat xsub(xnew.memptr(), nobs, nvar, false, false);
 
     // standardize unpenalized variables (unpen)
     int xnew_col = nvar;
