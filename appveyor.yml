@@ -31,16 +31,16 @@ platform:
 
 matrix:
   - R_VERSION: 3.4.4
-  - R_ARCH: x64
+    R_ARCH: x64
 
   - R_VERSION: stable
-  - R_ARCH: x64
+    R_ARCH: x64
 
   - R_VERSION: 3.4.4
-  - R_ARCH: x86
+    R_ARCH: x86
 
   - R_VERSION: stable
-  - R_ARCH: x86
+    R_ARCH: x86
 
 artifacts:
   - path: '*.Rcheck\**\*.log'
