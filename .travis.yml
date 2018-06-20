@@ -9,3 +9,11 @@ r_packages:
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
+
+r:
+  - release
+  - oldrel
+
+os:
+  - linux
+  - osx
