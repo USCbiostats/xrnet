@@ -29,6 +29,9 @@ platform:
   - x86
   - X64
 
+environment:
+  - R_VERSION: 3.4.4
+
 artifacts:
   - path: '*.Rcheck\**\*.log'
     name: Logs
