@@ -281,7 +281,7 @@ hierr <- function(x,
 #'
 #' @param tolerance positive convergence criterion. Default is 1e-07.
 #' @param max_iterations maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.
-#' @param earlyStop indicator for whether stopping criterion on penalty path based on deviance (i.e. no change in deviance)
+#' @param earlyStop indicator for whether stopping criterion on penalty path based on deviance (i.e. no change in deviance). Default is FALSE.
 #' @param dfmax maximum number of variables allowed in model. Default is \eqn{ncol(x) + ncol(external) + intercept[1] + intercept[2]}.
 #' @param pmax maximum number of variables with nonzero coefficient estimate. Default is \eqn{min(2 * dfmax + 20, ncol(x) + ncol(external) + intercept[2])}.
 #' @param lower_limits vector of lower limits for each coefficient. Default is -Inf for all variables.
