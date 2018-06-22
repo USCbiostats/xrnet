@@ -279,7 +279,7 @@ hierr <- function(x,
 #'
 #' @description Control function for \code{\link{hierr}} fitting.
 #'
-#' @param tolerance positive convergence criterion. Default is 1e-08.
+#' @param tolerance positive convergence criterion. Default is 1e-07.
 #' @param max_iterations maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.
 #' @param earlyStop indicator for whether stopping criterion on penalty path based on deviance (i.e. no change in deviance)
 #' @param dfmax maximum number of variables allowed in model. Default is \eqn{ncol(x) + ncol(external) + intercept[1] + intercept[2]}.
@@ -288,9 +288,9 @@ hierr <- function(x,
 #' @param upper_limits vector of upper limits for each coefficient. Default is Inf for all variables.
 
 #' @export
-hierr.control <- function(tolerance = 1e-08,
+hierr.control <- function(tolerance = 1e-07,
                           max_iterations = 1e+05,
-                          earlyStop = TRUE,
+                          earlyStop = FALSE,
                           dfmax = NULL,
                           pmax = NULL,
                           lower_limits = NULL,

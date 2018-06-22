@@ -4,11 +4,12 @@
 \alias{hierr.control}
 \title{Control function for hierr fitting}
 \usage{
-hierr.control(tolerance = 1e-08, max_iterations = 1e+05, earlyStop = TRUE,
-  dfmax = NULL, pmax = NULL, lower_limits = NULL, upper_limits = NULL)
+hierr.control(tolerance = 1e-07, max_iterations = 1e+05,
+  earlyStop = FALSE, dfmax = NULL, pmax = NULL, lower_limits = NULL,
+  upper_limits = NULL)
 }
 \arguments{
-\item{tolerance}{positive convergence criterion. Default is 1e-08.}
+\item{tolerance}{positive convergence criterion. Default is 1e-07.}
 
 \item{max_iterations}{maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.}
 
