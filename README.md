@@ -2,7 +2,7 @@ hierr: R Package for Hierarchical Regularized Regression
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Build Status](https://travis-ci.org/USCbiostats/hierr.svg?branch=master)](https://travis-ci.org/USCbiostats/hierr) [![codecov](https://codecov.io/gh/USCbiostats/hierr/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/hierr)
+[![Build Status](https://travis-ci.org/USCbiostats/hierr.svg?branch=master)](https://travis-ci.org/USCbiostats/hierr) [![Build status](https://ci.appveyor.com/api/projects/status/6pr8hlc4wg9vjcxd?svg=true)](https://ci.appveyor.com/project/gmweaver/hierr) [![codecov](https://codecov.io/gh/USCbiostats/hierr/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/hierr)
 
 Introduction
 ============

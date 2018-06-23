@@ -10,9 +10,9 @@ error_match <- function(family, type.measure) {
             stop(paste("type.measure = ",type.measure," does not match available choices: mse, deviance, mae", sep = ""))
         }
         errfunc <- switch(type.measure,
-                      mse = function(beta, y, x, wgt) {wgt*(y - x %*% beta)^2},
-                      deviance = function(beta, y, x, wgt) {wgt*(y - x %*% beta)^2},
-                      mae = function(beta, y, x, wgt) {wgt*abs(y - x %*% beta)})
+                      mse = function(beta, y, x, wgt) {wgt * (y - x %*% beta)^2},
+                      deviance = function(beta, y, x, wgt) {wgt * (y - x %*% beta)^2},
+                      mae = function(beta, y, x, wgt) {wgt * abs(y - x %*% beta)})
     }
     return(errfunc)
 }
