@@ -27,7 +27,7 @@ on_failure:
 
 platform:
   - x86
-  - X64
+  - x64
 
 artifacts:
   - path: '*.Rcheck\**\*.log'
