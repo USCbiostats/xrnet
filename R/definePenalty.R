@@ -60,6 +60,7 @@ definePenalty <- function(penalty_type = 0,
 
     if (is.null(user_penalty)) {
         user_penalty <- as.double(0)
+        num_penalty <- as.integer(num_penalty)
         if (!is.null(penalty_ratio)) {
             if (penalty_ratio <= 0 | penalty_ratio >= 1) {
                 stop("Error: penalty_ratio should be between 0 and 1")
@@ -78,6 +79,7 @@ definePenalty <- function(penalty_type = 0,
 
     if (is.null(user_penalty_ext)) {
         user_penalty_ext <- as.double(0)
+        num_penalty_ext <- as.integer(num_penalty_ext)
         if (!is.null(penalty_ratio_ext)) {
             if (penalty_ratio_ext <=0 | penalty_ratio_ext >= 1) {
                 stop("Error: penalty_ratio_ext should be between 0 and 1")

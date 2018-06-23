@@ -63,7 +63,14 @@ cvhierr <- function(x,
     }
 
     # Create hierr object
-    hierr_object <- hierr(x = x, y = y, external = external, unpen = unpen, family = family, weights = weights, penalty = penalty, ...)
+    hierr_object <- hierr(x = x,
+                          y = y,
+                          external = external,
+                          unpen = unpen,
+                          family = family,
+                          weights = weights,
+                          penalty = penalty, ...)
+
     hierr_object$call <- hierr_call
 
     penalty_fixed <- definePenalty(penalty_type = penalty$penalty_type,

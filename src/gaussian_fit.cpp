@@ -65,13 +65,21 @@ void compute_coef(arma::mat & coef,
                   const bool & intr_ext,
                   const int & ext_start) {
 
-    for (int j = 0; j < nlam_total; ++j) {
-        for (int i = 0; i < nvar; ++i) {
-            double z_alpha = a0[j];
-            for (int k = ext_start; k < nvar_total; ++k) {
-                z_alpha += coef.at(k, j) * (ext_.at(i, k - ext_start) - xm[k]) / xs[k];
+    if (nvar_ext > 0) {
+        for (int j = 0; j < nlam_total; ++j) {
+            for (int i = 0; i < nvar; ++i) {
+                double z_alpha = a0[j];
+                for (int k = ext_start; k < nvar_total; ++k) {
+                    z_alpha += coef.at(k, j) * (ext_.at(i, k - ext_start) - xm[k]) / xs[k];
+                }
+                coef.at(i, j) = ys * (z_alpha + coef.at(i, j)) / xs[i];
             }
-            coef.at(i, j) = ys * (z_alpha + coef.at(i, j)) / xs[i];
+        }
+    } else {
+        for (int j = 0; j < nlam_total; ++j) {
+            for (int i = 0; i < nvar; ++i) {
+                coef.at(i, j) = ys * coef.at(i, j) / xs[i];
+            }
         }
     }
 }
@@ -145,7 +153,7 @@ List gaussian_fit(const arma::mat & x_,
             }
         }
     }
-    if (isd_ext) {
+    if (isd_ext && nvar_ext > 0) {
         for (int i = ext_start; i < nvar_total; ++i) {
             if (lower_cl[i] != R_NegInf) {
                 lower_cl[i] *= xs[i];
@@ -275,11 +283,11 @@ List gaussian_fit(const arma::mat & x_,
         alphas = 0.0;
     }
 
-    // fix first penalties
+    // fix first penalties (when path automatically computed)
     if (ulam_[0] == 0.0) {
         lam_path[0] = exp(2 * log(lam_path[1]) - log(lam_path[2]));
     }
-    if (ulam_ext_[0] == 0.0) {
+    if (ulam_ext_[0] == 0.0 && nvar_ext > 0) {
         lam_path_ext[0] = exp(2 * log(lam_path_ext[1]) - log(lam_path_ext[2]));
     }
 

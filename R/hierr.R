@@ -70,7 +70,7 @@ hierr <- function(x,
     }
 
     # convert x to matrix
-    if (!(class(x)) != "matrix") {
+    if (class(x) != "matrix") {
         x <- as.matrix(x)
     }
     if (!(typeof(x) %in% c("double", "integer"))) {
@@ -89,7 +89,7 @@ hierr <- function(x,
         }
 
         # convert to matrix
-        if (!(class(external)) != "matrix") {
+        if (class(external) != "matrix") {
             external <- as.matrix(external)
         }
         if (!(typeof(x) %in% c("double", "integer"))) {
@@ -113,7 +113,7 @@ hierr <- function(x,
         }
 
         # convert unpen to matrix
-        if (!(class(unpen)) != "matrix") {
+        if (class(unpen) != "matrix") {
             unpen <- as.matrix(unpen)
         }
         if (!(typeof(x) %in% c("double", "integer"))) {

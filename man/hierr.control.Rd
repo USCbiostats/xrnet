@@ -13,7 +13,7 @@ hierr.control(tolerance = 1e-07, max_iterations = 1e+05,
 
 \item{max_iterations}{maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.}
 
-\item{earlyStop}{indicator for whether stopping criterion on penalty path based on deviance (i.e. no change in deviance)}
+\item{earlyStop}{indicator for whether stopping criterion on penalty path based on deviance (i.e. no change in deviance). Default is FALSE.}
 
 \item{dfmax}{maximum number of variables allowed in model. Default is \eqn{ncol(x) + ncol(external) + intercept[1] + intercept[2]}.}
 
