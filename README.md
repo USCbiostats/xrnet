@@ -15,11 +15,10 @@ status](https://ci.appveyor.com/api/projects/status/6pr8hlc4wg9vjcxd?svg=true)](
 The **hierr** R package is an extension of regularized regression
 (i.e. ridge regression) that enables the incorporation of external data
 that may be informative for the effects of predictors on an outcome of
-interest. Let \(y\in\mathbb{R}^n\) be the observed outcome vector,
-\(X\in\mathbb{R}^{n \times p}\) be a set of *p* potential predictors
-observed on the *n* observations, and \(Z\in\mathbb{R}^{p \times q}\) be
-a set of *q* external features available for the *p* predictors. Our
-model builds off the standard two-stage regression
+interest. Let \(y\) be an n-dimensional observed outcome vector, \(X\)
+be a set of *p* potential predictors observed on the *n* observations,
+and \(Z\) be a set of *q* external features available for the *p*
+predictors. Our model builds off the standard two-stage regression
 model,
 
 ![img](https://latex.codecogs.com/gif.latex?y%20%3D%20X%5Cbeta%20+%20%5Cepsilon)
@@ -27,27 +26,25 @@ model,
 ![img](https://latex.codecogs.com/gif.latex?%5Cbeta%20%3D%20Z%5Calpha%20+%20%5Cgamma)
 
 but allows regularization of both the predictors and the external
-features, where \(\beta\) is a \(p \times 1\) vector of coefficients
-describing the association of each predictor with the outcome and
-\(\alpha\) is a \(q \times 1\) vector of coefficients describing the
-association of each external feature with the predictor coefficients,
-\(\beta\). As an example, assume that the outcome is continuous and that
-we want to apply a ridge penalty to the predictors and lasso penalty to
-the external features. We minimize the following objective function
-(ignoring intercept
+features, where beta is the vector of coefficients describing the
+association of each predictor with the outcome and alpha is the vector
+of coefficients describing the association of each external feature with
+the predictor coefficients, beta. As an example, assume that the outcome
+is continuous and that we want to apply a ridge penalty to the
+predictors and lasso penalty to the external features. We minimize the
+following objective function (ignoring intercept
 terms):
 
 ![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cbeta%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cbeta%7C%7C%5E2_2%20+%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cbeta%20-%20Z%5Calpha%7C%7C%5E2_2%20+%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
 
-Note that our model allows for the predictor coefficients, \(\beta\), to
-shrink towards potentially informative values, \(Z\) \(\alpha\). In the
-event the external data is not informative, we can shrink \(\alpha\)
+Note that our model allows for the predictor coefficients, beta, to
+shrink towards potentially informative values based on the matrix \(Z\).
+In the event the external data is not informative, we can shrink alpha
 towards zero, returning back to a standard regularized regression. To
 efficiently fit the model, we rewrite this convex optimization with the
-variable subsitution \(\gamma = \beta - Z\) \(\alpha\). The problem is
-then solved as a standard regularized regression in which we allow the
-penalty value (\(\lambda_1\) / \(\lambda_2\)) and type (ridge / lasso)
-to be
+variable subsitution \(gamma = beta - Z * alpha\). The problem is then
+solved as a standard regularized regression in which we allow the
+penalty value and type (ridge / lasso) to be
 variable-specific:
 
 ![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cgamma%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cgamma%20-%20XZ%5Calpha%7C%7C%5E2_2%20+%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cgamma%7C%7C%5E2_2%20+%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
