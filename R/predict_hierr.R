@@ -100,7 +100,11 @@ predict.hierr <- function(object,
                            `dim<-`(aperm(betas, c(1, 3, 2)), c(dim(betas)[1], dim(betas)[2] * dim(betas)[3])))
         }
         result <- cbind(1, newdata) %*% betas
-        result <- aperm(array(t(result), c(length(pext), length(p), dim(result)[1])), c(3, 2, 1))
+        if (length(pext) > 1) {
+            result <- aperm(array(t(result), c(length(pext), length(p), dim(result)[1])), c(3, 2, 1))
+        } else {
+
+        }
         return(drop(result))
     }
 }
