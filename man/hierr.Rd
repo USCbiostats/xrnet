@@ -52,7 +52,7 @@ A list of class \code{hierr} with components
 \description{
 Fits hierarchical regularized regression model that enables the incorporation of external data
 for the predictor variables. Both the predictor variables and external data can be regularized
-by the most common penalties (lasso, ridge, elastic net) and we have included an addtional quantile type.
+by the most common penalties (lasso, ridge, elastic net) and we have included an addtional "quantile" penalty.
 Solutions are computed across a two-dimensional grid of penalties (a separate penalty path is computed
 for the predictors and external variables). Currently support linear regression, future extensions to
 a GLM framework will be implemented in the next major update.

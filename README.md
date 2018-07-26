@@ -89,9 +89,7 @@ small set of simulated external data variables (ext), predictors (x),
 and a continuous outcome variable (y). First, load the example data:
 
 ``` r
-x <- hierr::x
-y <- hierr::y
-ext <- hierr::ext
+data(GaussianExample)
 ```
 
 #### Fitting a Model
@@ -106,7 +104,10 @@ penalty is applied to the predictors and a lasso penalty is applied to
 the external data.
 
 ``` r
-hierr_model <- hierr(x = x, y = y, external = ext, family = "gaussian")
+hierr_model <- hierr(x = x_linear, 
+                     y = y_linear, 
+                     external = ext_linear, 
+                     family = "gaussian")
 ```
 
 #### Modifying Regularization Terms
@@ -129,12 +130,19 @@ attributes:
 As an example, we may want to apply a ridge penalty to both the x
 variables and external data variables. In addition, we may want to have
 30 penalty values computed for the regularization path associated with
-both x and external. We modify our model fitting as
-follows.
+both x and external. We modify our model fitting as follows.
 
 ``` r
-myPenalty <- definePenalty(penalty_type = 0, penalty_type_ext = 0, num_penalty = 30, num_penalty_ext = 30)
-hierr_model <- hierr(x = x, y = y, external = ext, family = "gaussian", penalty = myPenalty)
+myPenalty <- definePenalty(penalty_type = 0, 
+                           penalty_type_ext = 0, 
+                           num_penalty = 30, 
+                           num_penalty_ext = 30)
+
+hierr_model <- hierr(x = x_linear, 
+                     y = y_linear, 
+                     external = ext_linear, 
+                     family = "gaussian", 
+                     penalty = myPenalty)
 ```
 
 #### Tuning Penalty Parameters by Cross-Validation
@@ -146,7 +154,10 @@ determine the optimal values for the penalties. The cross-validation
 function `cvhierr` is used as follows.
 
 ``` r
-cv_hierr <- cvhierr(x = x, y = y, external = ext, family = "gaussian")
+cv_hierr <- cvhierr(x = x_linear, 
+                    y = y_linear, 
+                    external = ext_linear, 
+                    family = "gaussian")
 ```
 
 To visualize the results of the cross-validation we provide a contour
