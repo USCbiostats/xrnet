@@ -6,26 +6,48 @@ using namespace Rcpp;
 
 /*
 * Generates matrix [x | unpen | x*external]
+* external data is sparse matrix
 */
 
 // [[Rcpp::export]]
-arma::mat create_data(const int & nobs,
-                      const int & nvar,
-                      const int & nvar_ext,
-                      const int & nvar_unpen,
-                      const int & nvar_total,
-                      const arma::mat & x,
-                      const arma::mat & ext,
-                      const arma::mat & unpen,
-                      const arma::vec & w,
-                      const bool & isd,
-                      const bool & isd_ext,
-                      const bool & intr,
-                      const bool & intr_ext,
-                      arma::vec & xm,
-                      arma::vec & xv,
-                      arma::vec & xs,
-                      int & ext_start) {
+double mean_sparse(const arma::sp_mat & x, int & col_cur, const int & nvar) {
+    double xsum = 0.0;
+    for(arma::sp_mat::const_iterator it = x.begin_col(col_cur); it != x.end_col(col_cur); ++it) {
+        xsum += *it;
+    }
+    return xsum / nvar;
+}
+
+// [[Rcpp::export]]
+double sd_sparse(const arma::sp_mat & x, int & col_cur, double & xm, const int & nvar) {
+    double xsum2 = 0.0;
+    int nnzero = 0;
+    for(arma::sp_mat::const_iterator it = x.begin_col(col_cur); it != x.end_col(col_cur); ++it) {
+        xsum2 += (*it - xm) * (*it - xm);
+        nnzero++;
+    }
+    xsum2 += (nvar - nnzero) * xm * xm;
+    return std::sqrt(xsum2 / nvar);
+}
+
+// [[Rcpp::export]]
+arma::mat create_data_sparse(const int & nobs,
+                             const int & nvar,
+                             const int & nvar_ext,
+                             const int & nvar_unpen,
+                             const int & nvar_total,
+                             const arma::mat & x,
+                             const arma::sp_mat & ext,
+                             const arma::mat & unpen,
+                             const arma::vec & w,
+                             const bool & isd,
+                             const bool & isd_ext,
+                             const bool & intr,
+                             const bool & intr_ext,
+                             arma::vec & xm,
+                             arma::vec & xv,
+                             arma::vec & xs,
+                             int & ext_start) {
 
     // initialize new design matrix
     arma::mat xnew(nobs, nvar_total);
@@ -126,17 +148,17 @@ arma::mat create_data(const int & nobs,
         if (intr_ext) {
             if (isd_ext) {
                 for (int j = 0; j < nvar_ext; ++j) {
-                    xm[xnew_col] = arma::mean(ext.unsafe_col(j));
-                    xs[xnew_col] = sqrt(arma::dot(ext.unsafe_col(j) - xm[xnew_col], ext.unsafe_col(j) - xm[xnew_col]) / nvar);
-                    xnew.col(xnew_col) = xsub * ((ext.unsafe_col(j) - xm[xnew_col]) / xs[xnew_col]);
+                    xm[xnew_col] = mean_sparse(ext, j, nvar);
+                    xs[xnew_col] = sd_sparse(ext, j, xm[xnew_col], nvar);
+                    xnew.col(xnew_col) = xsub * ((arma::vec(ext.col(j)) - xm[xnew_col]) / xs[xnew_col]);
                     xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
                     ++xnew_col;
                 }
             }
             else {
                 for (int j = 0; j < nvar_ext; ++j) {
-                    xm[xnew_col] = arma::mean(ext.unsafe_col(j));
-                    xnew.col(xnew_col) = xsub * (ext.unsafe_col(j) - xm[xnew_col]);
+                    xm[xnew_col] = mean_sparse(ext, j, nvar);
+                    xnew.col(xnew_col) = xsub * (arma::vec(ext.col(j)) - xm[xnew_col]);
                     xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
                     ++xnew_col;
                 }
@@ -145,16 +167,16 @@ arma::mat create_data(const int & nobs,
         else {
             if (isd_ext) {
                 for (int j = 0; j < nvar_ext; ++j) {
-                    double xm_j = arma::mean(ext.unsafe_col(j));
-                    xs[xnew_col] = sqrt(arma::dot(ext.unsafe_col(j) - xm_j, ext.unsafe_col(j) - xm_j) / nvar);
-                    xnew.col(xnew_col) = xsub * (ext.unsafe_col(j) / xs[xnew_col]);
+                    double xm_j = mean_sparse(ext, j, nvar);
+                    xs[xnew_col] = sd_sparse(ext, j, xm_j, nvar);
+                    xnew.col(xnew_col) = xsub * (arma::vec(ext.col(j)) / xs[xnew_col]);
                     xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
                     ++xnew_col;
                 }
             }
             else {
                 for (int j = 0; j < nvar_ext; ++j) {
-                    xnew.col(xnew_col) = xsub * ext.unsafe_col(j);
+                    xnew.col(xnew_col) = xsub * arma::vec(ext.col(j));
                     xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
                     ++xnew_col;
                 }

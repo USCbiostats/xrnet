@@ -26,7 +26,8 @@ void coord_desc(const arma::mat & x,
                 const NumericVector & lower_cl,
                 const int & ne,
                 const int & nx,
-                NumericVector cur_lam,
+                NumericVector & lam_cur,
+                NumericVector & lam_prev,
                 const double & thr,
                 const int & maxit,
                 const arma::vec & xv,
@@ -47,15 +48,15 @@ void coord_desc(const arma::mat & x,
     NumericVector ridge_part(nvar_total);
 
     for (int k = 0; k < nvar; k++) {
-        lasso_part[k] = 2 * cmult[k] * ptype[k] * cur_lam[0] * tau;
-        lasso_part2[k] = 2 * ptype[k] * cur_lam[0];
-        ridge_part[k] = xv[k] + cmult[k] * (1 - ptype[k]) * cur_lam[0];
+        lasso_part[k] = 2 * cmult[k] * ptype[k] * lam_cur[0] * tau;
+        lasso_part2[k] = 2 * ptype[k] * lam_cur[0];
+        ridge_part[k] = xv[k] + cmult[k] * (1 - ptype[k]) * lam_cur[0];
     }
 
     for (int k = nvar; k < nvar_total; k++) {
-        lasso_part[k] = 2 * cmult[k] * ptype[k] * cur_lam[1] * tau_ext;
-        lasso_part2[k] = 2 * ptype[k] * cur_lam[1];
-        ridge_part[k] = xv[k] + cmult[k] * (1 - ptype[k]) * cur_lam[1];
+        lasso_part[k] = 2 * cmult[k] * ptype[k] * lam_cur[1] * tau_ext;
+        lasso_part2[k] = 2 * ptype[k] * lam_cur[1];
+        ridge_part[k] = xv[k] + cmult[k] * (1 - ptype[k]) * lam_cur[1];
     }
 
     LogicalVector active(nvar_total, 1);
@@ -91,7 +92,7 @@ void coord_desc(const arma::mat & x,
                             errcode = -10000 - k;
                         }
                     }
-                    else {
+                    else if (b[k] == 0.0){
                         active[k] = 0;
                     }
                 }
