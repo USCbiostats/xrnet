@@ -6,7 +6,7 @@
 \usage{
 cvhierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
   penalty = definePenalty(0, 1), weights = NULL, type.measure = c("mse",
-  "mae", "deviance"), nfolds = 5, parallel = FALSE, ...)
+  "mae", "deviance"), nfolds = 5, foldid = NULL, parallel = FALSE, ...)
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}}
@@ -32,7 +32,9 @@ cvhierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
 
 \item{nfolds}{number of folds for cross-validation. Default is 5.}
 
-\item{parallel}{Use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.}
+\item{foldid}{(optional) vector that identifies user-specified fold for each observation. If NULL, folds are automatically generated.}
+
+\item{parallel}{use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.}
 
 \item{...}{list of additional arguments to pass to function \code{\link{hierr}}.}
 }

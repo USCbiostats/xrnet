@@ -16,7 +16,8 @@
 #'    \item mae (Mean Absolute Error)
 #' }
 #' @param nfolds number of folds for cross-validation. Default is 5.
-#' @param parallel Use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.
+#' @param foldid (optional) vector that identifies user-specified fold for each observation. If NULL, folds are automatically generated.
+#' @param parallel use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.
 #' @param ... list of additional arguments to pass to function \code{\link{hierr}}.
 
 #' @export
@@ -31,6 +32,7 @@ cvhierr <- function(x,
                     weights = NULL,
                     type.measure = c("mse", "mae", "deviance"),
                     nfolds = 5,
+                    foldid = NULL,
                     parallel = FALSE, ...)
 {
 
@@ -86,7 +88,15 @@ cvhierr <- function(x,
     }
 
     # Randomly sample observations into folds
-    foldid <- sample(rep(seq(nfolds), length = n))
+    if (is.null(foldid)) {
+        foldid <- sample(rep(seq(nfolds), length = n))
+    } else {
+        if (length(foldid) != n) {
+            stop("Error: length of foldid (", foldid, ") not equal to number of observations (", n, ")")
+        }
+        foldid <- as.numeric(factor(foldid))
+        nfolds <- length(unique(foldid))
+    }
 
     # Matrix to collect results of CV
     errormat <- matrix(NA, nrow = n, ncol = num_pen * num_pen_ext)
