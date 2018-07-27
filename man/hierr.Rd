@@ -5,8 +5,9 @@
 \title{Fit hierarchical regularized regression model}
 \usage{
 hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
-  penalty = definePenalty(0, 1), weights = NULL, standardize = c(TRUE,
-  TRUE), intercept = c(TRUE, TRUE), control = list())
+  penalty = definePenalty(penalty_type = 0, penalty_type_ext = 1),
+  weights = NULL, standardize = c(TRUE, TRUE), intercept = c(TRUE, TRUE),
+  control = list())
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}}
@@ -50,5 +51,10 @@ A list of class \code{hierr} with components
 \item{custom_mult_ext}{vector of variable-specific penalty multipliers for external data}
 }
 \description{
-Fit hierarchical regularized regression model
+Fits hierarchical regularized regression model that enables the incorporation of external data
+for the predictor variables. Both the predictor variables and external data can be regularized
+by the most common penalties (lasso, ridge, elastic net) and we have included an addtional "quantile" penalty.
+Solutions are computed across a two-dimensional grid of penalties (a separate penalty path is computed
+for the predictors and external variables). Currently support linear regression, future extensions to
+a GLM framework will be implemented in the next major update.
 }

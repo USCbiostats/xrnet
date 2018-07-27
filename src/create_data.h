@@ -21,10 +21,4 @@ arma::mat create_data(const int & nobs,
                       arma::vec & xs,
                       int & ext_start);
 
-void standardize_vec(arma::vec & y,
-                     const arma::vec & w,
-                     double & ym,
-                     double & ys,
-                     const bool & intr);
-
 #endif

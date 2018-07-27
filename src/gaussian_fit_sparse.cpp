@@ -2,48 +2,50 @@
 #include <cmath>
 #include <numeric>
 #include "hierr_utils.h"
-#include "create_data.h"
+#include "create_data_sparse.h"
 #include "coord_desc.h"
 
 using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 
-/*
- * Main function to fit hierarchical regularized
- * regression for gaussian outcome (dense external data)
- */
 
-// [[Rcpp::export]]
-List gaussian_fit(const arma::mat & x_,
-                  const arma::vec & y_,
-                  const arma::mat & ext_,
-                  const arma::mat & fixed_,
-                  const int & nobs,
-                  const int & nvar,
-                  const int & nvar_ext,
-                  const int & nvar_unpen,
-                  const arma::vec & w,
-                  const NumericVector & ptype,
-                  const double & tau,
-                  const double & tau_ext,
-                  const arma::vec & cmult,
-                  NumericVector & lower_cl,
-                  NumericVector & upper_cl,
-                  const int & ne,
-                  const int & nx,
-                  const int & nlam,
-                  const int & nlam_ext,
-                  const double & pratio,
-                  const double & pratio_ext,
-                  NumericVector ulam_,
-                  NumericVector ulam_ext_,
-                  const double & thr,
-                  const int & maxit,
-                  const bool & earlyStop,
-                  const bool & isd,
-                  const bool & isd_ext,
-                  const bool & intr,
-                  const bool & intr_ext) {
+/*
+* Main function to fit hierarchical regularized
+* regression for gaussian outcome
+* external data is in csc sparse matrix format
+*/
+
+    // [[Rcpp::export]]
+List gaussian_fit_sparse(const arma::mat & x_,
+                         const arma::vec & y_,
+                         const arma::sp_mat & ext_,
+                         const arma::mat & fixed_,
+                         const int & nobs,
+                         const int & nvar,
+                         const int & nvar_ext,
+                         const int & nvar_unpen,
+                         const arma::vec & w,
+                         const NumericVector & ptype,
+                         const double & tau,
+                         const double & tau_ext,
+                         const arma::vec & cmult,
+                         NumericVector & lower_cl,
+                         NumericVector & upper_cl,
+                         const int & ne,
+                         const int & nx,
+                         const int & nlam,
+                         const int & nlam_ext,
+                         const double & pratio,
+                         const double & pratio_ext,
+                         NumericVector ulam_,
+                         NumericVector ulam_ext_,
+                         const double & thr,
+                         const int & maxit,
+                         const bool & earlyStop,
+                         const bool & isd,
+                         const bool & isd_ext,
+                         const bool & intr,
+                         const bool & intr_ext) {
 
     // Create single level regression matrix
     int nvar_total = nvar + nvar_ext + nvar_unpen + intr_ext;
@@ -52,8 +54,8 @@ List gaussian_fit(const arma::mat & x_,
     arma::vec xs(nvar_total, arma::fill::ones);
     const arma::vec wgt = w / sum(w);
     int ext_start;
-    const arma::mat xnew = create_data(nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x_, ext_, fixed_,
-                                       wgt, isd, isd_ext, intr, intr_ext, xm, xv, xs, ext_start);
+    const arma::mat xnew = create_data_sparse(nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x_, ext_, fixed_,
+                                              wgt, isd, isd_ext, intr, intr_ext, xm, xv, xs, ext_start);
 
     // determine non-constant variables -- still to be done
 
@@ -90,7 +92,7 @@ List gaussian_fit(const arma::mat & x_,
 
     // ---------run coordinate descent for all penalties ----------
 
-    // initialize objects to hold fitting results
+        // initialize objects to hold fitting results
     int nlam_total = nlam * nlam_ext;
     arma::mat coef(nvar_total, nlam_total, arma::fill::zeros);
     NumericVector dev(nlam_total);
@@ -102,24 +104,10 @@ List gaussian_fit(const arma::mat & x_,
 
     // compute penalty paths
     int start = 0;
-    NumericVector lam_path = compute_penalty(ulam,
-                                             nlam,
-                                             ptype[0],
-                                             pratio,
-                                             g,
-                                             cmult,
-                                             start,
-                                             nvar);
+    NumericVector lam_path = compute_penalty(ulam, nlam, ptype[0], pratio, g, cmult, start, nvar);
     NumericVector lam_path_ext = 0.0;
     if (nvar_ext > 0) {
-        lam_path_ext = compute_penalty(ulam_ext,
-                                       nlam_ext,
-                                       ptype[ext_start],
-                                       pratio_ext,
-                                       g,
-                                       cmult,
-                                       ext_start,
-                                       nvar_total);
+        lam_path_ext = compute_penalty(ulam_ext, nlam_ext, ptype[ext_start], pratio_ext, g, cmult, ext_start, nvar_total);
     }
 
     // loop through all penalty combinations
@@ -191,7 +179,7 @@ List gaussian_fit(const arma::mat & x_,
     if (intr_ext) {
         a0 = arma::conv_to<arma::colvec>::from(coef.row(nvar + nvar_unpen));
     }
-    compute_coef(coef, ext_, nvar, nvar_ext, nvar_total, nlam_total, xm, xs, ys, a0, intr_ext, ext_start);
+    compute_coef_sparse(coef, ext_, nvar, nvar_ext, nvar_total, nlam_total, xm, xs, ys, a0, intr_ext, ext_start);
 
     // unstandardize unpenalized variables
     arma::mat gammas;

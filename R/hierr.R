@@ -5,6 +5,13 @@ NULL
 
 #' Fit hierarchical regularized regression model
 #'
+#' @description Fits hierarchical regularized regression model that enables the incorporation of external data
+#' for the predictor variables. Both the predictor variables and external data can be regularized
+#' by the most common penalties (lasso, ridge, elastic net) and we have included an addtional "quantile" penalty.
+#' Solutions are computed across a two-dimensional grid of penalties (a separate penalty path is computed
+#' for the predictors and external variables). Currently support linear regression, future extensions to
+#' a GLM framework will be implemented in the next major update.
+#'
 #' @param x predictor design matrix of dimension \eqn{n x p}
 #' @param y outcome vector of length \eqn{n}
 #' @param external (optional) external data design matrix of dimension \eqn{p x q}
@@ -41,7 +48,7 @@ hierr <- function(x,
                   external = NULL,
                   unpen = NULL,
                   family = c("gaussian"),
-                  penalty = definePenalty(0, 1),
+                  penalty = definePenalty(),
                   weights = NULL,
                   standardize = c(TRUE, TRUE),
                   intercept = c(TRUE, TRUE),
@@ -55,46 +62,58 @@ hierr <- function(x,
 
     ## Prepare x and y ##
 
+    # check if x is a sparse matrix
+    if (inherits(x, "sparseMatrix")) {
+        stop("Error: sparse matrices only supported for external data")
+    } else {
+        # convert x to matrix
+        if (class(x) != "matrix") {
+            x <- as.matrix(x)
+        }
+        if (!(typeof(x) %in% c("double", "integer"))) {
+            stop("Error: x contains non-numeric values")
+        }
+    }
+
     # check dimensions of x and y
-    nr_x <- nrow(x)
-    nc_x <- ncol(x)
+    nr_x <- NROW(x)
+    nc_x <- NCOL(x)
 
     if (nc_x < 2) {
         stop("Error: x must have at least 2 columns")
     }
 
-    y_len <- ifelse(is.null(dim(y)), length(y), dim(y)[1])
+    y_len <- NROW(y)
 
     if (y_len != nr_x) {
         stop(paste("Error: Length of y (", y_len, ") not equal to the number of rows of x (", nr_x, ")", sep = ""))
     }
 
-    # convert x to matrix
-    if (class(x) != "matrix") {
-        x <- as.matrix(x)
-    }
-    if (!(typeof(x) %in% c("double", "integer"))) {
-        stop("Error: x contains non-numeric values")
-    }
-
     ## Prepare external ##
+    is_sparse = FALSE
     if (!is.null(external)) {
 
+        # check if external is a sparse matrix
+        if (class(external) %in% "dgCMatrix") {
+            is_sparse = TRUE
+        } else {
+            # convert to matrix
+            if (class(external) != "matrix") {
+                external <- as.matrix(external)
+            }
+            if (!(typeof(x) %in% c("double", "integer"))) {
+                stop("Error: external contains non-numeric values")
+            }
+        }
+
         # check dimensions
-        nr_ext <- nrow(external)
-        nc_ext <- ncol(external)
+        nr_ext <- NROW(external)
+        nc_ext <- NCOL(external)
 
         if (nc_x != nr_ext) {
             stop(paste("Error: Number of columns in x (", nc_x, ") not equal to the number of rows in external (", nr_ext, ")", sep = ""))
         }
 
-        # convert to matrix
-        if (class(external) != "matrix") {
-            external <- as.matrix(external)
-        }
-        if (!(typeof(x) %in% c("double", "integer"))) {
-            stop("Error: external contains non-numeric values")
-        }
     } else {
         external <- matrix(numeric(0), nrow = 0, ncol = 0)
         nr_ext <- as.integer(0)
@@ -105,8 +124,8 @@ hierr <- function(x,
     if (!is.null(unpen)) {
 
         # check dimensions
-        nr_unpen <- nrow(unpen)
-        nc_unpen <- ncol(unpen)
+        nr_unpen <- NROW(unpen)
+        nc_unpen <- NCOL(unpen)
 
         if (y_len != nr_unpen) {
             stop(paste("Error: Length of y (", y_len, ") not equal to the number of rows of unpen (", nr_unpen, ")", sep = ""))
@@ -151,6 +170,11 @@ hierr <- function(x,
         } else {
             penalty$penalty_ratio <- 0.01
         }
+
+        if (penalty$num_penalty < 3) {
+            penalty$num_penalty <- 3
+            stop("Warning: num_penalty must be at least 3 when automatically computing penalty path")
+        }
     }
 
     if (is.null(penalty$custom_multiplier)) {
@@ -176,6 +200,11 @@ hierr <- function(x,
                 penalty$penalty_ratio_ext <- 1e-04
             } else {
                 penalty$penalty_ratio_ext <- 0.01
+            }
+
+            if (penalty$num_penalty_ext < 3) {
+                penalty$num_penalty_ext <- 3
+                stop("Warning: num_penalty_ext must be at least 3 when automatically computing penalty path")
             }
         }
 
@@ -238,38 +267,48 @@ hierr <- function(x,
                                 penalty = penalty,
                                 isd = standardize,
                                 intr = intercept,
+                                is_sparse = is_sparse,
                                 control = control))
 
-    # Create arrays ordering coefficients by 1st level penalty / 2nd level penalty
-    fit$beta0 <- matrix(fit$beta0, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
-    fit$betas <- aperm(array(t(fit$betas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_x)), c(3, 2, 1))
-    fit$deviance <- matrix(fit$deviance, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
-    fit$custom_mult <- penalty$custom_multiplier
 
-    if (intercept[2]) {
-        fit$alpha0 <- matrix(fit$alpha0, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
+    # check status of model fit
+    if (fit$status == 0) {
+        # Create arrays ordering coefficients by 1st level penalty / 2nd level penalty
+        fit$beta0 <- matrix(fit$beta0, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
+        fit$betas <- aperm(array(t(fit$betas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_x)), c(3, 2, 1))
+        fit$deviance <- matrix(fit$deviance, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
+        fit$custom_mult <- penalty$custom_multiplier
+
+        if (intercept[2]) {
+            fit$alpha0 <- matrix(fit$alpha0, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
+        } else {
+            fit$alpha0 <- NULL
+        }
+
+        if (nc_ext > 0) {
+            fit$custom_mult_ext <- penalty$custom_multiplier_ext
+            fit$alphas <- aperm(array(t(fit$alphas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_ext)), c(3, 2, 1))
+        } else {
+            fit$alphas <- NULL
+            fit$penalty_type_ext <- NULL
+            fit$quantile_ext <- NULL
+            fit$penalty_ext <- NULL
+            fit$penalty_ratio_ext <- NULL
+        }
+
+        if (nc_unpen > 0) {
+            fit$gammas <- aperm(array(t(fit$gammas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_unpen)), c(3, 2, 1))
+        } else {
+            fit$gammas <- NULL
+        }
+
+        fit$num_passes <- matrix(fit$num_passes, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
     } else {
-        fit$alpha0 <- NULL
+        if (fit$status == -10000) {
+            fit$errmsg <- "max iterations reached"
+        }
     }
 
-    if (nc_ext > 0) {
-        fit$custom_mult_ext <- penalty$custom_multiplier_ext
-        fit$alphas <- aperm(array(t(fit$alphas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_ext)), c(3, 2, 1))
-    } else {
-        fit$alphas <- NULL
-        fit$penalty_type_ext <- NULL
-        fit$quantile_ext <- NULL
-        fit$penalty_ext <- NULL
-        fit$penalty_ratio_ext <- NULL
-    }
-
-    if (nc_unpen > 0) {
-        fit$gammas <- aperm(array(t(fit$gammas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_unpen)), c(3, 2, 1))
-    } else {
-        fit$gammas <- NULL
-    }
-
-    fit$num_passes <- matrix(fit$num_passes, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
     fit$call <- this.call
     class(fit) <- "hierr"
     return(fit)
