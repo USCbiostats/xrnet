@@ -9,10 +9,6 @@ create_data <- function(nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x, ext, un
     .Call(`_hierr_create_data`, nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x, ext, unpen, w, isd, isd_ext, intr, intr_ext, xm, xv, xs, ext_start)
 }
 
-create_data_external <- function(nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x, ext, unpen, w, isd, isd_ext, intr, intr_ext, xm, xv, xs, ext_start) {
-    .Call(`_hierr_create_data_external`, nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x, ext, unpen, w, isd, isd_ext, intr, intr_ext, xm, xv, xs, ext_start)
-}
-
 mean_sparse <- function(x, col_cur, nvar) {
     .Call(`_hierr_mean_sparse`, x, col_cur, nvar)
 }
