@@ -48,7 +48,7 @@ hierr <- function(x,
                   external = NULL,
                   unpen = NULL,
                   family = c("gaussian"),
-                  penalty = definePenalty(0, 1),
+                  penalty = definePenalty(),
                   weights = NULL,
                   standardize = c(TRUE, TRUE),
                   intercept = c(TRUE, TRUE),
@@ -76,14 +76,14 @@ hierr <- function(x,
     }
 
     # check dimensions of x and y
-    nr_x <- nrow(x)
-    nc_x <- ncol(x)
+    nr_x <- NROW(x)
+    nc_x <- NCOL(x)
 
     if (nc_x < 2) {
         stop("Error: x must have at least 2 columns")
     }
 
-    y_len <- ifelse(is.null(dim(y)), length(y), dim(y)[1])
+    y_len <- NROW(y)
 
     if (y_len != nr_x) {
         stop(paste("Error: Length of y (", y_len, ") not equal to the number of rows of x (", nr_x, ")", sep = ""))
@@ -107,8 +107,8 @@ hierr <- function(x,
         }
 
         # check dimensions
-        nr_ext <- nrow(external)
-        nc_ext <- ncol(external)
+        nr_ext <- NROW(external)
+        nc_ext <- NCOL(external)
 
         if (nc_x != nr_ext) {
             stop(paste("Error: Number of columns in x (", nc_x, ") not equal to the number of rows in external (", nr_ext, ")", sep = ""))
@@ -124,8 +124,8 @@ hierr <- function(x,
     if (!is.null(unpen)) {
 
         # check dimensions
-        nr_unpen <- nrow(unpen)
-        nc_unpen <- ncol(unpen)
+        nr_unpen <- NROW(unpen)
+        nc_unpen <- NCOL(unpen)
 
         if (y_len != nr_unpen) {
             stop(paste("Error: Length of y (", y_len, ") not equal to the number of rows of unpen (", nr_unpen, ")", sep = ""))
@@ -272,7 +272,7 @@ hierr <- function(x,
 
 
     # check status of model fit
-    if (fit$status <= 0) {
+    if (fit$status == 0) {
         # Create arrays ordering coefficients by 1st level penalty / 2nd level penalty
         fit$beta0 <- matrix(fit$beta0, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
         fit$betas <- aperm(array(t(fit$betas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_x)), c(3, 2, 1))

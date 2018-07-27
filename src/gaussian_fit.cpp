@@ -102,10 +102,24 @@ List gaussian_fit(const arma::mat & x_,
 
     // compute penalty paths
     int start = 0;
-    NumericVector lam_path = compute_penalty(ulam, nlam, ptype[0], pratio, g, cmult, start, nvar);
+    NumericVector lam_path = compute_penalty(ulam,
+                                             nlam,
+                                             ptype[0],
+                                             pratio,
+                                             g,
+                                             cmult,
+                                             start,
+                                             nvar);
     NumericVector lam_path_ext = 0.0;
     if (nvar_ext > 0) {
-        lam_path_ext = compute_penalty(ulam_ext, nlam_ext, ptype[ext_start], pratio_ext, g, cmult, ext_start, nvar_total);
+        lam_path_ext = compute_penalty(ulam_ext,
+                                       nlam_ext,
+                                       ptype[ext_start],
+                                       pratio_ext,
+                                       g,
+                                       cmult,
+                                       ext_start,
+                                       nvar_total);
     }
 
     // loop through all penalty combinations
