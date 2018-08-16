@@ -87,8 +87,10 @@ cvhierr <- function(x,
         num_pen_ext <- 1
     }
 
-    # Randomly sample observations into folds
+    # Randomly sample observations into folds / check nfolds
     if (is.null(foldid)) {
+        if (nfolds < 2)
+            stop("number of folds (nfolds) must at least 2")
         foldid <- sample(rep(seq(nfolds), length = n))
     } else {
         if (length(foldid) != n) {
@@ -96,6 +98,8 @@ cvhierr <- function(x,
         }
         foldid <- as.numeric(factor(foldid))
         nfolds <- length(unique(foldid))
+        if (nfolds < 2)
+            stop("number of folds (nfolds) must at least 2")
     }
 
     # Matrix to collect results of CV
@@ -103,7 +107,7 @@ cvhierr <- function(x,
 
     # Run k-fold CV
     if (parallel) {
-        cvout <- foreach(k = 1:nfolds, .packages = c("hierr")) %dopar% {
+        cvout <- foreach(k = 1L:nfolds, .packages = c("hierr", "Matrix")) %dopar% {
             subset <- (foldid == k)
             if (is.vector(drop(y))) {
                 y_train <- y[!subset]
@@ -119,15 +123,24 @@ cvhierr <- function(x,
             weights_train <- weights[!subset]
 
             # Fit model on k-th training fold
-            hierr(x = x_train, y = y_train, external = external, unpen = unpen_train,
-                  weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
+            hierr(x = x_train,
+                  y = y_train,
+                  external = external,
+                  unpen = unpen_train,
+                  weights = weights_train,
+                  family = family,
+                  penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
         }
         if (!is.null(unpen)) {
             for (k in 1:nfolds) {
                 subset <- (foldid == k)
                 betas <- rbind(as.vector(t(cvout[[k]]$beta0)),
-                               `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)), c(dim(cvout[[k]]$betas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])),
-                               `dim<-`(aperm(cvout[[k]]$gammas, c(1, 3, 2)), c(dim(cvout[[k]]$gammas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])))
+                               `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)),
+                                             c(dim(cvout[[k]]$betas)[1],
+                                               dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])),
+                               `dim<-`(aperm(cvout[[k]]$gammas, c(1, 3, 2)),
+                                             c(dim(cvout[[k]]$gammas)[1],
+                                               dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])))
                 errormat[subset, ] <- calc_error(betas, y[subset], cbind(1, x[subset, ]), weights[subset])
 
             }
@@ -135,7 +148,9 @@ cvhierr <- function(x,
             for (k in 1:nfolds) {
                 subset <- (foldid == k)
                 betas <- rbind(as.vector(t(cvout[[k]]$beta0)),
-                               `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)), c(dim(cvout[[k]]$betas)[1], dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])))
+                               `dim<-`(aperm(cvout[[k]]$betas, c(1, 3, 2)),
+                                             c(dim(cvout[[k]]$betas)[1],
+                                               dim(cvout[[k]]$betas)[2] * dim(cvout[[k]]$betas)[3])))
                 errormat[subset, ] <- calc_error(betas, y[subset], cbind(1, x[subset, ]), weights[subset])
 
             }
@@ -159,15 +174,27 @@ cvhierr <- function(x,
             weights_train <- weights[!subset]
 
             # Fit model on k-th training fold
-            fit_fold <- hierr(x = x_train, y = y_train, external = external, unpen = unpen_train,
-                              weights = weights_train, family = family, penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
+            fit_fold <- hierr(x = x_train,
+                              y = y_train,
+                              external = external,
+                              unpen = unpen_train,
+                              weights = weights_train,
+                              family = family,
+                              penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
+
             if (!is.null(fit_fold$gammas)) {
                 betas <- rbind(as.vector(t(fit_fold$beta0)),
-                               `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)), c(dim(fit_fold$betas)[1], dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])),
-                               `dim<-`(aperm(fit_fold$gammas, c(1, 3, 2)), c(dim(fit_fold$gammas)[1], dim(fit_fold$gammas)[2] * dim(fit_fold$gammas)[3])))
+                               `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)),
+                                             c(dim(fit_fold$betas)[1],
+                                               dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])),
+                               `dim<-`(aperm(fit_fold$gammas, c(1, 3, 2)),
+                                             c(dim(fit_fold$gammas)[1],
+                                               dim(fit_fold$gammas)[2] * dim(fit_fold$gammas)[3])))
             } else {
                 betas <- rbind(as.vector(t(fit_fold$beta0)),
-                               `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)), c(dim(fit_fold$betas)[1], dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
+                               `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)),
+                                             c(dim(fit_fold$betas)[1],
+                                               dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
             }
             errormat[subset, ] <- calc_error(betas, y[subset], cbind(1, x[subset, ], unpen[subset, ]), weights[subset])
         }
