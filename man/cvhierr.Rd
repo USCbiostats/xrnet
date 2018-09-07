@@ -5,7 +5,7 @@
 \title{k-fold cross-validation for hierarchical regularized regression}
 \usage{
 cvhierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
-  penalty = definePenalty(0, 1), weights = NULL, type.measure = c("mse",
+  penalty = definePenalty(), weights = NULL, type.measure = c("mse",
   "mae", "deviance"), nfolds = 5, foldid = NULL, parallel = FALSE, ...)
 }
 \arguments{
