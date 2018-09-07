@@ -25,7 +25,7 @@ List gaussian_fit_sparse(const arma::mat & x_,
                          const int & nvar_ext,
                          const int & nvar_unpen,
                          const arma::vec & w,
-                         const NumericVector & ptype,
+                         const arma::vec & ptype,
                          const double & tau,
                          const double & tau_ext,
                          const arma::vec & cmult,
@@ -100,14 +100,20 @@ List gaussian_fit_sparse(const arma::mat & x_,
 
     // compute gradient vector
     arma::vec g(nvar_total, arma::fill::zeros);
-    g = arma::abs(xnew.t() * (wgt % outer_resid));
+    g = xnew.t() * (wgt % outer_resid);
+
+    // compute individual ptype
+    arma::vec ptype_ind = cmult % ptype;
 
     // compute penalty paths
     int start = 0;
-    NumericVector lam_path = compute_penalty(ulam, nlam, ptype[0], pratio, g, cmult, start, nvar);
+    NumericVector lam_path = compute_penalty(ulam, nlam, ptype[0], pratio,
+                                             g, cmult, start, nvar);
     NumericVector lam_path_ext = 0.0;
     if (nvar_ext > 0) {
-        lam_path_ext = compute_penalty(ulam_ext, nlam_ext, ptype[ext_start], pratio_ext, g, cmult, ext_start, nvar_total);
+        lam_path_ext = compute_penalty(ulam_ext, nlam_ext,
+                                       ptype[ext_start], pratio_ext,
+                                       g, cmult, ext_start, nvar_total);
     }
 
     // loop through all penalty combinations
@@ -121,6 +127,8 @@ List gaussian_fit_sparse(const arma::mat & x_,
     arma::vec coef_outer(nvar_total, arma::fill::zeros);
     arma::vec coef_inner(nvar_total, arma::fill::zeros);
     IntegerVector mm(nvar_total, 0);
+    LogicalVector strong(nvar_total, 0);
+    std::vector<int> active;
 
     int idx_lam = 0;
     int nlp = 0;
@@ -133,9 +141,14 @@ List gaussian_fit_sparse(const arma::mat & x_,
             lam_cur[1] = lam_path_ext[m2];
 
             if (m2 == 0) {
-                coord_desc(xnew, outer_resid, wgt, ptype, tau, tau_ext, nobs, nvar, nvar_total,
-                           cmult, upper_cl, lower_cl, ne, nx, lam_cur, lam_prev, thr, maxit,
-                           xv, coef, coef_outer, g, dev, dev_outer, mm, errcode, nlp, idx_lam);
+                coord_desc(xnew, outer_resid, wgt, ptype_ind,
+                           cmult, tau, tau_ext, nvar,
+                           nvar_total, upper_cl, lower_cl,
+                           ne, nx, lam_cur, lam_prev,
+                           strong, active, thr, maxit,
+                           xv, coef, coef_outer, g,
+                           dev, dev_outer, mm, errcode,
+                           nlp, idx_lam);
 
                 inner_resid = outer_resid;
                 coef_inner = coef_outer;
@@ -146,10 +159,14 @@ List gaussian_fit_sparse(const arma::mat & x_,
 
             }
             else {
-                coord_desc(xnew, inner_resid, wgt, ptype, tau, tau_ext, nobs, nvar, nvar_total,
-                           cmult, upper_cl, lower_cl, ne, nx,
-                           lam_cur, lam_prev, thr, maxit, xv, coef, coef_inner, g,
-                           dev, dev_inner, mm, errcode, nlp, idx_lam);
+                coord_desc(xnew, inner_resid, wgt, ptype_ind,
+                           cmult, tau, tau_ext, nvar,
+                           nvar_total, upper_cl, lower_cl,
+                           ne, nx, lam_cur, lam_prev,
+                           strong, active, thr, maxit,
+                           xv, coef, coef_inner, g,
+                           dev, dev_inner, mm, errcode,
+                           nlp, idx_lam);
 
                 num_passes[idx_lam] = nlp - nlp_old;
                 nlp_old = nlp;

@@ -29,7 +29,7 @@ NumericVector compute_penalty(NumericVector & ulam,
         double max_pen = 0.0;
         for (int j = start; j < stop; ++j) {
             if (cmult[j] > 0.0) {
-                max_pen = std::max(max_pen, g[j] / cmult[j]);
+                max_pen = std::max(max_pen, std::abs(g[j]) / cmult[j]);
             }
         }
         double eqs = std::max(1e-6, pratio);
