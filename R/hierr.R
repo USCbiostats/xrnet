@@ -14,7 +14,7 @@ NULL
 #'
 #' @param x predictor design matrix of dimension \eqn{n x p}
 #' @param y outcome vector of length \eqn{n}
-#' @param external (optional) external data design matrix of dimension \eqn{p x q}
+#' @param external (optional) external data design matrix of dimension \eqn{p x q}. Can be class "matrix" or "dgCMatrix".
 #' @param unpen (optional) unpenalized predictor design matrix
 #' @param family error distribution for outcome variable
 #' @param penalty specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.

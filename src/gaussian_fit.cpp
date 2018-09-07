@@ -134,7 +134,6 @@ List gaussian_fit(const arma::mat & x_,
     LogicalVector strong(nvar_total, 0);
     std::vector<int> active;
 
-
     int idx_lam = 0;
     int nlp = 0;
     double errcode = 0.0;

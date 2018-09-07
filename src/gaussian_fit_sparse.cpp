@@ -54,8 +54,10 @@ List gaussian_fit_sparse(const arma::mat & x_,
     arma::vec xs(nvar_total, arma::fill::ones);
     const arma::vec wgt = w / sum(w);
     int ext_start;
-    const arma::mat xnew = create_data_sparse(nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x_, ext_, fixed_,
-                                              wgt, isd, isd_ext, intr, intr_ext, xm, xv, xs, ext_start);
+    const arma::mat xnew = create_data_sparse(nobs, nvar, nvar_ext, nvar_unpen,
+                                              nvar_total, x_, ext_, fixed_,
+                                              wgt, isd, isd_ext, intr, intr_ext,
+                                              xm, xv, xs, ext_start);
 
     // determine non-constant variables -- still to be done
 
@@ -196,7 +198,8 @@ List gaussian_fit_sparse(const arma::mat & x_,
     if (intr_ext) {
         a0 = arma::conv_to<arma::colvec>::from(coef.row(nvar + nvar_unpen));
     }
-    compute_coef_sparse(coef, ext_, nvar, nvar_ext, nvar_total, nlam_total, xm, xs, ys, a0, intr_ext, ext_start);
+    compute_coef_sparse(coef, ext_, nvar, nvar_ext, nvar_total,
+                        nlam_total, xm, xs, ys, a0, intr_ext, ext_start);
 
     // unstandardize unpenalized variables
     arma::mat gammas;

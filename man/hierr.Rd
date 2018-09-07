@@ -13,7 +13,7 @@ hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
 
 \item{y}{outcome vector of length \eqn{n}}
 
-\item{external}{(optional) external data design matrix of dimension \eqn{p x q}}
+\item{external}{(optional) external data design matrix of dimension \eqn{p x q}. Can be class "matrix" or "dgCMatrix".}
 
 \item{unpen}{(optional) unpenalized predictor design matrix}
 
