@@ -18,8 +18,7 @@ arma::mat create_data_sparse(const int & nobs,
                              const bool & intr_ext,
                              arma::vec & xm,
                              arma::vec & xv,
-                             arma::vec & xs,
-                             int & ext_start);
+                             arma::vec & xs);
 
 double mean_sparse(const arma::sp_mat & x,
                    int & col_cur,
