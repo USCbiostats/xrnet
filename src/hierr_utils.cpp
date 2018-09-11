@@ -5,6 +5,7 @@
 using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 
+
 /*
  * Computes penalty path for set of variables
  * based on simple least-squares estimates, penalty

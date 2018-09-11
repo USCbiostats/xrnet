@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include <cmath>
 #include <numeric>
+#include "hierr_utils.h"
 
 using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -16,7 +17,8 @@ void coord_desc(const arma::mat & x,
                 arma::vec & resid,
                 const arma::vec & w,
                 const arma::vec & ptype_ind,
-                const arma::vec & cmult,
+                const arma::vec & lasso_part,
+                const arma::vec & ridge_part,
                 const double & qx,
                 const double & qext,
                 const int & nv_x,
@@ -47,25 +49,19 @@ void coord_desc(const arma::mat & x,
 
     // initialize vars
     bool jerr = 0;
-    arma::vec lasso_part(nvar_total);
-    arma::vec ridge_part(nvar_total);
 
     // compute penalty components and strong rules
     double lam_diff = 2.0 * lam_cur[0] - lam_prev[0];
     for (int k = 0; k < nv_x; ++k) {
-        lasso_part[k] = ptype_ind[k] * lam_cur[0];
-        ridge_part[k] = xv[k] + (cmult[k] - ptype_ind[k]) * lam_cur[0];
         if (!strong[k]) {
-            strong[k] = std::abs(g[k]) > ptype_ind[k] * lam_diff * std::abs(qx + (g[k] > 0.0 ? 1.0 : -1.0));
+            strong[k] = std::abs(g[k]) > ptype_ind[k] * lam_diff * std::abs(qx + sgn(g[k]));
         }
     }
 
     lam_diff = 2.0 * lam_cur[1] - lam_prev[1];
     for (int k = nv_x; k < nvar_total; ++k) {
-        lasso_part[k] = ptype_ind[k] * lam_cur[1];
-        ridge_part[k] = xv[k] + (cmult[k] - ptype_ind[k]) * lam_cur[1];
         if (!strong[k]) {
-            strong[k] = std::abs(g[k]) > ptype_ind[k] * lam_diff * std::abs(qext + (g[k] > 0.0 ? 1.0 : -1.0));
+            strong[k] = std::abs(g[k]) > ptype_ind[k] * lam_diff * std::abs(qext + sgn(g[k]));
         }
     }
 
@@ -79,9 +75,10 @@ void coord_desc(const arma::mat & x,
                     double gk = arma::dot(x.unsafe_col(k), resid % w);
                     double bk = b[k];
                     double u = gk + bk * xv[k];
-                    double v = std::abs(u) - lasso_part[k] * std::abs(qx + (u > 0.0 ? 1.0 : -1.0));
+                    double usgn = sgn(u);
+                    double v = std::abs(u) - lasso_part[k] * std::abs(qx + usgn);
                     if (v > 0.0) {
-                        b[k] = std::max(lower_cl[k], std::min(upper_cl[k], copysign(v, u) / ridge_part[k]));
+                        b[k] = std::max(lower_cl[k], std::min(upper_cl[k], usgn * v / ridge_part[k]));
                     } else {
                         b[k] = 0.0;
                     }
@@ -108,9 +105,10 @@ void coord_desc(const arma::mat & x,
                     double gk = arma::dot(x.unsafe_col(k), resid % w);
                     double bk = b[k];
                     double u = gk + bk * xv[k];
-                    double v = std::abs(u) - lasso_part[k] * std::abs(qext + (u > 0.0 ? 1.0 : -1.0));
+                    double usgn = sgn(u);
+                    double v = std::abs(u) - lasso_part[k] * std::abs(qext + usgn);
                     if (v > 0.0) {
-                        b[k] = std::max(lower_cl[k], std::min(upper_cl[k], copysign(v, u) / ridge_part[k]));
+                        b[k] = std::max(lower_cl[k], std::min(upper_cl[k], usgn * v / ridge_part[k]));
                     } else {
                         b[k] = 0.0;
                     }
@@ -144,7 +142,7 @@ void coord_desc(const arma::mat & x,
                 for (int k = 0; k < nv_x; k++) {
                     if (!strong[k]) {
                         g[k] = arma::dot(x.unsafe_col(k), resid % w);
-                        if (std::abs(g[k]) > lasso_part[k] * std::abs(qx + (g[k] > 0.0 ? 1.0 : -1.0))) {
+                        if (std::abs(g[k]) > lasso_part[k] * std::abs(qx + sgn(g[k]))) {
                             strong[k] = true;
                             kkt_satisfied = false;
                         }
@@ -153,7 +151,7 @@ void coord_desc(const arma::mat & x,
                 for (int k = nv_x; k < nvar_total; k++) {
                     if (!strong[k]) {
                         g[k] = arma::dot(x.unsafe_col(k), resid % w);
-                        if (std::abs(g[k]) > lasso_part[k] * std::abs(qext + (g[k] > 0.0 ? 1.0 : -1.0))) {
+                        if (std::abs(g[k]) > lasso_part[k] * std::abs(qext + sgn(g[k]))) {
                             strong[k] = true;
                             kkt_satisfied = false;
                         }
@@ -167,9 +165,10 @@ void coord_desc(const arma::mat & x,
                         double gk = arma::dot(x.unsafe_col(*k), resid % w);
                         double bk = b[*k];
                         double u = gk + bk * xv[*k];
-                        double v = std::abs(u) - lasso_part[*k] * std::abs(qx + (u > 0.0 ? 1.0 : -1.0));
+                        double usgn = sgn(u);
+                        double v = std::abs(u) - lasso_part[*k] * std::abs(qx + usgn);
                         if (v > 0.0) {
-                            b[*k] = std::max(lower_cl[*k], std::min(upper_cl[*k], copysign(v, u) / ridge_part[*k]));
+                            b[*k] = std::max(lower_cl[*k], std::min(upper_cl[*k], usgn * v / ridge_part[*k]));
                         } else {
                             b[*k] = 0.0;
                         }
@@ -184,9 +183,10 @@ void coord_desc(const arma::mat & x,
                         double gk = arma::dot(x.unsafe_col(*k), resid % w);
                         double bk = b[*k];
                         double u = gk + bk * xv[*k];
-                        double v = std::abs(u) - lasso_part[*k] * std::abs(qext + (u > 0.0 ? 1.0 : -1.0));
+                        double usgn = sgn(u);
+                        double v = std::abs(u) - lasso_part[*k] * std::abs(qext + usgn);
                         if (v > 0.0) {
-                            b[*k] = std::max(lower_cl[*k], std::min(upper_cl[*k], copysign(v, u) / ridge_part[*k]));
+                            b[*k] = std::max(lower_cl[*k], std::min(upper_cl[*k], usgn * v / ridge_part[*k]));
                         } else {
                             b[*k] = 0.0;
                         }

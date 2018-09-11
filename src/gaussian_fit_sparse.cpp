@@ -134,6 +134,8 @@ List gaussian_fit_sparse(const arma::mat & x_,
     LogicalVector strong(nvar_total, 0);
     IntegerVector active_x(nv_x, 0);
     IntegerVector active_ext(nv_ext, 0);
+    arma::vec lasso_part(nvar_total, arma::fill::zeros);
+    arma::vec ridge_part(nvar_total, arma::fill::zeros);
 
     // quantile constants
     const double qx = 2 * tau - 1;
@@ -143,11 +145,20 @@ List gaussian_fit_sparse(const arma::mat & x_,
     for (int m = 0; m < nlam; ++m) {
         lam_cur[0] = lam_path[m];
 
+        for (int k = 0; k < nv_x; ++k) {
+            lasso_part[k] = ptype_ind[k] * lam_cur[0];
+            ridge_part[k] = xv[k] + (cmult[k] - ptype_ind[k]) * lam_cur[0];
+        }
+
         for (int m2 = 0; m2 < nlam_ext; ++m2) {
             lam_cur[1] = lam_path_ext[m2];
 
-            if (m2 == 0) {
+            for (int k = nv_x; k < nvar_total; ++k) {
+                lasso_part[k] = ptype_ind[k] * lam_cur[1];
+                ridge_part[k] = xv[k] + (cmult[k] - ptype_ind[k]) * lam_cur[1];
+            }
 
+            if (m2 == 0) {
                 // reset strong and active for ext vars
                 if (nv_ext > 0) {
                     std::fill(ever_active.begin() + nv_x, ever_active.end(), false);
@@ -156,7 +167,7 @@ List gaussian_fit_sparse(const arma::mat & x_,
                 }
 
                 coord_desc(xnew, outer_resid, wgt, ptype_ind,
-                           cmult, qx, qext, nvar,
+                           lasso_part, ridge_part, qx, qext, nvar,
                            nvar_total, upper_cl, lower_cl,
                            ne, nx, lam_cur, lam_prev,
                            strong, active_x, active_ext, thr, maxit,
@@ -174,7 +185,7 @@ List gaussian_fit_sparse(const arma::mat & x_,
             }
             else {
                 coord_desc(xnew, inner_resid, wgt, ptype_ind,
-                           cmult, qx, qext, nvar,
+                           lasso_part, ridge_part, qx, qext, nvar,
                            nvar_total, upper_cl, lower_cl,
                            ne, nx, lam_cur, lam_prev,
                            strong, active_x, active_ext, thr, maxit,

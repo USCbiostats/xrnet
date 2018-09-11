@@ -7,15 +7,16 @@
 using namespace Rcpp;
 
 // coord_desc
-void coord_desc(const arma::mat& x, arma::vec& resid, const arma::vec& w, const arma::vec& ptype_ind, const arma::vec& cmult, const double& qx, const double& qext, const int& nv_x, const int& nvar_total, const NumericVector& upper_cl, const NumericVector& lower_cl, const int& ne, const int& nx, NumericVector& lam_cur, NumericVector& lam_prev, LogicalVector& strong, IntegerVector& active_x, IntegerVector& active_ext, const double& thr, const int& maxit, const arma::vec& xv, arma::mat& coef, arma::vec& b, arma::vec& g, NumericVector& dev, double& dev_cur, LogicalVector& ever_active, double& errcode, int& nlp, int& idx_lam, int& nin_x, int& nin_ext);
-RcppExport SEXP _hierr_coord_desc(SEXP xSEXP, SEXP residSEXP, SEXP wSEXP, SEXP ptype_indSEXP, SEXP cmultSEXP, SEXP qxSEXP, SEXP qextSEXP, SEXP nv_xSEXP, SEXP nvar_totalSEXP, SEXP upper_clSEXP, SEXP lower_clSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP lam_curSEXP, SEXP lam_prevSEXP, SEXP strongSEXP, SEXP active_xSEXP, SEXP active_extSEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP xvSEXP, SEXP coefSEXP, SEXP bSEXP, SEXP gSEXP, SEXP devSEXP, SEXP dev_curSEXP, SEXP ever_activeSEXP, SEXP errcodeSEXP, SEXP nlpSEXP, SEXP idx_lamSEXP, SEXP nin_xSEXP, SEXP nin_extSEXP) {
+void coord_desc(const arma::mat& x, arma::vec& resid, const arma::vec& w, const arma::vec& ptype_ind, const arma::vec& lasso_part, const arma::vec& ridge_part, const double& qx, const double& qext, const int& nv_x, const int& nvar_total, const NumericVector& upper_cl, const NumericVector& lower_cl, const int& ne, const int& nx, NumericVector& lam_cur, NumericVector& lam_prev, LogicalVector& strong, IntegerVector& active_x, IntegerVector& active_ext, const double& thr, const int& maxit, const arma::vec& xv, arma::mat& coef, arma::vec& b, arma::vec& g, NumericVector& dev, double& dev_cur, LogicalVector& ever_active, double& errcode, int& nlp, int& idx_lam, int& nin_x, int& nin_ext);
+RcppExport SEXP _hierr_coord_desc(SEXP xSEXP, SEXP residSEXP, SEXP wSEXP, SEXP ptype_indSEXP, SEXP lasso_partSEXP, SEXP ridge_partSEXP, SEXP qxSEXP, SEXP qextSEXP, SEXP nv_xSEXP, SEXP nvar_totalSEXP, SEXP upper_clSEXP, SEXP lower_clSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP lam_curSEXP, SEXP lam_prevSEXP, SEXP strongSEXP, SEXP active_xSEXP, SEXP active_extSEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP xvSEXP, SEXP coefSEXP, SEXP bSEXP, SEXP gSEXP, SEXP devSEXP, SEXP dev_curSEXP, SEXP ever_activeSEXP, SEXP errcodeSEXP, SEXP nlpSEXP, SEXP idx_lamSEXP, SEXP nin_xSEXP, SEXP nin_extSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type resid(residSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type ptype_ind(ptype_indSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type cmult(cmultSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type lasso_part(lasso_partSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type ridge_part(ridge_partSEXP);
     Rcpp::traits::input_parameter< const double& >::type qx(qxSEXP);
     Rcpp::traits::input_parameter< const double& >::type qext(qextSEXP);
     Rcpp::traits::input_parameter< const int& >::type nv_x(nv_xSEXP);
@@ -43,7 +44,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int& >::type idx_lam(idx_lamSEXP);
     Rcpp::traits::input_parameter< int& >::type nin_x(nin_xSEXP);
     Rcpp::traits::input_parameter< int& >::type nin_ext(nin_extSEXP);
-    coord_desc(x, resid, w, ptype_ind, cmult, qx, qext, nv_x, nvar_total, upper_cl, lower_cl, ne, nx, lam_cur, lam_prev, strong, active_x, active_ext, thr, maxit, xv, coef, b, g, dev, dev_cur, ever_active, errcode, nlp, idx_lam, nin_x, nin_ext);
+    coord_desc(x, resid, w, ptype_ind, lasso_part, ridge_part, qx, qext, nv_x, nvar_total, upper_cl, lower_cl, ne, nx, lam_cur, lam_prev, strong, active_x, active_ext, thr, maxit, xv, coef, b, g, dev, dev_cur, ever_active, errcode, nlp, idx_lam, nin_x, nin_ext);
     return R_NilValue;
 END_RCPP
 }
@@ -222,7 +223,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 32},
+    {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 33},
     {"_hierr_create_data", (DL_FUNC) &_hierr_create_data, 16},
     {"_hierr_mean_sparse", (DL_FUNC) &_hierr_mean_sparse, 3},
     {"_hierr_sd_sparse", (DL_FUNC) &_hierr_sd_sparse, 4},

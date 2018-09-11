@@ -3,6 +3,11 @@
 
 #include <RcppArmadillo.h>
 
+template <class T>
+inline double sgn(T v) {
+    return (v > T(0)) - (v < T(0));
+}
+
 Rcpp::NumericVector compute_penalty(Rcpp::NumericVector & ulam,
                                     const int & nlam,
                                     const double & ptype,
