@@ -109,14 +109,17 @@ List gaussian_fit_sparse(const arma::mat & x_,
     arma::vec ptype_ind = cmult % ptype;
 
     // compute penalty paths
-    int start = 0;
-    NumericVector lam_path = compute_penalty(ulam, nlam, ptype[0], pratio,
-                                             g, cmult, start, nvar);
-    NumericVector lam_path_ext = 0.0;
+    NumericVector lam_path(nlam);
+    compute_penalty(lam_path, ulam, ptype[0],
+                    pratio, g, cmult, 0, nvar);
+
+    NumericVector lam_path_ext(nlam_ext);
     if (nvar_ext > 0) {
-        lam_path_ext = compute_penalty(ulam_ext, nlam_ext,
-                                       ptype[ext_start], pratio_ext,
-                                       g, cmult, ext_start, nvar_total);
+        compute_penalty(lam_path_ext, ulam_ext,
+                        ptype[ext_start], pratio_ext, g,
+                        cmult, ext_start, nvar_total);
+    } else {
+        lam_path_ext[0] = 0.0;
     }
 
     NumericVector lam_cur(2, 0.0);
@@ -127,15 +130,16 @@ List gaussian_fit_sparse(const arma::mat & x_,
     arma::vec inner_resid(nobs);
     arma::vec coef_outer(nvar_total, arma::fill::zeros);
     arma::vec coef_inner(nvar_total, arma::fill::zeros);
+    arma::vec lasso_part(nvar_total, arma::fill::zeros);
+    arma::vec ridge_part(nvar_total, arma::fill::zeros);
+    arma::vec ginner(nvar_total);
 
     // vars to track strong set and active set
     int nin_x = 0, nin_ext = 0;
     LogicalVector ever_active(nvar_total, 0);
     LogicalVector strong(nvar_total, 0);
-    IntegerVector active_x(nv_x, 0);
-    IntegerVector active_ext(nv_ext, 0);
-    arma::vec lasso_part(nvar_total, arma::fill::zeros);
-    arma::vec ridge_part(nvar_total, arma::fill::zeros);
+    //IntegerVector active_x(nv_x, 0);
+    //IntegerVector active_ext(nv_ext, 0);
 
     // quantile constants
     const double qx = 2 * tau - 1;
@@ -145,74 +149,87 @@ List gaussian_fit_sparse(const arma::mat & x_,
     for (int m = 0; m < nlam; ++m) {
         lam_cur[0] = lam_path[m];
 
-        for (int k = 0; k < nv_x; ++k) {
-            lasso_part[k] = ptype_ind[k] * lam_cur[0];
-            ridge_part[k] = xv[k] + (cmult[k] - ptype_ind[k]) * lam_cur[0];
-        }
+        updatePenalty(lasso_part, ridge_part, ptype_ind,
+                      cmult, xv, lam_cur[0], 0, nv_x);
 
         for (int m2 = 0; m2 < nlam_ext; ++m2) {
             lam_cur[1] = lam_path_ext[m2];
 
-            for (int k = nv_x; k < nvar_total; ++k) {
-                lasso_part[k] = ptype_ind[k] * lam_cur[1];
-                ridge_part[k] = xv[k] + (cmult[k] - ptype_ind[k]) * lam_cur[1];
-            }
+            updatePenalty(lasso_part, ridge_part, ptype_ind,
+                          cmult, xv, lam_cur[1], nv_x, nvar_total);
 
             if (m2 == 0) {
-                // reset strong and active for ext vars
+                // reset strong / active for ext vars
                 if (nv_ext > 0) {
                     std::fill(ever_active.begin() + nv_x, ever_active.end(), false);
                     std::fill(strong.begin() + nv_x, strong.end(), false);
                     nin_ext = 0;
                 }
 
-                coord_desc(xnew, outer_resid, wgt, ptype_ind,
-                           lasso_part, ridge_part, qx, qext, nvar,
-                           nvar_total, upper_cl, lower_cl,
-                           ne, nx, lam_cur, lam_prev,
-                           strong, active_x, active_ext, thr, maxit,
-                           xv, coef, coef_outer, g,
-                           dev, dev_outer, ever_active, errcode,
-                           nlp, idx_lam, nin_x, nin_ext);
+                // update strong
+                updateStrong(strong, g, ptype_ind, lam_cur,
+                             lam_prev, qx, qext, nv_x, nvar_total);
+
+                // fit model
+                coord_desc(xnew, outer_resid, wgt, lasso_part,
+                           ridge_part, qx, qext, nv_x, nvar_total,
+                           upper_cl, lower_cl, ne, nx, strong,
+                           ever_active, thr, maxit, xv,
+                           coef_outer, g, dev_outer, errcode,
+                           nlp, nin_x, nin_ext);
 
                 inner_resid = outer_resid;
                 coef_inner = coef_outer;
+                ginner = g;
                 dev_inner = dev_outer;
                 dev_old = dev_outer;
-                num_passes[idx_lam] = nlp - nlp_old;
-                nlp_old = nlp;
-
             }
             else {
-                coord_desc(xnew, inner_resid, wgt, ptype_ind,
-                           lasso_part, ridge_part, qx, qext, nvar,
-                           nvar_total, upper_cl, lower_cl,
-                           ne, nx, lam_cur, lam_prev,
-                           strong, active_x, active_ext, thr, maxit,
-                           xv, coef, coef_inner, g,
-                           dev, dev_inner, ever_active, errcode,
-                           nlp, idx_lam, nin_x, nin_ext);
+                updateStrong(strong, ginner, ptype_ind, lam_cur,
+                             lam_prev, qx, qext, nv_x, nvar_total);
 
-                num_passes[idx_lam] = nlp - nlp_old;
-                nlp_old = nlp;
-                //stop if max deviance or no appreciable change in deviance
-                if (pratio_ext > 0.0 && earlyStop) {
-                    if ((dev_inner - dev_old) < (1e-05 * dev_inner) || dev_inner > 0.999 || errcode > 0.0) {
-                        idx_lam += nlam_ext - m2;
-                        break;
-                    }
-                    else {
-                        dev_old = dev_inner;
-                    }
-                }
+                coord_desc(xnew, inner_resid, wgt,
+                           lasso_part, ridge_part, qx, qext, nv_x,
+                           nvar_total, upper_cl, lower_cl,
+                           ne, nx, strong, ever_active, thr, maxit,
+                           xv, coef_inner, ginner, dev_inner, errcode,
+                           nlp, nin_x, nin_ext);
             }
-            lam_prev[1] = lam_cur[1];
-            if (errcode > 0.0) {
+
+            // save results
+            coef.col(idx_lam) = coef_inner;
+            dev[idx_lam] = dev_inner;
+            num_passes[idx_lam] = nlp - nlp_old;
+            nlp_old = nlp;
+
+            // check if error
+            if (errcode != 0.0) {
                 break;
+            }
+
+            // check stop conditions
+            if (pratio_ext > 0.0 && earlyStop && m2 != 0) {
+                double dev_diff = dev_inner - dev_old;
+                if (dev_diff < (1e-05 * dev_inner) || dev_inner > 0.999) {
+                    idx_lam += nlam_ext - m2;
+                    break;
+                }
+            } else {
+                dev_old = dev_inner;
+            }
+
+            if (lam_cur[1] == 9.9e35) {
+                lam_prev[1] = 0.0;
+            } else {
+                lam_prev[1] = lam_cur[1];
             }
             ++idx_lam;
         }
-        lam_prev[0] = lam_cur[0];
+        if (lam_cur[0] == 9.9e35) {
+            lam_prev[0] = 0.0;
+        } else {
+            lam_prev[0] = lam_cur[0];
+        }
     }
 
     // compute and unstandardize predictor variables

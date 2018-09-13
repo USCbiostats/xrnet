@@ -1,10 +1,59 @@
 #include <RcppArmadillo.h>
 #include <cmath>
 #include <numeric>
+#include "hierr_utils.h"
 
 using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 
+
+/*
+ * Update lambdas
+ */
+void updatePenalty(arma::vec & l1,
+                   arma::vec & l2,
+                   const arma::vec & pind,
+                   const arma::vec & cmult,
+                   const arma::vec & xv,
+                   const double & lam_new,
+                   const int & start,
+                   const int & stop) {
+    for (int k = start; k < stop; ++k) {
+        l1[k] = pind[k] * lam_new;
+        l2[k] = 1 / (xv[k] + (cmult[k] - pind[k]) * lam_new);
+    }
+}
+
+/*
+ * Check strong rules
+ */
+
+//[[Rcpp:export]]
+void updateStrong(LogicalVector & strong,
+                 const arma::vec & g,
+                 const arma::vec & ptype_ind,
+                 const NumericVector & lam_cur,
+                 const NumericVector & lam_prev,
+                 const double & qx,
+                 const double & qext,
+                 const int & nv_x,
+                 const int & nvar_total) {
+    // update strong rules for x vars
+    double lam_diff = 2.0 * lam_cur[0] - lam_prev[0];
+    for (int k = 0; k < nv_x; ++k) {
+        if (!strong[k]) {
+            strong[k] = std::abs(g[k]) > ptype_ind[k] * lam_diff * std::abs(qx + sgn(g[k]));
+        }
+    }
+    // update strong rules for external vars
+    lam_diff = 2.0 * lam_cur[1] - lam_prev[1];
+    for (int k = nv_x; k < nvar_total; ++k) {
+        if (!strong[k]) {
+            strong[k] = std::abs(g[k]) > ptype_ind[k] * lam_diff * std::abs(qext + sgn(g[k]));
+        }
+    }
+
+}
 
 /*
  * Computes penalty path for set of variables
@@ -14,18 +63,16 @@ using namespace Rcpp;
  */
 
 //[[Rcpp:export]]
-NumericVector compute_penalty(NumericVector & ulam,
-                              const int & nlam,
-                              const double & ptype,
-                              const double & pratio,
-                              arma::vec & g,
-                              const arma::vec & cmult,
-                              const int & start,
-                              const int & stop) {
-
-    NumericVector lambdas;
+void compute_penalty(NumericVector & lambdas,
+                     NumericVector & ulam,
+                     const double & ptype,
+                     const double & pratio,
+                     const arma::vec & g,
+                     const arma::vec & cmult,
+                     const int & start,
+                     const int & stop) {
+    int nlam = lambdas.length();
     if (ulam[0] == 0.0) {
-        lambdas = NumericVector(nlam);
         lambdas[0] = 9.9e35;
         double max_pen = 0.0;
         for (int j = start; j < stop; ++j) {
@@ -42,7 +89,6 @@ NumericVector compute_penalty(NumericVector & ulam,
     } else {
         lambdas = ulam;
     }
-    return(lambdas);
 }
 
 /*
