@@ -288,8 +288,10 @@ hierr <- function(x,
         if (nc_ext > 0) {
             fit$custom_mult_ext <- penalty$custom_multiplier_ext
             fit$alphas <- aperm(array(t(fit$alphas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_ext)), c(3, 2, 1))
+            fit$nzero_alphas <- matrix(fit$nzero_alphas, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
         } else {
             fit$alphas <- NULL
+            fit$nzero_alphas <- NULL
             fit$penalty_type_ext <- NULL
             fit$quantile_ext <- NULL
             fit$penalty_ext <- NULL
@@ -302,6 +304,7 @@ hierr <- function(x,
             fit$gammas <- NULL
         }
 
+        fit$nzero_betas <- matrix(fit$nzero_betas, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
         fit$num_passes <- matrix(fit$num_passes, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
     } else {
         if (fit$status == -10000) {

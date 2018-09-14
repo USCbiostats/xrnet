@@ -100,7 +100,9 @@ List gaussian_fit_sparse(const arma::mat & x_,
     int nlam_total = nlam * nlam_ext;
     arma::mat coef(nvar_total, nlam_total, arma::fill::zeros);
     NumericVector dev(nlam_total);
-    NumericVector num_passes(nlam_total);
+    IntegerVector num_passes(nlam_total);
+    IntegerVector nzero_betas(nlam_total);
+    IntegerVector nzero_alphas(nlam_total);
 
     // compute gradient vector
     arma::vec g = xnew.t() * (wgt % outer_resid);
@@ -189,6 +191,8 @@ List gaussian_fit_sparse(const arma::mat & x_,
             // save results
             coef.col(idx_lam) = coef_inner;
             dev[idx_lam] = dev_inner;
+            nzero_betas[idx_lam] = countNonzero(coef_inner, 0, blkend[0]);
+            nzero_alphas[idx_lam] = countNonzero(coef_inner, blkend[0], blkend[1]);
             num_passes[idx_lam] = nlp - nlp_old;
             nlp_old = nlp;
 
@@ -278,6 +282,8 @@ List gaussian_fit_sparse(const arma::mat & x_,
                               Named("gammas") = gammas,
                               Named("alpha0") = a0,
                               Named("alphas") = alphas,
+                              Named("nzero_betas") = nzero_betas,
+                              Named("nzero_alphas") = nzero_alphas,
                               Named("penalty") = lam_path * ys,
                               Named("penalty_ext") = lam_path_ext * ys,
                               Named("penalty_type") = ptype[0],

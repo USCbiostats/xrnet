@@ -28,7 +28,6 @@ void updatePenalty(arma::vec & l1,
  * Check strong rules
  */
 
-//[[Rcpp:export]]
 void updateStrong(LogicalVector & strong,
                  const arma::vec & g,
                  const arma::vec & ptype,
@@ -59,7 +58,6 @@ void updateStrong(LogicalVector & strong,
  * max and min penalty
  */
 
-//[[Rcpp:export]]
 void compute_penalty(NumericVector & lambdas,
                      NumericVector & ulam,
                      const double & ptype,
@@ -169,7 +167,6 @@ void compute_coef_sparse(arma::mat & coef,
  * mean and standard deviation (using 1/n)
  */
 
-// [[Rcpp::export]]
 void standardize_vec(arma::vec & y,
                      const arma::vec & w,
                      double & ym,
@@ -185,4 +182,10 @@ void standardize_vec(arma::vec & y,
         y = y / ys;
         ym = 0.0;
     }
+}
+
+int countNonzero(const arma::vec & x,
+                 const int & start,
+                 const int & end) {
+    return std::count_if(x.begin() + start, x.begin() + end, [](double i){return i != 0.0;});
 }

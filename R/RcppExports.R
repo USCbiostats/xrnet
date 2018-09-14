@@ -29,7 +29,3 @@ gaussian_fit_sparse <- function(x_, y_, ext_, fixed_, nobs, nvar, nvar_ext, nvar
     .Call(`_hierr_gaussian_fit_sparse`, x_, y_, ext_, fixed_, nobs, nvar, nvar_ext, nvar_unpen, w, ptype, tau, tau_ext, cmult, lower_cl, upper_cl, ne, nx, nlam, nlam_ext, pratio, pratio_ext, ulam_, ulam_ext_, thr, maxit, earlyStop, isd, isd_ext, intr, intr_ext)
 }
 
-standardize_vec <- function(y, w, ym, ys, intr) {
-    invisible(.Call(`_hierr_standardize_vec`, y, w, ym, ys, intr))
-}
-

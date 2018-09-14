@@ -197,20 +197,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// standardize_vec
-void standardize_vec(arma::vec& y, const arma::vec& w, double& ym, double& ys, const bool& intr);
-RcppExport SEXP _hierr_standardize_vec(SEXP ySEXP, SEXP wSEXP, SEXP ymSEXP, SEXP ysSEXP, SEXP intrSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< double& >::type ym(ymSEXP);
-    Rcpp::traits::input_parameter< double& >::type ys(ysSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type intr(intrSEXP);
-    standardize_vec(y, w, ym, ys, intr);
-    return R_NilValue;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 23},
@@ -220,7 +206,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_hierr_create_data_sparse", (DL_FUNC) &_hierr_create_data_sparse, 16},
     {"_hierr_gaussian_fit", (DL_FUNC) &_hierr_gaussian_fit, 30},
     {"_hierr_gaussian_fit_sparse", (DL_FUNC) &_hierr_gaussian_fit_sparse, 30},
-    {"_hierr_standardize_vec", (DL_FUNC) &_hierr_standardize_vec, 5},
     {NULL, NULL, 0}
 };
 

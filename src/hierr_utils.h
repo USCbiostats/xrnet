@@ -8,6 +8,10 @@ inline T sgn(T & v) {
     return (v > T(0)) - (v < T(0));
 }
 
+int countNonzero(const arma::vec & x,
+                 const int & start,
+                 const int & end);
+
 void updatePenalty(arma::vec & l1,
                    arma::vec & l2,
                    const arma::vec & pind,
