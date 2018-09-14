@@ -118,10 +118,9 @@ void coord_desc(const arma::mat & x,
                         double end = stop[blk];
                         for (int k = begin; k < end; ++k) {
                             if (active[k]) {
-                                double gk = arma::dot(x.unsafe_col(k), resid % w);
+                                double gk = arma::dot(x.unsafe_col(k), resid  % w);
                                 double bk = b[k];
                                 double u = gk + bk * xv[k];
-                                double l1 = ptype[k] * cmult[k] * lambda * std::abs(q + sgn(u));
                                 double v = std::abs(u) - ptype[k] * cmult[k] * lambda * std::abs(q + sgn(u));
                                 if (v > 0.0) {
                                     b[k] = std::max(lcl[k],

@@ -1,7 +1,6 @@
 #include <RcppArmadillo.h>
 #include <cmath>
 #include <numeric>
-#include <algorithm>
 #include "hierr_utils.h"
 #include "create_data.h"
 #include "coord_desc.h"

@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include <cmath>
 #include <numeric>
+#include <algorithm>
 #include "hierr_utils.h"
 
 using namespace Rcpp;
@@ -187,5 +188,9 @@ void standardize_vec(arma::vec & y,
 int countNonzero(const arma::vec & x,
                  const int & start,
                  const int & end) {
-    return std::count_if(x.begin() + start, x.begin() + end, [](double i){return i != 0.0;});
+    int nzero = 0;
+    for(int i = start; i < end; ++i) {
+        nzero += (x[i] != 0.0);
+    }
+    return nzero;
 }
