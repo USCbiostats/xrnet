@@ -54,11 +54,11 @@ void coord_desc(const arma::mat & x,
                         double gk = arma::dot(x.unsafe_col(k), resid % w);
                         double bk = b[k];
                         double u = gk + bk * xv[k];
-                        double l1 = ptype[k] * cmult[k] * lambda * std::abs(q + sgn(u));
-                        double v = std::abs(u) - l1;
+                        double v = std::abs(u) - ptype[k] * cmult[k] * lambda * std::abs(q + sgn(u));
                         if (v > 0.0) {
-                            double l2 = xv[k] + cmult[k] * (1 - ptype[k]) * lambda;
-                            b[k] = std::max(lcl[k], std::min(ucl[k], copysign(v, u) / l2));
+                            b[k] = std::max(lcl[k],
+                                        std::min(ucl[k],
+                                        copysign(v, u) / (xv[k] + cmult[k] * (1 - ptype[k]) * lambda)));
                         } else {
                             b[k] = 0.0;
                         }
@@ -122,10 +122,11 @@ void coord_desc(const arma::mat & x,
                                 double bk = b[k];
                                 double u = gk + bk * xv[k];
                                 double l1 = ptype[k] * cmult[k] * lambda * std::abs(q + sgn(u));
-                                double v = std::abs(u) - l1;
+                                double v = std::abs(u) - ptype[k] * cmult[k] * lambda * std::abs(q + sgn(u));
                                 if (v > 0.0) {
-                                    double l2 = xv[k] + cmult[k] * (1 - ptype[k]) * lambda;
-                                    b[k] = std::max(lcl[k], std::min(ucl[k], copysign(v, u) / l2));
+                                    b[k] = std::max(lcl[k],
+                                                std::min(ucl[k],
+                                                copysign(v, u) / (xv[k] + cmult[k] * (1 - ptype[k]) * lambda)));
                                 } else {
                                     b[k] = 0.0;
                                 }
