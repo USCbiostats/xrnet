@@ -7,19 +7,18 @@
 using namespace Rcpp;
 
 // coord_desc
-void coord_desc(const arma::mat& x, arma::vec& resid, const arma::vec& w, const arma::vec& lasso_part, const arma::vec& ridge_part, const double& qx, const double& qext, const int& nv_x, const int& nvar_total, const NumericVector& ucl, const NumericVector& lcl, const int& ne, const int& nx, LogicalVector& strong, LogicalVector& active, const double& thr, const int& maxit, const arma::vec& xv, arma::vec& b, arma::vec& g, double& dev_cur, double& errcode, int& nlp, int& nin_x, int& nin_ext);
-RcppExport SEXP _hierr_coord_desc(SEXP xSEXP, SEXP residSEXP, SEXP wSEXP, SEXP lasso_partSEXP, SEXP ridge_partSEXP, SEXP qxSEXP, SEXP qextSEXP, SEXP nv_xSEXP, SEXP nvar_totalSEXP, SEXP uclSEXP, SEXP lclSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP strongSEXP, SEXP activeSEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP xvSEXP, SEXP bSEXP, SEXP gSEXP, SEXP dev_curSEXP, SEXP errcodeSEXP, SEXP nlpSEXP, SEXP nin_xSEXP, SEXP nin_extSEXP) {
+void coord_desc(const arma::mat& x, arma::vec& resid, const arma::vec& w, const arma::vec& ptype, const arma::vec& cmult, const NumericVector& qnt, const NumericVector& lam_cur, const IntegerVector& stop, const NumericVector& ucl, const NumericVector& lcl, const int& ne, const int& nx, LogicalVector& strong, LogicalVector& active, const double& thr, const int& maxit, const arma::vec& xv, arma::vec& b, arma::vec& g, double& dev_cur, double& errcode, int& nlp, IntegerVector& nin);
+RcppExport SEXP _hierr_coord_desc(SEXP xSEXP, SEXP residSEXP, SEXP wSEXP, SEXP ptypeSEXP, SEXP cmultSEXP, SEXP qntSEXP, SEXP lam_curSEXP, SEXP stopSEXP, SEXP uclSEXP, SEXP lclSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP strongSEXP, SEXP activeSEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP xvSEXP, SEXP bSEXP, SEXP gSEXP, SEXP dev_curSEXP, SEXP errcodeSEXP, SEXP nlpSEXP, SEXP ninSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type resid(residSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lasso_part(lasso_partSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type ridge_part(ridge_partSEXP);
-    Rcpp::traits::input_parameter< const double& >::type qx(qxSEXP);
-    Rcpp::traits::input_parameter< const double& >::type qext(qextSEXP);
-    Rcpp::traits::input_parameter< const int& >::type nv_x(nv_xSEXP);
-    Rcpp::traits::input_parameter< const int& >::type nvar_total(nvar_totalSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type ptype(ptypeSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type cmult(cmultSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type qnt(qntSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type lam_cur(lam_curSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type stop(stopSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type ucl(uclSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type lcl(lclSEXP);
     Rcpp::traits::input_parameter< const int& >::type ne(neSEXP);
@@ -34,9 +33,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double& >::type dev_cur(dev_curSEXP);
     Rcpp::traits::input_parameter< double& >::type errcode(errcodeSEXP);
     Rcpp::traits::input_parameter< int& >::type nlp(nlpSEXP);
-    Rcpp::traits::input_parameter< int& >::type nin_x(nin_xSEXP);
-    Rcpp::traits::input_parameter< int& >::type nin_ext(nin_extSEXP);
-    coord_desc(x, resid, w, lasso_part, ridge_part, qx, qext, nv_x, nvar_total, ucl, lcl, ne, nx, strong, active, thr, maxit, xv, b, g, dev_cur, errcode, nlp, nin_x, nin_ext);
+    Rcpp::traits::input_parameter< IntegerVector& >::type nin(ninSEXP);
+    coord_desc(x, resid, w, ptype, cmult, qnt, lam_cur, stop, ucl, lcl, ne, nx, strong, active, thr, maxit, xv, b, g, dev_cur, errcode, nlp, nin);
     return R_NilValue;
 END_RCPP
 }
@@ -215,7 +213,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 25},
+    {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 23},
     {"_hierr_create_data", (DL_FUNC) &_hierr_create_data, 16},
     {"_hierr_mean_sparse", (DL_FUNC) &_hierr_mean_sparse, 3},
     {"_hierr_sd_sparse", (DL_FUNC) &_hierr_sd_sparse, 4},

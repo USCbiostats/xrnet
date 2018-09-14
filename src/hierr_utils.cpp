@@ -31,28 +31,25 @@ void updatePenalty(arma::vec & l1,
 //[[Rcpp:export]]
 void updateStrong(LogicalVector & strong,
                  const arma::vec & g,
-                 const arma::vec & ptype_ind,
+                 const arma::vec & ptype,
+                 const arma::vec & cmult,
                  const NumericVector & lam_cur,
                  const NumericVector & lam_prev,
-                 const double & qx,
-                 const double & qext,
-                 const int & nv_x,
-                 const int & nvar_total) {
-    // update strong rules for x vars
-    double lam_diff = 2.0 * lam_cur[0] - lam_prev[0];
-    for (int k = 0; k < nv_x; ++k) {
-        if (!strong[k]) {
-            strong[k] = std::abs(g[k]) > ptype_ind[k] * lam_diff * std::abs(qx + sgn(g[k]));
+                 const NumericVector & qnt,
+                 const IntegerVector & blkend) {
+    int nblocks = lam_cur.length();
+    int begin = 0;
+    for (int blk = 0; blk < nblocks; ++blk) {
+        double q = qnt[blk];
+        double end = blkend[blk];
+        double lam_diff = 2.0 * lam_cur[blk] - lam_prev[blk];
+        for (int k = begin; k < end; ++k) {
+            if (!strong[k]) {
+                strong[k] = std::abs(g[k]) > ptype[k] * cmult[k] * lam_diff * std::abs(q + sgn(g[k]));
+            }
         }
+        begin = end;
     }
-    // update strong rules for external vars
-    lam_diff = 2.0 * lam_cur[1] - lam_prev[1];
-    for (int k = nv_x; k < nvar_total; ++k) {
-        if (!strong[k]) {
-            strong[k] = std::abs(g[k]) > ptype_ind[k] * lam_diff * std::abs(qext + sgn(g[k]));
-        }
-    }
-
 }
 
 /*

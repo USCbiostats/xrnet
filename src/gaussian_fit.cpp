@@ -101,21 +101,18 @@ List gaussian_fit(const arma::mat & x_,
     NumericVector num_passes(nlam_total);
 
     // compute gradient vector
-    arma::vec g = xnew.t() * (wgt % outer_resid);
-
-    // compute individual ptype
-    arma::vec ptype_ind = cmult % ptype;
+    arma::vec gouter = xnew.t() * (wgt % outer_resid);
 
     // compute penalty paths
     NumericVector lam_path(nlam);
     compute_penalty(lam_path, ulam, ptype[0],
-                    pratio, g, cmult, 0, nvar);
+                    pratio, gouter, cmult, 0, nvar);
 
     NumericVector lam_path_ext(nlam_ext);
     if (nvar_ext > 0) {
         compute_penalty(lam_path_ext, ulam_ext,
                         ptype[ext_start], pratio_ext,
-                        g, cmult, ext_start, nvar_total);
+                        gouter, cmult, ext_start, nvar_total);
     } else {
         lam_path_ext[0] = 0.0;
     }
@@ -128,73 +125,62 @@ List gaussian_fit(const arma::mat & x_,
     arma::vec inner_resid(nobs);
     arma::vec coef_outer(nvar_total, arma::fill::zeros);
     arma::vec coef_inner(nvar_total, arma::fill::zeros);
-    arma::vec lasso_part(nvar_total, arma::fill::zeros);
-    arma::vec ridge_part = xv;
     arma::vec ginner(nvar_total);
 
     // vars to track strong set and active set
-    int nin_x = 0, nin_ext = 0;
     LogicalVector ever_active(nvar_total, 0);
     LogicalVector strong(nvar_total, 0);
+    IntegerVector nin(2, 0);
     //IntegerVector active_x(nv_x, 0);
     //IntegerVector active_ext(nv_ext, 0);
 
     // quantile constants
-    const double qx = 2 * tau - 1;
-    const double qext = 2 * tau_ext - 1;
+    const NumericVector qnt = NumericVector::create(2 * tau - 1, 2 * tau_ext - 1);
+    const IntegerVector blkend = IntegerVector::create(nv_x, nvar_total);
 
     // loop through all penalty combinations
     for (int m = 0; m < nlam; ++m) {
         lam_cur[0] = lam_path[m];
 
-        updatePenalty(lasso_part, ridge_part, ptype_ind,
-                      cmult, xv, lam_cur[0], 0, nv_x);
-
         for (int m2 = 0; m2 < nlam_ext; ++m2) {
             lam_cur[1] = lam_path_ext[m2];
-
-            updatePenalty(lasso_part, ridge_part, ptype_ind,
-                          cmult, xv, lam_cur[1], nv_x, nvar_total);
 
             if (m2 == 0) {
                 // reset strong / active for ext vars
                 if (nv_ext > 0) {
                     std::fill(ever_active.begin() + nv_x, ever_active.end(), false);
                     std::fill(strong.begin() + nv_x, strong.end(), false);
-                    nin_ext = 0;
+                    nin[1] = 0;
                 }
 
                 // update strong
-                updateStrong(strong, g, ptype_ind, lam_cur,
-                            lam_prev, qx, qext, nv_x, nvar_total);
+                updateStrong(strong, gouter, ptype, cmult, lam_cur,
+                             lam_prev, qnt, blkend);
 
                 // fit model
-                coord_desc(xnew, outer_resid, wgt, lasso_part,
-                           ridge_part, qx, qext, nv_x, nvar_total,
-                           upper_cl, lower_cl, ne, nx, strong,
-                           ever_active, thr, maxit, xv,
-                           coef_outer, g, dev_outer, errcode,
-                           nlp, nin_x, nin_ext);
+                coord_desc(xnew, outer_resid, wgt, ptype, cmult, qnt,
+                           lam_cur, blkend, upper_cl, lower_cl, ne, nx,
+                           strong, ever_active, thr, maxit, xv,
+                           coef_outer, gouter, dev_outer, errcode, nlp, nin);
 
-                // copy for inner loop
+                // copy results for inner loop
                 inner_resid = outer_resid;
                 coef_inner = coef_outer;
-                ginner = g;
+                ginner = gouter;
                 dev_inner = dev_outer;
                 dev_old = dev_outer;
             }
             else {
                 // update strong
-                updateStrong(strong, ginner, ptype_ind, lam_cur,
-                            lam_prev, qx, qext, nv_x, nvar_total);
+                updateStrong(strong, ginner, ptype, cmult,
+                             lam_cur, lam_prev, qnt, blkend);
 
                 // fit model
-                coord_desc(xnew, inner_resid, wgt,
-                           lasso_part, ridge_part, qx, qext, nv_x,
-                           nvar_total, upper_cl, lower_cl,
+                coord_desc(xnew, inner_resid, wgt, ptype, cmult,
+                           qnt, lam_cur, blkend, upper_cl, lower_cl,
                            ne, nx, strong, ever_active, thr, maxit,
                            xv, coef_inner, ginner, dev_inner, errcode,
-                           nlp, nin_x, nin_ext);
+                           nlp, nin);
             }
 
             // save results

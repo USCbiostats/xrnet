@@ -18,14 +18,13 @@ void updatePenalty(arma::vec & l1,
                    const int & stop);
 
 void updateStrong(Rcpp::LogicalVector & strong,
-                 const arma::vec & g,
-                 const arma::vec & ptype_ind,
-                 const Rcpp::NumericVector & lam_cur,
-                 const Rcpp::NumericVector & lam_prev,
-                 const double & qx,
-                 const double & qext,
-                 const int & nv_x,
-                 const int & nvar_total);
+                  const arma::vec & g,
+                  const arma::vec & ptype,
+                  const arma::vec & cmult,
+                  const Rcpp::NumericVector & lam_cur,
+                  const Rcpp::NumericVector & lam_prev,
+                  const Rcpp::NumericVector & qnt,
+                  const Rcpp::IntegerVector & blkend);
 
 void compute_penalty(Rcpp::NumericVector & lambdas,
                      Rcpp::NumericVector & ulam,
