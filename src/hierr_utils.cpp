@@ -1,9 +1,56 @@
 #include <RcppArmadillo.h>
 #include <cmath>
 #include <numeric>
+#include <algorithm>
+#include "hierr_utils.h"
 
 using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
+
+
+/*
+ * Update lambdas
+ */
+void updatePenalty(arma::vec & l1,
+                   arma::vec & l2,
+                   const arma::vec & pind,
+                   const arma::vec & cmult,
+                   const arma::vec & xv,
+                   const double & lam_new,
+                   const int & start,
+                   const int & stop) {
+    for (int k = start; k < stop; ++k) {
+        l1[k] = pind[k] * lam_new;
+        l2[k] = 1 / (xv[k] + (cmult[k] - pind[k]) * lam_new);
+    }
+}
+
+/*
+ * Check strong rules
+ */
+
+void updateStrong(LogicalVector & strong,
+                 const arma::vec & g,
+                 const arma::vec & ptype,
+                 const arma::vec & cmult,
+                 const NumericVector & lam_cur,
+                 const NumericVector & lam_prev,
+                 const NumericVector & qnt,
+                 const IntegerVector & blkend) {
+    int nblocks = lam_cur.length();
+    int begin = 0;
+    for (int blk = 0; blk < nblocks; ++blk) {
+        double q = qnt[blk];
+        double end = blkend[blk];
+        double lam_diff = 2.0 * lam_cur[blk] - lam_prev[blk];
+        for (int k = begin; k < end; ++k) {
+            if (!strong[k]) {
+                strong[k] = std::abs(g[k]) > ptype[k] * cmult[k] * lam_diff * std::abs(q + sgn(g[k]));
+            }
+        }
+        begin = end;
+    }
+}
 
 /*
  * Computes penalty path for set of variables
@@ -12,24 +59,21 @@ using namespace Rcpp;
  * max and min penalty
  */
 
-//[[Rcpp:export]]
-NumericVector compute_penalty(NumericVector & ulam,
-                              const int & nlam,
-                              const double & ptype,
-                              const double & pratio,
-                              arma::vec & g,
-                              const arma::vec & cmult,
-                              const int & start,
-                              const int & stop) {
-
-    NumericVector lambdas;
+void compute_penalty(NumericVector & lambdas,
+                     NumericVector & ulam,
+                     const double & ptype,
+                     const double & pratio,
+                     const arma::vec & g,
+                     const arma::vec & cmult,
+                     const int & start,
+                     const int & stop) {
+    int nlam = lambdas.length();
     if (ulam[0] == 0.0) {
-        lambdas = NumericVector(nlam);
         lambdas[0] = 9.9e35;
         double max_pen = 0.0;
         for (int j = start; j < stop; ++j) {
             if (cmult[j] > 0.0) {
-                max_pen = std::max(max_pen, g[j] / cmult[j]);
+                max_pen = std::max(max_pen, std::abs(g[j]) / cmult[j]);
             }
         }
         double eqs = std::max(1e-6, pratio);
@@ -41,7 +85,6 @@ NumericVector compute_penalty(NumericVector & ulam,
     } else {
         lambdas = ulam;
     }
-    return(lambdas);
 }
 
 /*
@@ -125,7 +168,6 @@ void compute_coef_sparse(arma::mat & coef,
  * mean and standard deviation (using 1/n)
  */
 
-// [[Rcpp::export]]
 void standardize_vec(arma::vec & y,
                      const arma::vec & w,
                      double & ym,
@@ -141,4 +183,14 @@ void standardize_vec(arma::vec & y,
         y = y / ys;
         ym = 0.0;
     }
+}
+
+int countNonzero(const arma::vec & x,
+                 const int & start,
+                 const int & end) {
+    int nzero = 0;
+    for(int i = start; i < end; ++i) {
+        nzero += (x[i] != 0.0);
+    }
+    return nzero;
 }

@@ -60,6 +60,7 @@ test_that("predict returns estimates for penalties not fit by hierr object", {
                           family = "gaussian",
                           penalty = myPenalty,
                           control = myControl)
+
     hierr_object2 <- hierr(x = xtest,
                            y = ytest,
                            external = ztest,

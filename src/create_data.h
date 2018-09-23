@@ -18,7 +18,6 @@ arma::mat create_data(const int & nobs,
                       const bool & intr_ext,
                       arma::vec & xm,
                       arma::vec & xv,
-                      arma::vec & xs,
-                      int & ext_start);
+                      arma::vec & xs);
 
 #endif

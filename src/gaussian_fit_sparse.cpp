@@ -25,7 +25,7 @@ List gaussian_fit_sparse(const arma::mat & x_,
                          const int & nvar_ext,
                          const int & nvar_unpen,
                          const arma::vec & w,
-                         const NumericVector & ptype,
+                         const arma::vec & ptype,
                          const double & tau,
                          const double & tau_ext,
                          const arma::vec & cmult,
@@ -48,14 +48,18 @@ List gaussian_fit_sparse(const arma::mat & x_,
                          const bool & intr_ext) {
 
     // Create single level regression matrix
-    int nvar_total = nvar + nvar_ext + nvar_unpen + intr_ext;
+    const int ext_start = nvar + nvar_unpen + intr_ext;
+    const int nvar_total = ext_start + nvar_ext;
+    const int nv_x = nvar + nvar_unpen;
+    const int nv_ext = intr_ext + nvar_ext;
     arma::vec xm(nvar_total, arma::fill::zeros);
     arma::vec xv(nvar_total, arma::fill::ones);
     arma::vec xs(nvar_total, arma::fill::ones);
     const arma::vec wgt = w / sum(w);
-    int ext_start;
-    const arma::mat xnew = create_data_sparse(nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x_, ext_, fixed_,
-                                              wgt, isd, isd_ext, intr, intr_ext, xm, xv, xs, ext_start);
+    const arma::mat xnew = create_data_sparse(nobs, nvar, nvar_ext, nvar_unpen,
+                                              nvar_total, x_, ext_, fixed_,
+                                              wgt, isd, isd_ext, intr, intr_ext,
+                                              xm, xv, xs);
 
     // determine non-constant variables -- still to be done
 
@@ -70,7 +74,7 @@ List gaussian_fit_sparse(const arma::mat & x_,
     NumericVector ulam_ext = Rcpp::clone(ulam_ext_) / ys;
 
     if (isd) {
-        for (int i = 0; i < nvar; ++i) {
+        for (int i = 0; i < nv_x; ++i) {
             if (lower_cl[i] != R_NegInf) {
                 lower_cl[i] *= xs[i];
             }
@@ -80,7 +84,7 @@ List gaussian_fit_sparse(const arma::mat & x_,
         }
     }
     if (isd_ext && nvar_ext > 0) {
-        for (int i = ext_start; i < nvar_total; ++i) {
+        for (int i = nv_x; i < nvar_total; ++i) {
             if (lower_cl[i] != R_NegInf) {
                 lower_cl[i] *= xs[i];
             }
@@ -96,36 +100,49 @@ List gaussian_fit_sparse(const arma::mat & x_,
     int nlam_total = nlam * nlam_ext;
     arma::mat coef(nvar_total, nlam_total, arma::fill::zeros);
     NumericVector dev(nlam_total);
-    NumericVector num_passes(nlam_total);
+    IntegerVector num_passes(nlam_total);
+    IntegerVector nzero_betas(nlam_total);
+    IntegerVector nzero_alphas(nlam_total);
 
     // compute gradient vector
-    arma::vec g(nvar_total, arma::fill::zeros);
-    g = arma::abs(xnew.t() * (wgt % outer_resid));
+    arma::vec g = xnew.t() * (wgt % outer_resid);
 
     // compute penalty paths
-    int start = 0;
-    NumericVector lam_path = compute_penalty(ulam, nlam, ptype[0], pratio, g, cmult, start, nvar);
-    NumericVector lam_path_ext = 0.0;
+    NumericVector lam_path(nlam);
+    compute_penalty(lam_path, ulam, ptype[0],
+                    pratio, g, cmult, 0, nvar);
+
+    NumericVector lam_path_ext(nlam_ext);
     if (nvar_ext > 0) {
-        lam_path_ext = compute_penalty(ulam_ext, nlam_ext, ptype[ext_start], pratio_ext, g, cmult, ext_start, nvar_total);
+        compute_penalty(lam_path_ext, ulam_ext,
+                        ptype[ext_start], pratio_ext, g,
+                        cmult, ext_start, nvar_total);
+    } else {
+        lam_path_ext[0] = 0.0;
     }
 
-    // loop through all penalty combinations
     NumericVector lam_cur(2, 0.0);
     NumericVector lam_prev(2, 0.0);
-    double dev_outer = 0.0;
-    double dev_inner = 0.0;
-    double dev_old = 0.0;
-    int nlp_old = 0;
+    double dev_outer = 0.0, dev_inner = 0.0, dev_old = 0.0;
+    double errcode = 0.0;
+    int nlp_old = 0, idx_lam = 0, nlp = 0;
     arma::vec inner_resid(nobs);
     arma::vec coef_outer(nvar_total, arma::fill::zeros);
     arma::vec coef_inner(nvar_total, arma::fill::zeros);
-    IntegerVector mm(nvar_total, 0);
+    arma::vec ginner(nvar_total);
 
-    int idx_lam = 0;
-    int nlp = 0;
-    double errcode = 0.0;
+    // vars to track strong set and active set
+    LogicalVector ever_active(nvar_total, 0);
+    LogicalVector strong(nvar_total, 0);
+    IntegerVector nin(2, 0);
+    //IntegerVector active_x(nv_x, 0);
+    //IntegerVector active_ext(nv_ext, 0);
 
+    // quantile constants
+    const NumericVector qnt = NumericVector::create(2 * tau - 1, 2 * tau_ext - 1);
+    const IntegerVector blkend = IntegerVector::create(nv_x, nvar_total);
+
+    // loop through all penalty combinations
     for (int m = 0; m < nlam; ++m) {
         lam_cur[0] = lam_path[m];
 
@@ -133,44 +150,80 @@ List gaussian_fit_sparse(const arma::mat & x_,
             lam_cur[1] = lam_path_ext[m2];
 
             if (m2 == 0) {
-                coord_desc(xnew, outer_resid, wgt, ptype, tau, tau_ext, nobs, nvar, nvar_total,
-                           cmult, upper_cl, lower_cl, ne, nx, lam_cur, lam_prev, thr, maxit,
-                           xv, coef, coef_outer, g, dev, dev_outer, mm, errcode, nlp, idx_lam);
+                // reset strong / active for ext vars
+                if (nv_ext > 0) {
+                    std::fill(ever_active.begin() + nv_x, ever_active.end(), false);
+                    std::fill(strong.begin() + nv_x, strong.end(), false);
+                    nin[1] = 0;
+                }
 
+                // update strong
+                updateStrong(strong, g, ptype, cmult, lam_cur,
+                             lam_prev, qnt, blkend);
+
+                // fit model
+                coord_desc(xnew, outer_resid, wgt, ptype, cmult, qnt,
+                           lam_cur, blkend, upper_cl, lower_cl, ne, nx,
+                           strong, ever_active, thr, maxit, xv,
+                           coef_outer, g, dev_outer, errcode,
+                           nlp, nin);
+
+                // copy for inner loop
                 inner_resid = outer_resid;
                 coef_inner = coef_outer;
+                ginner = g;
                 dev_inner = dev_outer;
                 dev_old = dev_outer;
-                num_passes[idx_lam] = nlp - nlp_old;
-                nlp_old = nlp;
-
             }
             else {
-                coord_desc(xnew, inner_resid, wgt, ptype, tau, tau_ext, nobs, nvar, nvar_total,
-                           cmult, upper_cl, lower_cl, ne, nx,
-                           lam_cur, lam_prev, thr, maxit, xv, coef, coef_inner, g,
-                           dev, dev_inner, mm, errcode, nlp, idx_lam);
+                // update strong
+                updateStrong(strong, ginner, ptype, cmult,
+                             lam_cur, lam_prev, qnt, blkend);
 
-                num_passes[idx_lam] = nlp - nlp_old;
-                nlp_old = nlp;
-                //stop if max deviance or no appreciable change in deviance
-                if (pratio_ext > 0.0 && earlyStop) {
-                    if ((dev_inner - dev_old) < (1e-05 * dev_inner) || dev_inner > 0.999 || errcode > 0.0) {
-                        idx_lam += nlam_ext - m2;
-                        break;
-                    }
-                    else {
-                        dev_old = dev_inner;
-                    }
-                }
+                // fit model
+                coord_desc(xnew, inner_resid, wgt, ptype, cmult,
+                           qnt, lam_cur, blkend, upper_cl, lower_cl,
+                           ne, nx, strong, ever_active, thr, maxit,
+                           xv, coef_inner, ginner, dev_inner, errcode,
+                           nlp, nin);
             }
-            lam_prev[1] = lam_cur[1];
-            if (errcode > 0.0) {
+
+            // save results
+            coef.col(idx_lam) = coef_inner;
+            dev[idx_lam] = dev_inner;
+            nzero_betas[idx_lam] = countNonzero(coef_inner, 0, blkend[0]);
+            nzero_alphas[idx_lam] = countNonzero(coef_inner, blkend[0], blkend[1]);
+            num_passes[idx_lam] = nlp - nlp_old;
+            nlp_old = nlp;
+
+            // check if error
+            if (errcode != 0.0) {
                 break;
+            }
+
+            // check stop conditions
+            if (pratio_ext > 0.0 && earlyStop && m2 != 0) {
+                double dev_diff = dev_inner - dev_old;
+                if (dev_diff < (1e-05 * dev_inner) || dev_inner > 0.999) {
+                    idx_lam += nlam_ext - m2;
+                    break;
+                }
+            } else {
+                dev_old = dev_inner;
+            }
+
+            if (lam_cur[1] == 9.9e35) {
+                lam_prev[1] = 0.0;
+            } else {
+                lam_prev[1] = lam_cur[1];
             }
             ++idx_lam;
         }
-        lam_prev[0] = lam_cur[0];
+        if (lam_cur[0] == 9.9e35) {
+            lam_prev[0] = 0.0;
+        } else {
+            lam_prev[0] = lam_cur[0];
+        }
     }
 
     // compute and unstandardize predictor variables
@@ -179,7 +232,8 @@ List gaussian_fit_sparse(const arma::mat & x_,
     if (intr_ext) {
         a0 = arma::conv_to<arma::colvec>::from(coef.row(nvar + nvar_unpen));
     }
-    compute_coef_sparse(coef, ext_, nvar, nvar_ext, nvar_total, nlam_total, xm, xs, ys, a0, intr_ext, ext_start);
+    compute_coef_sparse(coef, ext_, nvar, nvar_ext, nvar_total,
+                        nlam_total, xm, xs, ys, a0, intr_ext, ext_start);
 
     // unstandardize unpenalized variables
     arma::mat gammas;
@@ -228,6 +282,8 @@ List gaussian_fit_sparse(const arma::mat & x_,
                               Named("gammas") = gammas,
                               Named("alpha0") = a0,
                               Named("alphas") = alphas,
+                              Named("nzero_betas") = nzero_betas,
+                              Named("nzero_alphas") = nzero_alphas,
                               Named("penalty") = lam_path * ys,
                               Named("penalty_ext") = lam_path_ext * ys,
                               Named("penalty_type") = ptype[0],
