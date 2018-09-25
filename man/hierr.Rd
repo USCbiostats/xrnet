@@ -5,8 +5,8 @@
 \title{Fit hierarchical regularized regression model}
 \usage{
 hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
-  penalty = definePenalty(), weights = NULL, standardize = c(TRUE, TRUE),
-  intercept = c(TRUE, TRUE), control = list())
+  penalty = definePenalty(), weights = NULL, standardize = c(TRUE,
+  TRUE), intercept = c(TRUE, TRUE), control = list())
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}}

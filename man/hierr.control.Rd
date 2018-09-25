@@ -5,8 +5,8 @@
 \title{Control function for hierr fitting}
 \usage{
 hierr.control(tolerance = 1e-07, max_iterations = 1e+05,
-  earlyStop = FALSE, dfmax = NULL, pmax = NULL, lower_limits = NULL,
-  upper_limits = NULL)
+  earlyStop = FALSE, dfmax = NULL, pmax = NULL,
+  lower_limits = NULL, upper_limits = NULL)
 }
 \arguments{
 \item{tolerance}{positive convergence criterion. Default is 1e-07.}

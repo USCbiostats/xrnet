@@ -4,8 +4,8 @@
 \alias{predict.cvhierr}
 \title{Predict function for "cvhierr" object}
 \usage{
-\method{predict}{cvhierr}(object, newdata = NULL, p = NULL, pext = NULL,
-  type = c("response", "coefficients"), ...)
+\method{predict}{cvhierr}(object, newdata = NULL, p = NULL,
+  pext = NULL, type = c("response", "coefficients"), ...)
 }
 \arguments{
 \item{object}{A \code{\link{cvhierr}} object}

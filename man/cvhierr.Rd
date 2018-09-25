@@ -6,7 +6,8 @@
 \usage{
 cvhierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
   penalty = definePenalty(), weights = NULL, type.measure = c("mse",
-  "mae", "deviance"), nfolds = 5, foldid = NULL, parallel = FALSE, ...)
+  "mae", "deviance"), nfolds = 5, foldid = NULL, parallel = FALSE,
+  ...)
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}}

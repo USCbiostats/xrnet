@@ -4,8 +4,8 @@
 \alias{predict.hierr}
 \title{Predict function for "hierr" object}
 \usage{
-\method{predict}{hierr}(object, newdata = NULL, p = NULL, pext = NULL,
-  type = c("response", "coefficients"), ...)
+\method{predict}{hierr}(object, newdata = NULL, p = NULL,
+  pext = NULL, type = c("response", "coefficients"), ...)
 }
 \arguments{
 \item{object}{A \code{\link{hierr}} object}

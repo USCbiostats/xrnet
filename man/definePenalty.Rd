@@ -6,9 +6,9 @@
 \usage{
 definePenalty(penalty_type = 0, quantile = 0.5, penalty_type_ext = 1,
   quantile_ext = 0.5, num_penalty = 20, num_penalty_ext = 20,
-  penalty_ratio = NULL, penalty_ratio_ext = NULL, user_penalty = NULL,
-  user_penalty_ext = NULL, custom_multiplier = NULL,
-  custom_multiplier_ext = NULL)
+  penalty_ratio = NULL, penalty_ratio_ext = NULL,
+  user_penalty = NULL, user_penalty_ext = NULL,
+  custom_multiplier = NULL, custom_multiplier_ext = NULL)
 }
 \arguments{
 \item{penalty_type}{type of regularization for x. Default is 0 (Ridge). Can supply either a scalar value or vector with length equal to the number of variables in x.
