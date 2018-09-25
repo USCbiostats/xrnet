@@ -123,7 +123,7 @@ cvhierr <- function(x,
             weights_train <- weights[!subset]
 
             # Fit model on k-th training fold
-            hierr(x = x_train,
+            hierr(x = x[!subset, , drop = FALSE],
                   y = y_train,
                   external = external,
                   unpen = unpen_train,
@@ -165,7 +165,6 @@ cvhierr <- function(x,
             } else {
                 y_train <- y[!subset, ]
             }
-            x_train <- x[!subset, ]
             if (!is.null(unpen)) {
                 unpen_train <- unpen[!subset, ]
             } else {
@@ -174,7 +173,7 @@ cvhierr <- function(x,
             weights_train <- weights[!subset]
 
             # Fit model on k-th training fold
-            fit_fold <- hierr(x = x_train,
+            fit_fold <- hierr(x = x[!subset, , drop = FALSE],
                               y = y_train,
                               external = external,
                               unpen = unpen_train,
