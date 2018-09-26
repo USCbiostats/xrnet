@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include <cmath>
 #include <numeric>
+#include "hierr_utils.h"
 
 using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -15,108 +16,178 @@ using namespace Rcpp;
 void coord_desc(const arma::mat & x,
                 arma::vec & resid,
                 const arma::vec & w,
-                const NumericVector & ptype,
-                const double & tau,
-                const double & tau_ext,
-                const int & no,
-                const int & nvar,
-                const int & nvar_total,
+                const arma::vec & ptype,
                 const arma::vec & cmult,
-                const NumericVector & upper_cl,
-                const NumericVector & lower_cl,
+                const NumericVector & qnt,
+                const NumericVector & lam_cur,
+                const IntegerVector & stop,
+                const NumericVector & ucl,
+                const NumericVector & lcl,
                 const int & ne,
                 const int & nx,
-                NumericVector & lam_cur,
-                NumericVector & lam_prev,
+                LogicalVector & strong,
+                LogicalVector & active,
                 const double & thr,
                 const int & maxit,
                 const arma::vec & xv,
-                arma::mat & coef,
                 arma::vec & b,
                 arma::vec & g,
-                NumericVector & dev,
                 double & dev_cur,
-                IntegerVector & mm,
                 double & errcode,
                 int & nlp,
-                int & idx_lam) {
+                IntegerVector & nin) {
 
-    int nin = 0;
     bool jerr = 0;
-    NumericVector lasso_part(nvar_total);
-    NumericVector lasso_part2(nvar_total);
-    NumericVector ridge_part(nvar_total);
-
-    for (int k = 0; k < nvar; k++) {
-        lasso_part[k] = 2 * cmult[k] * ptype[k] * lam_cur[0] * tau;
-        lasso_part2[k] = 2 * ptype[k] * lam_cur[0];
-        ridge_part[k] = xv[k] + cmult[k] * (1 - ptype[k]) * lam_cur[0];
-    }
-
-    for (int k = nvar; k < nvar_total; k++) {
-        lasso_part[k] = 2 * cmult[k] * ptype[k] * lam_cur[1] * tau_ext;
-        lasso_part2[k] = 2 * ptype[k] * lam_cur[1];
-        ridge_part[k] = xv[k] + cmult[k] * (1 - ptype[k]) * lam_cur[1];
-    }
-
-    LogicalVector active(nvar_total, 1);
-    bool last_loop = false;
-
-    bool kkt_satisfied = 0, converge = 0;
-    while(!kkt_satisfied & !jerr) {
-        while(!converge & !jerr) {
+    const int nblocks = lam_cur.length();
+    bool kkt_satisfied = false;
+    while(!kkt_satisfied && !jerr) {
+        bool converge_final = false;
+        while(!converge_final && !jerr) {
             double dlx = 0.0;
-            for (int k = 0; k < nvar_total; ++k) {
-                if (active[k]) {
-                    double gk = arma::dot(x.unsafe_col(k), resid % w);
-                    double bk = b[k];
-                    double u = gk + bk * xv[k];
-                    double v = std::abs(u) - ((u > 0.0) ? 1 : -1) * lasso_part[k] - lasso_part2[k] * (u < 0.0);
-                    if (v > 0.0) {
-                        b[k] = std::max(lower_cl[k], std::min(upper_cl[k], copysign(v, u) / ridge_part[k]));
-                    } else {
-                        b[k] = 0.0;
-                    }
-                    if (std::abs(b[k] - bk) > 1e-15) {
-                        if (mm[k] == 0) {
-                            nin += 1;
-                            mm[k] = nin;
-                        }
-                        if (nin <= nx) {
-                            double del = b[k] - bk;
-                            resid -= del * x.unsafe_col(k);
-                            dev_cur += del * (2.0 * gk - del * xv[k]);
-                            dlx = std::max(xv[k] * del * del, dlx);
+            int begin = 0;
+            for (int blk = 0; blk < nblocks; ++blk) {
+                double lambda = lam_cur[blk];
+                double q = qnt[blk];
+                double end = stop[blk];
+                for (int k = begin; k < end; ++k) {
+                    if (strong[k]) {
+                        double gk = arma::dot(x.unsafe_col(k), resid % w);
+                        double bk = b[k];
+                        double u = gk + bk * xv[k];
+                        double v = std::abs(u) - ptype[k] * cmult[k] * lambda * std::abs(q + sgn(u));
+                        if (v > 0.0) {
+                            b[k] = std::max(lcl[k],
+                                        std::min(ucl[k],
+                                        copysign(v, u) / (xv[k] + cmult[k] * (1 - ptype[k]) * lambda)));
                         } else {
-                            jerr = 1;
-                            errcode = -10000 - k;
+                            b[k] = 0.0;
                         }
-                    }
-                    else if (b[k] == 0.0){
-                        active[k] = 0;
+                        if (b[k] != bk) {
+                            if (!active[k]) {
+                                //active_x[nin_x] = k;
+                                ++nin[blk];
+                                active[k] = true;
+                            }
+                            if (sum(nin) <= nx) {
+                                double del = b[k] - bk;
+                                resid -= del * x.unsafe_col(k);
+                                dev_cur += del * (2.0 * gk - del * xv[k]);
+                                dlx = std::max(xv[k] * del * del, dlx);
+                            } else {
+                                jerr = 1;
+                                errcode = -10000 - k;
+                            }
+                        }
                     }
                 }
+                begin = end;
             }
-            nlp += 1;
+            ++nlp;
             if (nlp > maxit) {
                 jerr = 1;
                 errcode = -10000;
             }
             if (dlx < thr) {
-                if (last_loop) {
-                    converge = 1;
+                converge_final = true;
+                // check kkt conditions
+                kkt_satisfied = true;
+                int begin = 0;
+                for (int blk = 0; blk < nblocks; ++blk) {
+                    double lambda = lam_cur[blk];
+                    double q = qnt[blk];
+                    double end = stop[blk];
+                    for (int k = begin; k < end; ++k) {
+                        if (!strong[k]) {
+                            g[k] = arma::dot(x.unsafe_col(k), resid % w);
+                            if (std::abs(g[k]) > ptype[k] * cmult[k] * lambda * std::abs(q + sgn(g[k]))) {
+                                strong[k] = true;
+                                kkt_satisfied = false;
+                            }
+                        }
+                    }
+                    begin = end;
                 }
-                else {
-                    std::fill(active.begin(), active.end(), 1);
-                    last_loop = true;
+            } else {
+                bool converge = false;
+                while(!converge && !jerr) {
+                    double dlx = 0.0;
+                    int begin = 0;
+                    for (int blk = 0; blk < nblocks; ++blk) {
+                        double lambda = lam_cur[blk];
+                        double q = qnt[blk];
+                        double end = stop[blk];
+                        for (int k = begin; k < end; ++k) {
+                            if (active[k]) {
+                                double gk = arma::dot(x.unsafe_col(k), resid  % w);
+                                double bk = b[k];
+                                double u = gk + bk * xv[k];
+                                double v = std::abs(u) - ptype[k] * cmult[k] * lambda * std::abs(q + sgn(u));
+                                if (v > 0.0) {
+                                    b[k] = std::max(lcl[k],
+                                                std::min(ucl[k],
+                                                copysign(v, u) / (xv[k] + cmult[k] * (1 - ptype[k]) * lambda)));
+                                } else {
+                                    b[k] = 0.0;
+                                }
+                                if (b[k] != bk) {
+                                    double del = b[k] - bk;
+                                    resid -= del * x.unsafe_col(k);
+                                    dev_cur += del * (2.0 * gk - del * xv[k]);
+                                    dlx = std::max(xv[k] * del * del, dlx);
+                                }
+                            }
+                        }
+                        begin = end;
+                    }
+                    /*
+                    IntegerVector::const_iterator it;
+                    for (it = active_x.begin(); it != active_x.begin() + nin_x; ++it) {
+                        int cx = *it;
+                        double gk = arma::dot(x.unsafe_col(cx), resid % w);
+                        double bk = b[cx];
+                        double u = gk + bk * xv[cx];
+                        double v = std::abs(u) - lasso_part[cx] * std::abs(qx + sgn(u));
+                        if (v > 0.0) {
+                            b[cx] = std::max(lcl[cx], std::min(ucl[cx], copysign(v, u) / ridge_part[cx]));
+                        } else {
+                            b[cx] = 0.0;
+                        }
+                        if (b[cx] != bk) {
+                            double del = b[cx] - bk;
+                            resid -= del * x.unsafe_col(cx);
+                            dev_cur += del * (2.0 * gk - del * xv[cx]);
+                            dlx = std::max(xv[cx] * del * del, dlx);
+                        }
+                    }
+                    for (it = active_ext.begin(); it != active_ext.begin() + nin_ext; ++it) {
+                        int cx = *it;
+                        double gk = arma::dot(x.unsafe_col(cx), resid % w);
+                        double bk = b[cx];
+                        double u = gk + bk * xv[cx];
+                        double v = std::abs(u) - lasso_part[cx] * std::abs(qext + sgn(u));
+                        if (v > 0.0) {
+                            b[cx] = std::max(lcl[cx], std::min(ucl[cx], copysign(v, u) / ridge_part[cx]));
+                        } else {
+                            b[cx] = 0.0;
+                        }
+                        if (b[cx] != bk) {
+                            double del = b[cx] - bk;
+                            resid -= del * x.unsafe_col(cx);
+                            dev_cur += del * (2.0 * gk - del * xv[cx]);
+                            dlx = std::max(xv[cx] * del * del, dlx);
+                        }
+                    }
+                     */
+                    ++nlp;
+                    if (nlp > maxit) {
+                        jerr = 1;
+                        errcode = -10000;
+                    }
+                    if (dlx < thr) {
+                        converge = true;
+                    }
                 }
-            }
-            else if (last_loop) {
-                last_loop = false;
             }
         }
-        kkt_satisfied = 1;
     }
-    coef.col(idx_lam) = b;
-    dev[idx_lam] = dev_cur;
 }

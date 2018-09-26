@@ -46,8 +46,7 @@ arma::mat create_data_sparse(const int & nobs,
                              const bool & intr_ext,
                              arma::vec & xm,
                              arma::vec & xv,
-                             arma::vec & xs,
-                             int & ext_start) {
+                             arma::vec & xs) {
 
     // initialize new design matrix
     arma::mat xnew(nobs, nvar_total);
@@ -143,7 +142,6 @@ arma::mat create_data_sparse(const int & nobs,
     }
 
     // Standardize external variables (ext)
-    ext_start = xnew_col;
     if (nvar_ext > 0) {
         if (intr_ext) {
             if (isd_ext) {

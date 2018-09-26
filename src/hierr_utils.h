@@ -3,14 +3,41 @@
 
 #include <RcppArmadillo.h>
 
-Rcpp::NumericVector compute_penalty(Rcpp::NumericVector & ulam,
-                                    const int & nlam,
-                                    const double & ptype,
-                                    const double & pratio,
-                                    arma::vec & g,
-                                    const arma::vec & cmult,
-                                    const int & start,
-                                    const int & stop);
+template <class T>
+inline T sgn(T & v) {
+    return (v > T(0)) - (v < T(0));
+}
+
+int countNonzero(const arma::vec & x,
+                 const int & start,
+                 const int & end);
+
+void updatePenalty(arma::vec & l1,
+                   arma::vec & l2,
+                   const arma::vec & pind,
+                   const arma::vec & cmult,
+                   const arma::vec & xv,
+                   const double & lam_new,
+                   const int & start,
+                   const int & stop);
+
+void updateStrong(Rcpp::LogicalVector & strong,
+                  const arma::vec & g,
+                  const arma::vec & ptype,
+                  const arma::vec & cmult,
+                  const Rcpp::NumericVector & lam_cur,
+                  const Rcpp::NumericVector & lam_prev,
+                  const Rcpp::NumericVector & qnt,
+                  const Rcpp::IntegerVector & blkend);
+
+void compute_penalty(Rcpp::NumericVector & lambdas,
+                     Rcpp::NumericVector & ulam,
+                     const double & ptype,
+                     const double & pratio,
+                     const arma::vec & g,
+                     const arma::vec & cmult,
+                     const int & start,
+                     const int & stop);
 
 void compute_coef(arma::mat & coef,
                   const arma::mat & ext_,

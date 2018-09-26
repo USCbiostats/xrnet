@@ -7,45 +7,40 @@
 using namespace Rcpp;
 
 // coord_desc
-void coord_desc(const arma::mat& x, arma::vec& resid, const arma::vec& w, const NumericVector& ptype, const double& tau, const double& tau_ext, const int& no, const int& nvar, const int& nvar_total, const arma::vec& cmult, const NumericVector& upper_cl, const NumericVector& lower_cl, const int& ne, const int& nx, NumericVector& lam_cur, NumericVector& lam_prev, const double& thr, const int& maxit, const arma::vec& xv, arma::mat& coef, arma::vec& b, arma::vec& g, NumericVector& dev, double& dev_cur, IntegerVector& mm, double& errcode, int& nlp, int& idx_lam);
-RcppExport SEXP _hierr_coord_desc(SEXP xSEXP, SEXP residSEXP, SEXP wSEXP, SEXP ptypeSEXP, SEXP tauSEXP, SEXP tau_extSEXP, SEXP noSEXP, SEXP nvarSEXP, SEXP nvar_totalSEXP, SEXP cmultSEXP, SEXP upper_clSEXP, SEXP lower_clSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP lam_curSEXP, SEXP lam_prevSEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP xvSEXP, SEXP coefSEXP, SEXP bSEXP, SEXP gSEXP, SEXP devSEXP, SEXP dev_curSEXP, SEXP mmSEXP, SEXP errcodeSEXP, SEXP nlpSEXP, SEXP idx_lamSEXP) {
+void coord_desc(const arma::mat& x, arma::vec& resid, const arma::vec& w, const arma::vec& ptype, const arma::vec& cmult, const NumericVector& qnt, const NumericVector& lam_cur, const IntegerVector& stop, const NumericVector& ucl, const NumericVector& lcl, const int& ne, const int& nx, LogicalVector& strong, LogicalVector& active, const double& thr, const int& maxit, const arma::vec& xv, arma::vec& b, arma::vec& g, double& dev_cur, double& errcode, int& nlp, IntegerVector& nin);
+RcppExport SEXP _hierr_coord_desc(SEXP xSEXP, SEXP residSEXP, SEXP wSEXP, SEXP ptypeSEXP, SEXP cmultSEXP, SEXP qntSEXP, SEXP lam_curSEXP, SEXP stopSEXP, SEXP uclSEXP, SEXP lclSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP strongSEXP, SEXP activeSEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP xvSEXP, SEXP bSEXP, SEXP gSEXP, SEXP dev_curSEXP, SEXP errcodeSEXP, SEXP nlpSEXP, SEXP ninSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type resid(residSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type ptype(ptypeSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tau_ext(tau_extSEXP);
-    Rcpp::traits::input_parameter< const int& >::type no(noSEXP);
-    Rcpp::traits::input_parameter< const int& >::type nvar(nvarSEXP);
-    Rcpp::traits::input_parameter< const int& >::type nvar_total(nvar_totalSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type ptype(ptypeSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type cmult(cmultSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type upper_cl(upper_clSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type lower_cl(lower_clSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type qnt(qntSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type lam_cur(lam_curSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type stop(stopSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type ucl(uclSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type lcl(lclSEXP);
     Rcpp::traits::input_parameter< const int& >::type ne(neSEXP);
     Rcpp::traits::input_parameter< const int& >::type nx(nxSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type lam_cur(lam_curSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type lam_prev(lam_prevSEXP);
+    Rcpp::traits::input_parameter< LogicalVector& >::type strong(strongSEXP);
+    Rcpp::traits::input_parameter< LogicalVector& >::type active(activeSEXP);
     Rcpp::traits::input_parameter< const double& >::type thr(thrSEXP);
     Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type xv(xvSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type coef(coefSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type b(bSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type g(gSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type dev(devSEXP);
     Rcpp::traits::input_parameter< double& >::type dev_cur(dev_curSEXP);
-    Rcpp::traits::input_parameter< IntegerVector& >::type mm(mmSEXP);
     Rcpp::traits::input_parameter< double& >::type errcode(errcodeSEXP);
     Rcpp::traits::input_parameter< int& >::type nlp(nlpSEXP);
-    Rcpp::traits::input_parameter< int& >::type idx_lam(idx_lamSEXP);
-    coord_desc(x, resid, w, ptype, tau, tau_ext, no, nvar, nvar_total, cmult, upper_cl, lower_cl, ne, nx, lam_cur, lam_prev, thr, maxit, xv, coef, b, g, dev, dev_cur, mm, errcode, nlp, idx_lam);
+    Rcpp::traits::input_parameter< IntegerVector& >::type nin(ninSEXP);
+    coord_desc(x, resid, w, ptype, cmult, qnt, lam_cur, stop, ucl, lcl, ne, nx, strong, active, thr, maxit, xv, b, g, dev_cur, errcode, nlp, nin);
     return R_NilValue;
 END_RCPP
 }
 // create_data
-arma::mat create_data(const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_unpen, const int& nvar_total, const arma::mat& x, const arma::mat& ext, const arma::mat& unpen, const arma::vec& w, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext, arma::vec& xm, arma::vec& xv, arma::vec& xs, int& ext_start);
-RcppExport SEXP _hierr_create_data(SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP nvar_unpenSEXP, SEXP nvar_totalSEXP, SEXP xSEXP, SEXP extSEXP, SEXP unpenSEXP, SEXP wSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP, SEXP xmSEXP, SEXP xvSEXP, SEXP xsSEXP, SEXP ext_startSEXP) {
+arma::mat create_data(const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_unpen, const int& nvar_total, const arma::mat& x, const arma::mat& ext, const arma::mat& unpen, const arma::vec& w, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext, arma::vec& xm, arma::vec& xv, arma::vec& xs);
+RcppExport SEXP _hierr_create_data(SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP nvar_unpenSEXP, SEXP nvar_totalSEXP, SEXP xSEXP, SEXP extSEXP, SEXP unpenSEXP, SEXP wSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP, SEXP xmSEXP, SEXP xvSEXP, SEXP xsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -65,8 +60,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec& >::type xm(xmSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type xv(xvSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type xs(xsSEXP);
-    Rcpp::traits::input_parameter< int& >::type ext_start(ext_startSEXP);
-    rcpp_result_gen = Rcpp::wrap(create_data(nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x, ext, unpen, w, isd, isd_ext, intr, intr_ext, xm, xv, xs, ext_start));
+    rcpp_result_gen = Rcpp::wrap(create_data(nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x, ext, unpen, w, isd, isd_ext, intr, intr_ext, xm, xv, xs));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -98,8 +92,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // create_data_sparse
-arma::mat create_data_sparse(const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_unpen, const int& nvar_total, const arma::mat& x, const arma::sp_mat& ext, const arma::mat& unpen, const arma::vec& w, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext, arma::vec& xm, arma::vec& xv, arma::vec& xs, int& ext_start);
-RcppExport SEXP _hierr_create_data_sparse(SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP nvar_unpenSEXP, SEXP nvar_totalSEXP, SEXP xSEXP, SEXP extSEXP, SEXP unpenSEXP, SEXP wSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP, SEXP xmSEXP, SEXP xvSEXP, SEXP xsSEXP, SEXP ext_startSEXP) {
+arma::mat create_data_sparse(const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_unpen, const int& nvar_total, const arma::mat& x, const arma::sp_mat& ext, const arma::mat& unpen, const arma::vec& w, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext, arma::vec& xm, arma::vec& xv, arma::vec& xs);
+RcppExport SEXP _hierr_create_data_sparse(SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP nvar_unpenSEXP, SEXP nvar_totalSEXP, SEXP xSEXP, SEXP extSEXP, SEXP unpenSEXP, SEXP wSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP, SEXP xmSEXP, SEXP xvSEXP, SEXP xsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -119,13 +113,12 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec& >::type xm(xmSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type xv(xvSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type xs(xsSEXP);
-    Rcpp::traits::input_parameter< int& >::type ext_start(ext_startSEXP);
-    rcpp_result_gen = Rcpp::wrap(create_data_sparse(nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x, ext, unpen, w, isd, isd_ext, intr, intr_ext, xm, xv, xs, ext_start));
+    rcpp_result_gen = Rcpp::wrap(create_data_sparse(nobs, nvar, nvar_ext, nvar_unpen, nvar_total, x, ext, unpen, w, isd, isd_ext, intr, intr_ext, xm, xv, xs));
     return rcpp_result_gen;
 END_RCPP
 }
 // gaussian_fit
-List gaussian_fit(const arma::mat& x_, const arma::vec& y_, const arma::mat& ext_, const arma::mat& fixed_, const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_unpen, const arma::vec& w, const NumericVector& ptype, const double& tau, const double& tau_ext, const arma::vec& cmult, NumericVector& lower_cl, NumericVector& upper_cl, const int& ne, const int& nx, const int& nlam, const int& nlam_ext, const double& pratio, const double& pratio_ext, NumericVector ulam_, NumericVector ulam_ext_, const double& thr, const int& maxit, const bool& earlyStop, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext);
+List gaussian_fit(const arma::mat& x_, const arma::vec& y_, const arma::mat& ext_, const arma::mat& fixed_, const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_unpen, const arma::vec& w, const arma::vec& ptype, const double& tau, const double& tau_ext, const arma::vec& cmult, NumericVector& lower_cl, NumericVector& upper_cl, const int& ne, const int& nx, const int& nlam, const int& nlam_ext, const double& pratio, const double& pratio_ext, NumericVector ulam_, NumericVector ulam_ext_, const double& thr, const int& maxit, const bool& earlyStop, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext);
 RcppExport SEXP _hierr_gaussian_fit(SEXP x_SEXP, SEXP y_SEXP, SEXP ext_SEXP, SEXP fixed_SEXP, SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP nvar_unpenSEXP, SEXP wSEXP, SEXP ptypeSEXP, SEXP tauSEXP, SEXP tau_extSEXP, SEXP cmultSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP nlamSEXP, SEXP nlam_extSEXP, SEXP pratioSEXP, SEXP pratio_extSEXP, SEXP ulam_SEXP, SEXP ulam_ext_SEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP earlyStopSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -139,7 +132,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int& >::type nvar_ext(nvar_extSEXP);
     Rcpp::traits::input_parameter< const int& >::type nvar_unpen(nvar_unpenSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type ptype(ptypeSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type ptype(ptypeSEXP);
     Rcpp::traits::input_parameter< const double& >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const double& >::type tau_ext(tau_extSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type cmult(cmultSEXP);
@@ -165,7 +158,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // gaussian_fit_sparse
-List gaussian_fit_sparse(const arma::mat& x_, const arma::vec& y_, const arma::sp_mat& ext_, const arma::mat& fixed_, const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_unpen, const arma::vec& w, const NumericVector& ptype, const double& tau, const double& tau_ext, const arma::vec& cmult, NumericVector& lower_cl, NumericVector& upper_cl, const int& ne, const int& nx, const int& nlam, const int& nlam_ext, const double& pratio, const double& pratio_ext, NumericVector ulam_, NumericVector ulam_ext_, const double& thr, const int& maxit, const bool& earlyStop, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext);
+List gaussian_fit_sparse(const arma::mat& x_, const arma::vec& y_, const arma::sp_mat& ext_, const arma::mat& fixed_, const int& nobs, const int& nvar, const int& nvar_ext, const int& nvar_unpen, const arma::vec& w, const arma::vec& ptype, const double& tau, const double& tau_ext, const arma::vec& cmult, NumericVector& lower_cl, NumericVector& upper_cl, const int& ne, const int& nx, const int& nlam, const int& nlam_ext, const double& pratio, const double& pratio_ext, NumericVector ulam_, NumericVector ulam_ext_, const double& thr, const int& maxit, const bool& earlyStop, const bool& isd, const bool& isd_ext, const bool& intr, const bool& intr_ext);
 RcppExport SEXP _hierr_gaussian_fit_sparse(SEXP x_SEXP, SEXP y_SEXP, SEXP ext_SEXP, SEXP fixed_SEXP, SEXP nobsSEXP, SEXP nvarSEXP, SEXP nvar_extSEXP, SEXP nvar_unpenSEXP, SEXP wSEXP, SEXP ptypeSEXP, SEXP tauSEXP, SEXP tau_extSEXP, SEXP cmultSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP neSEXP, SEXP nxSEXP, SEXP nlamSEXP, SEXP nlam_extSEXP, SEXP pratioSEXP, SEXP pratio_extSEXP, SEXP ulam_SEXP, SEXP ulam_ext_SEXP, SEXP thrSEXP, SEXP maxitSEXP, SEXP earlyStopSEXP, SEXP isdSEXP, SEXP isd_extSEXP, SEXP intrSEXP, SEXP intr_extSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -179,7 +172,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int& >::type nvar_ext(nvar_extSEXP);
     Rcpp::traits::input_parameter< const int& >::type nvar_unpen(nvar_unpenSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type ptype(ptypeSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type ptype(ptypeSEXP);
     Rcpp::traits::input_parameter< const double& >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const double& >::type tau_ext(tau_extSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type cmult(cmultSEXP);
@@ -204,30 +197,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// standardize_vec
-void standardize_vec(arma::vec& y, const arma::vec& w, double& ym, double& ys, const bool& intr);
-RcppExport SEXP _hierr_standardize_vec(SEXP ySEXP, SEXP wSEXP, SEXP ymSEXP, SEXP ysSEXP, SEXP intrSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< double& >::type ym(ymSEXP);
-    Rcpp::traits::input_parameter< double& >::type ys(ysSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type intr(intrSEXP);
-    standardize_vec(y, w, ym, ys, intr);
-    return R_NilValue;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 28},
-    {"_hierr_create_data", (DL_FUNC) &_hierr_create_data, 17},
+    {"_hierr_coord_desc", (DL_FUNC) &_hierr_coord_desc, 23},
+    {"_hierr_create_data", (DL_FUNC) &_hierr_create_data, 16},
     {"_hierr_mean_sparse", (DL_FUNC) &_hierr_mean_sparse, 3},
     {"_hierr_sd_sparse", (DL_FUNC) &_hierr_sd_sparse, 4},
-    {"_hierr_create_data_sparse", (DL_FUNC) &_hierr_create_data_sparse, 17},
+    {"_hierr_create_data_sparse", (DL_FUNC) &_hierr_create_data_sparse, 16},
     {"_hierr_gaussian_fit", (DL_FUNC) &_hierr_gaussian_fit, 30},
     {"_hierr_gaussian_fit_sparse", (DL_FUNC) &_hierr_gaussian_fit_sparse, 30},
-    {"_hierr_standardize_vec", (DL_FUNC) &_hierr_standardize_vec, 5},
     {NULL, NULL, 0}
 };
 
