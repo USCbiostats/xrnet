@@ -98,11 +98,21 @@ List gaussian_fit_sparse(const arma::mat & x_,
 
         // initialize objects to hold fitting results
     int nlam_total = nlam * nlam_ext;
-    arma::mat coef(nvar_total, nlam_total, arma::fill::zeros);
     NumericVector dev(nlam_total);
     IntegerVector num_passes(nlam_total);
     IntegerVector nzero_betas(nlam_total);
     IntegerVector nzero_alphas(nlam_total);
+
+    arma::vec beta0(nlam_total, arma::fill::zeros);
+    arma::mat betas(nvar, nlam_total, arma::fill::zeros);
+    arma::mat gammas(nvar_unpen > 0 ? nvar_unpen : 1,
+                     nvar_unpen > 0 ? nlam_total : 1,
+                     arma::fill::zeros);
+    arma::vec alpha0(nlam_total, arma::fill::zeros);
+    arma::mat alphas(nvar_ext > 0 ? nvar_ext : 1,
+                     nvar_ext > 0 ? nlam_total : 1,
+                     arma::fill::zeros);
+
 
     // compute gradient vector
     arma::vec g = xnew.t() * (wgt % outer_resid);
@@ -135,8 +145,6 @@ List gaussian_fit_sparse(const arma::mat & x_,
     LogicalVector ever_active(nvar_total, 0);
     LogicalVector strong(nvar_total, 0);
     IntegerVector nin(2, 0);
-    //IntegerVector active_x(nv_x, 0);
-    //IntegerVector active_ext(nv_ext, 0);
 
     // quantile constants
     const NumericVector qnt = NumericVector::create(2 * tau - 1, 2 * tau_ext - 1);
@@ -189,7 +197,17 @@ List gaussian_fit_sparse(const arma::mat & x_,
             }
 
             // save results
-            coef.col(idx_lam) = coef_inner;
+            betas.unsafe_col(idx_lam) = coef_inner.head(nvar);
+            if (nvar_unpen > 0) {
+                gammas.unsafe_col(idx_lam) = coef_inner.subvec(nvar, nv_x - 1);
+            }
+            if (intr_ext) {
+                alpha0[idx_lam] = coef_inner[nv_x];
+            }
+            if (nvar_ext > 0) {
+                alphas.unsafe_col(idx_lam) = coef_inner.tail(nvar_ext);
+            }
+
             dev[idx_lam] = dev_inner;
             nzero_betas[idx_lam] = countNonzero(coef_inner, 0, blkend[0]);
             nzero_alphas[idx_lam] = countNonzero(coef_inner, blkend[0], blkend[1]);
@@ -226,46 +244,34 @@ List gaussian_fit_sparse(const arma::mat & x_,
         }
     }
 
-    // compute and unstandardize predictor variables
-    arma::vec b0(nlam_total, arma::fill::zeros);
-    arma::vec a0(nlam_total, arma::fill::zeros);
-    if (intr_ext) {
-        a0 = arma::conv_to<arma::colvec>::from(coef.row(nvar + nvar_unpen));
-    }
-    compute_coef_sparse(coef, ext_, nvar, nvar_ext, nvar_total,
-                        nlam_total, xm, xs, ys, a0, intr_ext, ext_start);
-
-    // unstandardize unpenalized variables
-    arma::mat gammas;
+    //unstandardize variables
     if (nvar_unpen > 0) {
-        for (int j = 0; j < nlam_total; ++j) {
-            for (int i = nvar; i < (nvar + nvar_unpen); ++i) {
-                coef.at(i, j) = ys * coef.at(i, j) / xs[i];
-            }
-        }
-        gammas = coef.rows(nvar, nvar + nvar_unpen - 1);
-    } else {
-        gammas = 0.0;
+        gammas.each_col() %= (ys / xs.subvec(nvar, nv_x - 1));
     }
+    if (nvar_ext > 0) {
+        alphas.each_col() /= xs.tail(nvar_ext);
+        betas += ext_ * alphas;
+        alphas *= ys;
+    }
+    if (intr_ext) {
+        betas.each_row() += alpha0.t();
+        alpha0 = ys * alpha0;
+    }
+    betas.each_col() %= (ys / xs.head(nvar));
 
     if (intr) {
-        b0 = ym - ((xm.head(nvar + nvar_unpen)).t() * coef.head_rows(nvar + nvar_unpen)).t();
+        beta0 = ym - ((xm.head(nvar)).t() * betas).t();
+        if (nvar_unpen > 0) {
+            beta0 -=((xm.subvec(nvar, nv_x - 1)).t() * gammas).t();
+        }
     }
 
-    // unstandardize external variables
-    arma::mat alphas;
-    if (nvar_ext > 0) {
-        for (int j = 0; j < nlam_total; ++j) {
-            for (int i = ext_start; i < nvar_total; ++i) {
-                coef.at(i, j) = ys * coef.at(i, j) / xs[i];
-            }
+    if (intr_ext) {
+        if (nvar_ext > 0) {
+            alpha0 = (arma::mean(betas) - (xm.tail(nvar_ext)).t() * alphas).t();
+        } else {
+            alpha0 = arma::mean(betas).t();
         }
-        if (intr_ext) {
-            a0 = (arma::mean(coef.head_rows(nvar)) - (xm.tail(nvar_ext)).t() * coef.tail_rows(nvar_ext)).t();
-        }
-        alphas = coef.tail_rows(nvar_ext);
-    } else {
-        alphas = 0.0;
     }
 
     // fix first penalties (when path automatically computed)
@@ -277,10 +283,10 @@ List gaussian_fit_sparse(const arma::mat & x_,
     }
 
     // return model fit for all penalty combinations
-    return Rcpp::List::create(Named("beta0") = b0,
-                              Named("betas") = coef.head_rows(nvar),
+    return Rcpp::List::create(Named("beta0") = beta0,
+                              Named("betas") = betas,
                               Named("gammas") = gammas,
-                              Named("alpha0") = a0,
+                              Named("alpha0") = alpha0,
                               Named("alphas") = alphas,
                               Named("nzero_betas") = nzero_betas,
                               Named("nzero_alphas") = nzero_alphas,

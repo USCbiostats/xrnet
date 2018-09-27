@@ -143,41 +143,20 @@ arma::mat create_data_sparse(const int & nobs,
 
     // Standardize external variables (ext)
     if (nvar_ext > 0) {
-        if (intr_ext) {
-            if (isd_ext) {
-                for (int j = 0; j < nvar_ext; ++j) {
-                    xm[xnew_col] = mean_sparse(ext, j, nvar);
-                    xs[xnew_col] = sd_sparse(ext, j, xm[xnew_col], nvar);
-                    xnew.col(xnew_col) = xsub * ((arma::vec(ext.col(j)) - xm[xnew_col]) / xs[xnew_col]);
-                    xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
-                    ++xnew_col;
-                }
-            }
-            else {
-                for (int j = 0; j < nvar_ext; ++j) {
-                    xm[xnew_col] = mean_sparse(ext, j, nvar);
-                    xnew.col(xnew_col) = xsub * (arma::vec(ext.col(j)) - xm[xnew_col]);
-                    xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
-                    ++xnew_col;
-                }
+        if (isd_ext) {
+            for (int j = 0; j < nvar_ext; ++j) {
+                double xm_j = mean_sparse(ext, j, nvar);
+                xs[xnew_col] = sd_sparse(ext, j, xm_j, nvar);
+                xnew.col(xnew_col) = (xsub * ext.col(j)) / xs[xnew_col];
+                xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
+                ++xnew_col;
             }
         }
         else {
-            if (isd_ext) {
-                for (int j = 0; j < nvar_ext; ++j) {
-                    double xm_j = mean_sparse(ext, j, nvar);
-                    xs[xnew_col] = sd_sparse(ext, j, xm_j, nvar);
-                    xnew.col(xnew_col) = xsub * (arma::vec(ext.col(j)) / xs[xnew_col]);
-                    xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
-                    ++xnew_col;
-                }
-            }
-            else {
-                for (int j = 0; j < nvar_ext; ++j) {
-                    xnew.col(xnew_col) = xsub * arma::vec(ext.col(j));
-                    xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
-                    ++xnew_col;
-                }
+            for (int j = 0; j < nvar_ext; ++j) {
+                xnew.col(xnew_col) = xsub * ext.col(j);
+                xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
+                ++xnew_col;
             }
         }
     }
