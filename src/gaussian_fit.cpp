@@ -263,7 +263,11 @@ List gaussian_fit(const arma::mat & x_,
     }
 
     if (intr_ext) {
-        alpha0 = (arma::mean(betas) - (xm.tail(nvar_ext)).t() * alphas).t();
+        if (nvar_ext > 0) {
+            alpha0 = (arma::mean(betas) - (xm.tail(nvar_ext)).t() * alphas).t();
+        } else {
+            alpha0 = arma::mean(betas).t();
+        }
     }
 
     // fix first penalties (when path automatically computed)
