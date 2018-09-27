@@ -96,7 +96,6 @@ List gaussian_fit(const arma::mat & x_,
 
     // initialize objects to hold fitting results
     int nlam_total = nlam * nlam_ext;
-    //arma::mat coef(nvar_total, nlam_total, arma::fill::zeros);
     NumericVector dev(nlam_total);
     IntegerVector num_passes(nlam_total);
     IntegerVector nzero_betas(nlam_total);
@@ -143,10 +142,8 @@ List gaussian_fit(const arma::mat & x_,
     LogicalVector ever_active(nvar_total, 0);
     LogicalVector strong(nvar_total, 0);
     IntegerVector nin(2, 0);
-    //IntegerVector active_x(nv_x, 0);
-    //IntegerVector active_ext(nv_ext, 0);
 
-    // quantile constants
+    // quantile constants / variable idx markers
     const NumericVector qnt = NumericVector::create(2 * tau - 1, 2 * tau_ext - 1);
     const IntegerVector blkend = IntegerVector::create(nv_x, nvar_total);
 
@@ -196,7 +193,6 @@ List gaussian_fit(const arma::mat & x_,
             }
 
             // save results
-            //coef.col(idx_lam) = coef_inner;
             betas.unsafe_col(idx_lam) = coef_inner.head(nvar);
             if (nvar_unpen > 0) {
                 gammas.unsafe_col(idx_lam) = coef_inner.subvec(nvar, nv_x - 1);
