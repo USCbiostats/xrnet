@@ -124,7 +124,7 @@ arma::mat create_data(const int & nobs,
         if (isd_ext) {
             for (int j = 0; j < nvar_ext; ++j) {
                 xm[xnew_col] = arma::mean(ext.unsafe_col(j));
-                xs[xnew_col] = sqrt(arma::dot(ext.unsafe_col(j) - xm[j], ext.unsafe_col(j) - xm[j]) / nvar);
+                xs[xnew_col] = sqrt(arma::dot(ext.unsafe_col(j) - xm[xnew_col], ext.unsafe_col(j) - xm[xnew_col]) / nvar);
                 xnew.col(xnew_col) = (xsub * ext.unsafe_col(j)) / xs[xnew_col];
                 xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
                 ++xnew_col;
