@@ -198,6 +198,7 @@ List gaussian_fit_sparse(const arma::mat & x_,
 
             // save results
             betas.unsafe_col(idx_lam) = coef_inner.head(nvar);
+            nzero_betas[idx_lam] = countNonzero(coef_inner, 0, blkend[0]);
             if (nvar_unpen > 0) {
                 gammas.unsafe_col(idx_lam) = coef_inner.subvec(nvar, nv_x - 1);
             }
@@ -206,11 +207,10 @@ List gaussian_fit_sparse(const arma::mat & x_,
             }
             if (nvar_ext > 0) {
                 alphas.unsafe_col(idx_lam) = coef_inner.tail(nvar_ext);
+                nzero_alphas[idx_lam] = countNonzero(coef_inner, ext_start, blkend[1]);
             }
 
             dev[idx_lam] = dev_inner;
-            nzero_betas[idx_lam] = countNonzero(coef_inner, 0, blkend[0]);
-            nzero_alphas[idx_lam] = countNonzero(coef_inner, blkend[0], blkend[1]);
             num_passes[idx_lam] = nlp - nlp_old;
             nlp_old = nlp;
 
@@ -250,7 +250,9 @@ List gaussian_fit_sparse(const arma::mat & x_,
     }
     if (nvar_ext > 0) {
         alphas.each_col() /= xs.tail(nvar_ext);
-        betas += ext_ * alphas;
+        for (int j = 0; j < nlam_total; ++j) {
+            betas.unsafe_col(j) += arma::vec(ext_ * alphas.unsafe_col(j));
+        }
         alphas *= ys;
     }
     if (intr_ext) {

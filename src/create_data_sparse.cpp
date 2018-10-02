@@ -94,42 +94,35 @@ arma::mat create_data_sparse(const int & nobs,
     if (nvar_unpen > 0) {
         if (intr) {
             if (isd) {
-                for (int j = 0; j < nvar_unpen; ++j) {
+                for (int j = 0; j < nvar_unpen; ++j, ++xnew_col) {
                     xm[xnew_col] = arma::dot(w, unpen.unsafe_col(j));
                     xs[xnew_col] = sqrt(arma::dot(unpen.unsafe_col(j) - xm[xnew_col], (unpen.unsafe_col(j) - xm[xnew_col]) % w));
                     xnew.col(xnew_col) = (unpen.unsafe_col(j) - xm[xnew_col]) / xs[xnew_col];
-                    ++xnew_col;
                 }
             }
             else {
-                for (int j = 0; j < nvar_unpen; ++j) {
+                for (int j = 0; j < nvar_unpen; ++j, ++xnew_col) {
                     xm[xnew_col] = arma::dot(w, unpen.unsafe_col(j));
                     xnew.col(xnew_col) = unpen.unsafe_col(j) - xm[xnew_col];
                     xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col) % w);
-                    ++xnew_col;
                 }
             }
-
         }
         else {
             if (isd) {
-                for (int j = 0; j < nvar_unpen; ++j) {
+                for (int j = 0; j < nvar_unpen; ++j, ++xnew_col) {
                     double xm_j = arma::dot(w, unpen.unsafe_col(j));
                     double vc = arma::dot(unpen.unsafe_col(j) - xm_j, (unpen.unsafe_col(j) - xm_j) % w);
                     xs[xnew_col] = sqrt(vc);
                     xnew.col(xnew_col) = unpen.unsafe_col(j) / xs[xnew_col];
                     xv[xnew_col] = 1.0 + xm_j * xm_j / vc;
-                    ++xnew_col;
                 }
-            }
-            else {
-                for (int j = 0; j < nvar_unpen; ++j) {
+            } else {
+                for (int j = 0; j < nvar_unpen; ++j, ++xnew_col) {
                     xnew.col(xnew_col) = unpen.unsafe_col(j);
                     xv[xnew_col] = arma::dot(unpen.unsafe_col(j), unpen.unsafe_col(j) % w);
-                    ++xnew_col;
                 }
             }
-
         }
     }
 
@@ -144,21 +137,19 @@ arma::mat create_data_sparse(const int & nobs,
     // Standardize external variables (ext)
     if (nvar_ext > 0) {
         if (isd_ext) {
-            for (int j = 0; j < nvar_ext; ++j) {
+            for (int j = 0; j < nvar_ext; ++j, ++xnew_col) {
                 double xm_j = mean_sparse(ext, j, nvar);
                 xs[xnew_col] = sd_sparse(ext, j, xm_j, nvar);
                 xnew.col(xnew_col) = (xsub * ext.col(j)) / xs[xnew_col];
                 xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
-                ++xnew_col;
             }
         }
         else {
-            for (int j = 0; j < nvar_ext; ++j) {
+            for (int j = 0; j < nvar_ext; ++j, ++xnew_col) {
                 xnew.col(xnew_col) = xsub * ext.col(j);
                 xv[xnew_col] = arma::dot(xnew.unsafe_col(xnew_col), xnew.unsafe_col(xnew_col)) / nobs;
-                ++xnew_col;
             }
         }
     }
-    return(xnew);
+    return xnew;
 }
