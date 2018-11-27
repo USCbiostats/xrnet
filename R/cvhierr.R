@@ -90,7 +90,7 @@ cvhierr <- function(x,
     # Randomly sample observations into folds / check nfolds
     if (is.null(foldid)) {
         if (nfolds < 2)
-            stop("number of folds (nfolds) must at least 2")
+            stop("number of folds (nfolds) must be at least 2")
         foldid <- sample(rep(seq(nfolds), length = n))
     } else {
         if (length(foldid) != n) {
@@ -139,14 +139,17 @@ cvhierr <- function(x,
                                `dim<-`(aperm(fit_fold$gammas, c(1, 3, 2)),
                                        c(dim(fit_fold$gammas)[1],
                                          dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
+                rm(fit_fold)
                 errorvec <- calc_error(betas, y[subset], cbind(1, x[subset, ], unpen[subset, ]), weights[subset])
             } else {
                 betas <- rbind(as.vector(t(fit_fold$beta0)),
                                `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)),
                                        c(dim(fit_fold$betas)[1],
                                          dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
+                rm(fit_fold)
                 errorvec <- calc_error(betas, y[subset], cbind(1, x[subset, ]), weights[subset])
             }
+            rm(betas)
             errorvec
         }
     } else {
@@ -183,14 +186,18 @@ cvhierr <- function(x,
                                `dim<-`(aperm(fit_fold$gammas, c(1, 3, 2)),
                                              c(dim(fit_fold$gammas)[1],
                                                dim(fit_fold$gammas)[2] * dim(fit_fold$gammas)[3])))
+                rm(fit_fold)
                 errormat[, k] <- calc_error(betas, y[subset], cbind(1, x[subset, ], unpen[subset, ]), weights[subset])
             } else {
                 betas <- rbind(as.vector(t(fit_fold$beta0)),
                                `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)),
                                              c(dim(fit_fold$betas)[1],
                                                dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
+                rm(fit_fold)
                 errormat[, k] <- calc_error(betas, y[subset], cbind(1, x[subset, ]), weights[subset])
             }
+            rm(betas)
+            gc()
         }
     }
     cv_mean <- rowMeans(errormat)

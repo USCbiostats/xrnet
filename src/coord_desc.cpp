@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 /*
  * Coordinate descent function to fit model
- * for design matrix [x | x*ext] on y given
+ * for design matrix x on y given
  * variable-specific penalty values and penalty types
  */
 
@@ -64,7 +64,6 @@ void coord_desc(const arma::mat & x,
                         }
                         if (b[k] != bk) {
                             if (!active[k]) {
-                                //active_x[nin_x] = k;
                                 ++nin[blk];
                                 active[k] = true;
                             }
@@ -139,45 +138,6 @@ void coord_desc(const arma::mat & x,
                         }
                         begin = end;
                     }
-                    /*
-                    IntegerVector::const_iterator it;
-                    for (it = active_x.begin(); it != active_x.begin() + nin_x; ++it) {
-                        int cx = *it;
-                        double gk = arma::dot(x.unsafe_col(cx), resid % w);
-                        double bk = b[cx];
-                        double u = gk + bk * xv[cx];
-                        double v = std::abs(u) - lasso_part[cx] * std::abs(qx + sgn(u));
-                        if (v > 0.0) {
-                            b[cx] = std::max(lcl[cx], std::min(ucl[cx], copysign(v, u) / ridge_part[cx]));
-                        } else {
-                            b[cx] = 0.0;
-                        }
-                        if (b[cx] != bk) {
-                            double del = b[cx] - bk;
-                            resid -= del * x.unsafe_col(cx);
-                            dev_cur += del * (2.0 * gk - del * xv[cx]);
-                            dlx = std::max(xv[cx] * del * del, dlx);
-                        }
-                    }
-                    for (it = active_ext.begin(); it != active_ext.begin() + nin_ext; ++it) {
-                        int cx = *it;
-                        double gk = arma::dot(x.unsafe_col(cx), resid % w);
-                        double bk = b[cx];
-                        double u = gk + bk * xv[cx];
-                        double v = std::abs(u) - lasso_part[cx] * std::abs(qext + sgn(u));
-                        if (v > 0.0) {
-                            b[cx] = std::max(lcl[cx], std::min(ucl[cx], copysign(v, u) / ridge_part[cx]));
-                        } else {
-                            b[cx] = 0.0;
-                        }
-                        if (b[cx] != bk) {
-                            double del = b[cx] - bk;
-                            resid -= del * x.unsafe_col(cx);
-                            dev_cur += del * (2.0 * gk - del * xv[cx]);
-                            dlx = std::max(xv[cx] * del * del, dlx);
-                        }
-                    }
-                     */
                     ++nlp;
                     if (nlp > maxit) {
                         jerr = 1;
