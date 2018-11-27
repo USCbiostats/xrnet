@@ -197,16 +197,14 @@ List gaussian_fit_sparse(const arma::mat & x_,
             }
 
             // save results
-            betas.unsafe_col(idx_lam) = coef_inner.head(nvar);
+            save_results(coef_inner, alpha0, alphas,
+                         beta0, betas, gammas, ext_,
+                         nvar, nvar_unpen, nv_x, ext_start,
+                         nvar_ext, nvar_total, xm, xs, ym,
+                         ys, intr, intr_ext, idx_lam);
+
             nzero_betas[idx_lam] = countNonzero(coef_inner, 0, blkend[0]);
-            if (nvar_unpen > 0) {
-                gammas.unsafe_col(idx_lam) = coef_inner.subvec(nvar, nv_x - 1);
-            }
-            if (intr_ext) {
-                alpha0[idx_lam] = coef_inner[nv_x];
-            }
             if (nvar_ext > 0) {
-                alphas.unsafe_col(idx_lam) = coef_inner.tail(nvar_ext);
                 nzero_alphas[idx_lam] = countNonzero(coef_inner, ext_start, blkend[1]);
             }
 
@@ -241,38 +239,6 @@ List gaussian_fit_sparse(const arma::mat & x_,
             lam_prev[0] = 0.0;
         } else {
             lam_prev[0] = lam_cur[0];
-        }
-    }
-
-    //unstandardize variables
-    if (nvar_unpen > 0) {
-        gammas.each_col() %= (ys / xs.subvec(nvar, nv_x - 1));
-    }
-    if (nvar_ext > 0) {
-        alphas.each_col() /= xs.tail(nvar_ext);
-        for (int j = 0; j < nlam_total; ++j) {
-            betas.unsafe_col(j) += arma::vec(ext_ * alphas.unsafe_col(j));
-        }
-        alphas *= ys;
-    }
-    if (intr_ext) {
-        betas.each_row() += alpha0.t();
-        alpha0 = ys * alpha0;
-    }
-    betas.each_col() %= (ys / xs.head(nvar));
-
-    if (intr) {
-        beta0 = ym - ((xm.head(nvar)).t() * betas).t();
-        if (nvar_unpen > 0) {
-            beta0 -=((xm.subvec(nvar, nv_x - 1)).t() * gammas).t();
-        }
-    }
-
-    if (intr_ext) {
-        if (nvar_ext > 0) {
-            alpha0 = (arma::mean(betas) - (xm.tail(nvar_ext)).t() * alphas).t();
-        } else {
-            alpha0 = arma::mean(betas).t();
         }
     }
 
