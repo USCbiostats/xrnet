@@ -1,4 +1,5 @@
 Sys.setenv("R_TESTS" = "")
 library(testthat)
 library(hierr)
+library(Matrix)
 test_check("hierr")

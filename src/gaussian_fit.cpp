@@ -137,8 +137,8 @@ List gaussian_fit(const arma::mat & x_,
     arma::vec ginner(nvar_total);
 
     // vars to track strong set and active set
-    LogicalVector ever_active(nvar_total, 0);
-    LogicalVector strong(nvar_total, 0);
+    LogicalVector ever_active(nvar_total, false);
+    LogicalVector strong(nvar_total, false);
     IntegerVector nin(2, 0);
 
     // quantile constants / variable idx markers
