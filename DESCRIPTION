@@ -15,9 +15,12 @@ Suggests: knitr,
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,
-    RcppArmadillo
+    RcppEigen,
+    BH,
+    bigmemory
 Imports: 
-    Rcpp,
+    Rcpp (>= 0.12.19),
+    RcppEigen (>= 0.3.3.4.0),
     foreach,
     Matrix
 Depends:

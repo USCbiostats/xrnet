@@ -9,7 +9,7 @@
 #' @param family error distribution for outcome variable
 #' @param penalty specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
-#' @param type.measure loss function for cross-validation. Options include:
+#' @param loss_cv loss function for cross-validation. Options include:
 #' \itemize{
 #'    \item mse (Mean Squared Error)
 #'    \item deviance
@@ -27,31 +27,31 @@ cvhierr <- function(x,
                     y,
                     external = NULL,
                     unpen = NULL,
-                    family = c("gaussian"),
+                    family = c("gaussian", "binomial"),
                     penalty = definePenalty(),
                     weights = NULL,
-                    type.measure = c("mse", "mae", "deviance"),
+                    standardize = c(TRUE, TRUE),
+                    intercept = c(TRUE, FALSE),
+                    loss_cv = c("mse", "mae", "deviance"),
                     nfolds = 5,
                     foldid = NULL,
-                    parallel = FALSE, ...)
+                    parallel = FALSE,
+                    control = list())
 {
 
     # Set measure used to assess model prediction performance
-    if (missing(type.measure)) {
-        type.measure <- "default"
+    if (missing(loss_cv)) {
+        loss_cv <- "default"
     } else {
-        type.measure <- match.arg(type.measure)
+        loss_cv <- match.arg(loss_cv)
     }
 
     # Check family argument
     family <- match.arg(family)
 
-    # Generate error function based on family/type.measure
-    calc_error <- error_match(family = family, type.measure = type.measure)
-
     # Get arguments to cvhierr() function and filter for calls to fitting procedure
     hierr_call <- match.call(expand.dots = TRUE)
-    cv_args <- match(c("type.measure", "nfolds", "foldid", "parallel"), names(hierr_call), FALSE)
+    cv_args <- match(c("loss_cv", "nfolds", "foldid", "parallel"), names(hierr_call), FALSE)
 
     if (any(cv_args)) {
         hierr_call <- hierr_call[-cv_args]
@@ -64,28 +64,46 @@ cvhierr <- function(x,
         weights <- rep(1, n)
     }
 
-    # Create hierr object
+    # Fit model on all training data
     hierr_object <- hierr(x = x,
                           y = y,
                           external = external,
                           unpen = unpen,
                           family = family,
                           weights = weights,
-                          penalty = penalty, ...)
-
+                          standardize = standardize,
+                          intercept = intercept,
+                          penalty = penalty,
+                          control = control)
     hierr_object$call <- hierr_call
 
-    penalty_fixed <- definePenalty(penalty_type = penalty$penalty_type,
-                                   penalty_type_ext = penalty$penalty_type_ext,
-                                   user_penalty = hierr_object$penalty,
-                                   user_penalty_ext = hierr_object$penalty_ext)
-
-    num_pen <- length(hierr_object$penalty)
-    if (!is.null(external)) {
-        num_pen_ext <- length(hierr_object$penalty_ext)
-    } else {
-        num_pen_ext <- 1
+    # Check whether fixed and external are empty
+    if (is.null(unpen)) {
+        unpen <- vector("numeric", length = 0)
+        nc_unpen <- as.integer(0)
     }
+    if (is.null(external)) {
+        external <- vector("numeric", length = 0)
+        nc_ext <- as.integer(0)
+    }
+
+    # Prepare penalty and control object for folds
+    penalty_fold <- penalty
+    penalty_fold$user_penalty <- hierr_object$penalty
+    penalty_fold$user_penalty_ext <- hierr_object$penalty_ext
+    penalty_fold <- initialize_penalty(penalty_fold,
+                                       NROW(x),
+                                       NCOL(x),
+                                       nc_unpen,
+                                       NROW(external),
+                                       nc_ext,
+                                       intercept)
+
+    num_pen <- penalty_fold$num_penalty
+    num_pen_ext <- penalty_fold$num_penalty_ext
+
+    control <- do.call("hierr.control", control)
+    control <- initialize_control(control, NCOL(x), nc_unpen, nc_ext, intercept)
 
     # Randomly sample observations into folds / check nfolds
     if (is.null(foldid)) {
@@ -99,105 +117,108 @@ cvhierr <- function(x,
         foldid <- as.numeric(factor(foldid))
         nfolds <- length(unique(foldid))
         if (nfolds < 2)
-            stop("number of folds (nfolds) must at least 2")
+            stop("number of folds (nfolds) must be at least 2")
     }
-
-    # Matrix to collect results of CV
-    errormat <- matrix(NA, nrow = n, ncol = num_pen * num_pen_ext)
 
     # Run k-fold CV
     if (parallel) {
-        errormat <- foreach(k = 1L:nfolds, .packages = c("hierr", "Matrix"), .combine = cbind) %dopar% {
-            subset <- (foldid == k)
-            if (is.vector(drop(y))) {
-                y_train <- y[!subset]
-            } else {
-                y_train <- y[!subset, ]
-            }
-            x_train <- x[!subset, ]
-            if (!is.null(unpen)) {
-                unpen_train <- unpen[!subset, ]
-            } else {
-                unpen_train <- NULL
-            }
-            weights_train <- weights[!subset]
+        if (is.big.matrix(x)) {
+            xdesc <- describe(x)
+            errormat <- foreach(k = 1L:nfolds, .packages = c("hierr", "bigmemory"), .combine = cbind) %dopar% {
+                weights_train <- weights
+                weights_train[foldid == k] <- 0.0
+                test_idx <- as.integer(which(foldid == k) - 1)
+                xref <- attach.big.matrix(xdesc)
 
-            # Fit model on k-th training fold
-            fit_fold <- hierr(x = x[!subset, , drop = FALSE],
-                              y = y_train,
-                              external = external,
-                              unpen = unpen_train,
-                              weights = weights_train,
-                              family = family,
-                              penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
-
-            if (!is.null(unpen)) {
-                betas <- rbind(as.vector(t(fit_fold$beta0)),
-                               `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)),
-                                       c(dim(fit_fold$betas)[1],
-                                         dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])),
-                               `dim<-`(aperm(fit_fold$gammas, c(1, 3, 2)),
-                                       c(dim(fit_fold$gammas)[1],
-                                         dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
-                rm(fit_fold)
-                errorvec <- calc_error(betas, y[subset], cbind(1, x[subset, ], unpen[subset, ]), weights[subset])
-            } else {
-                betas <- rbind(as.vector(t(fit_fold$beta0)),
-                               `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)),
-                                       c(dim(fit_fold$betas)[1],
-                                         dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
-                rm(fit_fold)
-                errorvec <- calc_error(betas, y[subset], cbind(1, x[subset, ]), weights[subset])
+                # Get errors for k-th fold
+                error_vec <- fit_model_cv(x = xref,
+                                          y = y,
+                                          external = external,
+                                          fixed = unpen,
+                                          weights_user = weights_train,
+                                          intercept = intercept,
+                                          standardize = standardize,
+                                          penalty_type = penalty_fold$ptype,
+                                          cmult = penalty_fold$cmult,
+                                          quantiles = c(penalty_fold$tau, penalty_fold$tau_ext),
+                                          num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
+                                          penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
+                                          user_penalty = penalty_fold$user_penalty,
+                                          user_penalty_ext = penalty_fold$user_penalty_ext,
+                                          lower_cl = control$lower_limits,
+                                          upper_cl = control$upper_limits,
+                                          family = family,
+                                          user_loss = loss_cv,
+                                          test_idx = test_idx,
+                                          thresh = control$tolerance,
+                                          maxit = control$max_iterations,
+                                          dfmax = control$dfmax,
+                                          pmax = control$pmax)
             }
-            rm(betas)
-            errorvec
+        } else {
+            errormat <- foreach(k = 1L:nfolds, .packages = c("hierr", "Matrix"), .combine = cbind) %dopar% {
+                weights_train <- weights
+                weights_train[foldid == k] <- 0.0
+                test_idx <- as.integer(which(foldid == k) - 1)
+
+                # Get errors for k-th fold
+                error_vec <- fit_model_cv(x = x,
+                                          y = y,
+                                          external = external,
+                                          fixed = unpen,
+                                          weights_user = weights_train,
+                                          intercept = intercept,
+                                          standardize = standardize,
+                                          penalty_type = penalty_fold$ptype,
+                                          cmult = penalty_fold$cmult,
+                                          quantiles = c(penalty_fold$tau, penalty_fold$tau_ext),
+                                          num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
+                                          penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
+                                          user_penalty = penalty_fold$user_penalty,
+                                          user_penalty_ext = penalty_fold$user_penalty_ext,
+                                          lower_cl = control$lower_limits,
+                                          upper_cl = control$upper_limits,
+                                          family = family,
+                                          user_loss = loss_cv,
+                                          test_idx = test_idx,
+                                          thresh = control$tolerance,
+                                          maxit = control$max_iterations,
+                                          dfmax = control$dfmax,
+                                          pmax = control$pmax)
+            }
         }
     } else {
         errormat <- matrix(NA, nrow = num_pen * num_pen_ext, ncol = nfolds)
         for (k in 1:nfolds) {
             # Split into test and train for k-th fold
-            subset <- (foldid == k)
-            if (is.vector(drop(y))) {
-                y_train <- y[!subset]
-            } else {
-                y_train <- y[!subset, ]
-            }
-            if (!is.null(unpen)) {
-                unpen_train <- unpen[!subset, ]
-            } else {
-                unpen_train <- NULL
-            }
-            weights_train <- weights[!subset]
+            weights_train <- weights
+            weights_train[foldid == k] <- 0.0
+            test_idx <- as.integer(which(foldid == k) - 1)
 
             # Fit model on k-th training fold
-            fit_fold <- hierr(x = x[!subset, , drop = FALSE],
-                              y = y_train,
-                              external = external,
-                              unpen = unpen_train,
-                              weights = weights_train,
-                              family = family,
-                              penalty = penalty_fixed, ...)[c("beta0", "betas", "gammas")]
-
-            if (!is.null(fit_fold$gammas)) {
-                betas <- rbind(as.vector(t(fit_fold$beta0)),
-                               `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)),
-                                             c(dim(fit_fold$betas)[1],
-                                               dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])),
-                               `dim<-`(aperm(fit_fold$gammas, c(1, 3, 2)),
-                                             c(dim(fit_fold$gammas)[1],
-                                               dim(fit_fold$gammas)[2] * dim(fit_fold$gammas)[3])))
-                rm(fit_fold)
-                errormat[, k] <- calc_error(betas, y[subset], cbind(1, x[subset, ], unpen[subset, ]), weights[subset])
-            } else {
-                betas <- rbind(as.vector(t(fit_fold$beta0)),
-                               `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)),
-                                             c(dim(fit_fold$betas)[1],
-                                               dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
-                rm(fit_fold)
-                errormat[, k] <- calc_error(betas, y[subset], cbind(1, x[subset, ]), weights[subset])
-            }
-            rm(betas)
-            gc()
+            errormat[, k] <- fit_model_cv(x = x,
+                                          y = y,
+                                          external = external,
+                                          fixed = unpen,
+                                          weights_user = weights_train,
+                                          intercept = intercept,
+                                          standardize = standardize,
+                                          penalty_type = penalty_fold$ptype,
+                                          cmult = penalty_fold$cmult,
+                                          quantiles = c(penalty_fold$tau, penalty_fold$tau_ext),
+                                          num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
+                                          penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
+                                          user_penalty = penalty_fold$user_penalty,
+                                          user_penalty_ext = penalty_fold$user_penalty_ext,
+                                          lower_cl = control$lower_limits,
+                                          upper_cl = control$upper_limits,
+                                          family = family,
+                                          user_loss = loss_cv,
+                                          test_idx = test_idx,
+                                          thresh = control$tolerance,
+                                          maxit = control$max_iterations,
+                                          dfmax = control$dfmax,
+                                          pmax = control$pmax)
         }
     }
     cv_mean <- rowMeans(errormat)
