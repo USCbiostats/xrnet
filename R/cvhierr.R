@@ -9,7 +9,7 @@
 #' @param family error distribution for outcome variable
 #' @param penalty specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
-#' @param loss_cv loss function for cross-validation. Options include:
+#' @param loss loss function for cross-validation. Options include:
 #' \itemize{
 #'    \item mse (Mean Squared Error)
 #'    \item deviance
@@ -32,7 +32,7 @@ cvhierr <- function(x,
                     weights = NULL,
                     standardize = c(TRUE, TRUE),
                     intercept = c(TRUE, FALSE),
-                    loss_cv = c("mse", "mae", "deviance"),
+                    loss = c("mse", "mae", "deviance"),
                     nfolds = 5,
                     foldid = NULL,
                     parallel = FALSE,
@@ -40,10 +40,10 @@ cvhierr <- function(x,
 {
 
     # Set measure used to assess model prediction performance
-    if (missing(loss_cv)) {
-        loss_cv <- "default"
+    if (missing(loss)) {
+        loss <- "default"
     } else {
-        loss_cv <- match.arg(loss_cv)
+        loss <- match.arg(loss)
     }
 
     # Check family argument
@@ -51,7 +51,7 @@ cvhierr <- function(x,
 
     # Get arguments to cvhierr() function and filter for calls to fitting procedure
     hierr_call <- match.call(expand.dots = TRUE)
-    cv_args <- match(c("loss_cv", "nfolds", "foldid", "parallel"), names(hierr_call), FALSE)
+    cv_args <- match(c("loss", "nfolds", "foldid", "parallel"), names(hierr_call), FALSE)
 
     if (any(cv_args)) {
         hierr_call <- hierr_call[-cv_args]
@@ -148,7 +148,7 @@ cvhierr <- function(x,
                                           lower_cl = control$lower_limits,
                                           upper_cl = control$upper_limits,
                                           family = family,
-                                          user_loss = loss_cv,
+                                          user_loss = loss,
                                           test_idx = test_idx,
                                           thresh = control$tolerance,
                                           maxit = control$max_iterations,
@@ -179,7 +179,7 @@ cvhierr <- function(x,
                                           lower_cl = control$lower_limits,
                                           upper_cl = control$upper_limits,
                                           family = family,
-                                          user_loss = loss_cv,
+                                          user_loss = loss,
                                           test_idx = test_idx,
                                           thresh = control$tolerance,
                                           maxit = control$max_iterations,
@@ -213,7 +213,7 @@ cvhierr <- function(x,
                                           lower_cl = control$lower_limits,
                                           upper_cl = control$upper_limits,
                                           family = family,
-                                          user_loss = loss_cv,
+                                          user_loss = loss,
                                           test_idx = test_idx,
                                           thresh = control$tolerance,
                                           maxit = control$max_iterations,

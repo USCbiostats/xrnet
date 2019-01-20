@@ -6,13 +6,14 @@
 
 using namespace Rcpp;
 
-// fitDenseDenseCV
-Eigen::VectorXd fitDenseDenseCV(SEXP x, const Eigen::Map<Eigen::VectorXd> y, const Eigen::Map<Eigen::MatrixXd> ext, const Eigen::Map<Eigen::MatrixXd> fixed, Eigen::VectorXd weights_user, const Rcpp::LogicalVector& intr, const Rcpp::LogicalVector& stnd, const Eigen::Map<Eigen::VectorXd> penalty_type, const Eigen::Map<Eigen::VectorXd> cmult, const Eigen::Map<Eigen::VectorXd> quantiles, const Rcpp::IntegerVector& num_penalty, const Rcpp::NumericVector& penalty_ratio, const Eigen::Map<Eigen::VectorXd> penalty_user, const Eigen::Map<Eigen::VectorXd> penalty_user_ext, Eigen::VectorXd lower_cl, Eigen::VectorXd upper_cl, const std::string& family, const std::string& user_loss, const Eigen::Map<Eigen::VectorXi> test_idx, const double& thresh, const int& maxit, const int& ne, const int& nx);
-RcppExport SEXP _hierr_fitDenseDenseCV(SEXP xSEXP, SEXP ySEXP, SEXP extSEXP, SEXP fixedSEXP, SEXP weights_userSEXP, SEXP intrSEXP, SEXP stndSEXP, SEXP penalty_typeSEXP, SEXP cmultSEXP, SEXP quantilesSEXP, SEXP num_penaltySEXP, SEXP penalty_ratioSEXP, SEXP penalty_userSEXP, SEXP penalty_user_extSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP familySEXP, SEXP user_lossSEXP, SEXP test_idxSEXP, SEXP threshSEXP, SEXP maxitSEXP, SEXP neSEXP, SEXP nxSEXP) {
+// fitModelCVRcpp
+Eigen::VectorXd fitModelCVRcpp(SEXP x, const bool is_sparse_x, const Eigen::Map<Eigen::VectorXd> y, const Eigen::Map<Eigen::MatrixXd> ext, const Eigen::Map<Eigen::MatrixXd> fixed, Eigen::VectorXd weights_user, const Rcpp::LogicalVector& intr, const Rcpp::LogicalVector& stnd, const Eigen::Map<Eigen::VectorXd> penalty_type, const Eigen::Map<Eigen::VectorXd> cmult, const Eigen::Map<Eigen::VectorXd> quantiles, const Rcpp::IntegerVector& num_penalty, const Rcpp::NumericVector& penalty_ratio, const Eigen::Map<Eigen::VectorXd> penalty_user, const Eigen::Map<Eigen::VectorXd> penalty_user_ext, Eigen::VectorXd lower_cl, Eigen::VectorXd upper_cl, const std::string& family, const std::string& user_loss, const Eigen::Map<Eigen::VectorXi> test_idx, const double& thresh, const int& maxit, const int& ne, const int& nx);
+RcppExport SEXP _hierr_fitModelCVRcpp(SEXP xSEXP, SEXP is_sparse_xSEXP, SEXP ySEXP, SEXP extSEXP, SEXP fixedSEXP, SEXP weights_userSEXP, SEXP intrSEXP, SEXP stndSEXP, SEXP penalty_typeSEXP, SEXP cmultSEXP, SEXP quantilesSEXP, SEXP num_penaltySEXP, SEXP penalty_ratioSEXP, SEXP penalty_userSEXP, SEXP penalty_user_extSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP familySEXP, SEXP user_lossSEXP, SEXP test_idxSEXP, SEXP threshSEXP, SEXP maxitSEXP, SEXP neSEXP, SEXP nxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_sparse_x(is_sparse_xSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type y(ySEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type ext(extSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type fixed(fixedSEXP);
@@ -35,50 +36,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
     Rcpp::traits::input_parameter< const int& >::type ne(neSEXP);
     Rcpp::traits::input_parameter< const int& >::type nx(nxSEXP);
-    rcpp_result_gen = Rcpp::wrap(fitDenseDenseCV(x, y, ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, user_loss, test_idx, thresh, maxit, ne, nx));
+    rcpp_result_gen = Rcpp::wrap(fitModelCVRcpp(x, is_sparse_x, y, ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, user_loss, test_idx, thresh, maxit, ne, nx));
     return rcpp_result_gen;
 END_RCPP
 }
-// fitSparseDenseCV
-Eigen::VectorXd fitSparseDenseCV(const Eigen::MappedSparseMatrix<double> x, const Eigen::Map<Eigen::VectorXd> y, const Eigen::Map<Eigen::MatrixXd> ext, const Eigen::Map<Eigen::MatrixXd> fixed, Eigen::VectorXd weights_user, const Rcpp::LogicalVector& intr, const Rcpp::LogicalVector& stnd, const Eigen::Map<Eigen::VectorXd> penalty_type, const Eigen::Map<Eigen::VectorXd> cmult, const Eigen::Map<Eigen::VectorXd> quantiles, const Rcpp::IntegerVector& num_penalty, const Rcpp::NumericVector& penalty_ratio, const Eigen::Map<Eigen::VectorXd> penalty_user, const Eigen::Map<Eigen::VectorXd> penalty_user_ext, Eigen::VectorXd lower_cl, Eigen::VectorXd upper_cl, const std::string& family, const std::string& user_loss, const Eigen::Map<Eigen::VectorXi> test_idx, const double& thresh, const int& maxit, const int& ne, const int& nx);
-RcppExport SEXP _hierr_fitSparseDenseCV(SEXP xSEXP, SEXP ySEXP, SEXP extSEXP, SEXP fixedSEXP, SEXP weights_userSEXP, SEXP intrSEXP, SEXP stndSEXP, SEXP penalty_typeSEXP, SEXP cmultSEXP, SEXP quantilesSEXP, SEXP num_penaltySEXP, SEXP penalty_ratioSEXP, SEXP penalty_userSEXP, SEXP penalty_user_extSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP familySEXP, SEXP user_lossSEXP, SEXP test_idxSEXP, SEXP threshSEXP, SEXP maxitSEXP, SEXP neSEXP, SEXP nxSEXP) {
+// fitModelRcpp
+Rcpp::List fitModelRcpp(SEXP x, const bool is_sparse_x, const Eigen::Map<Eigen::VectorXd> y, const Eigen::Map<Eigen::MatrixXd> ext, const Eigen::Map<Eigen::MatrixXd> fixed, Eigen::VectorXd weights_user, const Rcpp::LogicalVector& intr, const Rcpp::LogicalVector& stnd, const Eigen::Map<Eigen::VectorXd> penalty_type, const Eigen::Map<Eigen::VectorXd> cmult, const Eigen::Map<Eigen::VectorXd> quantiles, const Rcpp::IntegerVector& num_penalty, const Rcpp::NumericVector& penalty_ratio, const Eigen::Map<Eigen::VectorXd> penalty_user, const Eigen::Map<Eigen::VectorXd> penalty_user_ext, Eigen::VectorXd lower_cl, Eigen::VectorXd upper_cl, const std::string& family, const double& thresh, const int& maxit, const int& ne, const int& nx);
+RcppExport SEXP _hierr_fitModelRcpp(SEXP xSEXP, SEXP is_sparse_xSEXP, SEXP ySEXP, SEXP extSEXP, SEXP fixedSEXP, SEXP weights_userSEXP, SEXP intrSEXP, SEXP stndSEXP, SEXP penalty_typeSEXP, SEXP cmultSEXP, SEXP quantilesSEXP, SEXP num_penaltySEXP, SEXP penalty_ratioSEXP, SEXP penalty_userSEXP, SEXP penalty_user_extSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP familySEXP, SEXP threshSEXP, SEXP maxitSEXP, SEXP neSEXP, SEXP nxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::MappedSparseMatrix<double> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type y(ySEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type ext(extSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type fixed(fixedSEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXd >::type weights_user(weights_userSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::LogicalVector& >::type intr(intrSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::LogicalVector& >::type stnd(stndSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type penalty_type(penalty_typeSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type cmult(cmultSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type quantiles(quantilesSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type num_penalty(num_penaltySEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type penalty_ratio(penalty_ratioSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type penalty_user(penalty_userSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type penalty_user_ext(penalty_user_extSEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXd >::type lower_cl(lower_clSEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXd >::type upper_cl(upper_clSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type family(familySEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type user_loss(user_lossSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXi> >::type test_idx(test_idxSEXP);
-    Rcpp::traits::input_parameter< const double& >::type thresh(threshSEXP);
-    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
-    Rcpp::traits::input_parameter< const int& >::type ne(neSEXP);
-    Rcpp::traits::input_parameter< const int& >::type nx(nxSEXP);
-    rcpp_result_gen = Rcpp::wrap(fitSparseDenseCV(x, y, ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, user_loss, test_idx, thresh, maxit, ne, nx));
-    return rcpp_result_gen;
-END_RCPP
-}
-// fitDenseDense
-Rcpp::List fitDenseDense(SEXP xbig, const Eigen::Map<Eigen::VectorXd> y, const Eigen::Map<Eigen::MatrixXd> ext, const Eigen::Map<Eigen::MatrixXd> fixed, Eigen::VectorXd weights_user, const Rcpp::LogicalVector& intr, const Rcpp::LogicalVector& stnd, const Eigen::Map<Eigen::VectorXd> penalty_type, const Eigen::Map<Eigen::VectorXd> cmult, const Eigen::Map<Eigen::VectorXd> quantiles, const Rcpp::IntegerVector& num_penalty, const Rcpp::NumericVector& penalty_ratio, const Eigen::Map<Eigen::VectorXd> penalty_user, const Eigen::Map<Eigen::VectorXd> penalty_user_ext, Eigen::VectorXd lower_cl, Eigen::VectorXd upper_cl, const std::string& family, const double& thresh, const int& maxit, const int& ne, const int& nx);
-RcppExport SEXP _hierr_fitDenseDense(SEXP xbigSEXP, SEXP ySEXP, SEXP extSEXP, SEXP fixedSEXP, SEXP weights_userSEXP, SEXP intrSEXP, SEXP stndSEXP, SEXP penalty_typeSEXP, SEXP cmultSEXP, SEXP quantilesSEXP, SEXP num_penaltySEXP, SEXP penalty_ratioSEXP, SEXP penalty_userSEXP, SEXP penalty_user_extSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP familySEXP, SEXP threshSEXP, SEXP maxitSEXP, SEXP neSEXP, SEXP nxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type xbig(xbigSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_sparse_x(is_sparse_xSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type y(ySEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type ext(extSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type fixed(fixedSEXP);
@@ -99,47 +68,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
     Rcpp::traits::input_parameter< const int& >::type ne(neSEXP);
     Rcpp::traits::input_parameter< const int& >::type nx(nxSEXP);
-    rcpp_result_gen = Rcpp::wrap(fitDenseDense(xbig, y, ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, thresh, maxit, ne, nx));
-    return rcpp_result_gen;
-END_RCPP
-}
-// fitSparseDense
-Rcpp::List fitSparseDense(const Eigen::MappedSparseMatrix<double> x, const Eigen::Map<Eigen::VectorXd> y, const Eigen::Map<Eigen::MatrixXd> ext, const Eigen::Map<Eigen::MatrixXd> fixed, Eigen::VectorXd weights_user, const Rcpp::LogicalVector& intr, const Rcpp::LogicalVector& stnd, const Eigen::Map<Eigen::VectorXd> penalty_type, const Eigen::Map<Eigen::VectorXd> cmult, const Eigen::Map<Eigen::VectorXd> quantiles, const Rcpp::IntegerVector& num_penalty, const Rcpp::NumericVector& penalty_ratio, const Eigen::Map<Eigen::VectorXd> penalty_user, const Eigen::Map<Eigen::VectorXd> penalty_user_ext, Eigen::VectorXd lower_cl, Eigen::VectorXd upper_cl, const std::string& family, const double& thresh, const int& maxit, const int& ne, const int& nx);
-RcppExport SEXP _hierr_fitSparseDense(SEXP xSEXP, SEXP ySEXP, SEXP extSEXP, SEXP fixedSEXP, SEXP weights_userSEXP, SEXP intrSEXP, SEXP stndSEXP, SEXP penalty_typeSEXP, SEXP cmultSEXP, SEXP quantilesSEXP, SEXP num_penaltySEXP, SEXP penalty_ratioSEXP, SEXP penalty_userSEXP, SEXP penalty_user_extSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP familySEXP, SEXP threshSEXP, SEXP maxitSEXP, SEXP neSEXP, SEXP nxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::MappedSparseMatrix<double> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type y(ySEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type ext(extSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type fixed(fixedSEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXd >::type weights_user(weights_userSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::LogicalVector& >::type intr(intrSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::LogicalVector& >::type stnd(stndSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type penalty_type(penalty_typeSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type cmult(cmultSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type quantiles(quantilesSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type num_penalty(num_penaltySEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type penalty_ratio(penalty_ratioSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type penalty_user(penalty_userSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type penalty_user_ext(penalty_user_extSEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXd >::type lower_cl(lower_clSEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXd >::type upper_cl(upper_clSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type family(familySEXP);
-    Rcpp::traits::input_parameter< const double& >::type thresh(threshSEXP);
-    Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
-    Rcpp::traits::input_parameter< const int& >::type ne(neSEXP);
-    Rcpp::traits::input_parameter< const int& >::type nx(nxSEXP);
-    rcpp_result_gen = Rcpp::wrap(fitSparseDense(x, y, ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, thresh, maxit, ne, nx));
+    rcpp_result_gen = Rcpp::wrap(fitModelRcpp(x, is_sparse_x, y, ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, thresh, maxit, ne, nx));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_hierr_fitDenseDenseCV", (DL_FUNC) &_hierr_fitDenseDenseCV, 23},
-    {"_hierr_fitSparseDenseCV", (DL_FUNC) &_hierr_fitSparseDenseCV, 23},
-    {"_hierr_fitDenseDense", (DL_FUNC) &_hierr_fitDenseDense, 21},
-    {"_hierr_fitSparseDense", (DL_FUNC) &_hierr_fitSparseDense, 21},
+    {"_hierr_fitModelCVRcpp", (DL_FUNC) &_hierr_fitModelCVRcpp, 24},
+    {"_hierr_fitModelRcpp", (DL_FUNC) &_hierr_fitModelRcpp, 22},
     {NULL, NULL, 0}
 };
 

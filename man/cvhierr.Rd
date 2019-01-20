@@ -4,10 +4,11 @@
 \alias{cvhierr}
 \title{k-fold cross-validation for hierarchical regularized regression}
 \usage{
-cvhierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
-  penalty = definePenalty(), weights = NULL, type.measure = c("mse",
-  "mae", "deviance"), nfolds = 5, foldid = NULL, parallel = FALSE,
-  ...)
+cvhierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
+  "binomial"), penalty = definePenalty(), weights = NULL,
+  standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
+  loss = c("mse", "mae", "deviance"), nfolds = 5, foldid = NULL,
+  parallel = FALSE, control = list())
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}}
@@ -24,7 +25,7 @@ cvhierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
 
 \item{weights}{optional vector of observation-specific weights. Default is 1 for all observations.}
 
-\item{type.measure}{loss function for cross-validation. Options include:
+\item{loss}{loss function for cross-validation. Options include:
 \itemize{
    \item mse (Mean Squared Error)
    \item deviance

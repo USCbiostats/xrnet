@@ -6,40 +6,31 @@
 #include "HierrUtils.h"
 #include "CoordDescTypes.h"
 #include "BinomialSolver.h"
+#include <type_traits>
+#include <typeinfo>
 
-/*
-* Rcpp wrapper to fit model when x is big.matrix or
-* filetracked.big.matrix and external is dense matrix
-*/
-
-// [[Rcpp::export]]
-Rcpp::List fitDenseDense(SEXP xbig,
-                         const Eigen::Map<Eigen::VectorXd> y,
-                         const Eigen::Map<Eigen::MatrixXd> ext,
-                         const Eigen::Map<Eigen::MatrixXd> fixed,
-                         Eigen::VectorXd weights_user,
-                         const Rcpp::LogicalVector & intr,
-                         const Rcpp::LogicalVector & stnd,
-                         const Eigen::Map<Eigen::VectorXd> penalty_type,
-                         const Eigen::Map<Eigen::VectorXd> cmult,
-                         const Eigen::Map<Eigen::VectorXd> quantiles,
-                         const Rcpp::IntegerVector & num_penalty,
-                         const Rcpp::NumericVector & penalty_ratio,
-                         const Eigen::Map<Eigen::VectorXd> penalty_user,
-                         const Eigen::Map<Eigen::VectorXd> penalty_user_ext,
-                         Eigen::VectorXd lower_cl,
-                         Eigen::VectorXd upper_cl,
-                         const std::string & family,
-                         const double & thresh,
-                         const int & maxit,
-                         const int & ne,
-                         const int & nx) {
-
-    // get pointer to big.matrix for X and map to eigen matrix
-    Rcpp::XPtr<BigMatrix> xptr(xbig);
-    Eigen::Map<const Eigen::MatrixXd> x((const double *)xptr->matrix(),
-                                        xptr->nrow(),
-                                        xptr->ncol());
+template <typename TX, typename TZ>
+Rcpp::List fitModel(TX x,
+                    const Eigen::Map<Eigen::VectorXd> y,
+                    const Eigen::Map<Eigen::MatrixXd> ext,
+                    const Eigen::Map<Eigen::MatrixXd> fixed,
+                    Eigen::VectorXd weights_user,
+                    const Rcpp::LogicalVector & intr,
+                    const Rcpp::LogicalVector & stnd,
+                    const Eigen::Map<Eigen::VectorXd> penalty_type,
+                    const Eigen::Map<Eigen::VectorXd> cmult,
+                    const Eigen::Map<Eigen::VectorXd> quantiles,
+                    const Rcpp::IntegerVector & num_penalty,
+                    const Rcpp::NumericVector & penalty_ratio,
+                    const Eigen::Map<Eigen::VectorXd> penalty_user,
+                    const Eigen::Map<Eigen::VectorXd> penalty_user_ext,
+                    Eigen::VectorXd lower_cl,
+                    Eigen::VectorXd upper_cl,
+                    const std::string & family,
+                    const double & thresh,
+                    const int & maxit,
+                    const int & ne,
+                    const int & nx) {
 
     // initialize objects to hold means, variances, sds of all variables
     const int n = x.rows();
@@ -64,26 +55,26 @@ Rcpp::List fitDenseDense(SEXP xbig,
     compute_moments(xz, weights_user, xm, xv, xs, false, stnd[1], nv_x + nv_fixed);
 
     // choose solver based on outcome
-    std::unique_ptr<CoordSolver<MapMat> > solver;
+    std::unique_ptr<CoordSolver<TX> > solver;
     if (family == "gaussian") {
-        solver.reset(new CoordSolver<MapMat>(y, x, fixedmap, xz, xm.data(), xv.data(), xs.data(),
-                                             weights_user, intr[0], penalty_type.data(),
-                                             cmult.data(), quantiles, upper_cl.data(),
-                                             lower_cl.data(), ne, nx, thresh, maxit));
+        solver.reset(new CoordSolver<TX>(y, x, fixedmap, xz, xm.data(), xv.data(), xs.data(),
+                                         weights_user, intr[0], penalty_type.data(),
+                                         cmult.data(), quantiles, upper_cl.data(),
+                                         lower_cl.data(), ne, nx, thresh, maxit));
 
     }
     else if (family == "binomial") {
-        solver.reset(new BinomialSolver<MapMat>(y, x, fixedmap, xz, xm.data(), xv.data(), xs.data(),
-                                                weights_user, intr[0], penalty_type.data(),
-                                                cmult.data(), quantiles, upper_cl.data(),
-                                                lower_cl.data(), ne, nx, thresh, maxit));
+        solver.reset(new BinomialSolver<TX>(y, x, fixedmap, xz, xm.data(), xv.data(), xs.data(),
+                                            weights_user, intr[0], penalty_type.data(),
+                                            cmult.data(), quantiles, upper_cl.data(),
+                                            lower_cl.data(), ne, nx, thresh, maxit));
     }
 
     // Object to hold results for all penalty combinations
     const int num_combn = num_penalty[0] * num_penalty[1];
-    Hierr<MapMat, MapMat> estimates = Hierr<MapMat, MapMat>(n, nv_x, nv_fixed, nv_ext, nv_total,
-                                                            intr[0], intr[1], ext.data(), xm.data(),
-                                                            xs.data(), num_combn);
+    Hierr<TX, TZ> estimates = Hierr<TX, TZ>(n, nv_x, nv_fixed, nv_ext, nv_total,
+                                            intr[0], intr[1], ext.data(), xm.data(),
+                                            xs.data(), num_combn);
 
     // compute penalty path for 1st level variables
     Eigen::VectorXd path(num_penalty[0]);
@@ -97,8 +88,8 @@ Rcpp::List fitDenseDense(SEXP xbig,
     if (nv_ext > 0) {
         compute_penalty(path_ext, penalty_user_ext,
                         penalty_type[nv_x + nv_fixed + intr[1]],
-                                    penalty_ratio[1], solver->getGradient(),
-                                    solver->getCmult(), nv_x + nv_fixed + intr[1], nv_total);
+                        penalty_ratio[1], solver->getGradient(),
+                        solver->getCmult(), nv_x + nv_fixed + intr[1], nv_total);
     } else {
         path_ext[0] = 0.0;
     }
@@ -146,10 +137,85 @@ Rcpp::List fitDenseDense(SEXP xbig,
                               Rcpp::Named("status") = status);
 }
 
+
+// [[Rcpp::export]]
+Rcpp::List fitModelRcpp(SEXP x,
+                        const bool is_sparse_x,
+                        const Eigen::Map<Eigen::VectorXd> y,
+                        const Eigen::Map<Eigen::MatrixXd> ext,
+                        const Eigen::Map<Eigen::MatrixXd> fixed,
+                        Eigen::VectorXd weights_user,
+                        const Rcpp::LogicalVector & intr,
+                        const Rcpp::LogicalVector & stnd,
+                        const Eigen::Map<Eigen::VectorXd> penalty_type,
+                        const Eigen::Map<Eigen::VectorXd> cmult,
+                        const Eigen::Map<Eigen::VectorXd> quantiles,
+                        const Rcpp::IntegerVector & num_penalty,
+                        const Rcpp::NumericVector & penalty_ratio,
+                        const Eigen::Map<Eigen::VectorXd> penalty_user,
+                        const Eigen::Map<Eigen::VectorXd> penalty_user_ext,
+                        Eigen::VectorXd lower_cl,
+                        Eigen::VectorXd upper_cl,
+                        const std::string & family,
+                        const double & thresh,
+                        const int & maxit,
+                        const int & ne,
+                        const int & nx) {
+
+    if (is_sparse_x) {
+        return fitModel<MapSpMat, MapMat>(Rcpp::as<MapSpMat>(x),
+                                          y,
+                                          ext,
+                                          fixed,
+                                          weights_user,
+                                          intr,
+                                          stnd,
+                                          penalty_type,
+                                          cmult,
+                                          quantiles,
+                                          num_penalty,
+                                          penalty_ratio,
+                                          penalty_user,
+                                          penalty_user_ext,
+                                          lower_cl,
+                                          upper_cl,
+                                          family,
+                                          thresh,
+                                          maxit,
+                                          ne,
+                                          nx);
+    } else {
+        Rcpp::XPtr<BigMatrix> xptr(x);
+        MapMat xmap((const double *)xptr->matrix(), xptr->nrow(), xptr->ncol());
+        return fitModel<MapMat, MapMat>(xmap,
+                                        y,
+                                        ext,
+                                        fixed,
+                                        weights_user,
+                                        intr,
+                                        stnd,
+                                        penalty_type,
+                                        cmult,
+                                        quantiles,
+                                        num_penalty,
+                                        penalty_ratio,
+                                        penalty_user,
+                                        penalty_user_ext,
+                                        lower_cl,
+                                        upper_cl,
+                                        family,
+                                        thresh,
+                                        maxit,
+                                        ne,
+                                        nx);
+    }
+}
+
+
 /*
-* Rcpp wrapper to fit model when x is sparse matrix
-*  and external is dense matrix
-*/
+ * Rcpp wrapper to fit model when x is sparse matrix
+ *  and external is dense matrix
+
 
 // [[Rcpp::export]]
 Rcpp::List fitSparseDense(const Eigen::MappedSparseMatrix<double> x,
@@ -280,3 +346,4 @@ Rcpp::List fitSparseDense(const Eigen::MappedSparseMatrix<double> x,
                               Rcpp::Named("status") = status);
 }
 
+ */

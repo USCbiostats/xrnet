@@ -7,40 +7,34 @@
 #include "CoordDescTypes.h"
 #include "BinomialSolver.h"
 
-// [[Rcpp::export]]
-Eigen::VectorXd fitDenseDenseCV(SEXP x,
-                                const Eigen::Map<Eigen::VectorXd> y,
-                                const Eigen::Map<Eigen::MatrixXd> ext,
-                                const Eigen::Map<Eigen::MatrixXd> fixed,
-                                Eigen::VectorXd weights_user,
-                                const Rcpp::LogicalVector & intr,
-                                const Rcpp::LogicalVector & stnd,
-                                const Eigen::Map<Eigen::VectorXd> penalty_type,
-                                const Eigen::Map<Eigen::VectorXd> cmult,
-                                const Eigen::Map<Eigen::VectorXd> quantiles,
-                                const Rcpp::IntegerVector & num_penalty,
-                                const Rcpp::NumericVector & penalty_ratio,
-                                const Eigen::Map<Eigen::VectorXd> penalty_user,
-                                const Eigen::Map<Eigen::VectorXd> penalty_user_ext,
-                                Eigen::VectorXd lower_cl,
-                                Eigen::VectorXd upper_cl,
-                                const std::string & family,
-                                const std::string & user_loss,
-                                const Eigen::Map<Eigen::VectorXi> test_idx,
-                                const double & thresh,
-                                const int & maxit,
-                                const int & ne,
-                                const int & nx) {
-
-    // get pointer to big.matrix for X and map to eigen matrix
-    Rcpp::XPtr<BigMatrix> xptr(x);
-    Eigen::Map<const Eigen::MatrixXd> xmap((const double *)xptr->matrix(),
-                                           xptr->nrow(),
-                                           xptr->ncol());
+template <typename TX, typename TZ>
+Eigen::VectorXd fitModelCV(TX x,
+                           const Eigen::Map<Eigen::VectorXd> y,
+                           const Eigen::Map<Eigen::MatrixXd> ext,
+                           const Eigen::Map<Eigen::MatrixXd> fixed,
+                           Eigen::VectorXd weights_user,
+                           const Rcpp::LogicalVector & intr,
+                           const Rcpp::LogicalVector & stnd,
+                           const Eigen::Map<Eigen::VectorXd> penalty_type,
+                           const Eigen::Map<Eigen::VectorXd> cmult,
+                           const Eigen::Map<Eigen::VectorXd> quantiles,
+                           const Rcpp::IntegerVector & num_penalty,
+                           const Rcpp::NumericVector & penalty_ratio,
+                           const Eigen::Map<Eigen::VectorXd> penalty_user,
+                           const Eigen::Map<Eigen::VectorXd> penalty_user_ext,
+                           Eigen::VectorXd lower_cl,
+                           Eigen::VectorXd upper_cl,
+                           const std::string & family,
+                           const std::string & user_loss,
+                           const Eigen::Map<Eigen::VectorXi> test_idx,
+                           const double & thresh,
+                           const int & maxit,
+                           const int & ne,
+                           const int & nx) {
 
     // initialize objects to hold means, variances, sds of all variables
-    const int n = xmap.rows();
-    const int nv_x = xmap.cols();
+    const int n = x.rows();
+    const int nv_x = x.cols();
     const int nv_fixed = fixed.size() == 0 ? 0 : fixed.cols();
     const int nv_ext = ext.size() == 0 ? 0 : ext.cols();
     const int nv_total = nv_x + nv_fixed + intr[1] + nv_ext;
@@ -55,32 +49,32 @@ Eigen::VectorXd fitDenseDenseCV(SEXP x,
     weights_user.array() = weights_user.array() / weights_user.sum();
 
     // compute moments of matrices and create XZ (if external data present)
-    compute_moments(xmap, weights_user, xm, xv, xs, true, stnd[0], 0);
+    compute_moments(x, weights_user, xm, xv, xs, true, stnd[0], 0);
     compute_moments(fixedmap, weights_user, xm, xv, xs, true, stnd[0], nv_x);
-    const Eigen::MatrixXd xz = create_XZ(xmap, ext, xm, xv, xs, intr[1]);
+    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, xv, xs, intr[1]);
     compute_moments(xz, weights_user, xm, xv, xs, false, stnd[1], nv_x + nv_fixed);
 
     // choose solver based on outcome
-    std::unique_ptr<CoordSolver<MapMat> > solver;
+    std::unique_ptr<CoordSolver<TX> > solver;
     if (family == "gaussian") {
-        solver.reset(new CoordSolver<MapMat>(y, xmap, fixedmap, xz, xm.data(), xv.data(), xs.data(),
-                                             weights_user, intr[0], penalty_type.data(),
-                                             cmult.data(), quantiles, upper_cl.data(),
-                                             lower_cl.data(), ne, nx, thresh, maxit));
+        solver.reset(new CoordSolver<TX>(y, x, fixedmap, xz, xm.data(), xv.data(), xs.data(),
+                                        weights_user, intr[0], penalty_type.data(),
+                                        cmult.data(), quantiles, upper_cl.data(),
+                                        lower_cl.data(), ne, nx, thresh, maxit));
     }
     else if (family == "binomial") {
-        solver.reset(new BinomialSolver<MapMat>(y, xmap, fixedmap, xz, xm.data(), xv.data(), xs.data(),
-                                                weights_user, intr[0], penalty_type.data(),
-                                                cmult.data(), quantiles, upper_cl.data(),
-                                                lower_cl.data(), ne, nx, thresh, maxit));
+        solver.reset(new BinomialSolver<TX>(y, x, fixedmap, xz, xm.data(), xv.data(), xs.data(),
+                                           weights_user, intr[0], penalty_type.data(),
+                                           cmult.data(), quantiles, upper_cl.data(),
+                                           lower_cl.data(), ne, nx, thresh, maxit));
     }
 
     // Object to hold results for all penalty combinations
     const int num_combn = num_penalty[0] * num_penalty[1];
-    HierrCV<MapMat, MapMat> results = HierrCV<MapMat, MapMat>(n, nv_x, nv_fixed, nv_ext, nv_total,
-                                                              intr[0], intr[1], ext.data(), xm.data(),
-                                                              xs.data(), num_combn, family, user_loss,
-                                                              test_idx, xmap, y);
+    HierrCV<TX, TZ> results = HierrCV<TX, TZ>(n, nv_x, nv_fixed, nv_ext, nv_total,
+                                              intr[0], intr[1], ext.data(), xm.data(),
+                                              xs.data(), num_combn, family, user_loss,
+                                              test_idx, x, y);
 
     // compute penalty path for 1st level variables
     Eigen::VectorXd path(num_penalty[0]);
@@ -128,8 +122,86 @@ Eigen::VectorXd fitDenseDenseCV(SEXP x,
 }
 
 
-
 // [[Rcpp::export]]
+Eigen::VectorXd fitModelCVRcpp(SEXP x,
+                               const bool is_sparse_x,
+                               const Eigen::Map<Eigen::VectorXd> y,
+                               const Eigen::Map<Eigen::MatrixXd> ext,
+                               const Eigen::Map<Eigen::MatrixXd> fixed,
+                               Eigen::VectorXd weights_user,
+                               const Rcpp::LogicalVector & intr,
+                               const Rcpp::LogicalVector & stnd,
+                               const Eigen::Map<Eigen::VectorXd> penalty_type,
+                               const Eigen::Map<Eigen::VectorXd> cmult,
+                               const Eigen::Map<Eigen::VectorXd> quantiles,
+                               const Rcpp::IntegerVector & num_penalty,
+                               const Rcpp::NumericVector & penalty_ratio,
+                               const Eigen::Map<Eigen::VectorXd> penalty_user,
+                               const Eigen::Map<Eigen::VectorXd> penalty_user_ext,
+                               Eigen::VectorXd lower_cl,
+                               Eigen::VectorXd upper_cl,
+                               const std::string & family,
+                               const std::string & user_loss,
+                               const Eigen::Map<Eigen::VectorXi> test_idx,
+                               const double & thresh,
+                               const int & maxit,
+                               const int & ne,
+                               const int & nx) {
+
+    if (is_sparse_x) {
+        return fitModelCV<MapSpMat, MapMat>(Rcpp::as<MapSpMat>(x),
+                                            y,
+                                            ext,
+                                            fixed,
+                                            weights_user,
+                                            intr,
+                                            stnd,
+                                            penalty_type,
+                                            cmult,
+                                            quantiles,
+                                            num_penalty,
+                                            penalty_ratio,
+                                            penalty_user,
+                                            penalty_user_ext,
+                                            lower_cl,
+                                            upper_cl,
+                                            family,
+                                            user_loss,
+                                            test_idx,
+                                            thresh,
+                                            maxit,
+                                            ne,
+                                            nx);
+    } else {
+        Rcpp::XPtr<BigMatrix> xptr(x);
+        MapMat xmap((const double *)xptr->matrix(), xptr->nrow(), xptr->ncol());
+        return fitModelCV<MapMat, MapMat>(xmap,
+                                          y,
+                                          ext,
+                                          fixed,
+                                          weights_user,
+                                          intr,
+                                          stnd,
+                                          penalty_type,
+                                          cmult,
+                                          quantiles,
+                                          num_penalty,
+                                          penalty_ratio,
+                                          penalty_user,
+                                          penalty_user_ext,
+                                          lower_cl,
+                                          upper_cl,
+                                          family,
+                                          user_loss,
+                                          test_idx,
+                                          thresh,
+                                          maxit,
+                                          ne,
+                                          nx);
+    }
+}
+
+/*
 Eigen::VectorXd fitSparseDenseCV(const Eigen::MappedSparseMatrix<double> x,
                                  const Eigen::Map<Eigen::VectorXd> y,
                                  const Eigen::Map<Eigen::MatrixXd> ext,
@@ -247,4 +319,4 @@ Eigen::VectorXd fitSparseDenseCV(const Eigen::MappedSparseMatrix<double> x,
     // return error matrix
     return results.get_error_mat();
 }
-
+ */

@@ -4,9 +4,10 @@
 \alias{hierr}
 \title{Fit hierarchical regularized regression model}
 \usage{
-hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
-  penalty = definePenalty(), weights = NULL, standardize = c(TRUE,
-  TRUE), intercept = c(TRUE, TRUE), control = list())
+hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
+  "binomial"), penalty = definePenalty(), weights = NULL,
+  standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
+  control = list())
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}}
@@ -25,7 +26,7 @@ hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian"),
 
 \item{standardize}{indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).}
 
-\item{intercept}{indicates whether an intercept term is included for x and/or external. Default is c(TRUE, TRUE).}
+\item{intercept}{indicates whether an intercept term is included for x and/or external. Default is c(TRUE, FALSE).}
 
 \item{control}{specifies hierr control object. See \code{\link{hierr.control}} for more details.}
 }

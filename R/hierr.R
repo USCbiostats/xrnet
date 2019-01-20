@@ -99,7 +99,7 @@ hierr <- function(x,
             if (class(external) != "matrix") {
                 external <- as.matrix(external)
             }
-            if (!(typeof(x) %in% c("double", "integer"))) {
+            if (!(typeof(external) %in% c("double", "integer"))) {
                 stop("Error: external contains non-numeric values")
             }
         }
