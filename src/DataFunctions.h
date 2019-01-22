@@ -86,6 +86,7 @@ Eigen::MatrixXd create_XZ(const matA & X,
         }
         xzj = ((X * xs_X.cwiseProduct(Z.col(j))).array() - xs_X.cwiseProduct(xm_X.cwiseProduct(Z.col(j))).sum()) * xs[idx];
         xv[idx] = (xzj.array() - xzj.mean()).square().sum() / xzj.size();
+        xzj /= xs[idx];
 
     }
     return XZ;

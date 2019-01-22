@@ -47,8 +47,8 @@ Rcpp::List fitModel(TX x,
     weights_user.array() = weights_user.array() / weights_user.sum();
 
     // compute moments of matrices and create XZ (if external data present)
-    compute_moments(x, weights_user, xm, xv, xs, true, stnd[0], 0);
-    compute_moments(fixedmap, weights_user, xm, xv, xs, true, stnd[0], nv_x);
+    compute_moments(x, weights_user, xm, xv, xs, intr[0], stnd[0], 0);
+    compute_moments(fixedmap, weights_user, xm, xv, xs, intr[0], stnd[0], nv_x);
     const Eigen::MatrixXd xz = create_XZ(x, ext, xm, xv, xs, intr[1], stnd[1], nv_x + nv_fixed);
 
     // choose solver based on outcome

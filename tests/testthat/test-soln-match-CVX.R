@@ -47,7 +47,7 @@ context("compare coefficent estimates to CVX (manual penalty)")
 #     zscaled[, i] <- (z[, i] - mean_z[i]) / sd_z[i]
 # }
 
-xtest <- as.big.matrix(readRDS(file = "testdata/xtest.rds"))
+xtest <- readRDS(file = "testdata/xtest.rds")
 ytest <- readRDS(file = "testdata/ytest.rds")
 ztest <- readRDS(file = "testdata/ztest.rds")
 alphas_cvx_mat <- readRDS(file = "testdata/alphas_cvx_mat.rds")
@@ -60,7 +60,7 @@ myPenalty <- definePenalty(penalty_type = 0,
                            user_penalty = 1,
                            user_penalty_ext = 0.1)
 
-myControl <- list(tolerance = 1e-15)
+myControl <- list(tolerance = 1e-20)
 
 test_that("x and ext standardized, both intercepts",{
 
