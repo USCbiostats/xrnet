@@ -71,8 +71,10 @@ Eigen::MatrixXd create_XZ(const matA & X,
 
     // add intercept
     if (intr_ext) {
-        XZ.col(col_xz++) = (X * xs_X).array() - xs_X.cwiseProduct(xm_X).sum();
+        XZ.col(col_xz) = (X * xs_X).array() - xs_X.cwiseProduct(xm_X).sum();
+        xv[idx] = (XZ.col(col_xz).array() - XZ.col(col_xz).mean()).square().sum() / XZ.col(col_xz).size();
         ++idx;
+        ++col_xz;
     }
 
     // fill in columns of XZ
@@ -81,9 +83,6 @@ Eigen::MatrixXd create_XZ(const matA & X,
         auto xzj = XZ.col(col_xz);
         if (scale_z) {
             xs[idx] = 1 / std::sqrt((zj.array() - zj.mean()).square().sum() / zj.size());
-            //double zm_j = zj.mean();
-            //double vc = zj.cwiseProduct(zj).mean() - zm_j * zm_j;
-            //xs[idx] = 1 / std::sqrt(vc);
         }
         xzj = ((X * xs_X.cwiseProduct(Z.col(j))).array() - xs_X.cwiseProduct(xm_X.cwiseProduct(Z.col(j))).sum()) * xs[idx];
         xv[idx] = (xzj.array() - xzj.mean()).square().sum() / xzj.size();

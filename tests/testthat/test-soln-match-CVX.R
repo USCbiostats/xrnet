@@ -47,29 +47,32 @@ context("compare coefficent estimates to CVX (manual penalty)")
 #     zscaled[, i] <- (z[, i] - mean_z[i]) / sd_z[i]
 # }
 
-xtest <- readRDS(file = "testdata/xtest.rds")
+xtest <- as.big.matrix(readRDS(file = "testdata/xtest.rds"))
 ytest <- readRDS(file = "testdata/ytest.rds")
 ztest <- readRDS(file = "testdata/ztest.rds")
 alphas_cvx_mat <- readRDS(file = "testdata/alphas_cvx_mat.rds")
 betas_cvx_mat <- readRDS(file = "testdata/betas_cvx_mat.rds")
 
 sdy <- sqrt(var(ytest) * (length(ytest) - 1) / length(ytest))
+
 myPenalty <- definePenalty(penalty_type = 0,
                            penalty_type_ext = 1,
-                           user_penalty = sdy,
-                           user_penalty_ext = 0.1 * sdy)
+                           user_penalty = 1,
+                           user_penalty_ext = 0.1)
 
 myControl <- list(tolerance = 1e-15)
 
 test_that("x and ext standardized, both intercepts",{
 
     expect_equal(alphas_cvx_mat[, 1],
-                 hierr(x = xtest,
-                       y = ytest,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty = myPenalty,
-                       control = myControl)$alphas[1:5, 1, 1],
+           fit <- hierr(x = xtest,
+                        y = ytest,
+                        external = ztest,
+                        family = "gaussian",
+                        intercept = c(T, T),
+                        standardize = c(T, T),
+                        penalty = myPenalty,
+                        control = myControl)$alphas[1:5, 1, 1],
                  tolerance = 1e-5)
     expect_equal(betas_cvx_mat[, 1],
                  hierr(x = xtest,
