@@ -47,14 +47,19 @@ context("compare coefficent estimates to CVX (automatic penalty)")
 #     zscaled[, i] <- (z[, i] - mean_z[i]) / sd_z[i]
 # }
 
-xtest <- readRDS(file = "testdata/xtest.rds")
+xtest <- bigmemory::as.big.matrix(readRDS(file = "testdata/xtest.rds"))
 ytest <- readRDS(file = "testdata/ytest.rds")
 ztest <- readRDS(file = "testdata/ztest.rds")
 alphas_cvx_auto <- readRDS(file = "testdata/alphas_cvx_auto.rds")
 betas_cvx_auto <- readRDS(file = "testdata/betas_cvx_auto.rds")
+n <- length(ytest)
+sd_y <- sqrt(var(ytest) * (n - 1) / n)
+ytest <- ytest / sd_y
 
-myPenalty <- definePenalty(penalty_type = 0, penalty_type_ext = 1)
-myControl <- list(tolerance = 1e-15, earlyStop = TRUE)
+myPenalty <- definePenalty(penalty_type = 0,
+                           penalty_type_ext = 1)
+
+myControl <- list(tolerance = 1e-20)
 
 test_that("x and ext standardized, both intercepts, auto",{
 
@@ -63,8 +68,10 @@ test_that("x and ext standardized, both intercepts, auto",{
                        y = ytest,
                        external = ztest,
                        family = "gaussian",
+                       intercept = c(T, T),
+                       standardize = c(T, T),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 1],
@@ -72,8 +79,10 @@ test_that("x and ext standardized, both intercepts, auto",{
                        y = ytest,
                        external = ztest,
                        family = "gaussian",
+                       intercept = c(T, T),
+                       standardize = c(T, T),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -84,9 +93,10 @@ test_that("x NOT standardized, ext is standardized, both intercepts, auto",{
                        y = ytest,
                        external = ztest,
                        family = "gaussian",
+                       intercept = c(T, T),
                        standardize = c(F, T),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 2],
@@ -94,9 +104,10 @@ test_that("x NOT standardized, ext is standardized, both intercepts, auto",{
                        y = ytest,
                        external = ztest,
                        family = "gaussian",
+                       intercept = c(T, T),
                        standardize = c(F, T),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -107,9 +118,10 @@ test_that("x is standardized, ext NOT standardized, both intercepts, auto",{
                        y = ytest,
                        external = ztest,
                        family = "gaussian",
+                       intercept = c(T, T),
                        standardize = c(T, F),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 3],
@@ -117,9 +129,10 @@ test_that("x is standardized, ext NOT standardized, both intercepts, auto",{
                        y = ytest,
                        external = ztest,
                        family = "gaussian",
+                       intercept = c(T, T),
                        standardize = c(T, F),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -130,9 +143,10 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts, auto",{
                        y = ytest,
                        external = ztest,
                        family = "gaussian",
+                       intercept = c(T, T),
                        standardize = c(F, F),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 4],
@@ -140,9 +154,10 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts, auto",{
                        y = ytest,
                        external = ztest,
                        family = "gaussian",
+                       intercept = c(T, T),
                        standardize = c(F, F),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -159,7 +174,7 @@ test_that("x standardized, ext standardized, no 2nd level, auto",{
                        standardize = c(T, T),
                        intercept = c(T, F),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 5],
@@ -170,7 +185,7 @@ test_that("x standardized, ext standardized, no 2nd level, auto",{
                        standardize = c(T, T),
                        intercept = c(T, F),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -184,7 +199,7 @@ test_that("x NOT standardized, ext is standardized, no 2nd level, auto",{
                        standardize = c(F, T),
                        intercept = c(T, F),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 6],
@@ -195,7 +210,7 @@ test_that("x NOT standardized, ext is standardized, no 2nd level, auto",{
                        standardize = c(F, T),
                        intercept = c(T, F),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -209,7 +224,7 @@ test_that("x is standardized, ext NOT standardized, no 2nd level, auto",{
                        standardize = c(T, F),
                        intercept = c(T, F),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 7],
@@ -220,7 +235,7 @@ test_that("x is standardized, ext NOT standardized, no 2nd level, auto",{
                        standardize = c(T, F),
                        intercept = c(T, F),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -234,7 +249,7 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level, auto",{
                        standardize = c(F, F),
                        intercept = c(T, F),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 8],
@@ -245,7 +260,7 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level, auto",{
                        standardize = c(F, F),
                        intercept = c(T, F),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -261,7 +276,7 @@ test_that("x standardized, ext standardized, no 1st level, auto",{
                        standardize = c(T, T),
                        intercept = c(F, T),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 9],
@@ -272,7 +287,7 @@ test_that("x standardized, ext standardized, no 1st level, auto",{
                        standardize = c(T, T),
                        intercept = c(F, T),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -286,7 +301,7 @@ test_that("x NOT standardized, ext is standardized, no 1st level, auto",{
                        standardize = c(F, T),
                        intercept = c(F, T),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 10],
@@ -297,7 +312,7 @@ test_that("x NOT standardized, ext is standardized, no 1st level, auto",{
                        standardize = c(F, T),
                        intercept = c(F, T),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -311,7 +326,7 @@ test_that("x is standardized, ext NOT standardized, no 1st level, auto",{
                        standardize = c(T, F),
                        intercept = c(F, T),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 11],
@@ -322,7 +337,7 @@ test_that("x is standardized, ext NOT standardized, no 1st level, auto",{
                        standardize = c(T, F),
                        intercept = c(F, T),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })
 
@@ -336,7 +351,7 @@ test_that("x NOT standardized, ext NOT standardized, no 1st level, auto",{
                        standardize = c(F, F),
                        intercept = c(F, T),
                        penalty = myPenalty,
-                       control = myControl)$alphas[, 4, 2],
+                       control = myControl)$alphas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_auto[, 12],
@@ -347,6 +362,6 @@ test_that("x NOT standardized, ext NOT standardized, no 1st level, auto",{
                        standardize = c(F, F),
                        intercept = c(F, T),
                        penalty = myPenalty,
-                       control = myControl)$betas[, 4, 2],
+                       control = myControl)$betas[, 4, 2] * sd_y,
                  tolerance = 1e-5)
 })

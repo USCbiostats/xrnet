@@ -40,7 +40,7 @@ NULL
 #' \item{nlp}{total number of passes over data}
 #' \item{custom_mult}{vector of variable-specific penalty multipliers for predictors}
 #' \item{custom_mult_ext}{vector of variable-specific penalty multipliers for external data}
-
+#' @importFrom bigmemory is.big.matrix
 
 #' @export
 hierr <- function(x,
@@ -64,7 +64,7 @@ hierr <- function(x,
 
     # check type of x matrix
     if (is.big.matrix(x)) {
-        if (!(describe(x)@description$type %in% c("integer", "double")))
+        if (!(bigmemory::describe(x)@description$type %in% c("integer", "double")))
             stop("Error: x contains non-numeric values")
     } else if ("dgCMatrix" %in% class(x)) {
         if (!(typeof(x@x) %in% c("integer", "double")))

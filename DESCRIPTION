@@ -22,6 +22,7 @@ Imports:
     Rcpp (>= 0.12.19),
     RcppEigen (>= 0.3.3.4.0),
     foreach,
-    Matrix
+    Matrix, 
+    bigmemory
 Depends:
     R (>= 3.0)

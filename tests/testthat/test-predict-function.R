@@ -1,10 +1,10 @@
 context("test predict function works correctly")
 
-xtest <- readRDS(file = "testdata/xtest.rds")
+xtest <- bigmemory::as.big.matrix(readRDS(file = "testdata/xtest.rds"))
 ytest <- readRDS(file = "testdata/ytest.rds")
 ztest <- readRDS(file = "testdata/ztest.rds")
 
-myControl <- list(tolerance = 1e-15, earlyStop = FALSE)
+myControl <- list(tolerance = 1e-15)
 
 test_that("predict returns estimates for penalties already fit by hierr object", {
     myPenalty <- definePenalty(penalty_type = 0,
@@ -38,7 +38,7 @@ test_that("predict returns right predictions for penalties already fit by hierr 
                           penalty = myPenalty,
                           control = myControl)
 
-    predy <- cbind(1, xtest) %*% c(hierr_object$beta0[2, 2], hierr_object$betas[, 2, 2])
+    predy <- hierr_object$beta0[2, 2] + as.matrix(xtest) %*% hierr_object$betas[, 2, 2]
     expect_equivalent(predict(hierr_object, p = 1, pext = 0.1, newdata = xtest), predy)
 
     predy <- cbind(1, xtest) %*% c(hierr_object$beta0[2, 3], hierr_object$betas[, 2, 3])

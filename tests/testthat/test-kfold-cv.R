@@ -1,18 +1,26 @@
 context("test k-fold cross-validation function")
 
-xtest <- readRDS(file = "testdata/xtest.rds")
+xtest <- bigmemory::as.big.matrix(readRDS(file = "testdata/xtest.rds"))
 ytest <- readRDS(file = "testdata/ytest.rds")
 ztest <- readRDS(file = "testdata/ztest.rds")
+n <- length(ytest)
+sd_y <- sqrt(var(ytest) * (n - 1) / n)
+ytest <- ytest / sd_y
 
-myControl <- list(tolerance = 1e-15, earlyStop = FALSE)
+myControl <- list(tolerance = 1e-15)
 
 test_that("obtain correct min(penalty) compared to glmnet (no external data) -- Ridge",{
     # glmnet code used to find min(lambda)
-    #set.seed(123)
-    #cv_glmnet <- cv.glmnet(x, y, family = "gaussian", nfolds = 5, alpha = 0, thresh = 1e-15, keep = T)
+    set.seed(123)
+    cv_glmnet <- cv.glmnet(as.matrix(xtest),
+                           ytest,
+                           family = "gaussian",
+                           nfolds = 5,
+                           alpha = 0,
+                           thresh = 1e-15, keep = T)
     set.seed(123)
     myPenalty <- definePenalty(penalty_type = 0, num_penalty = 100)
-    expect_equal(cvhierr(x = xtest,
+    expect_equal(fit <- cvhierr(x = xtest,
                          y = ytest,
                          family = "gaussian",
                          intercept = c(T, F),
