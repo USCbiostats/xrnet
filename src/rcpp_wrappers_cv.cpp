@@ -51,8 +51,8 @@ Eigen::VectorXd fitModelCV(TX x,
     // compute moments of matrices and create XZ (if external data present)
     compute_moments(x, weights_user, xm, xv, xs, true, stnd[0], 0);
     compute_moments(fixedmap, weights_user, xm, xv, xs, true, stnd[0], nv_x);
-    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, xv, xs, intr[1]);
-    compute_moments(xz, weights_user, xm, xv, xs, false, stnd[1], nv_x + nv_fixed);
+    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, xv, xs, intr[1], stnd[1], nv_x + nv_fixed);
+    //compute_moments(xz, weights_user, xm, xv, xs, false, false, nv_x + nv_fixed);
 
     // choose solver based on outcome
     std::unique_ptr<CoordSolver<TX> > solver;

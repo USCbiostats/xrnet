@@ -51,8 +51,8 @@ Rcpp::List fitModel(TX x,
     // compute moments of matrices and create XZ (if external data present)
     compute_moments(x, weights_user, xm, xv, xs, true, stnd[0], 0);
     compute_moments(fixedmap, weights_user, xm, xv, xs, true, stnd[0], nv_x);
-    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, xv, xs, intr[1]);
-    compute_moments(xz, weights_user, xm, xv, xs, false, stnd[1], nv_x + nv_fixed);
+    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, xv, xs, intr[1], stnd[1], nv_x + nv_fixed);
+    //compute_moments(xz, weights_user, xm, xv, xs, false, false, nv_x + nv_fixed);
 
     // choose solver based on outcome
     std::unique_ptr<CoordSolver<TX> > solver;
@@ -134,7 +134,12 @@ Rcpp::List fitModel(TX x,
                               Rcpp::Named("penalty_ext") = path_ext,
                               Rcpp::Named("strong_sum") = strong_sum,
                               Rcpp::Named("active_sum") = active_sum,
-                              Rcpp::Named("status") = status);
+                              Rcpp::Named("status") = status,
+                              Rcpp::Named("xz") = xz,
+                              Rcpp::Named("xm") = xm,
+                              Rcpp::Named("xv") = xv,
+                              Rcpp::Named("xs") = xs,
+                              Rcpp::Named("betas_check") = solver->getBetas());
 }
 
 

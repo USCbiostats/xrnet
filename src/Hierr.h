@@ -92,7 +92,7 @@ public:
             if (nv_ext > 0) {
                 z_alpha += ext * coef.tail(nv_ext);
             }
-            betas.col(idx) = z_alpha * xs.head(nv_x) + coef.head(nv_x);
+            betas.col(idx) = z_alpha.cwiseProduct(xs.head(nv_x)) + coef.head(nv_x);
         }
         else {
             betas.col(idx) = coef.head(nv_x);

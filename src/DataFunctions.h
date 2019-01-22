@@ -49,9 +49,11 @@ template <typename matA, typename matB>
 Eigen::MatrixXd create_XZ(const matA & X,
                           const matB & Z,
                           const Eigen::Ref<const Eigen::VectorXd> & xm,
-                          const Eigen::Ref<const Eigen::VectorXd> & xv,
-                          const Eigen::Ref<const Eigen::VectorXd> & xs,
-                          const bool & intr_ext) {
+                          Eigen::Ref<Eigen::VectorXd> xv,
+                          Eigen::Ref<Eigen::VectorXd> xs,
+                          const bool & intr_ext,
+                          const bool & scale_z,
+                          int idx) {
 
     // initialize XZ matrix
     Eigen::MatrixXd XZ(0, 0);
@@ -70,11 +72,22 @@ Eigen::MatrixXd create_XZ(const matA & X,
     // add intercept
     if (intr_ext) {
         XZ.col(col_xz++) = (X * xs_X).array() - xs_X.cwiseProduct(xm_X).sum();
+        ++idx;
     }
 
     // fill in columns of XZ
-    for (int j = 0; j < Z.cols(); ++j, ++col_xz) {
-        XZ.col(col_xz) = (X * xs_X.cwiseProduct(Z.col(j))).array() - xs_X.cwiseProduct(xm_X.cwiseProduct(Z.col(j))).sum();
+    for (int j = 0; j < Z.cols(); ++j, ++col_xz, ++idx) {
+        auto zj = Z.col(j);
+        auto xzj = XZ.col(col_xz);
+        if (scale_z) {
+            xs[idx] = 1 / std::sqrt((zj.array() - zj.mean()).square().sum() / zj.size());
+            //double zm_j = zj.mean();
+            //double vc = zj.cwiseProduct(zj).mean() - zm_j * zm_j;
+            //xs[idx] = 1 / std::sqrt(vc);
+        }
+        xzj = ((X * xs_X.cwiseProduct(Z.col(j))).array() - xs_X.cwiseProduct(xm_X.cwiseProduct(Z.col(j))).sum()) * xs[idx];
+        xv[idx] = (xzj.array() - xzj.mean()).square().sum() / xzj.size();
+
     }
     return XZ;
 };

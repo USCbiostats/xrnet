@@ -124,7 +124,7 @@ public:
             if (this->nv_ext > 0) {
                 z_alpha += this->ext * coef.tail(this->nv_ext);
             }
-            this->betas.col(0) = z_alpha * this->xs.head(this->nv_x) + coef.head(this->nv_x);
+            this->betas.col(0) = z_alpha.cwiseProduct(this->xs.head(this->nv_x)) + coef.head(this->nv_x);
         }
         else {
             this->betas.col(0) = coef.head(this->nv_x);
