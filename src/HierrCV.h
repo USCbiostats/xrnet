@@ -2,6 +2,7 @@
 #define HIERR_CV_H
 
 #include <RcppEigen.h>
+#include <unordered_map>
 #include "Hierr.h"
 
 template <typename TX, typename TZ>
