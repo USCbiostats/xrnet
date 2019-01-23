@@ -154,11 +154,16 @@ public:
     // returns pointer to appropriate loss function based on family / user_loss
     lossPtr select_loss(const std::string & family, const std::string & user_loss) {
 
-        // map of string name - function name
+        /* map of string name - function name
         std::unordered_map<std::string, lossPtr> lossMap = {
             {"mse", mean_squared_error},
             {"mae", mean_absolute_error}
         };
+        */
+
+        std::unordered_map<std::string, lossPtr> lossMap;
+        lossMap.insert(std::make_pair<std::string, lossPtr>("mse", mean_squared_error));
+        lossMap.insert(std::make_pair<std::string, lossPtr>("mae", mean_absolute_error));
 
         lossPtr loss_func = nullptr;
         if (user_loss == "default")
@@ -172,7 +177,9 @@ public:
         {
             std::vector<std::string> loss_options;
             if (family == "gaussian") {
-                loss_options = {"mse", "mae"};
+                Rcpp::StringVector loss_options;
+                loss_options.push_back("mse");
+                loss_options.push_back("mae");
             }
             auto it = std::find(loss_options.begin(), loss_options.end(), user_loss);
             loss_func = lossMap[*it];
