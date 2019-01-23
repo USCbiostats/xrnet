@@ -10,15 +10,28 @@ hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
   control = list())
 }
 \arguments{
-\item{x}{predictor design matrix of dimension \eqn{n x p}}
+\item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options include:
+\itemize{
+   \item big.matrix
+   \item filebacked.big.matrix
+   \item sparse matrix (dgCMatrix)
+}}
 
 \item{y}{outcome vector of length \eqn{n}}
 
-\item{external}{(optional) external data design matrix of dimension \eqn{p x q}. Can be class "matrix" or "dgCMatrix".}
+\item{external}{(optional) external data design matrix of dimension \eqn{p x q}, matrix options include:
+\itemize{
+    \item matrix
+    \item sparse matrix (dgCMatrix)
+}}
 
 \item{unpen}{(optional) unpenalized predictor design matrix}
 
-\item{family}{error distribution for outcome variable}
+\item{family}{error distribution for outcome variable, options include:
+\itemize{
+    \item gaussian
+    \item binomial
+}}
 
 \item{penalty}{specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.}
 

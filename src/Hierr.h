@@ -38,7 +38,7 @@ public:
           const int & nv_total_,
           const bool & intr_,
           const bool & intr_ext_,
-          const double * extptr,
+          const Eigen::Ref<const Eigen::MatrixXd> & ext_,
           const double * xmptr,
           const double * xsptr,
           const int & num_penalty_) :
@@ -48,9 +48,39 @@ public:
     nv_ext(nv_ext_),
     intr(intr_),
     intr_ext(intr_ext_),
-    ext(extptr, nv_x_, nv_ext_),
+    ext(ext_.data(), nv_x_, nv_ext_),
     xm(xmptr, nv_total_),
     xs(xsptr, nv_total_)
+    {
+        beta0 = Eigen::VectorXd::Zero(num_penalty_);
+        betas = Eigen::MatrixXd::Zero(nv_x_, num_penalty_);
+        gammas = Eigen::MatrixXd::Zero(nv_fixed_, num_penalty_);
+        alpha0 = Eigen::VectorXd::Zero(num_penalty_);
+        alphas = Eigen::MatrixXd::Zero(nv_ext_, num_penalty_);
+        strong_sum = Eigen::VectorXd::Zero(num_penalty_);
+    };
+
+    // constructor (sparse external)
+    Hierr(const int & n_,
+          const int & nv_x_,
+          const int & nv_fixed_,
+          const int & nv_ext_,
+          const int & nv_total_,
+          const bool & intr_,
+          const bool & intr_ext_,
+          const Eigen::MappedSparseMatrix<double> & ext_,
+          const double * xmptr,
+          const double * xsptr,
+          const int & num_penalty_) :
+        n(n_),
+        nv_x(nv_x_),
+        nv_fixed(nv_fixed_),
+        nv_ext(nv_ext_),
+        intr(intr_),
+        intr_ext(intr_ext_),
+        ext(ext_),
+        xm(xmptr, nv_total_),
+        xs(xsptr, nv_total_)
     {
         beta0 = Eigen::VectorXd::Zero(num_penalty_);
         betas = Eigen::MatrixXd::Zero(nv_x_, num_penalty_);

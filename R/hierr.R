@@ -12,11 +12,24 @@ NULL
 #' for the predictors and external variables). Currently support linear regression, future extensions to
 #' a GLM framework will be implemented in the next major update.
 #'
-#' @param x predictor design matrix of dimension \eqn{n x p}
+#' @param x predictor design matrix of dimension \eqn{n x p}, matrix options include:
+#' \itemize{
+#'    \item big.matrix
+#'    \item filebacked.big.matrix
+#'    \item sparse matrix (dgCMatrix)
+#' }
 #' @param y outcome vector of length \eqn{n}
-#' @param external (optional) external data design matrix of dimension \eqn{p x q}. Can be class "matrix" or "dgCMatrix".
+#' @param external (optional) external data design matrix of dimension \eqn{p x q}, matrix options include:
+#' \itemize{
+#'     \item matrix
+#'     \item sparse matrix (dgCMatrix)
+#' }
 #' @param unpen (optional) unpenalized predictor design matrix
-#' @param family error distribution for outcome variable
+#' @param family error distribution for outcome variable, options include:
+#' \itemize{
+#'     \item gaussian
+#'     \item binomial
+#' }
 #' @param penalty specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
 #' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
@@ -73,6 +86,9 @@ hierr <- function(x,
         stop("Error: x must be a big.matrix, filebacked.big.matrix, or dgCMatrix")
     }
 
+    # check type of y
+    y <- as.double(y)
+
     # check dimensions of x and y
     nr_x <- NROW(x)
     nc_x <- NCOL(x)
@@ -113,7 +129,7 @@ hierr <- function(x,
         }
 
     } else {
-        external <- vector("numeric", length = 0)
+        external <- matrix(vector("numeric", 0), 0, 0)
         nr_ext <- as.integer(0)
         nc_ext <- as.integer(0)
     }
@@ -136,7 +152,7 @@ hierr <- function(x,
             stop("Error: unpen contains non-numeric values")
         }
     } else {
-        unpen <- vector("numeric", length = 0)
+        unpen <- matrix(vector("numeric", 0), 0, 0)
         nc_unpen <- as.integer(0)
     }
 

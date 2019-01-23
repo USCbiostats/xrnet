@@ -49,9 +49,10 @@ fit_model <- function(x,
                                    nx = pmax)
         else
             fit <- fitModelRcpp(x = x,
-                                is_sparse_x = TRUE,
+                                is_sparse_x,
                                 y = y,
                                 ext = external,
+                                is_sparse_ext,
                                 fixed = fixed,
                                 weights_user = weights_user,
                                 intr = intercept,
@@ -95,9 +96,10 @@ fit_model <- function(x,
                                   nx = pmax)
         else
             fit <- fitModelRcpp(x = x@address,
-                                is_sparse_x = FALSE,
+                                is_sparse_x,
                                 y = y,
                                 ext = external,
+                                is_sparse_ext,
                                 fixed = fixed,
                                 weights_user = weights_user,
                                 intr = intercept,

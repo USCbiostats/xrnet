@@ -82,9 +82,10 @@ Eigen::MatrixXd create_XZ(const matA & X,
         auto zj = Z.col(j);
         auto xzj = XZ.col(col_xz);
         if (scale_z) {
-            xs[idx] = 1 / std::sqrt((zj.array() - zj.mean()).square().sum() / zj.size());
+            double zm_j = zj.sum() / zj.size();
+            xs[idx] = 1 / std::sqrt(zj.cwiseProduct(zj / zj.size()).sum() - zm_j * zm_j);
         }
-        xzj = ((X * xs_X.cwiseProduct(Z.col(j))).array() - xs_X.cwiseProduct(xm_X.cwiseProduct(Z.col(j))).sum()) * xs[idx];
+        xzj = xs[idx] * ((X * zj.cwiseProduct(xs_X)) - xs_X.cwiseProduct(xm_X.cwiseProduct(zj)).sum() * Eigen::VectorXd::Ones(X.rows()));
         xv[idx] = (xzj.array() - xzj.mean()).square().sum() / xzj.size();
         xzj /= xs[idx];
 
