@@ -7,38 +7,42 @@ template <typename matType>
 void compute_moments(const matType & X,
                      const Eigen::Ref<const Eigen::VectorXd> & wgts_user,
                      Eigen::Ref<Eigen::VectorXd> xm,
+                     Eigen::Ref<Eigen::VectorXd> cent,
                      Eigen::Ref<Eigen::VectorXd> xv,
                      Eigen::Ref<Eigen::VectorXd> xs,
-                     const bool & center,
-                     const bool & scale,
+                     const bool & centered,
+                     const bool & scaled,
                      int idx) {
-    if (center) {
-        if (scale) {
+    if (centered) {
+        if (scaled) {
             for (int j = 0; j < X.cols(); ++j, ++idx) {
                 auto xj = X.col(j);
                 xm[idx] = xj.cwiseProduct(wgts_user).sum();
+                cent[idx] = xm[idx];
                 xs[idx] = 1 / std::sqrt(xj.cwiseProduct(xj.cwiseProduct(wgts_user)).sum() - xm[idx] * xm[idx]);
             }
         } else {
             for (int j = 0; j < X.cols(); ++j, ++idx) {
                 auto xj = X.col(j);
                 xm[idx] = xj.cwiseProduct(wgts_user).sum();
+                cent[idx] = xm[idx];
                 xv[idx] = xj.cwiseProduct(xj.cwiseProduct(wgts_user)).sum() - xm[idx] * xm[idx];
             }
         }
     }
     else {
-        if (scale) {
+        if (scaled) {
             for (int j = 0; j < X.cols(); ++j, ++idx) {
                 auto xj = X.col(j);
-                double xm_j = xj.cwiseProduct(wgts_user).sum();
-                double vc = xj.cwiseProduct(xj.cwiseProduct(wgts_user)).sum() - xm_j * xm_j;
+                xm[idx] = xj.cwiseProduct(wgts_user).sum();
+                double vc = xj.cwiseProduct(xj.cwiseProduct(wgts_user)).sum() - xm[idx] * xm[idx];
                 xs[idx] = 1 / std::sqrt(vc);
-                xv[idx] = 1.0 + xm_j * xm_j / vc;
+                xv[idx] = 1.0 + xm[idx] * xm[idx] / vc;
             }
         } else {
             for (int j = 0; j < X.cols(); ++j, ++idx) {
                 auto xj = X.col(j);
+                xm[idx] = xj.cwiseProduct(wgts_user).sum();
                 xv[idx] = xj.cwiseProduct(xj.cwiseProduct(wgts_user)).sum();
             }
         }
@@ -48,7 +52,8 @@ void compute_moments(const matType & X,
 template <typename matA, typename matB>
 Eigen::MatrixXd create_XZ(const matA & X,
                           const matB & Z,
-                          const Eigen::Ref<const Eigen::VectorXd> & xm,
+                          Eigen::Ref<Eigen::VectorXd> xm,
+                          const Eigen::Ref<const Eigen::VectorXd> & cent,
                           Eigen::Ref<Eigen::VectorXd> xv,
                           Eigen::Ref<Eigen::VectorXd> xs,
                           const bool & intr_ext,
@@ -64,14 +69,14 @@ Eigen::MatrixXd create_XZ(const matA & X,
         XZ.resize(X.rows(), intr_ext + Z.cols());
 
     // map means and sds of X
-    auto xm_X = xm.head(X.cols());
-    auto xs_X = xs.head(X.cols());
+    auto cent_x = cent.head(X.cols());
+    auto xs_x = xs.head(X.cols());
 
     int col_xz = 0;
 
     // add intercept
     if (intr_ext) {
-        XZ.col(col_xz) = (X * xs_X).array() - xs_X.cwiseProduct(xm_X).sum();
+        XZ.col(col_xz) = (X * xs_x).array() - xs_x.cwiseProduct(cent_x).sum();
         xv[idx] = (XZ.col(col_xz).array() - XZ.col(col_xz).mean()).square().sum() / XZ.col(col_xz).size();
         ++idx;
         ++col_xz;
@@ -81,11 +86,11 @@ Eigen::MatrixXd create_XZ(const matA & X,
     for (int j = 0; j < Z.cols(); ++j, ++col_xz, ++idx) {
         auto zj = Z.col(j);
         auto xzj = XZ.col(col_xz);
+        xm[idx] = zj.sum() / zj.size();
         if (scale_z) {
-            double zm_j = zj.sum() / zj.size();
-            xs[idx] = 1 / std::sqrt(zj.cwiseProduct(zj / zj.size()).sum() - zm_j * zm_j);
+            xs[idx] = 1 / std::sqrt(zj.cwiseProduct(zj / zj.size()).sum() - xm[idx] * xm[idx]);
         }
-        xzj = xs[idx] * ((X * zj.cwiseProduct(xs_X)) - xs_X.cwiseProduct(xm_X.cwiseProduct(zj)).sum() * Eigen::VectorXd::Ones(X.rows()));
+        xzj = xs[idx] * ((X * zj.cwiseProduct(xs_x)) - xs_x.cwiseProduct(cent_x.cwiseProduct(zj)).sum() * Eigen::VectorXd::Ones(X.rows()));
         xv[idx] = (xzj.array() - xzj.mean()).square().sum() / xzj.size();
         xzj /= xs[idx];
 

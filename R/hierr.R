@@ -54,6 +54,7 @@ NULL
 #' \item{custom_mult}{vector of variable-specific penalty multipliers for predictors}
 #' \item{custom_mult_ext}{vector of variable-specific penalty multipliers for external data}
 #' @importFrom bigmemory is.big.matrix
+#' @importFrom methods is
 
 #' @export
 hierr <- function(x,

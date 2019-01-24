@@ -1,5 +1,3 @@
-// -*- mode: C++; c-indent-level: 4; c-basic-offset: 4; indent-tabs-mode: nil; -*-
-
 #include <string.h>
 #include "DataFunctions.h"
 #include "HierrCV.h"
@@ -39,6 +37,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
     const int nv_ext = ext.size() == 0 ? 0 : ext.cols();
     const int nv_total = nv_x + nv_fixed + intr[1] + nv_ext;
     Eigen::VectorXd xm = Eigen::VectorXd::Constant(nv_total, 0.0);
+    Eigen::VectorXd cent = Eigen::VectorXd::Constant(nv_total, 0.0);
     Eigen::VectorXd xv = Eigen::VectorXd::Constant(nv_total, 1.0);
     Eigen::VectorXd xs = Eigen::VectorXd::Constant(nv_total, 1.0);
 
@@ -49,15 +48,15 @@ Eigen::VectorXd fitModelCV(const TX & x,
     weights_user.array() = weights_user.array() / weights_user.sum();
 
     // compute moments of matrices and create XZ (if external data present)
-    compute_moments(x, weights_user, xm, xv, xs, true, stnd[0], 0);
-    compute_moments(fixedmap, weights_user, xm, xv, xs, true, stnd[0], nv_x);
-    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, xv, xs, intr[1], stnd[1], nv_x + nv_fixed);
+    compute_moments(x, weights_user, xm, cent, xv, xs, true, stnd[0], 0);
+    compute_moments(fixedmap, weights_user, xm, cent, xv, xs, true, stnd[0], nv_x);
+    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, cent, xv, xs, intr[1], stnd[1], nv_x + nv_fixed);
 
     // choose solver based on outcome
     std::unique_ptr<CoordSolver<TX> > solver;
     if (family == "gaussian") {
         solver.reset(new CoordSolver<TX>(
-                y, x, fixedmap, xz, xm.data(), xv.data(), xs.data(),
+                y, x, fixedmap, xz, cent.data(), xv.data(), xs.data(),
                 weights_user, intr[0], penalty_type.data(),
                 cmult.data(), quantiles, upper_cl.data(),
                 lower_cl.data(), ne, nx, thresh, maxit)
@@ -65,7 +64,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
     }
     else if (family == "binomial") {
         solver.reset(new BinomialSolver<TX>(
-                y, x, fixedmap, xz, xm.data(), xv.data(), xs.data(),
+                y, x, fixedmap, xz, cent.data(), xv.data(), xs.data(),
                 weights_user, intr[0], penalty_type.data(),
                 cmult.data(), quantiles, upper_cl.data(),
                 lower_cl.data(), ne, nx, thresh, maxit)
@@ -76,7 +75,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
     const int num_combn = num_penalty[0] * num_penalty[1];
     HierrCV<TX, TZ> results = HierrCV<TX, TZ>(
         n, nv_x, nv_fixed, nv_ext, nv_total,
-        intr[0], intr[1], ext, xm.data(),
+        intr[0], intr[1], ext, xm.data(), cent.data(),
         xs.data(), num_combn, family, user_loss,
         test_idx, x, y
     );
@@ -160,110 +159,50 @@ Eigen::VectorXd fitModelCVRcpp(SEXP x,
 
     if (is_sparse_x) {
         if (is_sparse_ext)
-            return fitModelCV<MapSpMat, MapSpMat>(Rcpp::as<MapSpMat>(x),
-                                                  y,
-                                                  Rcpp::as<MapSpMat>(ext),
-                                                  fixed,
-                                                  weights_user,
-                                                  intr,
-                                                  stnd,
-                                                  penalty_type,
-                                                  cmult,
-                                                  quantiles,
-                                                  num_penalty,
-                                                  penalty_ratio,
-                                                  penalty_user,
-                                                  penalty_user_ext,
-                                                  lower_cl,
-                                                  upper_cl,
-                                                  family,
-                                                  user_loss,
-                                                  test_idx,
-                                                  thresh,
-                                                  maxit,
-                                                  ne,
-                                                  nx);
+            return fitModelCV<MapSpMat, MapSpMat>(
+                    Rcpp::as<MapSpMat>(x), y, Rcpp::as<MapSpMat>(ext),
+                    fixed, weights_user, intr, stnd, penalty_type,
+                    cmult, quantiles, num_penalty, penalty_ratio,
+                    penalty_user, penalty_user_ext, lower_cl,
+                    upper_cl, family, user_loss, test_idx, thresh,
+                    maxit, ne, nx
+                );
         else {
             Rcpp::NumericMatrix ext_mat(ext);
             MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
-            return fitModelCV<MapSpMat, MapMat>(Rcpp::as<MapSpMat>(x),
-                                                y,
-                                                extmap,
-                                                fixed,
-                                                weights_user,
-                                                intr,
-                                                stnd,
-                                                penalty_type,
-                                                cmult,
-                                                quantiles,
-                                                num_penalty,
-                                                penalty_ratio,
-                                                penalty_user,
-                                                penalty_user_ext,
-                                                lower_cl,
-                                                upper_cl,
-                                                family,
-                                                user_loss,
-                                                test_idx,
-                                                thresh,
-                                                maxit,
-                                                ne,
-                                                nx);
+            return fitModelCV<MapSpMat, MapMat>(
+                    Rcpp::as<MapSpMat>(x), y, extmap, fixed,
+                    weights_user, intr, stnd, penalty_type,
+                    cmult, quantiles, num_penalty, penalty_ratio,
+                    penalty_user, penalty_user_ext, lower_cl,
+                    upper_cl, family, user_loss, test_idx,
+                    thresh, maxit, ne, nx
+                );
         }
     } else {
         Rcpp::XPtr<BigMatrix> xptr(x);
         MapMat xmap((const double *)xptr->matrix(), xptr->nrow(), xptr->ncol());
         if (is_sparse_ext) {
-            return fitModelCV<MapMat, MapSpMat>(xmap,
-                                                y,
-                                                Rcpp::as<MapSpMat>(ext),
-                                                fixed,
-                                                weights_user,
-                                                intr,
-                                                stnd,
-                                                penalty_type,
-                                                cmult,
-                                                quantiles,
-                                                num_penalty,
-                                                penalty_ratio,
-                                                penalty_user,
-                                                penalty_user_ext,
-                                                lower_cl,
-                                                upper_cl,
-                                                family,
-                                                user_loss,
-                                                test_idx,
-                                                thresh,
-                                                maxit,
-                                                ne,
-                                                nx);
+            return fitModelCV<MapMat, MapSpMat>(
+                    xmap, y, Rcpp::as<MapSpMat>(ext), fixed,
+                    weights_user, intr, stnd, penalty_type,
+                    cmult, quantiles, num_penalty, penalty_ratio,
+                    penalty_user, penalty_user_ext, lower_cl,
+                    upper_cl, family, user_loss, test_idx,
+                    thresh, maxit, ne, nx
+                );
         }
         else {
             Rcpp::NumericMatrix ext_mat(ext);
             MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
-            return fitModelCV<MapMat, MapMat>(xmap,
-                                              y,
-                                              extmap,
-                                              fixed,
-                                              weights_user,
-                                              intr,
-                                              stnd,
-                                              penalty_type,
-                                              cmult,
-                                              quantiles,
-                                              num_penalty,
-                                              penalty_ratio,
-                                              penalty_user,
-                                              penalty_user_ext,
-                                              lower_cl,
-                                              upper_cl,
-                                              family,
-                                              user_loss,
-                                              test_idx,
-                                              thresh,
-                                              maxit,
-                                              ne,
-                                              nx);
+            return fitModelCV<MapMat, MapMat>(
+                    xmap, y, extmap, fixed, weights_user,
+                    intr, stnd, penalty_type, cmult,
+                    quantiles, num_penalty, penalty_ratio,
+                    penalty_user, penalty_user_ext, lower_cl,
+                    upper_cl, family, user_loss, test_idx,
+                    thresh, maxit, ne, nx
+                );
         }
     }
 }

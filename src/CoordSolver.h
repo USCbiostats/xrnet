@@ -387,7 +387,7 @@ public:
                 }
             }
         }
-        idx += Fixed.cols();
+        idx = idx + Fixed.cols();
         for (int k = 0; k < XZ.cols(); ++k, ++idx) {
             if (!strong_set[idx]) {
                 gradient[idx] = xs[idx] * (XZ.col(k).dot(residuals) - xm[idx] * resid_sum);

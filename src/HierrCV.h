@@ -35,6 +35,7 @@ public:
             const bool & intr_ext_,
             const TZ ext_,
             const double * xmptr,
+            const double * centptr,
             const double * xsptr,
             const int & num_penalty_,
             const std::string & family_,
@@ -52,6 +53,7 @@ public:
             intr_ext_,
             ext_,
             xmptr,
+            centptr,
             xsptr,
             1),
             test_idx(test_idx_.data(), test_idx_.size()),
@@ -72,6 +74,7 @@ public:
             const bool & intr_ext_,
             const TZ ext_,
             const double * xmptr,
+            const double * centptr,
             const double * xsptr,
             const int & num_penalty_,
             const std::string & family_,
@@ -89,6 +92,7 @@ public:
                 intr_ext_,
                 ext_,
                 xmptr,
+                centptr,
                 xsptr,
                 1),
                 test_idx(test_idx_.data(), test_idx_.size()),
@@ -138,9 +142,9 @@ public:
 
         // compute 1st level intercept
         if (this->intr) {
-            this->beta0[0] = b0 - this->xm.head(this->nv_x).dot(this->betas.col(0));
+            this->beta0[0] = b0 - this->cent.head(this->nv_x).dot(this->betas.col(0));
             if (this->nv_fixed > 0) {
-                this->beta0[0] -= this->xm.segment(this->nv_x, this->nv_fixed).dot(this->gammas.col(0));
+                this->beta0[0] -= this->cent.segment(this->nv_x, this->nv_fixed).dot(this->gammas.col(0));
             }
         }
 
@@ -154,13 +158,6 @@ public:
     // returns pointer to appropriate loss function based on family / user_loss
     lossPtr select_loss(const std::string & family, const std::string & user_loss) {
 
-        /* map of string name - function name
-        std::unordered_map<std::string, lossPtr> lossMap = {
-            {"mse", mean_squared_error},
-            {"mae", mean_absolute_error}
-        };
-        */
-
         std::unordered_map<std::string, lossPtr> lossMap;
         lossMap.insert(std::make_pair<std::string, lossPtr>("mse", mean_squared_error));
         lossMap.insert(std::make_pair<std::string, lossPtr>("mae", mean_absolute_error));
@@ -169,20 +166,13 @@ public:
         if (user_loss == "default")
         {
             if (family == "gaussian")
-                loss_func =  mean_squared_error;
-            else if (family == "binomial")
                 loss_func = mean_squared_error;
+            else if (family == "binomial")
+                loss_func = mean_absolute_error;
         }
         else
         {
-            std::vector<std::string> loss_options;
-            if (family == "gaussian") {
-                Rcpp::StringVector loss_options;
-                loss_options.push_back("mse");
-                loss_options.push_back("mae");
-            }
-            auto it = std::find(loss_options.begin(), loss_options.end(), user_loss);
-            loss_func = lossMap[*it];
+            loss_func = lossMap[user_loss];
         }
         return loss_func;
     }

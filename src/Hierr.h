@@ -21,6 +21,7 @@ protected:
     const bool intr_ext;
     TZ ext;
     MapVec xm;
+    MapVec cent;
     MapVec xs;
     VecXd beta0;
     MatXd betas;
@@ -40,6 +41,7 @@ public:
           const bool & intr_ext_,
           const Eigen::Ref<const Eigen::MatrixXd> & ext_,
           const double * xmptr,
+          const double * centptr,
           const double * xsptr,
           const int & num_penalty_) :
     n(n_),
@@ -50,6 +52,7 @@ public:
     intr_ext(intr_ext_),
     ext(ext_.data(), nv_x_, nv_ext_),
     xm(xmptr, nv_total_),
+    cent(centptr, nv_total_),
     xs(xsptr, nv_total_)
     {
         beta0 = Eigen::VectorXd::Zero(num_penalty_);
@@ -70,6 +73,7 @@ public:
           const bool & intr_ext_,
           const Eigen::MappedSparseMatrix<double> & ext_,
           const double * xmptr,
+          const double * centptr,
           const double * xsptr,
           const int & num_penalty_) :
         n(n_),
@@ -80,6 +84,7 @@ public:
         intr_ext(intr_ext_),
         ext(ext_),
         xm(xmptr, nv_total_),
+        cent(centptr, nv_total_),
         xs(xsptr, nv_total_)
     {
         beta0 = Eigen::VectorXd::Zero(num_penalty_);
@@ -136,18 +141,18 @@ public:
         // compute 2nd level intercepts
         if (intr_ext) {
             if (nv_ext > 0) {
-                alpha0[idx] = coef.tail(nv_ext).sum() / nv_ext - xm.tail(nv_ext).dot(coef.tail(nv_ext));
+                alpha0[idx] = betas.col(idx).mean() - xm.tail(nv_ext).dot(coef.tail(nv_ext));
             }
             else {
-                alpha0[idx] = coef.tail(nv_ext).sum() / nv_ext;
+                alpha0[idx] = betas.col(idx).mean();
             }
         }
 
         // compute 1st level intercepts
         if (intr) {
-            beta0[idx] = b0 - xm.head(nv_x).dot(betas.col(idx));
+            beta0[idx] = b0 - cent.head(nv_x).dot(betas.col(idx));
             if (nv_fixed > 0) {
-                beta0[idx] -= xm.segment(nv_x, nv_fixed).dot(gammas.col(idx));
+                beta0[idx] -= cent.segment(nv_x, nv_fixed).dot(gammas.col(idx));
             }
         }
     };
