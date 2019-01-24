@@ -175,6 +175,7 @@ public:
     int getN(){return n;};
     int getNvar(){return nv_total;};
     T getX(){return X;};
+    VecXd getXV(){return xv;};
     double getTolerance(){return tolerance;};
     VecXd getPenalty(){return penalty;};
     VecXd getResiduals(){return residuals;};
@@ -238,7 +239,7 @@ public:
                 if (v > 0.0) {
                     betas[idx] = std::max(lcl[idx],
                                           std::min(ucl[idx],
-                                                   copysign(v, u) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
+                                          copysign(v, u) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
                 }
                 else {
                     betas[idx] = 0.0;
@@ -267,7 +268,7 @@ public:
                 if (v > 0.0) {
                     betas[idx] = std::max(lcl[idx],
                                           std::min(ucl[idx],
-                                                   copysign(v, u) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
+                                          copysign(v, u) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
                 }
                 else {
                     betas[idx] = 0.0;

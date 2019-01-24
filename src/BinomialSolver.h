@@ -137,8 +137,8 @@ public:
             this->xv[idx] = std::pow(this->xs[idx], 2) * (this->X.col(k).cwiseProduct(this->X.col(k)) - 2 * this->xm[idx] * this->X.col(k) + std::pow(this->xm[idx], 2) * Eigen::VectorXd::Ones(this->n)).adjoint() * this->wgts;
         }
         for (int k = 0; k < this->Fixed.cols(); ++k, ++idx) {
-            this->gradient[idx] = this->xs[idx] * (this->X.col(k).dot(this->residuals) - this->xm[idx] * this->residuals.sum());
-            this->xv[idx] = std::pow(this->xs[idx], 2) * (this->X.col(k).cwiseProduct(this->X.col(k)) - 2 * this->xm[idx] * this->X.col(k) + std::pow(this->xm[idx], 2) * Eigen::VectorXd::Ones(this->n)).adjoint() * this->wgts;
+            this->gradient[idx] = this->xs[idx] * (this->Fixed.col(k).dot(this->residuals) - this->xm[idx] * this->residuals.sum());
+            this->xv[idx] = std::pow(this->xs[idx], 2) * (this->Fixed.col(k).cwiseProduct(this->Fixed.col(k)) - 2 * this->xm[idx] * this->Fixed.col(k) + std::pow(this->xm[idx], 2) * Eigen::VectorXd::Ones(this->n)).adjoint() * this->wgts;
         }
         for (int k = 0; k < this->XZ.cols(); ++k, ++idx) {
             this->gradient[idx] = this->xs[idx] * (this->XZ.col(k).dot(this->residuals) - this->xm[idx] * this->residuals.sum());
@@ -180,11 +180,11 @@ public:
             }
         }
         for (int j = 0; j < this->Fixed.cols(); ++j, ++idx) {
-            xbeta += this->xs[idx] * (this->X.col(j) - this->xm[idx] * Eigen::VectorXd::Ones(this->n)) * this->betas[idx];
+            xbeta += this->xs[idx] * (this->Fixed.col(j) - this->xm[idx] * Eigen::VectorXd::Ones(this->n)) * this->betas[idx];
         }
         for (int j = 0; j < this->XZ.cols(); ++j, ++idx) {
             if (this->strong_set[idx]) {
-                xbeta += this->xs[idx] * (this->X.col(j) - this->xm[idx] * Eigen::VectorXd::Ones(this->n)) * this->betas[idx];
+                xbeta += this->xs[idx] * (this->XZ.col(j) - this->xm[idx] * Eigen::VectorXd::Ones(this->n)) * this->betas[idx];
             }
         }
 
@@ -262,8 +262,9 @@ public:
         for (int k = 0; k < this->XZ.cols(); ++k, ++idx) {
             if (!this->strong_set[idx]) {
                 this->gradient[idx] = this->xs[idx] * (this->XZ.col(k).dot(this->residuals) - this->xm[idx] * resid_sum);
-                if (std::abs(this->gradient[idx]) > this->penalty[1] * this->penalty_type[idx] * this->cmult[idx]) {
-                    this->xv[idx] = std::pow(this->xs[idx], 2) * (this->X.col(k).cwiseProduct(this->X.col(k)) - 2 * this->xm[idx] * this->X.col(k) + std::pow(this->xm[idx], 2) * Eigen::VectorXd::Ones(this->n)).adjoint() * this->wgts;
+                if (std::abs(this->gradient[idx]) > this->penalty[0] * this->penalty_type[idx] * this->cmult[idx]) {
+                    this->strong_set[idx] = true;
+                    this->xv[idx] = std::pow(this->xs[idx], 2) * (this->XZ.col(k).cwiseProduct(this->XZ.col(k)) - 2 * this->xm[idx] * this->XZ.col(k) + std::pow(this->xm[idx], 2) * Eigen::VectorXd::Ones(this->n)).adjoint() * this->wgts;
                     ++num_violations;
                 }
             }
