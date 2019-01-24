@@ -146,11 +146,7 @@ Rcpp::List fitModel(const TX & x,
             Rcpp::Named("penalty_ext") = path_ext,
             Rcpp::Named("strong_sum") = strong_sum,
             Rcpp::Named("active_sum") = active_sum,
-            Rcpp::Named("status") = status,
-            Rcpp::Named("xz") = xz,
-            Rcpp::Named("xm") = xm,
-            Rcpp::Named("xv") = xv,
-            Rcpp::Named("xs") = xs
+            Rcpp::Named("status") = status
         );
 }
 
