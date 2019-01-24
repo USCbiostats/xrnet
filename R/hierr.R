@@ -1,6 +1,8 @@
 #' @useDynLib hierr, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 #' @importFrom stats predict
+#' @importFrom bigmemory is.big.matrix
+#' @importFrom methods is
 NULL
 
 #' Fit hierarchical regularized regression model
@@ -14,6 +16,7 @@ NULL
 #'
 #' @param x predictor design matrix of dimension \eqn{n x p}, matrix options include:
 #' \itemize{
+#'    \item matrix
 #'    \item big.matrix
 #'    \item filebacked.big.matrix
 #'    \item sparse matrix (dgCMatrix)
@@ -53,8 +56,6 @@ NULL
 #' \item{nlp}{total number of passes over data}
 #' \item{custom_mult}{vector of variable-specific penalty multipliers for predictors}
 #' \item{custom_mult_ext}{vector of variable-specific penalty multipliers for external data}
-#' @importFrom bigmemory is.big.matrix
-#' @importFrom methods is
 
 #' @export
 hierr <- function(x,
@@ -77,28 +78,34 @@ hierr <- function(x,
     ## Prepare x and y ##
 
     # check type of x matrix
-    if (is.big.matrix(x)) {
+    if (is(x, "matrix")) {
+        if (!(typeof(x) %in% c("integer", "double")))
+            stop("Error: x contains non-numeric values")
+        mattype_x <- 1
+    }
+    else if (is.big.matrix(x)) {
         if (!(bigmemory::describe(x)@description$type %in% c("integer", "double")))
             stop("Error: x contains non-numeric values")
+        mattype_x <- 2
     } else if ("dgCMatrix" %in% class(x)) {
         if (!(typeof(x@x) %in% c("integer", "double")))
             stop("Error: x contains non-numeric values")
+        mattype_x <- 3
     } else {
         stop("Error: x must be a big.matrix, filebacked.big.matrix, or dgCMatrix")
     }
 
     # check type of y
-    y <- as.double(y)
+    y <- as.double(drop(y))
 
     # check dimensions of x and y
     nr_x <- NROW(x)
     nc_x <- NCOL(x)
+    y_len <- NROW(y)
 
     if (nc_x < 2) {
         stop("Error: x must have at least 2 columns")
     }
-
-    y_len <- NROW(y)
 
     if (y_len != nr_x) {
         stop(paste("Error: Length of y (", y_len, ") not equal to the number of rows of x (", nr_x, ")", sep = ""))
@@ -177,6 +184,7 @@ hierr <- function(x,
 
     # fit model
     fit <- fit_model(x = x,
+                     mattype_x = mattype_x,
                      y = y,
                      external = external,
                      fixed = unpen,

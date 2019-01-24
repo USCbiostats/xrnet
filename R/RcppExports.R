@@ -5,7 +5,7 @@ fitModelCVRcpp <- function(x, is_sparse_x, y, ext, is_sparse_ext, fixed, weights
     .Call(`_hierr_fitModelCVRcpp`, x, is_sparse_x, y, ext, is_sparse_ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, user_loss, test_idx, thresh, maxit, ne, nx)
 }
 
-fitModelRcpp <- function(x, is_sparse_x, y, ext, is_sparse_ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, thresh, maxit, ne, nx) {
-    .Call(`_hierr_fitModelRcpp`, x, is_sparse_x, y, ext, is_sparse_ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, thresh, maxit, ne, nx)
+fitModelRcpp <- function(x, mattype_x, y, ext, is_sparse_ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, thresh, maxit, ne, nx) {
+    .Call(`_hierr_fitModelRcpp`, x, mattype_x, y, ext, is_sparse_ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, thresh, maxit, ne, nx)
 }
 

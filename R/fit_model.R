@@ -1,4 +1,5 @@
 fit_model <- function(x,
+                      mattype_x,
                       y,
                       external,
                       fixed,
@@ -23,11 +24,11 @@ fit_model <- function(x,
     is_sparse_x <- is(x, "sparseMatrix")
     is_sparse_ext <- is(external, "sparseMatrix")
 
-    # choose rcpp function based on matrix type of x and z
-    if (is_sparse_x) {
+    # pass matrices or ptrs to matrices depending on types
+    if (mattype_x %in% c(1, 3)) {
         if (is_sparse_ext)
             fit <- fitModelRcpp(x = x,
-                                is_sparse_x,
+                                mattype_x = mattype_x,
                                 y = y,
                                 ext = external,
                                 is_sparse_ext,
@@ -51,7 +52,7 @@ fit_model <- function(x,
                                 nx = pmax)
         else
             fit <- fitModelRcpp(x = x,
-                                is_sparse_x,
+                                mattype_x = mattype_x,
                                 y = y,
                                 ext = external,
                                 is_sparse_ext,
@@ -76,7 +77,7 @@ fit_model <- function(x,
     } else {
         if (is_sparse_ext)
             fit <- fitModelRcpp(x = x@address,
-                                is_sparse_x,
+                                mattype_x = mattype_x,
                                 y = y,
                                 ext = external,
                                 is_sparse_ext,
@@ -100,7 +101,7 @@ fit_model <- function(x,
                                 nx = pmax)
         else
             fit <- fitModelRcpp(x = x@address,
-                                is_sparse_x,
+                                mattype_x = mattype_x,
                                 y = y,
                                 ext = external,
                                 is_sparse_ext,
@@ -123,6 +124,5 @@ fit_model <- function(x,
                                 ne = dfmax,
                                 nx = pmax)
     }
-
     return(fit)
 }

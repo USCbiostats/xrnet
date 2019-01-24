@@ -12,6 +12,7 @@ hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options include:
 \itemize{
+   \item matrix
    \item big.matrix
    \item filebacked.big.matrix
    \item sparse matrix (dgCMatrix)

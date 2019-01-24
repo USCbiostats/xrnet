@@ -156,7 +156,7 @@ Rcpp::List fitModel(const TX & x,
 
 // [[Rcpp::export]]
 Rcpp::List fitModelRcpp(SEXP x,
-                        const bool & is_sparse_x,
+                        const int & mattype_x,
                         const Eigen::Map<Eigen::VectorXd> y,
                         SEXP ext,
                         const bool & is_sparse_ext,
@@ -179,10 +179,13 @@ Rcpp::List fitModelRcpp(SEXP x,
                         const int & ne,
                         const int & nx) {
 
-    if (is_sparse_x) {
+    if (mattype_x == 1) {
+        const bool is_sparse_x = false;
+        Rcpp::NumericMatrix x_mat(x);
+        MapMat xmap((const double *) &x_mat[0], x_mat.rows(), x_mat.cols());
         if (is_sparse_ext)
-            return fitModel<MapSpMat, MapSpMat>(
-                    Rcpp::as<MapSpMat>(x), is_sparse_x, y, Rcpp::as<MapSpMat>(ext),
+            return fitModel<MapMat, MapSpMat>(
+                    xmap, is_sparse_x, y, Rcpp::as<MapSpMat>(ext),
                     fixed, weights_user, intr, stnd, penalty_type, cmult,
                     quantiles, num_penalty, penalty_ratio, penalty_user,
                     penalty_user_ext, lower_cl, upper_cl, family, thresh,
@@ -191,14 +194,15 @@ Rcpp::List fitModelRcpp(SEXP x,
         else {
             Rcpp::NumericMatrix ext_mat(ext);
             MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
-            return fitModel<MapSpMat, MapMat>(
-                    Rcpp::as<MapSpMat>(x), is_sparse_x, y, extmap, fixed, weights_user,
+            return fitModel<MapMat, MapMat>(
+                    xmap, is_sparse_x, y, extmap, fixed, weights_user,
                     intr, stnd, penalty_type, cmult, quantiles, num_penalty,
                     penalty_ratio, penalty_user, penalty_user_ext, lower_cl,
                     upper_cl, family, thresh, maxit, ne, nx
                 );
         }
-    } else {
+    } else if (mattype_x == 2) {
+        const bool is_sparse_x = false;
         Rcpp::XPtr<BigMatrix> xptr(x);
         MapMat xmap((const double *)xptr->matrix(), xptr->nrow(), xptr->ncol());
         if (is_sparse_ext) {
@@ -207,7 +211,7 @@ Rcpp::List fitModelRcpp(SEXP x,
                     intr, stnd, penalty_type, cmult, quantiles, num_penalty,
                     penalty_ratio, penalty_user, penalty_user_ext, lower_cl,
                     upper_cl, family, thresh, maxit, ne, nx
-                );
+            );
         }
         else {
             Rcpp::NumericMatrix ext_mat(ext);
@@ -217,7 +221,27 @@ Rcpp::List fitModelRcpp(SEXP x,
                     penalty_type, cmult, quantiles, num_penalty,
                     penalty_ratio, penalty_user, penalty_user_ext, lower_cl,
                     upper_cl, family, thresh, maxit, ne, nx
-                );
+            );
+        }
+    } else {
+        const bool is_sparse_x = true;
+        if (is_sparse_ext)
+            return fitModel<MapSpMat, MapSpMat>(
+                    Rcpp::as<MapSpMat>(x), is_sparse_x, y, Rcpp::as<MapSpMat>(ext),
+                    fixed, weights_user, intr, stnd, penalty_type, cmult,
+                    quantiles, num_penalty, penalty_ratio, penalty_user,
+                    penalty_user_ext, lower_cl, upper_cl, family, thresh,
+                    maxit, ne, nx
+            );
+        else {
+            Rcpp::NumericMatrix ext_mat(ext);
+            MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
+            return fitModel<MapSpMat, MapMat>(
+                    Rcpp::as<MapSpMat>(x), is_sparse_x, y, extmap, fixed, weights_user,
+                    intr, stnd, penalty_type, cmult, quantiles, num_penalty,
+                    penalty_ratio, penalty_user, penalty_user_ext, lower_cl,
+                    upper_cl, family, thresh, maxit, ne, nx
+            );
         }
     }
 }
