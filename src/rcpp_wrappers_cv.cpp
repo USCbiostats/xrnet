@@ -7,6 +7,7 @@
 
 template <typename TX, typename TZ>
 Eigen::VectorXd fitModelCV(const TX & x,
+                           const bool & is_sparse_x,
                            const Eigen::Ref<const Eigen::VectorXd> & y,
                            const TZ & ext,
                            const Eigen::Ref<const Eigen::MatrixXd> & fixed,
@@ -48,8 +49,9 @@ Eigen::VectorXd fitModelCV(const TX & x,
     weights_user.array() = weights_user.array() / weights_user.sum();
 
     // compute moments of matrices and create XZ (if external data present)
-    compute_moments(x, weights_user, xm, cent, xv, xs, true, stnd[0], 0);
-    compute_moments(fixedmap, weights_user, xm, cent, xv, xs, true, stnd[0], nv_x);
+    const bool center_x = intr[0] && !is_sparse_x;
+    compute_moments(x, weights_user, xm, cent, xv, xs, center_x, stnd[0], 0);
+    compute_moments(fixedmap, weights_user, xm, cent, xv, xs, center_x, stnd[0], nv_x);
     const Eigen::MatrixXd xz = create_XZ(x, ext, xm, cent, xv, xs, intr[1], stnd[1], nv_x + nv_fixed);
 
     // choose solver based on outcome
@@ -132,7 +134,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
 
 // [[Rcpp::export]]
 Eigen::VectorXd fitModelCVRcpp(SEXP x,
-                               const bool & is_sparse_x,
+                               const int mattype_x,
                                const Eigen::Map<Eigen::VectorXd> y,
                                SEXP ext,
                                const bool & is_sparse_ext,
@@ -157,10 +159,13 @@ Eigen::VectorXd fitModelCVRcpp(SEXP x,
                                const int & ne,
                                const int & nx) {
 
-    if (is_sparse_x) {
+    if (mattype_x == 1) {
+        const bool is_sparse_x = false;
+        Rcpp::NumericMatrix x_mat(x);
+        MapMat xmap((const double *) &x_mat[0], x_mat.rows(), x_mat.cols());
         if (is_sparse_ext)
-            return fitModelCV<MapSpMat, MapSpMat>(
-                    Rcpp::as<MapSpMat>(x), y, Rcpp::as<MapSpMat>(ext),
+            return fitModelCV<MapMat, MapSpMat>(
+                    xmap, is_sparse_x, y, Rcpp::as<MapSpMat>(ext),
                     fixed, weights_user, intr, stnd, penalty_type,
                     cmult, quantiles, num_penalty, penalty_ratio,
                     penalty_user, penalty_user_ext, lower_cl,
@@ -170,8 +175,8 @@ Eigen::VectorXd fitModelCVRcpp(SEXP x,
         else {
             Rcpp::NumericMatrix ext_mat(ext);
             MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
-            return fitModelCV<MapSpMat, MapMat>(
-                    Rcpp::as<MapSpMat>(x), y, extmap, fixed,
+            return fitModelCV<MapMat, MapMat>(
+                    xmap, is_sparse_x, y, extmap, fixed,
                     weights_user, intr, stnd, penalty_type,
                     cmult, quantiles, num_penalty, penalty_ratio,
                     penalty_user, penalty_user_ext, lower_cl,
@@ -179,12 +184,13 @@ Eigen::VectorXd fitModelCVRcpp(SEXP x,
                     thresh, maxit, ne, nx
                 );
         }
-    } else {
+    } else if (mattype_x == 2) {
+        const bool is_sparse_x = false;
         Rcpp::XPtr<BigMatrix> xptr(x);
         MapMat xmap((const double *)xptr->matrix(), xptr->nrow(), xptr->ncol());
         if (is_sparse_ext) {
             return fitModelCV<MapMat, MapSpMat>(
-                    xmap, y, Rcpp::as<MapSpMat>(ext), fixed,
+                    xmap, is_sparse_x, y, Rcpp::as<MapSpMat>(ext), fixed,
                     weights_user, intr, stnd, penalty_type,
                     cmult, quantiles, num_penalty, penalty_ratio,
                     penalty_user, penalty_user_ext, lower_cl,
@@ -196,13 +202,37 @@ Eigen::VectorXd fitModelCVRcpp(SEXP x,
             Rcpp::NumericMatrix ext_mat(ext);
             MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
             return fitModelCV<MapMat, MapMat>(
-                    xmap, y, extmap, fixed, weights_user,
+                    xmap, is_sparse_x, y, extmap, fixed, weights_user,
                     intr, stnd, penalty_type, cmult,
                     quantiles, num_penalty, penalty_ratio,
                     penalty_user, penalty_user_ext, lower_cl,
                     upper_cl, family, user_loss, test_idx,
                     thresh, maxit, ne, nx
                 );
+        }
+    } else {
+        const bool is_sparse_x = true;
+        if (is_sparse_ext) {
+            return fitModelCV<MapSpMat, MapSpMat>(
+                    Rcpp::as<MapSpMat>(x), is_sparse_x, y, Rcpp::as<MapSpMat>(ext), fixed,
+                    weights_user, intr, stnd, penalty_type,
+                    cmult, quantiles, num_penalty, penalty_ratio,
+                    penalty_user, penalty_user_ext, lower_cl,
+                    upper_cl, family, user_loss, test_idx,
+                    thresh, maxit, ne, nx
+            );
+        }
+        else {
+            Rcpp::NumericMatrix ext_mat(ext);
+            MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
+            return fitModelCV<MapSpMat, MapMat>(
+                    Rcpp::as<MapSpMat>(x), is_sparse_x, y, extmap,
+                    fixed, weights_user, intr, stnd, penalty_type, cmult,
+                    quantiles, num_penalty, penalty_ratio,
+                    penalty_user, penalty_user_ext, lower_cl,
+                    upper_cl, family, user_loss, test_idx,
+                    thresh, maxit, ne, nx
+            );
         }
     }
 }

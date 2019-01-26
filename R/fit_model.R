@@ -21,10 +21,9 @@ fit_model <- function(x,
                       dfmax,
                       pmax) {
 
-    is_sparse_x <- is(x, "sparseMatrix")
     is_sparse_ext <- is(external, "sparseMatrix")
 
-    # pass matrices or ptrs to matrices depending on types
+    # pass matrices or ptrs to matrices depending on type
     if (mattype_x %in% c(1, 3)) {
         if (is_sparse_ext)
             fit <- fitModelRcpp(x = x,

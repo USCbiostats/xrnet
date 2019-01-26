@@ -1,5 +1,8 @@
 #' k-fold cross-validation for hierarchical regularized regression
 #'
+#' @importFrom foreach foreach
+#' @importFrom foreach %dopar%
+#'
 #' @description k-fold cross-validation for hierarchical regularized regression \code{\link{hierr}}
 #'
 #' @param x predictor design matrix of dimension \eqn{n x p}
@@ -12,8 +15,8 @@
 #' @param loss loss function for cross-validation. Options include:
 #' \itemize{
 #'    \item mse (Mean Squared Error)
-#'    \item deviance
 #'    \item mae (Mean Absolute Error)
+#'    \item auc (Area under the curve)
 #' }
 #' @param nfolds number of folds for cross-validation. Default is 5.
 #' @param foldid (optional) vector that identifies user-specified fold for each observation. If NULL, folds are automatically generated.
@@ -21,22 +24,20 @@
 #' @param ... list of additional arguments to pass to function \code{\link{hierr}}.
 
 #' @export
-#' @importFrom foreach foreach
-#' @importFrom foreach %dopar%
-cvhierr <- function(x,
-                    y,
-                    external = NULL,
-                    unpen = NULL,
-                    family = c("gaussian", "binomial"),
-                    penalty = definePenalty(),
-                    weights = NULL,
-                    standardize = c(TRUE, TRUE),
-                    intercept = c(TRUE, FALSE),
-                    loss = c("mse", "mae", "deviance"),
-                    nfolds = 5,
-                    foldid = NULL,
-                    parallel = FALSE,
-                    control = list())
+cv_hierr <- function(x,
+                     y,
+                     external = NULL,
+                     unpen = NULL,
+                     family = c("gaussian", "binomial"),
+                     penalty = definePenalty(),
+                     weights = NULL,
+                     standardize = c(TRUE, TRUE),
+                     intercept = c(TRUE, FALSE),
+                     loss = c("mse", "mae", "auc"),
+                     nfolds = 5,
+                     foldid = NULL,
+                     parallel = FALSE,
+                     control = list())
 {
 
     # Set measure used to assess model prediction performance
@@ -48,6 +49,27 @@ cvhierr <- function(x,
 
     # Check family argument
     family <- match.arg(family)
+
+    # check type of x matrix
+    if (is(x, "matrix")) {
+        if (!(typeof(x) %in% c("integer", "double")))
+            stop("Error: x contains non-numeric values")
+        mattype_x <- 1
+    }
+    else if (is.big.matrix(x)) {
+        if (!(bigmemory::describe(x)@description$type %in% c("integer", "double")))
+            stop("Error: x contains non-numeric values")
+        mattype_x <- 2
+    } else if ("dgCMatrix" %in% class(x)) {
+        if (!(typeof(x@x) %in% c("integer", "double")))
+            stop("Error: x contains non-numeric values")
+        mattype_x <- 3
+    } else {
+        stop("Error: x must be a big.matrix, filebacked.big.matrix, or dgCMatrix")
+    }
+
+    # check y type
+    y <- drop(as.numeric(y))
 
     # Get arguments to cvhierr() function and filter for calls to fitting procedure
     hierr_call <- match.call(expand.dots = TRUE)
@@ -79,11 +101,11 @@ cvhierr <- function(x,
 
     # Check whether fixed and external are empty
     if (is.null(unpen)) {
-        unpen <- vector("numeric", length = 0)
+        unpen <- matrix(vector("numeric", 0), 0, 0)
         nc_unpen <- as.integer(0)
     }
     if (is.null(external)) {
-        external <- vector("numeric", length = 0)
+        external <- matrix(vector("numeric", 0), 0, 0)
         nc_ext <- as.integer(0)
     }
 
@@ -132,6 +154,7 @@ cvhierr <- function(x,
 
                 # Get errors for k-th fold
                 error_vec <- fit_model_cv(x = xref,
+                                          mattype_x = mattype_x,
                                           y = y,
                                           external = external,
                                           fixed = unpen,
@@ -163,6 +186,7 @@ cvhierr <- function(x,
 
                 # Get errors for k-th fold
                 error_vec <- fit_model_cv(x = x,
+                                          mattype_x = mattype_x,
                                           y = y,
                                           external = external,
                                           fixed = unpen,
@@ -197,6 +221,7 @@ cvhierr <- function(x,
 
             # Fit model on k-th training fold
             errormat[, k] <- fit_model_cv(x = x,
+                                          mattype_x = mattype_x,
                                           y = y,
                                           external = external,
                                           fixed = unpen,
@@ -231,23 +256,27 @@ cvhierr <- function(x,
         colnames(cv_mean) <- rev(sort(hierr_object$penalty_ext))
         colnames(cv_sd) <- rev(sort(hierr_object$penalty_ext))
     }
-
-    min_error <- min(cv_mean, na.rm = TRUE)
-    optIndex <- which(min_error == cv_mean, arr.ind = TRUE)
+    if (loss %in% c("mse", "mae")) {
+        opt_loss <- min(cv_mean, na.rm = TRUE)
+        optIndex <- which(opt_loss == cv_mean, arr.ind = TRUE)
+    } else {
+        opt_loss <- max(cv_mean, na.rm = TRUE)
+        optIndex <- which(opt_loss == cv_mean, arr.ind = TRUE)
+    }
 
     if (is.null(dim(optIndex))) {
-        minl1 <- hierr_object$penalty[optIndex[1]]
-        minl2 <- hierr_object$penalty_ext[optIndex[2]]
+        optl1 <- hierr_object$penalty[optIndex[1]]
+        optl2 <- hierr_object$penalty_ext[optIndex[2]]
     } else {
-        minl1 <- hierr_object$penalty[optIndex[1, 1]]
-        minl2 <- hierr_object$penalty_ext[optIndex[1, 2]]
+        optl1 <- hierr_object$penalty[optIndex[1, 1]]
+        optl2 <- hierr_object$penalty_ext[optIndex[1, 2]]
     }
 
     cvfit <- list(cv_mean = cv_mean,
                   cv_sd = cv_sd,
-                  min_error = min_error,
-                  minl1 = minl1,
-                  minl2 = minl2,
+                  opt_loss = opt_loss,
+                  optl1 = optl1,
+                  optl2 = optl2,
                   penalty = hierr_object$penalty,
                   penalty_ext = hierr_object$penalty_ext,
                   hierr_fit = hierr_object,

@@ -8,7 +8,7 @@
   pext = NULL, type = c("response", "coefficients"), ...)
 }
 \arguments{
-\item{object}{A \code{\link{cvhierr}} object}
+\item{object}{A \code{\link{cv_hierr}} object}
 
 \item{newdata}{matrix with new X values}
 

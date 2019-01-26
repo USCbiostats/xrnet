@@ -3,7 +3,7 @@
 S3method(plot,cvhierr)
 S3method(predict,cvhierr)
 S3method(predict,hierr)
-export(cvhierr)
+export(cv_hierr)
 export(definePenalty)
 export(hierr)
 export(hierr.control)

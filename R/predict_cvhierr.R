@@ -2,7 +2,7 @@
 #'
 #' @description Predict coefficients or response in new data
 #'
-#' @param object A \code{\link{cvhierr}} object
+#' @param object A \code{\link{cv_hierr}} object
 #' @param newdata matrix with new X values
 #' @param p vector of penalty values to apply to predictor variables
 #' @param pext vector of penalty values to apply to external data variables
