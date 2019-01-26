@@ -2,6 +2,8 @@
 #'
 #' @importFrom foreach foreach
 #' @importFrom foreach %dopar%
+#' @importFrom bigmemory describe
+#' @importFrom bigmemory attach.big.matrix
 #'
 #' @description k-fold cross-validation for hierarchical regularized regression \code{\link{hierr}}
 #'
@@ -12,6 +14,8 @@
 #' @param family error distribution for outcome variable
 #' @param penalty specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
+#' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
+#' @param intercept indicates whether an intercept term is included for x and/or external. Default is c(TRUE, FALSE).
 #' @param loss loss function for cross-validation. Options include:
 #' \itemize{
 #'    \item mse (Mean Squared Error)
@@ -21,6 +25,7 @@
 #' @param nfolds number of folds for cross-validation. Default is 5.
 #' @param foldid (optional) vector that identifies user-specified fold for each observation. If NULL, folds are automatically generated.
 #' @param parallel use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.
+#' @param control specifies hierr control object. See \code{\link{hierr.control}} for more details.
 #' @param ... list of additional arguments to pass to function \code{\link{hierr}}.
 
 #' @export

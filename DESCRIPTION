@@ -23,6 +23,7 @@ Imports:
     RcppEigen (>= 0.3.3.4.0),
     foreach,
     Matrix, 
-    bigmemory
+    bigmemory,
+    methods
 Depends:
     R (>= 3.0)

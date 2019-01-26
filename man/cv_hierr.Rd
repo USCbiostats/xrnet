@@ -7,7 +7,7 @@
 cv_hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
   "binomial"), penalty = definePenalty(), weights = NULL,
   standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
-  loss = c("mse", "mae", "deviance"), nfolds = 5, foldid = NULL,
+  loss = c("mse", "mae", "auc"), nfolds = 5, foldid = NULL,
   parallel = FALSE, control = list())
 }
 \arguments{
@@ -25,6 +25,10 @@ cv_hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
 
 \item{weights}{optional vector of observation-specific weights. Default is 1 for all observations.}
 
+\item{standardize}{indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).}
+
+\item{intercept}{indicates whether an intercept term is included for x and/or external. Default is c(TRUE, FALSE).}
+
 \item{loss}{loss function for cross-validation. Options include:
 \itemize{
    \item mse (Mean Squared Error)
@@ -37,6 +41,8 @@ cv_hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
 \item{foldid}{(optional) vector that identifies user-specified fold for each observation. If NULL, folds are automatically generated.}
 
 \item{parallel}{use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.}
+
+\item{control}{specifies hierr control object. See \code{\link{hierr.control}} for more details.}
 
 \item{...}{list of additional arguments to pass to function \code{\link{hierr}}.}
 }

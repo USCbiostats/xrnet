@@ -351,7 +351,7 @@ initialize_penalty <- function(penalty_obj,
 
         if (is.null(penalty_obj$custom_multiplier_ext)) {
             penalty_obj$custom_multiplier_ext <- rep(1.0, nc_ext)
-        } else if (length(penalty_obj$custom_multiplier_ext) != nc_ext && !is.null(external)) {
+        } else if (length(penalty_obj$custom_multiplier_ext) != nc_ext && nc_ext > 0) {
             stop("Error: Length of custom_multiplier_ext (", length(penalty_obj$custom_multiplier_ext),") not equal to number of columns in external (", nc_ext, ")")
         }
     } else {
