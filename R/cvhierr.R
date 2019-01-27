@@ -7,11 +7,25 @@
 #'
 #' @description k-fold cross-validation for hierarchical regularized regression \code{\link{hierr}}
 #'
-#' @param x predictor design matrix of dimension \eqn{n x p}
+#' @param x predictor design matrix of dimension \eqn{n x p}, matrix options include:
+#' \itemize{
+#'    \item matrix
+#'    \item big.matrix
+#'    \item filebacked.big.matrix
+#'    \item sparse matrix (dgCMatrix)
+#' }
 #' @param y outcome vector of length \eqn{n}
-#' @param external (optional) external data design matrix of dimension \eqn{p x q}
+#' @param external (optional) external data design matrix of dimension \eqn{p x q}, matrix options include:
+#' \itemize{
+#'     \item matrix
+#'     \item sparse matrix (dgCMatrix)
+#' }
 #' @param unpen (optional) unpenalized predictor design matrix
-#' @param family error distribution for outcome variable
+#' @param family error distribution for outcome variable, options include:
+#' \itemize{
+#'     \item gaussian
+#'     \item binomial
+#' }
 #' @param penalty specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
 #' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
@@ -26,7 +40,14 @@
 #' @param foldid (optional) vector that identifies user-specified fold for each observation. If NULL, folds are automatically generated.
 #' @param parallel use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.
 #' @param control specifies hierr control object. See \code{\link{hierr.control}} for more details.
-#' @param ... list of additional arguments to pass to function \code{\link{hierr}}.
+#' @return A list of class \code{cvhierr} with components
+#' \item{cv_mean}{mean cross-validated error for each penalty combination. Object returned is
+#' a vector if there is no external data (external = NULL) and matrix if there is external data.}
+#' \item{cv_sd}{estimated standard deviation for cross-validated errors}
+#' \item{opt_loss}{the value for the optimal cross-validated error}
+#' \item{opt_penalty}{first-level penalty value that achieves the optimal loss}
+#' \item{opt_penalty_ext}{second-level penalty value that achieves the optimal loss (if external data is present)}
+#' \item{fit_train}{fitted hierr object for all training data, see \code{\link{hierr}} for details of object}
 
 #' @export
 cv_hierr <- function(x,
@@ -45,15 +66,25 @@ cv_hierr <- function(x,
                      control = list())
 {
 
-    # Set measure used to assess model prediction performance
-    if (missing(loss)) {
-        loss <- "default"
-    } else {
-        loss <- match.arg(loss)
-    }
-
     # Check family argument
     family <- match.arg(family)
+
+    # Set measure used to assess model prediction performance
+    if (missing(loss)) {
+        if (family == "gaussian")
+            loss <- "mse"
+        else if (family == "binomial")
+            loss <- "auc"
+    } else {
+        loss <- match.arg(loss)
+        loss_available <- TRUE
+        if (family == "gaussian" && !(loss %in% c("mse", "mae")))
+            loss_available <- FALSE
+        else if(family == "binomial" && !(loss %in% c("auc")))
+            loss_available <- FALSE
+        if (!loss_available)
+            stop(paste0("Error: loss = '", loss, "' is not available for family = '", family,"'"))
+    }
 
     # check type of x matrix
     if (is(x, "matrix")) {
@@ -108,16 +139,21 @@ cv_hierr <- function(x,
     if (is.null(unpen)) {
         unpen <- matrix(vector("numeric", 0), 0, 0)
         nc_unpen <- as.integer(0)
+    } else {
+        nc_unpen <- NCOL(unpen)
     }
     if (is.null(external)) {
         external <- matrix(vector("numeric", 0), 0, 0)
         nc_ext <- as.integer(0)
+    } else {
+        nc_ext <- NCOL(external)
     }
 
     # Prepare penalty and control object for folds
     penalty_fold <- penalty
     penalty_fold$user_penalty <- hierr_object$penalty
     penalty_fold$user_penalty_ext <- hierr_object$penalty_ext
+
     penalty_fold <- initialize_penalty(penalty_fold,
                                        NROW(x),
                                        NCOL(x),
@@ -200,7 +236,7 @@ cv_hierr <- function(x,
                                           standardize = standardize,
                                           penalty_type = penalty_fold$ptype,
                                           cmult = penalty_fold$cmult,
-                                          quantiles = c(penalty_fold$tau, penalty_fold$tau_ext),
+                                          quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
                                           num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
                                           penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
                                           user_penalty = penalty_fold$user_penalty,
@@ -235,7 +271,7 @@ cv_hierr <- function(x,
                                           standardize = standardize,
                                           penalty_type = penalty_fold$ptype,
                                           cmult = penalty_fold$cmult,
-                                          quantiles = c(penalty_fold$tau, penalty_fold$tau_ext),
+                                          quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
                                           num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
                                           penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
                                           user_penalty = penalty_fold$user_penalty,
@@ -270,21 +306,19 @@ cv_hierr <- function(x,
     }
 
     if (is.null(dim(optIndex))) {
-        optl1 <- hierr_object$penalty[optIndex[1]]
-        optl2 <- hierr_object$penalty_ext[optIndex[2]]
+        opt_penalty <- hierr_object$penalty[optIndex[1]]
+        opt_penalty_ext <- hierr_object$penalty_ext[optIndex[2]]
     } else {
-        optl1 <- hierr_object$penalty[optIndex[1, 1]]
-        optl2 <- hierr_object$penalty_ext[optIndex[1, 2]]
+        opt_penalty <- hierr_object$penalty[optIndex[1, 1]]
+        opt_penalty_ext <- hierr_object$penalty_ext[optIndex[1, 2]]
     }
 
     cvfit <- list(cv_mean = cv_mean,
                   cv_sd = cv_sd,
                   opt_loss = opt_loss,
-                  optl1 = optl1,
-                  optl2 = optl2,
-                  penalty = hierr_object$penalty,
-                  penalty_ext = hierr_object$penalty_ext,
-                  hierr_fit = hierr_object,
+                  opt_penalty = opt_penalty,
+                  opt_penalty_ext = opt_penalty_ext,
+                  fit_train = hierr_object,
                   call = hierr_object$call)
 
     class(cvfit) <- c("cvhierr")

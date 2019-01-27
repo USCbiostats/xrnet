@@ -11,8 +11,8 @@ plot.cvhierr <- function(x, ...) {
     cvgrid <- x$cv_mean
     cvgrid <- cvgrid[rev(seq_len(nrow(cvgrid))), ]
     cvgrid <- cvgrid[ , rev(seq_len(ncol(cvgrid)))]
-    minx <- log(x$minl2)
-    miny <- log(x$minl1)
+    minx <- log(x$opt_penalty_ext)
+    miny <- log(x$opt_penalty)
 
     contour_colors <- c("#014636", "#016C59", "#02818A", "#3690C0",
                         "#67A9CF", "#A6BDDB", "#D0D1E6", "#ECE2F0", "#FFF7FB")

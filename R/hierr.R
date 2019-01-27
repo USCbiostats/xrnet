@@ -46,16 +46,8 @@ NULL
 #' \item{alphas}{3-dimensional array of second-level external data coefficients indexed by penalty values}
 #' \item{penalty}{vector of first-level penalty values}
 #' \item{penalty_ext}{vector of second-level penalty values}
-#' \item{penalty_type}{type of penalty applied to first-level predictors}
-#' \item{quantile}{quantile for penalty on first-level predictors}
-#' \item{penalty_type_ext}{type of penalty applied to second-level external data}
-#' \item{quantile_ext}{quantile for penalty on second-level external data}
-#' \item{penalty_ratio}{ratio between minimum and maximum penalty (predictors)}
-#' \item{penalty_ratio_ext}{ratio between minimum and maximum penalty (external data)}
-#' \item{deviance}{fraction of deviance explaned, \eqn{2 x (loglike(saturated model) - loglike(model))}}
-#' \item{nlp}{total number of passes over data}
-#' \item{custom_mult}{vector of variable-specific penalty multipliers for predictors}
-#' \item{custom_mult_ext}{vector of variable-specific penalty multipliers for external data}
+#' \item{num_passes}{total number of passes over the data in the coordinate descent algorithm}
+#' \item{status}{0 = success, other values indicate issues fitting model}
 
 #' @export
 hierr <- function(x,
@@ -193,7 +185,7 @@ hierr <- function(x,
                      standardize = standardize,
                      penalty_type = penalty$ptype,
                      cmult = penalty$cmult,
-                     quantiles = c(penalty$tau, penalty$tau_ext),
+                     quantiles = c(penalty$quantile, penalty$quantile_ext),
                      num_penalty = c(penalty$num_penalty, penalty$num_penalty_ext),
                      penalty_ratio = c(penalty$penalty_ratio, penalty$penalty_ratio_ext),
                      user_penalty = penalty$user_penalty,
@@ -307,16 +299,19 @@ initialize_penalty <- function(penalty_obj,
         penalty_obj$penalty_type <- rep(penalty_obj$penalty_type, nc_x)
     }
 
-    if (penalty_obj$user_penalty == 0 && is.null(penalty_obj$penalty_ratio)) {
-        if (nr_x > nc_x) {
-            penalty_obj$penalty_ratio <- 1e-04
+    if (is.null(penalty_obj$penalty_ratio)) {
+        if (penalty_obj$user_penalty[1] == 0) {
+            if (nr_x > nc_x) {
+                penalty_obj$penalty_ratio <- 1e-04
+            } else {
+                penalty_obj$penalty_ratio <- 0.01
+            }
+            if (penalty_obj$num_penalty < 3) {
+                penalty_obj$num_penalty <- 3
+                stop("Warning: num_penalty must be at least 3 when automatically computing penalty path")
+            }
         } else {
-            penalty_obj$penalty_ratio <- 0.01
-        }
-
-        if (penalty_obj$num_penalty < 3) {
-            penalty_obj$num_penalty <- 3
-            stop("Warning: num_penalty must be at least 3 when automatically computing penalty path")
+            penalty_obj$penalty_ratio <- 0.0
         }
     }
 
@@ -336,16 +331,19 @@ initialize_penalty <- function(penalty_obj,
             penalty_obj$penalty_type_ext <- rep(penalty_obj$penalty_type_ext, nc_ext)
         }
 
-        if (penalty_obj$user_penalty_ext == 0 && is.null(penalty_obj$penalty_ratio_ext)) {
-            if (nr_ext > nc_ext) {
-                penalty_obj$penalty_ratio_ext <- 1e-04
+        if (is.null(penalty_obj$penalty_ratio_ext)) {
+            if (penalty_obj$user_penalty_ext[1] == 0) {
+                if (nr_ext > nc_ext) {
+                    penalty_obj$penalty_ratio_ext <- 1e-04
+                } else {
+                    penalty_obj$penalty_ratio_ext <- 0.01
+                }
+                if (penalty_obj$num_penalty_ext < 3) {
+                    penalty_obj$num_penalty_ext <- 3
+                    stop("Warning: num_penalty_ext must be at least 3 when automatically computing penalty path")
+                }
             } else {
-                penalty_obj$penalty_ratio_ext <- 0.01
-            }
-
-            if (penalty_obj$num_penalty_ext < 3) {
-                penalty_obj$num_penalty_ext <- 3
-                stop("Warning: num_penalty_ext must be at least 3 when automatically computing penalty path")
+                penalty_obj$penalty_ratio_ext <- 0.0
             }
         }
 

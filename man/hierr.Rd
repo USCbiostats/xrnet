@@ -53,16 +53,8 @@ A list of class \code{hierr} with components
 \item{alphas}{3-dimensional array of second-level external data coefficients indexed by penalty values}
 \item{penalty}{vector of first-level penalty values}
 \item{penalty_ext}{vector of second-level penalty values}
-\item{penalty_type}{type of penalty applied to first-level predictors}
-\item{quantile}{quantile for penalty on first-level predictors}
-\item{penalty_type_ext}{type of penalty applied to second-level external data}
-\item{quantile_ext}{quantile for penalty on second-level external data}
-\item{penalty_ratio}{ratio between minimum and maximum penalty (predictors)}
-\item{penalty_ratio_ext}{ratio between minimum and maximum penalty (external data)}
-\item{deviance}{fraction of deviance explaned, \eqn{2 x (loglike(saturated model) - loglike(model))}}
-\item{nlp}{total number of passes over data}
-\item{custom_mult}{vector of variable-specific penalty multipliers for predictors}
-\item{custom_mult_ext}{vector of variable-specific penalty multipliers for external data}
+\item{num_passes}{total number of passes over the data in the coordinate descent algorithm}
+\item{status}{0 = success, other values indicate issues fitting model}
 }
 \description{
 Fits hierarchical regularized regression model that enables the incorporation of external data

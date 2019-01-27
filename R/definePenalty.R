@@ -105,9 +105,9 @@ definePenalty <- function(penalty_type = 0,
     }
 
     penalty_obj <- list(penalty_type = penalty_type,
-                        tau = quantile,
+                        quantile = quantile,
                         penalty_type_ext = penalty_type_ext,
-                        tau_ext = quantile_ext,
+                        quantile_ext = quantile_ext,
                         num_penalty = num_penalty,
                         num_penalty_ext = num_penalty_ext,
                         penalty_ratio = penalty_ratio,

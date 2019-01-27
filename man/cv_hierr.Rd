@@ -11,15 +11,29 @@ cv_hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
   parallel = FALSE, control = list())
 }
 \arguments{
-\item{x}{predictor design matrix of dimension \eqn{n x p}}
+\item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options include:
+\itemize{
+   \item matrix
+   \item big.matrix
+   \item filebacked.big.matrix
+   \item sparse matrix (dgCMatrix)
+}}
 
 \item{y}{outcome vector of length \eqn{n}}
 
-\item{external}{(optional) external data design matrix of dimension \eqn{p x q}}
+\item{external}{(optional) external data design matrix of dimension \eqn{p x q}, matrix options include:
+\itemize{
+    \item matrix
+    \item sparse matrix (dgCMatrix)
+}}
 
 \item{unpen}{(optional) unpenalized predictor design matrix}
 
-\item{family}{error distribution for outcome variable}
+\item{family}{error distribution for outcome variable, options include:
+\itemize{
+    \item gaussian
+    \item binomial
+}}
 
 \item{penalty}{specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.}
 
@@ -43,8 +57,16 @@ cv_hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
 \item{parallel}{use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.}
 
 \item{control}{specifies hierr control object. See \code{\link{hierr.control}} for more details.}
-
-\item{...}{list of additional arguments to pass to function \code{\link{hierr}}.}
+}
+\value{
+A list of class \code{cvhierr} with components
+\item{cv_mean}{mean cross-validated error for each penalty combination. Object returned is
+a vector if there is no external data (external = NULL) and matrix if there is external data.}
+\item{cv_sd}{estimated standard deviation for cross-validated errors}
+\item{opt_loss}{the value for the optimal cross-validated error}
+\item{opt_penalty}{first-level penalty value that achieves the optimal loss}
+\item{opt_penalty_ext}{second-level penalty value that achieves the optimal loss (if external data is present)}
+\item{fit_train}{fitted hierr object for all training data, see \code{\link{hierr}} for details of object}
 }
 \description{
 k-fold cross-validation for hierarchical regularized regression \code{\link{hierr}}

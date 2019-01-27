@@ -54,6 +54,7 @@ Eigen::MatrixXd create_XZ(const matA & X,
                           const matB & Z,
                           Eigen::Ref<Eigen::VectorXd> xm,
                           const Eigen::Ref<const Eigen::VectorXd> & cent,
+                          const Eigen::Ref<const Eigen::VectorXd> & wgts_user,
                           Eigen::Ref<Eigen::VectorXd> xv,
                           Eigen::Ref<Eigen::VectorXd> xs,
                           const bool & intr_ext,
@@ -76,8 +77,10 @@ Eigen::MatrixXd create_XZ(const matA & X,
 
     // add intercept
     if (intr_ext) {
-        XZ.col(col_xz) = (X * xs_x).array() - xs_x.cwiseProduct(cent_x).sum();
-        xv[idx] = (XZ.col(col_xz).array() - XZ.col(col_xz).mean()).square().sum() / XZ.col(col_xz).size();
+        auto xzj = XZ.col(col_xz);
+        xzj = (X * xs_x).array() - xs_x.cwiseProduct(cent_x).sum();
+        double xzj_mean = xzj.cwiseProduct(wgts_user).sum();
+        xv[idx] = xzj.cwiseProduct(xzj.cwiseProduct(wgts_user)).sum() - xzj_mean * xzj_mean;
         ++idx;
         ++col_xz;
     }
@@ -91,7 +94,8 @@ Eigen::MatrixXd create_XZ(const matA & X,
             xs[idx] = 1 / std::sqrt(zj.cwiseProduct(zj / zj.size()).sum() - xm[idx] * xm[idx]);
         }
         xzj = xs[idx] * ((X * zj.cwiseProduct(xs_x)) - xs_x.cwiseProduct(cent_x.cwiseProduct(zj)).sum() * Eigen::VectorXd::Ones(X.rows()));
-        xv[idx] = (xzj.array() - xzj.mean()).square().sum() / xzj.size();
+        double xzj_mean = xzj.cwiseProduct(wgts_user).sum();
+        xv[idx] = xzj.cwiseProduct(xzj.cwiseProduct(wgts_user)).sum() - xzj_mean * xzj_mean;
         xzj /= xs[idx];
 
     }

@@ -52,7 +52,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
     const bool center_x = intr[0] && !is_sparse_x;
     compute_moments(x, weights_user, xm, cent, xv, xs, center_x, stnd[0], 0);
     compute_moments(fixedmap, weights_user, xm, cent, xv, xs, center_x, stnd[0], nv_x);
-    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, cent, xv, xs, intr[1], stnd[1], nv_x + nv_fixed);
+    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, cent, weights_user, xv, xs, intr[1], stnd[1], nv_x + nv_fixed);
 
     // choose solver based on outcome
     std::unique_ptr<CoordSolver<TX> > solver;

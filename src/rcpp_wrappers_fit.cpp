@@ -50,7 +50,7 @@ Rcpp::List fitModel(const TX & x,
     const bool center_x = intr[0] && !is_sparse_x;
     compute_moments(x, weights_user, xm, cent, xv, xs, center_x, stnd[0], 0);
     compute_moments(fixedmap, weights_user, xm, cent, xv, xs, center_x, stnd[0], nv_x);
-    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, cent, xv, xs, intr[1], stnd[1], nv_x + nv_fixed);
+    const Eigen::MatrixXd xz = create_XZ(x, ext, xm, cent, weights_user, xv, xs, intr[1], stnd[1], nv_x + nv_fixed);
 
     // choose solver based on outcome
     std::unique_ptr<CoordSolver<TX> > solver;
@@ -134,6 +134,14 @@ Rcpp::List fitModel(const TX & x,
         }
     }
 
+    // fix first penalties (when path automatically computed)
+    if (penalty_user[0] == 0.0) {
+        path[0] = exp(2 * log(path[1]) - log(path[2]));
+    }
+    if (penalty_user_ext[0] == 0.0 && nv_ext > 0) {
+        path_ext[0] = exp(2 * log(path_ext[1]) - log(path_ext[2]));
+    }
+
     int status = 0;
 
     // collect results in list and return to R
@@ -145,9 +153,7 @@ Rcpp::List fitModel(const TX & x,
             Rcpp::Named("penalty") = path,
             Rcpp::Named("penalty_ext") = path_ext,
             Rcpp::Named("num_passes") = solver->getNumPasses(),
-            Rcpp::Named("status") = status,
-            Rcpp::Named("xm") = xm,
-            Rcpp::Named("cent") = cent
+            Rcpp::Named("status") = status
         );
 }
 
