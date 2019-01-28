@@ -25,7 +25,6 @@ r_packages:
 r:
   - release
   - oldrel
-  - devel
 
 os:
   - linux
