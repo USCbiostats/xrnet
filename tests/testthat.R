@@ -1,6 +1,4 @@
 Sys.setenv("R_TESTS" = "")
 library(testthat)
 library(hierr)
-library(Matrix)
-library(bigmemory)
 test_check("hierr")

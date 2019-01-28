@@ -47,7 +47,7 @@ context("compare coefficent estimates to CVX (automatic penalty)")
 #     zscaled[, i] <- (z[, i] - mean_z[i]) / sd_z[i]
 # }
 
-xtest <- bigmemory::as.big.matrix(readRDS(file = "testdata/xtest.rds"))
+xtest <- readRDS(file = "testdata/xtest.rds")
 ytest <- readRDS(file = "testdata/ytest.rds")
 ztest <- readRDS(file = "testdata/ztest.rds")
 alphas_cvx_auto <- readRDS(file = "testdata/alphas_cvx_auto.rds")
