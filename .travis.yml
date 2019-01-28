@@ -17,3 +17,11 @@ r:
 os:
   - linux
   - osx
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.9
+- g++-4.9
