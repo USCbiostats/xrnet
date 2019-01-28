@@ -29,6 +29,9 @@ r:
 
 os:
   - linux
+  - osx
+
+osx_image: xcode8
 
 #after_success:
 #  - Rscript -e 'library(covr); codecov()'
