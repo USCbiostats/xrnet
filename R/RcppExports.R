@@ -9,7 +9,3 @@ fitModelRcpp <- function(x, mattype_x, y, ext, is_sparse_ext, fixed, weights_use
     .Call(`_hierr_fitModelRcpp`, x, mattype_x, y, ext, is_sparse_ext, fixed, weights_user, intr, stnd, penalty_type, cmult, quantiles, num_penalty, penalty_ratio, penalty_user, penalty_user_ext, lower_cl, upper_cl, family, thresh, maxit, ne, nx)
 }
 
-auc_test <- function(actual, pred, idx) {
-    .Call(`_hierr_auc_test`, actual, pred, idx)
-}
-

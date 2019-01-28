@@ -74,24 +74,10 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// auc_test
-double auc_test(const Eigen::Map<Eigen::VectorXd>& actual, const Eigen::Map<Eigen::VectorXd>& pred, const Eigen::Map<Eigen::VectorXi>& idx);
-RcppExport SEXP _hierr_auc_test(SEXP actualSEXP, SEXP predSEXP, SEXP idxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type actual(actualSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type pred(predSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXi>& >::type idx(idxSEXP);
-    rcpp_result_gen = Rcpp::wrap(auc_test(actual, pred, idx));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_hierr_fitModelCVRcpp", (DL_FUNC) &_hierr_fitModelCVRcpp, 25},
     {"_hierr_fitModelRcpp", (DL_FUNC) &_hierr_fitModelRcpp, 23},
-    {"_hierr_auc_test", (DL_FUNC) &_hierr_auc_test, 3},
     {NULL, NULL, 0}
 };
 
