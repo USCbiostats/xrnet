@@ -30,5 +30,5 @@ r:
 os:
   - linux
 
-after_success:
-  - Rscript -e 'library(covr); codecov()'
+#after_success:
+#  - Rscript -e 'library(covr); codecov()'
