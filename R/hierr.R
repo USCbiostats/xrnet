@@ -1,4 +1,5 @@
 #' @useDynLib hierr, .registration = TRUE
+#' @import RcppEigen
 #' @importFrom Rcpp sourceCpp
 #' @importFrom stats predict
 #' @importFrom bigmemory is.big.matrix

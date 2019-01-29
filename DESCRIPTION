@@ -21,6 +21,7 @@ LinkingTo:
     bigmemory
 Imports: 
     Rcpp (>= 0.12.19),
+    RcppEigen,
     foreach,
     bigmemory,
     methods
