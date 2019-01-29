@@ -84,7 +84,7 @@ hierr <- function(x,
             stop("Error: x contains non-numeric values")
         mattype_x <- 3
     } else {
-        stop("Error: x must be a big.matrix, filebacked.big.matrix, or dgCMatrix")
+        stop("Error: x must be a matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
     }
 
     # check type of y
@@ -221,7 +221,7 @@ hierr <- function(x,
             #fit$nzero_alphas <- NULL
             #fit$penalty_type_ext <- NULL
             #fit$quantile_ext <- NULL
-            #fit$penalty_ext <- NULL
+            fit$penalty_ext <- NULL
             #fit$penalty_ratio_ext <- NULL
         }
 

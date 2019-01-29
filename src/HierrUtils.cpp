@@ -1,4 +1,8 @@
 #include "HierrUtils.h"
+#include <bigmemory/MatrixAccessor.hpp>
+
+typedef Eigen::Map<const Eigen::MatrixXd> MapMat;
+typedef Eigen::MappedSparseMatrix<double> MapSpMat;
 
 void compute_penalty(Eigen::Ref<Eigen::VectorXd> path,
                      const Eigen::Ref<const Eigen::VectorXd> & penalty_user,
@@ -28,3 +32,25 @@ void compute_penalty(Eigen::Ref<Eigen::VectorXd> path,
         path = penalty_user;
     }
 }
+
+// [[Rcpp::export]]
+Eigen::MatrixXd computeResponseRcpp(SEXP X,
+                                    const int & mattype_x,
+                                    const Eigen::Map<Eigen::MatrixXd> Fixed,
+                                    const Eigen::Map<Eigen::VectorXd> beta0,
+                                    const Eigen::Map<Eigen::MatrixXd> betas,
+                                    const Eigen::Map<Eigen::MatrixXd> gammas) {
+
+    if (mattype_x == 1) {
+        Rcpp::NumericMatrix x_mat(X);
+        MapMat xmap((const double *) &x_mat[0], x_mat.rows(), x_mat.cols());
+        return computeResponse<MapMat>(xmap, Fixed, beta0, betas, gammas);
+    } else if (mattype_x == 2) {
+        Rcpp::XPtr<BigMatrix> xptr(X);
+        MapMat xmap((const double *)xptr->matrix(), xptr->nrow(), xptr->ncol());
+        return computeResponse<MapMat>(xmap, Fixed, beta0, betas, gammas);
+    } else {
+        return computeResponse<MapSpMat>(Rcpp::as<MapSpMat>(X), Fixed, beta0, betas, gammas);
+    }
+}
+

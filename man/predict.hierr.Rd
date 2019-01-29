@@ -4,19 +4,26 @@
 \alias{predict.hierr}
 \title{Predict function for "hierr" object}
 \usage{
-\method{predict}{hierr}(object, newdata = NULL, p = NULL,
-  pext = NULL, type = c("response", "coefficients"), ...)
+\method{predict}{hierr}(object, newdata = NULL, newdata_fixed = NULL,
+  p = NULL, pext = NULL, type = c("response", "coefficients"),
+  penalty = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{hierr}} object}
 
-\item{newdata}{matrix with new X values}
+\item{newdata}{matrix with new values for penalized variables}
+
+\item{newdata_fixed}{matrix with new values for unpenalized variables}
 
 \item{p}{vector of penalty values to apply to predictor variables}
 
 \item{pext}{vector of penalty values to apply to external data variables}
 
 \item{type}{type of prediction to make using the hierr model}
+
+\item{penalty}{regularization object applied to original model object, only needed
+if p or pext are not in the original path(s) computed. See \code{\link{hierr}} for
+more information on regularization object.}
 
 \item{...}{pass other arguments to hierr function (if needed)}
 }
