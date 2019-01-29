@@ -47,7 +47,7 @@ context("compare coefficients to glmnet when no external data")
 #     zscaled[, i] <- (z[, i] - mean_z[i]) / sd_z[i]
 # }
 
-xtest <- bigmemory::as.big.matrix(readRDS(file = "testdata/xtest.rds"))
+xtest <- readRDS(file = "testdata/xtest.rds")
 ytest <- readRDS(file = "testdata/ytest.rds")
 ztest <- readRDS(file = "testdata/ztest.rds")
 b0_glmnet <- readRDS(file = "testdata/b0_glmnet.rds")
