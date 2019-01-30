@@ -13,9 +13,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![Build Status](https://travis-ci.org/USCbiostats/hierr.svg?branch=master)](https://travis-ci.org/USCbiostats/hierr)
+[![Build Status](https://travis-ci.org/USCbiostats/hierr.svg?branch=development)](https://travis-ci.org/USCbiostats/hierr)
 [![Build status](https://ci.appveyor.com/api/projects/status/6pr8hlc4wg9vjcxd?svg=true)](https://ci.appveyor.com/project/gmweaver/hierr)
-[![codecov](https://codecov.io/gh/USCbiostats/hierr/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/hierr)
+[![codecov](https://codecov.io/gh/USCbiostats/hierr/branch/development/graph/badge.svg)](https://codecov.io/gh/USCbiostats/hierr)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
 # Introduction
@@ -112,7 +112,7 @@ set.seed(123)
 ```
 
 ```{r fit k-fold cv}
-cv_hierr <- cvhierr(x = x_linear, 
+cvhierr <- cv_hierr(x = x_linear, 
                     y = y_linear, 
                     external = ext_linear, 
                     family = "gaussian")
@@ -120,5 +120,5 @@ cv_hierr <- cvhierr(x = x_linear,
 To visualize the results of the cross-validation we provide a contour plot of the mean cross-validation error across the grid of penalties with the `plot` function.
 
 ```{r cv_results}
-plot(cv_hierr)
+plot(cvhierr)
 ```
