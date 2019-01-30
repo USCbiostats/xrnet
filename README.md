@@ -4,10 +4,10 @@ hierr: R Package for Hierarchical Regularized Regression
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![Build
-Status](https://travis-ci.org/USCbiostats/hierr.svg?branch=master)](https://travis-ci.org/USCbiostats/hierr)
+Status](https://travis-ci.org/USCbiostats/hierr.svg?branch=development)](https://travis-ci.org/USCbiostats/hierr)
 [![Build
 status](https://ci.appveyor.com/api/projects/status/6pr8hlc4wg9vjcxd?svg=true)](https://ci.appveyor.com/project/gmweaver/hierr)
-[![codecov](https://codecov.io/gh/USCbiostats/hierr/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/hierr)
+[![codecov](https://codecov.io/gh/USCbiostats/hierr/branch/development/graph/badge.svg)](https://codecov.io/gh/USCbiostats/hierr)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
 # Introduction
@@ -154,7 +154,7 @@ determine the optimal values for the penalties. The cross-validation
 function `cvhierr` is used as follows.
 
 ``` r
-cv_hierr <- cvhierr(x = x_linear, 
+cvhierr <- cv_hierr(x = x_linear, 
                     y = y_linear, 
                     external = ext_linear, 
                     family = "gaussian")
@@ -165,7 +165,7 @@ plot of the mean cross-validation error across the grid of penalties
 with the `plot` function.
 
 ``` r
-plot(cv_hierr)
+plot(cvhierr)
 ```
 
 ![](readme_files/readmecv_results-1.png)<!-- -->
