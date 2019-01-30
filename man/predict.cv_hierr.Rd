@@ -6,7 +6,7 @@
 \usage{
 \method{predict}{cv_hierr}(object, newdata = NULL,
   newdata_fixed = NULL, p = "opt", pext = "opt",
-  type = c("response", "coefficients"), penalty = NULL, ...)
+  type = c("response", "coefficients", "link"), penalty = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{cv_hierr}} object}

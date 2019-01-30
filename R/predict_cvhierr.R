@@ -19,7 +19,7 @@ predict.cv_hierr <- function(object,
                             newdata_fixed = NULL,
                             p = "opt",
                             pext = "opt",
-                            type = c("response", "coefficients"),
+                            type = c("response", "coefficients", "link"),
                             penalty = NULL,
                             ...)
 {
