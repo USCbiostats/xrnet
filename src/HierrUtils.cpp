@@ -39,18 +39,23 @@ Eigen::MatrixXd computeResponseRcpp(SEXP X,
                                     const Eigen::Map<Eigen::MatrixXd> Fixed,
                                     const Eigen::Map<Eigen::VectorXd> beta0,
                                     const Eigen::Map<Eigen::MatrixXd> betas,
-                                    const Eigen::Map<Eigen::MatrixXd> gammas) {
+                                    const Eigen::Map<Eigen::MatrixXd> gammas,
+                                    const std::string & response_type,
+                                    const std::string & family) {
 
     if (mattype_x == 1) {
         Rcpp::NumericMatrix x_mat(X);
         MapMat xmap((const double *) &x_mat[0], x_mat.rows(), x_mat.cols());
-        return computeResponse<MapMat>(xmap, Fixed, beta0, betas, gammas);
+        return computeResponse<MapMat>(xmap, Fixed, beta0, betas, gammas, response_type, family);
     } else if (mattype_x == 2) {
         Rcpp::XPtr<BigMatrix> xptr(X);
         MapMat xmap((const double *)xptr->matrix(), xptr->nrow(), xptr->ncol());
-        return computeResponse<MapMat>(xmap, Fixed, beta0, betas, gammas);
+        return computeResponse<MapMat>(xmap, Fixed, beta0, betas, gammas, response_type, family);
     } else {
-        return computeResponse<MapSpMat>(Rcpp::as<MapSpMat>(X), Fixed, beta0, betas, gammas);
+        return computeResponse<MapSpMat>(Rcpp::as<MapSpMat>(X), Fixed, beta0, betas, gammas, response_type, family);
     }
 }
 
+double logit_inv(double x) {
+    return 1 / (1 + std::exp(-x));
+}

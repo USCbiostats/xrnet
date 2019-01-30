@@ -156,6 +156,7 @@ Rcpp::List fitModel(const TX & x,
             Rcpp::Named("penalty") = path,
             Rcpp::Named("penalty_ext") = path_ext,
             Rcpp::Named("num_passes") = solver->getNumPasses(),
+            Rcpp::Named("family") = family,
             Rcpp::Named("status") = status
         );
 }

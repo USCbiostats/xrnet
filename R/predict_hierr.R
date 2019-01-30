@@ -20,7 +20,7 @@ predict.hierr <- function(object,
                           newdata_fixed = NULL,
                           p = NULL,
                           pext = NULL,
-                          type = c("response", "coefficients"),
+                          type = c("response", "coefficients", "link"),
                           penalty = NULL,
                           ...)
 {
@@ -99,7 +99,7 @@ predict.hierr <- function(object,
         ))
     }
 
-    if (type == "response") {
+    if (type %in% c("link", "response")) {
 
         if (is(newdata, "matrix")) {
             if (!(typeof(newdata) %in% c("integer", "double")))
@@ -128,9 +128,23 @@ predict.hierr <- function(object,
         }
 
         if (mattype_x == 2)
-            result <- computeResponseRcpp(newdata@address, mattype_x, newdata_fixed, beta0, betas, gammas)
+            result <- computeResponseRcpp(newdata@address,
+                                          mattype_x,
+                                          newdata_fixed,
+                                          beta0,
+                                          betas,
+                                          gammas,
+                                          type,
+                                          object$family)
         else
-            result <- computeResponseRcpp(newdata, mattype_x, newdata_fixed, beta0, betas, gammas)
+            result <- computeResponseRcpp(newdata,
+                                          mattype_x,
+                                          newdata_fixed,
+                                          beta0,
+                                          betas,
+                                          gammas,
+                                          type,
+                                          object$family)
 
         if (length(pext) > 1) {
             result <- aperm(array(t(result), c(length(pext), length(p), dim(result)[1])), c(3, 2, 1))

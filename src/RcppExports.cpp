@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // computeResponseRcpp
-Eigen::MatrixXd computeResponseRcpp(SEXP X, const int& mattype_x, const Eigen::Map<Eigen::MatrixXd> Fixed, const Eigen::Map<Eigen::VectorXd> beta0, const Eigen::Map<Eigen::MatrixXd> betas, const Eigen::Map<Eigen::MatrixXd> gammas);
-RcppExport SEXP _hierr_computeResponseRcpp(SEXP XSEXP, SEXP mattype_xSEXP, SEXP FixedSEXP, SEXP beta0SEXP, SEXP betasSEXP, SEXP gammasSEXP) {
+Eigen::MatrixXd computeResponseRcpp(SEXP X, const int& mattype_x, const Eigen::Map<Eigen::MatrixXd> Fixed, const Eigen::Map<Eigen::VectorXd> beta0, const Eigen::Map<Eigen::MatrixXd> betas, const Eigen::Map<Eigen::MatrixXd> gammas, const std::string& response_type, const std::string& family);
+RcppExport SEXP _hierr_computeResponseRcpp(SEXP XSEXP, SEXP mattype_xSEXP, SEXP FixedSEXP, SEXP beta0SEXP, SEXP betasSEXP, SEXP gammasSEXP, SEXP response_typeSEXP, SEXP familySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,7 +18,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type beta0(beta0SEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type betas(betasSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type gammas(gammasSEXP);
-    rcpp_result_gen = Rcpp::wrap(computeResponseRcpp(X, mattype_x, Fixed, beta0, betas, gammas));
+    Rcpp::traits::input_parameter< const std::string& >::type response_type(response_typeSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type family(familySEXP);
+    rcpp_result_gen = Rcpp::wrap(computeResponseRcpp(X, mattype_x, Fixed, beta0, betas, gammas, response_type, family));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -92,7 +94,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_hierr_computeResponseRcpp", (DL_FUNC) &_hierr_computeResponseRcpp, 6},
+    {"_hierr_computeResponseRcpp", (DL_FUNC) &_hierr_computeResponseRcpp, 8},
     {"_hierr_fitModelCVRcpp", (DL_FUNC) &_hierr_fitModelCVRcpp, 25},
     {"_hierr_fitModelRcpp", (DL_FUNC) &_hierr_fitModelRcpp, 23},
     {NULL, NULL, 0}

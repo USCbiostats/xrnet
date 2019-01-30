@@ -49,7 +49,6 @@ context("compare coefficients to glmnet when no external data")
 
 xtest <- readRDS(file = "testdata/xtest.rds")
 ytest <- readRDS(file = "testdata/ytest.rds")
-ztest <- readRDS(file = "testdata/ztest.rds")
 b0_glmnet <- readRDS(file = "testdata/b0_glmnet.rds")
 betas_glmnet <- readRDS(file = "testdata/betas_glmnet.rds")
 n <- length(ytest)

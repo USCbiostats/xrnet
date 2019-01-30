@@ -330,7 +330,7 @@ cv_hierr <- function(x,
                   fit_train = hierr_object,
                   call = hierr_object$call)
 
-    class(cvfit) <- c("cvhierr")
+    class(cvfit) <- c("cv_hierr")
     return(cvfit)
 }
 
