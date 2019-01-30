@@ -56,7 +56,7 @@ n <- length(ytest)
 sd_y <- sqrt(var(ytest) * (n - 1) / n)
 ytest <- ytest / sd_y
 
-myPenalty <- definePenalty(penalty_type = 0,
+myPenalty <- define_penalty(penalty_type = 0,
                            penalty_type_ext = 1)
 
 myControl <- list(tolerance = 1e-20)

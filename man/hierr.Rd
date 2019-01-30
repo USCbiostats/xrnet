@@ -5,7 +5,7 @@
 \title{Fit hierarchical regularized regression model}
 \usage{
 hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
-  "binomial"), penalty = definePenalty(), weights = NULL,
+  "binomial"), penalty = define_penalty(), weights = NULL,
   standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
   control = list())
 }
@@ -34,7 +34,7 @@ hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
     \item binomial
 }}
 
-\item{penalty}{specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.}
+\item{penalty}{specifies regularization object for x and external. See \code{\link{define_penalty}} for more details.}
 
 \item{weights}{optional vector of observation-specific weights. Default is 1 for all observations.}
 

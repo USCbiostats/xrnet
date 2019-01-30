@@ -55,7 +55,7 @@ n <- length(ytest)
 sd_y <- sqrt(var(ytest) * (n - 1) / n)
 ytest <- ytest / sd_y
 
-myPenalty <- definePenalty(penalty_type = 0, num_penalty = 100)
+myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
 myControl <- list(tolerance = 1e-15)
 
 # Ridge Regression #
@@ -156,7 +156,7 @@ test_that("x NOT standardized, NO intercept",{
 
 # Lasso Regression #
 
-myPenalty <- definePenalty(penalty_type = 1, num_penalty = 100)
+myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
 
 test_that("x standardized, intercept",{
 
@@ -245,7 +245,7 @@ test_that("x NOT standardized, NO intercept",{
 
 # Elastic Net Regression #
 
-myPenalty <- definePenalty(penalty_type = 0.5, num_penalty = 100)
+myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
 
 test_that("x standardized, intercept",{
 

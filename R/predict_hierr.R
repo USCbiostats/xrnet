@@ -7,9 +7,14 @@
 #' @param newdata_fixed matrix with new values for unpenalized variables
 #' @param p vector of penalty values to apply to predictor variables
 #' @param pext vector of penalty values to apply to external data variables
-#' @param type type of prediction to make using the hierr model
+#' @param type type of prediction to make using the hierr model, options include
+#' \itemize{
+#'    \item coefficients
+#'    \item response
+#'    \item link (linear predictor)
+#' }
 #' @param penalty regularization object applied to original model object, only needed
-#' if p or pext are not in the original path(s) computed. See \code{\link{hierr}} for
+#' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
 #' more information on regularization object.
 #' @param ... pass other arguments to hierr function (if needed)
 

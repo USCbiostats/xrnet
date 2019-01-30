@@ -113,7 +113,7 @@ hierr_model <- hierr(x = x_linear,
 #### Modifying Regularization Terms
 
 To modify the regularization terms and penalty path associated with the
-predictors or external data, you can use the `definePenalty` function.
+predictors or external data, you can use the `define_penalty` function.
 This function allows you to configure the following regularization
 attributes:
 
@@ -133,10 +133,10 @@ variables and external data variables. In addition, we may want to have
 both x and external. We modify our model fitting as follows.
 
 ``` r
-myPenalty <- definePenalty(penalty_type = 0, 
-                           penalty_type_ext = 0, 
-                           num_penalty = 30, 
-                           num_penalty_ext = 30)
+myPenalty <- define_penalty(penalty_type = 0, 
+                            penalty_type_ext = 0, 
+                            num_penalty = 30, 
+                            num_penalty_ext = 30)
 
 hierr_model <- hierr(x = x_linear, 
                      y = y_linear, 

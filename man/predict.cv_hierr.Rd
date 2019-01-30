@@ -15,14 +15,21 @@
 
 \item{newdata_fixed}{matrix with new values for unpenalized variables}
 
-\item{p}{vector of penalty values to apply to predictor variables}
+\item{p}{vector of penalty values to apply to predictor variables.
+Default is optimal value in cv_hierr object.}
 
-\item{pext}{vector of penalty values to apply to external data variables}
+\item{pext}{vector of penalty values to apply to external data variables.
+Default is optimal value in cv_hierr object.}
 
-\item{type}{type of prediction to make using the hierr model}
+\item{type}{type of prediction to make using the hierr model, options include:
+\itemize{
+   \item coefficients
+   \item response
+   \item link (linear predictor)
+}}
 
 \item{penalty}{regularization object applied to original model object, only needed
-if p or pext are not in the original path(s) computed. See \code{\link{definePenalty}} for
+if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
 more information on regularization object.}
 
 \item{...}{pass other arguments to hierr function (if needed)}

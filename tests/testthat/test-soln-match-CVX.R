@@ -56,7 +56,7 @@ betas_cvx_mat <- readRDS(file = "testdata/betas_cvx_mat.rds")
 sdy <- sqrt(var(ytest) * (length(ytest) - 1) / length(ytest))
 ytest <- ytest / sdy
 
-myPenalty <- definePenalty(penalty_type = 0,
+myPenalty <- define_penalty(penalty_type = 0,
                            penalty_type_ext = 1,
                            user_penalty = 1,
                            user_penalty_ext = 0.1)

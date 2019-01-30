@@ -19,10 +19,15 @@
 
 \item{pext}{vector of penalty values to apply to external data variables}
 
-\item{type}{type of prediction to make using the hierr model}
+\item{type}{type of prediction to make using the hierr model, options include
+\itemize{
+   \item coefficients
+   \item response
+   \item link (linear predictor)
+}}
 
 \item{penalty}{regularization object applied to original model object, only needed
-if p or pext are not in the original path(s) computed. See \code{\link{hierr}} for
+if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
 more information on regularization object.}
 
 \item{...}{pass other arguments to hierr function (if needed)}

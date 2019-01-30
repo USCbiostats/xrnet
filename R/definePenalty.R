@@ -21,18 +21,18 @@
 #' @param custom_multiplier_ext variable-specific penalty multipliers for external data. Default is 1 for all variables. 0 is no penalization.
 
 #' @export
-definePenalty <- function(penalty_type = 0,
-                          quantile = 0.5,
-                          penalty_type_ext = 1,
-                          quantile_ext = 0.5,
-                          num_penalty = 20,
-                          num_penalty_ext = 20,
-                          penalty_ratio = NULL,
-                          penalty_ratio_ext = NULL,
-                          user_penalty = NULL,
-                          user_penalty_ext = NULL,
-                          custom_multiplier = NULL,
-                          custom_multiplier_ext = NULL) {
+define_penalty <- function(penalty_type = 0,
+                           quantile = 0.5,
+                           penalty_type_ext = 1,
+                           quantile_ext = 0.5,
+                           num_penalty = 20,
+                           num_penalty_ext = 20,
+                           penalty_ratio = NULL,
+                           penalty_ratio_ext = NULL,
+                           user_penalty = NULL,
+                           user_penalty_ext = NULL,
+                           custom_multiplier = NULL,
+                           custom_multiplier_ext = NULL) {
 
     if (any(penalty_type < 0) || any(penalty_type > 1)) {
         stop("Error: Invalid penalty type for x")

@@ -26,7 +26,7 @@
 #'     \item gaussian
 #'     \item binomial
 #' }
-#' @param penalty specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.
+#' @param penalty specifies regularization object for x and external. See \code{\link{define_penalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
 #' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
 #' @param intercept indicates whether an intercept term is included for x and/or external. Default is c(TRUE, FALSE).
@@ -55,7 +55,7 @@ cv_hierr <- function(x,
                      external = NULL,
                      unpen = NULL,
                      family = c("gaussian", "binomial"),
-                     penalty = definePenalty(),
+                     penalty = define_penalty(),
                      weights = NULL,
                      standardize = c(TRUE, TRUE),
                      intercept = c(TRUE, FALSE),

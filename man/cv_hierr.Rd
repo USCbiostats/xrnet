@@ -5,7 +5,7 @@
 \title{k-fold cross-validation for hierarchical regularized regression}
 \usage{
 cv_hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
-  "binomial"), penalty = definePenalty(), weights = NULL,
+  "binomial"), penalty = define_penalty(), weights = NULL,
   standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
   loss = c("mse", "mae", "auc"), nfolds = 5, foldid = NULL,
   parallel = FALSE, control = list())
@@ -35,7 +35,7 @@ cv_hierr(x, y, external = NULL, unpen = NULL, family = c("gaussian",
     \item binomial
 }}
 
-\item{penalty}{specifies regularization object for x and external. See \code{\link{definePenalty}} for more details.}
+\item{penalty}{specifies regularization object for x and external. See \code{\link{define_penalty}} for more details.}
 
 \item{weights}{optional vector of observation-specific weights. Default is 1 for all observations.}
 
