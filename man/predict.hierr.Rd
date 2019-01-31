@@ -26,7 +26,7 @@
    \item link (linear predictor)
 }}
 
-\item{penalty}{regularization object applied to original model object, only needed
+\item{penalty}{(optional) regularization object applied to original model object, only needed
 if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
 more information on regularization object.}
 

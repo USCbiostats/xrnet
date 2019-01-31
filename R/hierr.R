@@ -9,10 +9,10 @@ NULL
 #'
 #' @description Fits hierarchical regularized regression model that enables the incorporation of external data
 #' for the predictor variables. Both the predictor variables and external data can be regularized
-#' by the most common penalties (lasso, ridge, elastic net) and we have included an addtional "quantile" penalty.
+#' by the most common penalties (lasso, ridge, elastic net) and we have included an additional "quantile" penalty.
 #' Solutions are computed across a two-dimensional grid of penalties (a separate penalty path is computed
-#' for the predictors and external variables). Currently support linear regression, future extensions to
-#' a GLM framework will be implemented in the next major update.
+#' for the predictors and external variables). Currently support regularized linear and logistic regression,
+#' future extensions to other outcomes (i.e. Cox regression) will be implemented in the next major update.
 #'
 #' @param x predictor design matrix of dimension \eqn{n x p}, matrix options include:
 #' \itemize{
@@ -46,6 +46,7 @@ NULL
 #' \item{alphas}{3-dimensional array of second-level external data coefficients indexed by penalty values}
 #' \item{penalty}{vector of first-level penalty values}
 #' \item{penalty_ext}{vector of second-level penalty values}
+#' \item{family}{error distribution for outcome variable}
 #' \item{num_passes}{total number of passes over the data in the coordinate descent algorithm}
 #' \item{status}{0 = success, other values indicate issues fitting model}
 

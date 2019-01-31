@@ -66,7 +66,7 @@ a vector if there is no external data (external = NULL) and matrix if there is e
 \item{opt_loss}{the value for the optimal cross-validated error}
 \item{opt_penalty}{first-level penalty value that achieves the optimal loss}
 \item{opt_penalty_ext}{second-level penalty value that achieves the optimal loss (if external data is present)}
-\item{fit_train}{fitted hierr object for all training data, see \code{\link{hierr}} for details of object}
+\item{fitted_model}{fitted hierr object using all data, see \code{\link{hierr}} for details of object}
 }
 \description{
 k-fold cross-validation for hierarchical regularized regression \code{\link{hierr}}

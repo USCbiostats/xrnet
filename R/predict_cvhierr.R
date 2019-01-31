@@ -15,7 +15,7 @@
 #'    \item response
 #'    \item link (linear predictor)
 #' }
-#' @param penalty regularization object applied to original model object, only needed
+#' @param penalty (optional) regularization object applied to original model object, only needed
 #' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
 #' more information on regularization object.
 #' @param ... pass other arguments to hierr function (if needed)
@@ -35,7 +35,7 @@ predict.cv_hierr <- function(object,
     if (pext == "opt")
         pext <- object$opt_penalty_ext
 
-    predict(object$fit_train,
+    predict(object$fitted_model,
             newdata = newdata,
             newdata_fixed = newdata_fixed,
             p = p,

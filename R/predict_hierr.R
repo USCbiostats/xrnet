@@ -13,7 +13,7 @@
 #'    \item response
 #'    \item link (linear predictor)
 #' }
-#' @param penalty regularization object applied to original model object, only needed
+#' @param penalty (optional) regularization object applied to original model object, only needed
 #' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
 #' more information on regularization object.
 #' @param ... pass other arguments to hierr function (if needed)
@@ -40,15 +40,15 @@ predict.hierr <- function(object,
             stop("Error: 'newdata' needs to be specified")
     }
 
+    if (is.null(p))
+        stop("Error: p not specified")
+
     if (!(all(p %in% object$penalty)) || !(all(pext %in% object$penalty_ext))) {
 
         if (is.null(penalty))
-            stop("Error: Penalties not in original path, please provide original penalty object to refit model")
+            stop("Error: Not all penalty values in path(s), please provide original regularization object")
 
         if (!is.null(object$penalty_ext)) {
-            if (is.null(p)) {
-                stop("Error: p not specified")
-            }
             if (is.null(pext)) {
                 stop("Error: pext not specified")
             }
@@ -57,9 +57,6 @@ predict.hierr <- function(object,
             penalty$user_penalty_ext <- c(object$penalty_ext, pext)
             penalty$num_penalty_ext <- length(penalty$user_penalty_ext)
         } else {
-            if (is.null(p)) {
-                stop("error: p not specified")
-            }
             penalty$user_penalty <- c(object$penalty, p)
             penalty$num_penalty <- length(penalty$user_penalty)
 

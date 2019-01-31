@@ -47,7 +47,7 @@
 #' \item{opt_loss}{the value for the optimal cross-validated error}
 #' \item{opt_penalty}{first-level penalty value that achieves the optimal loss}
 #' \item{opt_penalty_ext}{second-level penalty value that achieves the optimal loss (if external data is present)}
-#' \item{fit_train}{fitted hierr object for all training data, see \code{\link{hierr}} for details of object}
+#' \item{fitted_model}{fitted hierr object using all data, see \code{\link{hierr}} for details of object}
 
 #' @export
 cv_hierr <- function(x,
@@ -152,7 +152,10 @@ cv_hierr <- function(x,
     # Prepare penalty and control object for folds
     penalty_fold <- penalty
     penalty_fold$user_penalty <- hierr_object$penalty
-    penalty_fold$user_penalty_ext <- hierr_object$penalty_ext
+    if (is.null(hierr_object$penalty_ext))
+        penalty_fold$user_penalty_ext <- as.double(0.0)
+    else
+        penalty_fold$user_penalty_ext <- hierr_object$penalty_ext
 
     penalty_fold <- initialize_penalty(penalty_fold,
                                        NROW(x),
@@ -327,7 +330,7 @@ cv_hierr <- function(x,
                   opt_loss = opt_loss,
                   opt_penalty = opt_penalty,
                   opt_penalty_ext = opt_penalty_ext,
-                  fit_train = hierr_object,
+                  fitted_model = hierr_object,
                   call = hierr_object$call)
 
     class(cvfit) <- c("cv_hierr")
