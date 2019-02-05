@@ -47,25 +47,16 @@ context("compare coefficent estimates to CVX (automatic penalty)")
 #     zscaled[, i] <- (z[, i] - mean_z[i]) / sd_z[i]
 # }
 
-xtest <- readRDS(file = "testdata/xtest.rds")
-ytest <- readRDS(file = "testdata/ytest.rds")
-ztest <- readRDS(file = "testdata/ztest.rds")
-alphas_cvx_auto <- readRDS(file = "testdata/alphas_cvx_auto.rds")
-betas_cvx_auto <- readRDS(file = "testdata/betas_cvx_auto.rds")
-n <- length(ytest)
-sd_y <- sqrt(var(ytest) * (n - 1) / n)
-ytest <- ytest / sd_y
-
-myPenalty <- define_penalty(penalty_type = 0,
-                           penalty_type_ext = 1)
-
-myControl <- list(tolerance = 1e-20)
-
 test_that("x and ext standardized, both intercepts, auto",{
+
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_auto[, 1],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        intercept = c(T, T),
@@ -76,7 +67,7 @@ test_that("x and ext standardized, both intercepts, auto",{
 
     expect_equal(betas_cvx_auto[, 1],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        intercept = c(T, T),
@@ -88,9 +79,14 @@ test_that("x and ext standardized, both intercepts, auto",{
 
 test_that("x NOT standardized, ext is standardized, both intercepts, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 2],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        intercept = c(T, T),
@@ -101,7 +97,7 @@ test_that("x NOT standardized, ext is standardized, both intercepts, auto",{
 
     expect_equal(betas_cvx_auto[, 2],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        intercept = c(T, T),
@@ -113,9 +109,14 @@ test_that("x NOT standardized, ext is standardized, both intercepts, auto",{
 
 test_that("x is standardized, ext NOT standardized, both intercepts, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 3],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        intercept = c(T, T),
@@ -126,7 +127,7 @@ test_that("x is standardized, ext NOT standardized, both intercepts, auto",{
 
     expect_equal(betas_cvx_auto[, 3],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        intercept = c(T, T),
@@ -138,9 +139,14 @@ test_that("x is standardized, ext NOT standardized, both intercepts, auto",{
 
 test_that("x NOT standardized, ext NOT standardized, both intercepts, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 4],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        intercept = c(T, T),
@@ -151,7 +157,7 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts, auto",{
 
     expect_equal(betas_cvx_auto[, 4],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        intercept = c(T, T),
@@ -166,9 +172,14 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts, auto",{
 
 test_that("x standardized, ext standardized, no 2nd level, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 5],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(T, T),
@@ -179,7 +190,7 @@ test_that("x standardized, ext standardized, no 2nd level, auto",{
 
     expect_equal(betas_cvx_auto[, 5],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(T, T),
@@ -191,9 +202,14 @@ test_that("x standardized, ext standardized, no 2nd level, auto",{
 
 test_that("x NOT standardized, ext is standardized, no 2nd level, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 6],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(F, T),
@@ -204,7 +220,7 @@ test_that("x NOT standardized, ext is standardized, no 2nd level, auto",{
 
     expect_equal(betas_cvx_auto[, 6],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(F, T),
@@ -216,9 +232,14 @@ test_that("x NOT standardized, ext is standardized, no 2nd level, auto",{
 
 test_that("x is standardized, ext NOT standardized, no 2nd level, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 7],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(T, F),
@@ -229,7 +250,7 @@ test_that("x is standardized, ext NOT standardized, no 2nd level, auto",{
 
     expect_equal(betas_cvx_auto[, 7],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(T, F),
@@ -241,9 +262,14 @@ test_that("x is standardized, ext NOT standardized, no 2nd level, auto",{
 
 test_that("x NOT standardized, ext NOT standardized, no 2nd level, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 8],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(F, F),
@@ -254,7 +280,7 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level, auto",{
 
     expect_equal(betas_cvx_auto[, 8],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(F, F),
@@ -268,9 +294,14 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level, auto",{
 
 test_that("x standardized, ext standardized, no 1st level, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 9],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(T, T),
@@ -281,7 +312,7 @@ test_that("x standardized, ext standardized, no 1st level, auto",{
 
     expect_equal(betas_cvx_auto[, 9],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(T, T),
@@ -293,9 +324,14 @@ test_that("x standardized, ext standardized, no 1st level, auto",{
 
 test_that("x NOT standardized, ext is standardized, no 1st level, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 10],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(F, T),
@@ -306,7 +342,7 @@ test_that("x NOT standardized, ext is standardized, no 1st level, auto",{
 
     expect_equal(betas_cvx_auto[, 10],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(F, T),
@@ -318,9 +354,14 @@ test_that("x NOT standardized, ext is standardized, no 1st level, auto",{
 
 test_that("x is standardized, ext NOT standardized, no 1st level, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 11],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(T, F),
@@ -331,7 +372,7 @@ test_that("x is standardized, ext NOT standardized, no 1st level, auto",{
 
     expect_equal(betas_cvx_auto[, 11],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(T, F),
@@ -343,9 +384,14 @@ test_that("x is standardized, ext NOT standardized, no 1st level, auto",{
 
 test_that("x NOT standardized, ext NOT standardized, no 1st level, auto",{
 
+    myPenalty <- define_penalty(penalty_type = 0,
+                                penalty_type_ext = 1)
+
+    myControl <- list(tolerance = 1e-20)
+
     expect_equal(alphas_cvx_auto[, 12],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(F, F),
@@ -356,7 +402,7 @@ test_that("x NOT standardized, ext NOT standardized, no 1st level, auto",{
 
     expect_equal(betas_cvx_auto[, 12],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
                        standardize = c(F, F),

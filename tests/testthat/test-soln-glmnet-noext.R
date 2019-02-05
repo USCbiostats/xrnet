@@ -47,17 +47,6 @@ context("compare coefficients to glmnet when no external data")
 #     zscaled[, i] <- (z[, i] - mean_z[i]) / sd_z[i]
 # }
 
-xtest <- readRDS(file = "testdata/xtest.rds")
-ytest <- readRDS(file = "testdata/ytest.rds")
-b0_glmnet <- readRDS(file = "testdata/b0_glmnet.rds")
-betas_glmnet <- readRDS(file = "testdata/betas_glmnet.rds")
-n <- length(ytest)
-sd_y <- sqrt(var(ytest) * (n - 1) / n)
-ytest <- ytest / sd_y
-
-myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
-myControl <- list(tolerance = 1e-15)
-
 # Ridge Regression #
 
 test_that("x standardized, intercept",{
@@ -66,9 +55,11 @@ test_that("x standardized, intercept",{
     #betas_glmnet1 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet1 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 1],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        penalty = myPenalty,
@@ -77,7 +68,7 @@ test_that("x standardized, intercept",{
 
     expect_equal(b0_glmnet[1],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        penalty = myPenalty,
@@ -91,9 +82,11 @@ test_that("x NOT standardized, intercept",{
     #betas_glmnet2 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet2 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 2],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        standardize = c(F, T),
@@ -103,7 +96,7 @@ test_that("x NOT standardized, intercept",{
 
     expect_equal(b0_glmnet[2],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        standardize = c(F, T),
@@ -118,9 +111,11 @@ test_that("x standardized, NO intercept",{
     #betas_glmnet3 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet3 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 3],
                 hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
                        penalty = myPenalty,
@@ -134,9 +129,11 @@ test_that("x NOT standardized, NO intercept",{
     #betas_glmnet4 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet4 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 4],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
                        standardize = c(F, T),
@@ -145,7 +142,7 @@ test_that("x NOT standardized, NO intercept",{
 
     expect_equal(b0_glmnet[4],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
                        standardize = c(F, T),
@@ -156,17 +153,17 @@ test_that("x NOT standardized, NO intercept",{
 
 # Lasso Regression #
 
-myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
-
 test_that("x standardized, intercept",{
 
     #coef_glmnet <- glmnet::glmnet(x = x, y = y, family = "gaussian", alpha = 1, thresh = 1e-15)
     #betas_glmnet5 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet5 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 5],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        penalty = myPenalty,
@@ -175,7 +172,7 @@ test_that("x standardized, intercept",{
 
     expect_equal(b0_glmnet[5],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        penalty = myPenalty,
@@ -189,9 +186,11 @@ test_that("x NOT standardized, intercept",{
     #betas_glmnet6 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet6 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 6],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        standardize = c(F, T),
@@ -201,7 +200,7 @@ test_that("x NOT standardized, intercept",{
 
     expect_equal(b0_glmnet[6],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        standardize = c(F, T),
@@ -216,9 +215,11 @@ test_that("x standardized, NO intercept",{
     #betas_glmnet7 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet7 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 7],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
                        penalty = myPenalty,
@@ -232,9 +233,11 @@ test_that("x NOT standardized, NO intercept",{
     #betas_glmnet8 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet8 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 8],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
                        standardize = c(F, T),
@@ -245,17 +248,17 @@ test_that("x NOT standardized, NO intercept",{
 
 # Elastic Net Regression #
 
-myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
-
 test_that("x standardized, intercept",{
 
     #coef_glmnet <- glmnet::glmnet(x = x, y = y, family = "gaussian", alpha = 0.5, thresh = 1e-15)
     #betas_glmnet9 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet9 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 9],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        penalty = myPenalty,
@@ -264,7 +267,7 @@ test_that("x standardized, intercept",{
 
     expect_equal(b0_glmnet[9],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        penalty = myPenalty,
@@ -278,9 +281,11 @@ test_that("x NOT standardized, intercept",{
     #betas_glmnet10 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet10 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 10],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        standardize = c(F, T),
@@ -290,7 +295,7 @@ test_that("x NOT standardized, intercept",{
 
     expect_equal(b0_glmnet[10],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
                        standardize = c(F, T),
@@ -305,9 +310,11 @@ test_that("x standardized, NO intercept",{
     #betas_glmnet11 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet11 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 11],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
                        penalty = myPenalty,
@@ -321,9 +328,11 @@ test_that("x NOT standardized, NO intercept",{
     #betas_glmnet12 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
     #b0_glmnet12 <- unname(coef_glmnet$a0[10])
 
+    myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
+
     expect_equal(betas_glmnet[, 12],
                  hierr(x = xtest,
-                       y = ytest,
+                       y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
                        standardize = c(F, T),

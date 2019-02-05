@@ -8,7 +8,7 @@
 template <typename TX, typename TZ>
 Rcpp::List fitModel(const TX & x,
                     const bool & is_sparse_x,
-                    Eigen::Ref<Eigen::VectorXd> y,
+                    const Eigen::Ref<const Eigen::VectorXd> & y,
                     const TZ & ext,
                     const Eigen::Ref<const Eigen::MatrixXd> & fixed,
                     Eigen::VectorXd weights_user,
@@ -105,7 +105,7 @@ Rcpp::List fitModel(const TX & x,
     compute_penalty(
         path, penalty_user, penalty_type[0],
         penalty_ratio[0], solver->getGradient(),
-        solver->getCmult(), 0, nv_x
+        solver->getCmult(), 0, nv_x, ys
     );
 
     // compute penalty path for 2nd level variables
@@ -115,7 +115,8 @@ Rcpp::List fitModel(const TX & x,
             path_ext, penalty_user_ext,
             penalty_type[nv_x + nv_fixed + intr[1]],
             penalty_ratio[1], solver->getGradient(),
-            solver->getCmult(), nv_x + nv_fixed + intr[1], nv_total
+            solver->getCmult(), nv_x + nv_fixed + intr[1],
+            nv_total, ys
         );
     } else {
         path_ext[0] = 0.0;
@@ -177,7 +178,7 @@ Rcpp::List fitModel(const TX & x,
 // [[Rcpp::export]]
 Rcpp::List fitModelRcpp(SEXP x,
                         const int & mattype_x,
-                        Eigen::VectorXd y,
+                        const Eigen::Map<Eigen::VectorXd> y,
                         SEXP ext,
                         const bool & is_sparse_ext,
                         const Eigen::Map<Eigen::MatrixXd> fixed,

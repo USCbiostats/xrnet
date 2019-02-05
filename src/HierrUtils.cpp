@@ -11,7 +11,8 @@ void compute_penalty(Eigen::Ref<Eigen::VectorXd> path,
                      const Eigen::Ref<const Eigen::VectorXd> & gradient,
                      const Eigen::Ref<const Eigen::VectorXd> & cmult,
                      const int & begin,
-                     const int & end) {
+                     const int & end,
+                     const double & ys) {
     const int npenalty = path.size();
     if (penalty_user[0] == 0.0) {
         path[0] = 9.9e35;
@@ -29,7 +30,7 @@ void compute_penalty(Eigen::Ref<Eigen::VectorXd> path,
         }
     }
     else {
-        path = penalty_user;
+        path = penalty_user / ys;
     }
 }
 

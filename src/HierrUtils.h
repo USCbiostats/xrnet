@@ -11,7 +11,8 @@ void compute_penalty(Eigen::Ref<Eigen::VectorXd> path,
                      const Eigen::Ref<const Eigen::VectorXd> & gradient,
                      const Eigen::Ref<const Eigen::VectorXd> & cmult,
                      const int & begin,
-                     const int & end);
+                     const int & end,
+                     const double & ys);
 
 double logit_inv(double x);
 
@@ -24,7 +25,7 @@ Eigen::MatrixXd computeResponse(const TX & X,
                                 const std::string & response_type,
                                 const std::string & family) {
 
-    Eigen::VectorXd pred(X.rows());
+    Eigen::MatrixXd pred(X.rows(), betas.cols());
     if (gammas.cols() > 0)
         pred = Eigen::VectorXd::Constant(X.rows(), 1.0) * beta0.transpose() + X * betas + Fixed * gammas;
     else

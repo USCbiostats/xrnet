@@ -29,6 +29,7 @@ predict.hierr <- function(object,
                           penalty = NULL,
                           ...)
 {
+
     if (missing(type)) {
         type <- "response"
     } else {
@@ -68,9 +69,16 @@ predict.hierr <- function(object,
 
         hierr_call <- object$call
         hierr_call[["penalty"]] <- as.name("penalty")
+        add_args <- match.call(expand.dots = FALSE, call = hierr_call)$...
+        if (length(add_args)) {
+            existing <- !is.na(match(names(add_args), names(hierr_call)))
+            for (arg in names(add_args[existing]))
+                hierr_call[[arg]] <- add_args[[arg]]
+        }
 
         tryCatch(object <- eval(hierr_call),
-                 error = function(e) stop("Error: Unable to refit 'hierr' object, please supply arguments used in original function call")
+                 error = function(e) stop("Error: Unable to refit 'hierr' object,
+                                          please supply arguments used in original function call")
         )
     }
 
