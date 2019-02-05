@@ -49,6 +49,7 @@ test_that("predict returns right predictions for penalties already fit by hierr 
 })
 
 test_that("predict returns estimates for penalties not fit by hierr object", {
+    skip('internal')
     myPenalty <- define_penalty(penalty_type = 0,
                                 penalty_type_ext = 1,
                                 user_penalty = c(1:20),
@@ -113,6 +114,7 @@ test_that("predict returns estimates for penalties not fit by hierr object", {
 })
 
 test_that("predict returns right predictions for penalties not already fit by hierr object", {
+    skip('internal')
     myPenalty <- define_penalty(penalty_type = 0,
                                 penalty_type_ext = 1,
                                 user_penalty = c(2, 1, 0.05),
