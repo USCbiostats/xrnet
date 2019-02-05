@@ -23,6 +23,8 @@ protected:
     MapVec xm;
     MapVec cent;
     MapVec xs;
+    const double ym;
+    const double ys;
     VecXd beta0;
     MatXd betas;
     MatXd gammas;
@@ -43,6 +45,8 @@ public:
           const double * xmptr,
           const double * centptr,
           const double * xsptr,
+          const double & ym_,
+          const double & ys_,
           const int & num_penalty_) :
     n(n_),
     nv_x(nv_x_),
@@ -53,7 +57,9 @@ public:
     ext(ext_.data(), nv_x_, nv_ext_),
     xm(xmptr, nv_total_),
     cent(centptr, nv_total_),
-    xs(xsptr, nv_total_)
+    xs(xsptr, nv_total_),
+    ym(ym_),
+    ys(ys_)
     {
         beta0 = Eigen::VectorXd::Zero(num_penalty_);
         betas = Eigen::MatrixXd::Zero(nv_x_, num_penalty_);
@@ -75,6 +81,8 @@ public:
           const double * xmptr,
           const double * centptr,
           const double * xsptr,
+          const double & ym_,
+          const double & ys_,
           const int & num_penalty_) :
         n(n_),
         nv_x(nv_x_),
@@ -85,7 +93,9 @@ public:
         ext(ext_),
         xm(xmptr, nv_total_),
         cent(centptr, nv_total_),
-        xs(xsptr, nv_total_)
+        xs(xsptr, nv_total_),
+        ym(ym_),
+        ys(ys_)
     {
         beta0 = Eigen::VectorXd::Zero(num_penalty_);
         betas = Eigen::MatrixXd::Zero(nv_x_, num_penalty_);
@@ -115,7 +125,7 @@ public:
 
         // get external coefficients
         if (nv_ext > 0) {
-            alphas.col(idx) = coef.tail(nv_ext);
+            alphas.col(idx) = ys * coef.tail(nv_ext);
         }
 
         // unstandardize predictors w/ external data (x)
@@ -127,21 +137,21 @@ public:
             if (nv_ext > 0) {
                 z_alpha += ext * coef.tail(nv_ext);
             }
-            betas.col(idx) = z_alpha.cwiseProduct(xs.head(nv_x)) + coef.head(nv_x);
+            betas.col(idx) = ys * (z_alpha.cwiseProduct(xs.head(nv_x)) + coef.head(nv_x));
         }
         else {
-            betas.col(idx) = coef.head(nv_x);
+            betas.col(idx) = ys * coef.head(nv_x);
         }
 
         // unstandardize predictors w/o external data (fixed)
         if (nv_fixed > 0) {
-            gammas.col(idx) = coef.segment(nv_x, nv_fixed);
+            gammas.col(idx) = ys * coef.segment(nv_x, nv_fixed);
         }
 
         // compute 2nd level intercepts
         if (intr_ext) {
             if (nv_ext > 0) {
-                alpha0[idx] = betas.col(idx).mean() - xm.tail(nv_ext).dot(coef.tail(nv_ext));
+                alpha0[idx] = betas.col(idx).mean() - xm.tail(nv_ext).dot(alphas.col(idx));
             }
             else {
                 alpha0[idx] = betas.col(idx).mean();
@@ -150,7 +160,7 @@ public:
 
         // compute 1st level intercepts
         if (intr) {
-            beta0[idx] = b0 - cent.head(nv_x).dot(betas.col(idx));
+            beta0[idx] = (ym + b0) - cent.head(nv_x).dot(betas.col(idx));
             if (nv_fixed > 0) {
                 beta0[idx] -= cent.segment(nv_x, nv_fixed).dot(gammas.col(idx));
             }

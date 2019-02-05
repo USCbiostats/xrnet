@@ -8,7 +8,7 @@
 template <typename TX, typename TZ>
 Rcpp::List fitModel(const TX & x,
                     const bool & is_sparse_x,
-                    const Eigen::Ref<const Eigen::VectorXd> & y,
+                    Eigen::Ref<Eigen::VectorXd> y,
                     const TZ & ext,
                     const Eigen::Ref<const Eigen::MatrixXd> & fixed,
                     Eigen::VectorXd weights_user,
@@ -55,12 +55,24 @@ Rcpp::List fitModel(const TX & x,
         xs, intr[1], stnd[1], nv_x + nv_fixed
     );
 
+    // standardize y if continuous
+    Eigen::VectorXd yscaled = y;
+    double ys = 1.0;
+    double ym = 0.0;
+    if (family == "gaussian") {
+        ym = y.cwiseProduct(weights_user).sum();
+        ys = std::sqrt(y.cwiseProduct(y.cwiseProduct(weights_user)).sum() - ym * ym);
+        if (!intr[0])
+            ym = 0.0;
+        yscaled.array() = (y.array() - ym) / ys;
+    }
+
     // choose solver based on outcome
     std::unique_ptr<CoordSolver<TX> > solver;
     if (family == "gaussian") {
         solver.reset(
             new CoordSolver<TX>(
-                y, x, fixedmap, xz, cent.data(), xv.data(), xs.data(),
+                yscaled, x, fixedmap, xz, cent.data(), xv.data(), xs.data(),
                 weights_user, intr[0], penalty_type.data(),
                 cmult.data(), quantiles, upper_cl.data(),
                 lower_cl.data(), ne, nx, thresh, maxit
@@ -71,7 +83,7 @@ Rcpp::List fitModel(const TX & x,
     else if (family == "binomial") {
         solver.reset(
             new BinomialSolver<TX>(
-                y, x, fixedmap, xz, cent.data(), xv.data(), xs.data(),
+                yscaled, x, fixedmap, xz, cent.data(), xv.data(), xs.data(),
                 weights_user, intr[0], penalty_type.data(),
                 cmult.data(), quantiles, upper_cl.data(),
                 lower_cl.data(), ne, nx, thresh, maxit
@@ -84,7 +96,7 @@ Rcpp::List fitModel(const TX & x,
     Hierr<TX, TZ> estimates = Hierr<TX, TZ>(
         n, nv_x, nv_fixed, nv_ext, nv_total,
         intr[0], intr[1], ext, xm.data(), cent.data(),
-        xs.data(), num_combn
+        xs.data(), ym, ys, num_combn
     );
 
     // compute penalty path for 1st level variables
@@ -153,8 +165,8 @@ Rcpp::List fitModel(const TX & x,
             Rcpp::Named("betas") = estimates.getBetas(),
             Rcpp::Named("alpha0") = estimates.getAlpha0(),
             Rcpp::Named("alphas") = estimates.getAlphas(),
-            Rcpp::Named("penalty") = path,
-            Rcpp::Named("penalty_ext") = path_ext,
+            Rcpp::Named("penalty") = ys * path,
+            Rcpp::Named("penalty_ext") = ys * path_ext,
             Rcpp::Named("num_passes") = solver->getNumPasses(),
             Rcpp::Named("family") = family,
             Rcpp::Named("status") = status
@@ -165,7 +177,7 @@ Rcpp::List fitModel(const TX & x,
 // [[Rcpp::export]]
 Rcpp::List fitModelRcpp(SEXP x,
                         const int & mattype_x,
-                        const Eigen::Map<Eigen::VectorXd> y,
+                        Eigen::VectorXd y,
                         SEXP ext,
                         const bool & is_sparse_ext,
                         const Eigen::Map<Eigen::MatrixXd> fixed,

@@ -37,6 +37,8 @@ public:
             const double * xmptr,
             const double * centptr,
             const double * xsptr,
+            const double & ym_,
+            const double & ys_,
             const int & num_penalty_,
             const std::string & family_,
             const std::string & user_loss_,
@@ -55,6 +57,8 @@ public:
             xmptr,
             centptr,
             xsptr,
+            ym_,
+            ys_,
             1),
             test_idx(test_idx_.data(), test_idx_.size()),
             X(X_.data(), n_, X_.cols()),
@@ -76,6 +80,8 @@ public:
             const double * xmptr,
             const double * centptr,
             const double * xsptr,
+            const double & ym_,
+            const double & ys_,
             const int & num_penalty_,
             const std::string & family_,
             const std::string & user_loss_,
@@ -94,6 +100,8 @@ public:
                 xmptr,
                 centptr,
                 xsptr,
+                ym_,
+                ys_,
                 1),
                 test_idx(test_idx_.data(), test_idx_.size()),
                 X(X_),
@@ -117,7 +125,7 @@ public:
 
         // get external coefficients
         if (this->nv_ext > 0) {
-            this->alphas.col(0) = coef.tail(this->nv_ext);
+            this->alphas.col(0) = this->ys * coef.tail(this->nv_ext);
         }
 
         // unstandardize predictors w/ external data (x)
@@ -129,20 +137,20 @@ public:
             if (this->nv_ext > 0) {
                 z_alpha += this->ext * coef.tail(this->nv_ext);
             }
-            this->betas.col(0) = z_alpha.cwiseProduct(this->xs.head(this->nv_x)) + coef.head(this->nv_x);
+            this->betas.col(0) = this->ys * (z_alpha.cwiseProduct(this->xs.head(this->nv_x)) + coef.head(this->nv_x));
         }
         else {
-            this->betas.col(0) = coef.head(this->nv_x);
+            this->betas.col(0) = this->ys * coef.head(this->nv_x);
         }
 
         // unstandardize predictors w/o external data (fixed)
         if (this->nv_fixed > 0) {
-            this->gammas.col(0) = coef.segment(this->nv_x, this->nv_fixed);
+            this->gammas.col(0) = this->ys * coef.segment(this->nv_x, this->nv_fixed);
         }
 
         // compute 1st level intercept
         if (this->intr) {
-            this->beta0[0] = b0 - this->cent.head(this->nv_x).dot(this->betas.col(0));
+            this->beta0[0] = (this->ym + b0) - this->cent.head(this->nv_x).dot(this->betas.col(0));
             if (this->nv_fixed > 0) {
                 this->beta0[0] -= this->cent.segment(this->nv_x, this->nv_fixed).dot(this->gammas.col(0));
             }
