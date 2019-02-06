@@ -121,11 +121,11 @@ public:
     virtual void add_results(const double & b0, VecXd coef, const int & idx) {
 
         // unstandardize variables
-        coef = coef.cwiseProduct(this->xs);
+        coef = this->ys * coef.cwiseProduct(this->xs);
 
         // get external coefficients
         if (this->nv_ext > 0) {
-            this->alphas.col(0) = this->ys * coef.tail(this->nv_ext);
+            this->alphas.col(0) = coef.tail(this->nv_ext);
         }
 
         // unstandardize predictors w/ external data (x)
@@ -137,15 +137,15 @@ public:
             if (this->nv_ext > 0) {
                 z_alpha += this->ext * coef.tail(this->nv_ext);
             }
-            this->betas.col(0) = this->ys * (z_alpha.cwiseProduct(this->xs.head(this->nv_x)) + coef.head(this->nv_x));
+            this->betas.col(0) = z_alpha.cwiseProduct(this->xs.head(this->nv_x)) + coef.head(this->nv_x);
         }
         else {
-            this->betas.col(0) = this->ys * coef.head(this->nv_x);
+            this->betas.col(0) = coef.head(this->nv_x);
         }
 
         // unstandardize predictors w/o external data (fixed)
         if (this->nv_fixed > 0) {
-            this->gammas.col(0) = this->ys * coef.segment(this->nv_x, this->nv_fixed);
+            this->gammas.col(0) = coef.segment(this->nv_x, this->nv_fixed);
         }
 
         // compute 1st level intercept
