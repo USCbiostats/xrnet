@@ -56,7 +56,7 @@ Rcpp::List fitModel(const TX & x,
     );
 
     // standardize y if continuous
-    Eigen::VectorXd yscaled = y;
+    Eigen::VectorXd yscaled(y.size());
     double ys = 1.0;
     double ym = 0.0;
     if (family == "gaussian") {
@@ -64,7 +64,7 @@ Rcpp::List fitModel(const TX & x,
         ys = std::sqrt(y.cwiseProduct(y.cwiseProduct(weights_user)).sum() - ym * ym);
         if (!intr[0])
             ym = 0.0;
-        yscaled.array() = (y.array() - ym) / ys;
+        yscaled.array() = y.array() / ys;
     }
 
     // choose solver based on outcome

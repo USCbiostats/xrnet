@@ -160,7 +160,7 @@ public:
 
         // compute 1st level intercepts
         if (intr) {
-            beta0[idx] = (ym + b0) - cent.head(nv_x).dot(betas.col(idx));
+            beta0[idx] = b0 - cent.head(nv_x).dot(betas.col(idx));
             if (nv_fixed > 0) {
                 beta0[idx] -= cent.segment(nv_x, nv_fixed).dot(gammas.col(idx));
             }
