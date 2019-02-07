@@ -118,10 +118,11 @@ public:
     MatXd getAlphas(){return alphas;};
 
     // save results for single penalty
-    virtual void add_results(const double & b0, VecXd coef, const int & idx) {
+    virtual void add_results(double b0, VecXd coef, const int & idx) {
 
-        // unstandardize variables
+        // unstandardize variables by sd of y (if continuous)
         coef = ys * coef.cwiseProduct(xs);
+        b0 *= ys;
 
         // get external coefficients
         if (nv_ext > 0) {
@@ -160,7 +161,7 @@ public:
 
         // compute 1st level intercepts
         if (intr) {
-            beta0[idx] = b0 - cent.head(nv_x).dot(betas.col(idx));
+            beta0[idx] = (ym + b0) - cent.head(nv_x).dot(betas.col(idx));
             if (nv_fixed > 0) {
                 beta0[idx] -= cent.segment(nv_x, nv_fixed).dot(gammas.col(idx));
             }

@@ -118,10 +118,11 @@ public:
     MatXd get_error_mat(){return error_mat;};
 
     // save results for single penalty
-    virtual void add_results(const double & b0, VecXd coef, const int & idx) {
+    virtual void add_results(double b0, VecXd coef, const int & idx) {
 
         // unstandardize variables
         coef = this->ys * coef.cwiseProduct(this->xs);
+        b0 *= this->ys;
 
         // get external coefficients
         if (this->nv_ext > 0) {

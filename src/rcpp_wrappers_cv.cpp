@@ -66,7 +66,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
         ys = std::sqrt(y.cwiseProduct(y.cwiseProduct(weights_user)).sum() - ym * ym);
         if (!intr[0])
             ym = 0.0;
-        yscaled.array() = (y.array() - ym) / ys;
+        yscaled.array() = (yscaled.array() - ym) / ys;
     }
 
     // choose solver based on outcome
@@ -110,7 +110,8 @@ Eigen::VectorXd fitModelCV(const TX & x,
     Eigen::VectorXd path_ext(num_penalty[1]);
     if (nv_ext > 0) {
         compute_penalty(
-            path_ext, penalty_user_ext, penalty_type[nv_x + nv_fixed + intr[1]],
+            path_ext, penalty_user_ext,
+            penalty_type[nv_x + nv_fixed + intr[1]],
             penalty_ratio[1], solver->getGradient(),
             solver->getCmult(), nv_x + nv_fixed + intr[1],
             nv_total, ys
@@ -129,7 +130,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
         for (int m2 = 0; m2 < num_penalty[1]; ++m2, ++idx_pen) {
             solver->setPenalty(path_ext[m2], 1);
             if (m2 == 0 && num_penalty[1] > 1) {
-                solver->warm_start(y, b0_outer, betas_outer);
+                solver->warm_start(yscaled, b0_outer, betas_outer);
                 solver->update_strong(path, path_ext, m, m2);
                 solver->solve();
                 b0_outer = solver->getBeta0();

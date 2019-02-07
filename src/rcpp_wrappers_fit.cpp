@@ -56,7 +56,7 @@ Rcpp::List fitModel(const TX & x,
     );
 
     // standardize y if continuous
-    Eigen::VectorXd yscaled(y.size());
+    Eigen::VectorXd yscaled = y;
     double ys = 1.0;
     double ym = 0.0;
     if (family == "gaussian") {
@@ -64,7 +64,7 @@ Rcpp::List fitModel(const TX & x,
         ys = std::sqrt(y.cwiseProduct(y.cwiseProduct(weights_user)).sum() - ym * ym);
         if (!intr[0])
             ym = 0.0;
-        yscaled.array() = y.array() / ys;
+        yscaled.array() = (yscaled.array() - ym) / ys;
     }
 
     // choose solver based on outcome
@@ -83,8 +83,8 @@ Rcpp::List fitModel(const TX & x,
     else if (family == "binomial") {
         solver.reset(
             new BinomialSolver<TX>(
-                yscaled, x, fixedmap, xz, cent.data(), xv.data(), xs.data(),
-                weights_user, intr[0], penalty_type.data(),
+                yscaled, x, fixedmap, xz, cent.data(), xv.data(),
+                xs.data(), weights_user, intr[0], penalty_type.data(),
                 cmult.data(), quantiles, upper_cl.data(),
                 lower_cl.data(), ne, nx, thresh, maxit
             )
@@ -134,7 +134,7 @@ Rcpp::List fitModel(const TX & x,
         for (int m2 = 0; m2 < num_penalty[1]; ++m2, ++idx_pen) {
             solver->setPenalty(path_ext[m2], 1);
             if (m2 == 0 && num_penalty[1] > 1) {
-                solver->warm_start(y, b0_outer, betas_outer);
+                solver->warm_start(yscaled, b0_outer, betas_outer);
                 solver->update_strong(path, path_ext, m, m2);
                 solver->solve();
                 b0_outer = solver->getBeta0();
