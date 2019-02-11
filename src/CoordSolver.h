@@ -275,7 +275,7 @@ public:
                 }
                 if (betas[idx] != bk) {
                     double del = betas[idx] - bk;
-                    residuals -= del * xs[idx] * (x.col(k) - xm[idx]  * Eigen::VectorXd::Ones(n)).cwiseProduct(wgts);
+                    residuals -= del * xs[idx] * (x.col(k) - xm[idx] * Eigen::VectorXd::Ones(n)).cwiseProduct(wgts);
                     dlx = std::max(dlx, xv[idx] * del * del);
                 }
             }
