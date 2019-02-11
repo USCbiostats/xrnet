@@ -21,3 +21,4 @@ test_that("gaussian", {
         check.attribute = FALSE
     )
 })
+

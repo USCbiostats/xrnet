@@ -244,8 +244,8 @@ public:
                 else {
                     betas[idx] = 0.0;
                 }
-                double del = betas[idx] - bk;
-                if (abs(del) > 0.0) {
+                if (betas[idx] != bk) {
+                    double del = betas[idx] - bk;
                     if (!active_set[idx]) {
                         active_set[idx] = true;
                     }
@@ -273,8 +273,7 @@ public:
                 else {
                     betas[idx] = 0.0;
                 }
-                double del = betas[idx] - bk;
-                if (abs(del) > 0.0) {
+                if (betas[idx] != bk) {
                     double del = betas[idx] - bk;
                     residuals -= del * xs[idx] * (x.col(k) - xm[idx]  * Eigen::VectorXd::Ones(n)).cwiseProduct(wgts);
                     dlx = std::max(dlx, xv[idx] * del * del);
@@ -363,6 +362,10 @@ public:
             }
         }
         if (XZ.cols() > 0) {
+            if (m2 == 0) {
+                std::fill(strong_set.begin() + X.cols() + Fixed.cols(), strong_set.end(), false);
+                std::fill(active_set.begin() + X.cols() + Fixed.cols(), active_set.end(), false);
+            }
             penalty_old = m2 > 1 ? path[m2 - 1] : 0.0;
             lam_diff = 2.0 * path_ext[m2] - penalty_old;
             for (int k = 0; k < XZ.cols(); ++k, ++idx) {
