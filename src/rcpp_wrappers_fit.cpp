@@ -169,6 +169,8 @@ Rcpp::List fitModel(const TX & x,
             Rcpp::Named("penalty") = ys * path,
             Rcpp::Named("penalty_ext") = ys * path_ext,
             Rcpp::Named("num_passes") = solver->getNumPasses(),
+            Rcpp::Named("strong_sum") = strong_sum,
+            Rcpp::Named("active_sum") = active_sum,
             Rcpp::Named("family") = family,
             Rcpp::Named("status") = status
         );
