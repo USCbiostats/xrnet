@@ -102,8 +102,8 @@ public:
     b0(0.0),
     b0_prior(0.0),
     tolerance_irls(tolerance_),
-    strong_set(nv_total),
-    active_set(nv_total)
+    strong_set(nv_total, false),
+    active_set(nv_total, false)
     {
         betas = Eigen::VectorXd::Zero(nv_total);
         betas_prior = Eigen::VectorXd::Zero(nv_total);
@@ -160,8 +160,8 @@ public:
         b0(0.0),
         b0_prior(0.0),
         tolerance_irls(tolerance_),
-        strong_set(nv_total),
-        active_set(nv_total)
+        strong_set(nv_total, false),
+        active_set(nv_total, false)
     {
         betas = Eigen::VectorXd::Zero(nv_total);
         betas_prior = Eigen::VectorXd::Zero(nv_total);
