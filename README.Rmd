@@ -1,5 +1,5 @@
 ---
-title: hierr:\ R Package for Hierarchical Regularized Regression
+title: xrnet:\ R Package for Hierarchical Regularized Regression
 output: github_document
 ---
 
@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The **hierr** R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of predictors on an outcome of interest. Let $y$ be an n-dimensional observed outcome vector, $X$ be a set of *p* potential predictors observed on the *n* observations, and $Z$ be a set of *q* external features available for the *p* predictors. Our model builds off the standard two-level hierarchical regression model,
+The **xrnet** R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of predictors on an outcome of interest. Let $y$ be an n-dimensional observed outcome vector, $X$ be a set of *p* potential predictors observed on the *n* observations, and $Z$ be a set of *q* external features available for the *p* predictors. Our model builds off the standard two-level hierarchical regression model,
 
 ![img](https://latex.codecogs.com/gif.latex?y%20%3D%20X%5Cbeta%20&plus;%20%5Cepsilon)
 
@@ -40,24 +40,24 @@ This package extends the coordinate descent algorithm of Friedman et al. 2010 (u
 
 1. For Windows users, install [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an R package)
 2. Install the R package [devtools](https://github.com/hadley/devtools)
-3. Install hierr package with the install_github function (optionally install most recent / potentially unstable development branch)
+3. Install xrnet package with the install_github function (optionally install most recent / potentially unstable development branch)
 ```{r, eval = FALSE}
 # Master branch
-devtools::install_github("USCbiostats/hierr")
+devtools::install_github("USCbiostats/xrnet")
 
 # Or the development branch
-devtools::install_github("USCbiostats/hierr", ref = "development")
+devtools::install_github("USCbiostats/xrnet", ref = "development")
 ```
 
 4. Load the package 
 
 ```{r load package}
-library(hierr)
+library(xrnet)
 ```
 
 # A First Example
 
-As an example of how you might use the hierr package, we have provided a small set of simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:
+As an example of how you might use the xrnet package, we have provided a small set of simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:
 
 ```{r load data}
 data(GaussianExample)
@@ -68,7 +68,7 @@ data(GaussianExample)
 To fit a linear hierarchical regularized regression model, use the main `hierr` function. At a minimum, you should specify the predictor matrix `x`, outcome variable `y`, and `family` (outcome distribution). The `external` option allows you to incorporate external data in the regularized regression model. If you do not include external data, a standard regularized regression model will be fit. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.
 
 ```{r fit simple model}
-hierr_model <- hierr(x = x_linear, 
+xrnet_model <- hierr(x = x_linear, 
                      y = y_linear, 
                      external = ext_linear, 
                      family = "gaussian")
@@ -95,7 +95,7 @@ myPenalty <- define_penalty(penalty_type = 0,
                             num_penalty = 30, 
                             num_penalty_ext = 30)
 
-hierr_model <- hierr(x = x_linear, 
+xrnet_model <- hierr(x = x_linear, 
                      y = y_linear, 
                      external = ext_linear, 
                      family = "gaussian", 
@@ -111,7 +111,7 @@ set.seed(123)
 ```
 
 ```{r fit k-fold cv}
-cvhierr <- cv_hierr(x = x_linear, 
+cvxrnet <- cv_hierr(x = x_linear, 
                     y = y_linear, 
                     external = ext_linear, 
                     family = "gaussian")
@@ -119,12 +119,12 @@ cvhierr <- cv_hierr(x = x_linear,
 To visualize the results of the cross-validation we provide a contour plot of the mean cross-validation error across the grid of penalties with the `plot` function.
 
 ```{r cv_results}
-plot(cvhierr)
+plot(cvxrnet)
 ```
 
 The `predict` function can be used to predict responses and to obtain the coefficient estimates (or the `coef` function) at the optimal penalty combination (default) or any other penalty combination.
 
 ```{r cv pred and coef, eval = FALSE}
-predy <- predict(cvhierr, newdata = x_linear)
-estimates <- coef(cvhierr)
+predy <- predict(cvxrnet, newdata = x_linear)
+estimates <- coef(cvxrnet)
 ```

@@ -1,4 +1,4 @@
-Package: hierr
+Package: xrnet
 Type: Package
 Title: Hierarchical Regularized Regression
 Version: 0.5.0

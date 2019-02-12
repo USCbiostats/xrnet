@@ -1,4 +1,4 @@
-#' @useDynLib hierr, .registration = TRUE
+#' @useDynLib xrnet, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 #' @importFrom stats predict
 #' @importFrom bigmemory is.big.matrix

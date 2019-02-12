@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // computeResponseRcpp
 Eigen::MatrixXd computeResponseRcpp(SEXP X, const int& mattype_x, const Eigen::Map<Eigen::MatrixXd> Fixed, const Eigen::Map<Eigen::VectorXd> beta0, const Eigen::Map<Eigen::MatrixXd> betas, const Eigen::Map<Eigen::MatrixXd> gammas, const std::string& response_type, const std::string& family);
-RcppExport SEXP _hierr_computeResponseRcpp(SEXP XSEXP, SEXP mattype_xSEXP, SEXP FixedSEXP, SEXP beta0SEXP, SEXP betasSEXP, SEXP gammasSEXP, SEXP response_typeSEXP, SEXP familySEXP) {
+RcppExport SEXP _xrnet_computeResponseRcpp(SEXP XSEXP, SEXP mattype_xSEXP, SEXP FixedSEXP, SEXP beta0SEXP, SEXP betasSEXP, SEXP gammasSEXP, SEXP response_typeSEXP, SEXP familySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -26,7 +26,7 @@ END_RCPP
 }
 // fitModelCVRcpp
 Eigen::VectorXd fitModelCVRcpp(SEXP x, const int mattype_x, const Eigen::Map<Eigen::VectorXd> y, SEXP ext, const bool& is_sparse_ext, const Eigen::Map<Eigen::MatrixXd> fixed, Eigen::VectorXd weights_user, const Rcpp::LogicalVector& intr, const Rcpp::LogicalVector& stnd, const Eigen::Map<Eigen::VectorXd> penalty_type, const Eigen::Map<Eigen::VectorXd> cmult, const Eigen::Map<Eigen::VectorXd> quantiles, const Rcpp::IntegerVector& num_penalty, const Rcpp::NumericVector& penalty_ratio, const Eigen::Map<Eigen::VectorXd> penalty_user, const Eigen::Map<Eigen::VectorXd> penalty_user_ext, Eigen::VectorXd lower_cl, Eigen::VectorXd upper_cl, const std::string& family, const std::string& user_loss, const Eigen::Map<Eigen::VectorXi> test_idx, const double& thresh, const int& maxit, const int& ne, const int& nx);
-RcppExport SEXP _hierr_fitModelCVRcpp(SEXP xSEXP, SEXP mattype_xSEXP, SEXP ySEXP, SEXP extSEXP, SEXP is_sparse_extSEXP, SEXP fixedSEXP, SEXP weights_userSEXP, SEXP intrSEXP, SEXP stndSEXP, SEXP penalty_typeSEXP, SEXP cmultSEXP, SEXP quantilesSEXP, SEXP num_penaltySEXP, SEXP penalty_ratioSEXP, SEXP penalty_userSEXP, SEXP penalty_user_extSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP familySEXP, SEXP user_lossSEXP, SEXP test_idxSEXP, SEXP threshSEXP, SEXP maxitSEXP, SEXP neSEXP, SEXP nxSEXP) {
+RcppExport SEXP _xrnet_fitModelCVRcpp(SEXP xSEXP, SEXP mattype_xSEXP, SEXP ySEXP, SEXP extSEXP, SEXP is_sparse_extSEXP, SEXP fixedSEXP, SEXP weights_userSEXP, SEXP intrSEXP, SEXP stndSEXP, SEXP penalty_typeSEXP, SEXP cmultSEXP, SEXP quantilesSEXP, SEXP num_penaltySEXP, SEXP penalty_ratioSEXP, SEXP penalty_userSEXP, SEXP penalty_user_extSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP familySEXP, SEXP user_lossSEXP, SEXP test_idxSEXP, SEXP threshSEXP, SEXP maxitSEXP, SEXP neSEXP, SEXP nxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -61,7 +61,7 @@ END_RCPP
 }
 // fitModelRcpp
 Rcpp::List fitModelRcpp(SEXP x, const int& mattype_x, const Eigen::Map<Eigen::VectorXd> y, SEXP ext, const bool& is_sparse_ext, const Eigen::Map<Eigen::MatrixXd> fixed, Eigen::VectorXd weights_user, const Rcpp::LogicalVector& intr, const Rcpp::LogicalVector& stnd, const Eigen::Map<Eigen::VectorXd> penalty_type, const Eigen::Map<Eigen::VectorXd> cmult, const Eigen::Map<Eigen::VectorXd> quantiles, const Rcpp::IntegerVector& num_penalty, const Rcpp::NumericVector& penalty_ratio, const Eigen::Map<Eigen::VectorXd> penalty_user, const Eigen::Map<Eigen::VectorXd> penalty_user_ext, Eigen::VectorXd lower_cl, Eigen::VectorXd upper_cl, const std::string& family, const double& thresh, const int& maxit, const int& ne, const int& nx);
-RcppExport SEXP _hierr_fitModelRcpp(SEXP xSEXP, SEXP mattype_xSEXP, SEXP ySEXP, SEXP extSEXP, SEXP is_sparse_extSEXP, SEXP fixedSEXP, SEXP weights_userSEXP, SEXP intrSEXP, SEXP stndSEXP, SEXP penalty_typeSEXP, SEXP cmultSEXP, SEXP quantilesSEXP, SEXP num_penaltySEXP, SEXP penalty_ratioSEXP, SEXP penalty_userSEXP, SEXP penalty_user_extSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP familySEXP, SEXP threshSEXP, SEXP maxitSEXP, SEXP neSEXP, SEXP nxSEXP) {
+RcppExport SEXP _xrnet_fitModelRcpp(SEXP xSEXP, SEXP mattype_xSEXP, SEXP ySEXP, SEXP extSEXP, SEXP is_sparse_extSEXP, SEXP fixedSEXP, SEXP weights_userSEXP, SEXP intrSEXP, SEXP stndSEXP, SEXP penalty_typeSEXP, SEXP cmultSEXP, SEXP quantilesSEXP, SEXP num_penaltySEXP, SEXP penalty_ratioSEXP, SEXP penalty_userSEXP, SEXP penalty_user_extSEXP, SEXP lower_clSEXP, SEXP upper_clSEXP, SEXP familySEXP, SEXP threshSEXP, SEXP maxitSEXP, SEXP neSEXP, SEXP nxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -94,13 +94,13 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_hierr_computeResponseRcpp", (DL_FUNC) &_hierr_computeResponseRcpp, 8},
-    {"_hierr_fitModelCVRcpp", (DL_FUNC) &_hierr_fitModelCVRcpp, 25},
-    {"_hierr_fitModelRcpp", (DL_FUNC) &_hierr_fitModelRcpp, 23},
+    {"_xrnet_computeResponseRcpp", (DL_FUNC) &_xrnet_computeResponseRcpp, 8},
+    {"_xrnet_fitModelCVRcpp", (DL_FUNC) &_xrnet_fitModelCVRcpp, 25},
+    {"_xrnet_fitModelRcpp", (DL_FUNC) &_xrnet_fitModelRcpp, 23},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_hierr(DllInfo *dll) {
+RcppExport void R_init_xrnet(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
