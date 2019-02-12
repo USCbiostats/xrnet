@@ -18,7 +18,8 @@ that may be informative for the effects of predictors on an outcome of
 interest. Let \(y\) be an n-dimensional observed outcome vector, \(X\)
 be a set of *p* potential predictors observed on the *n* observations,
 and \(Z\) be a set of *q* external features available for the *p*
-predictors. Our model builds off the standard two-stage regression
+predictors. Our model builds off the standard two-level hierarchical
+regression
 model,
 
 ![img](https://latex.codecogs.com/gif.latex?y%20%3D%20X%5Cbeta%20+%20%5Cepsilon)
@@ -52,8 +53,8 @@ variable-specific:
 This package extends the coordinate descent algorithm of Friedman et
 al. 2010 (used in the R package **glmnet**) to allow for this
 variable-specific generalization and to fit the model described above.
-Currently, we allow for continuous outcomes, but plan to extend to other
-outcomes (i.e. binomial, count).
+Currently, we allow for continuous and binary outcomes, but plan to
+extend to other outcomes (i.e. survival) in the next release.
 
 # Setup
 
@@ -62,21 +63,21 @@ outcomes (i.e. binomial, count).
     package)
 2.  Install the R package [devtools](https://github.com/hadley/devtools)
 3.  Install hierr package with the install\_github function (optionally
-    you can install the most recent / potentially unstable development
-    branch)
-4.  Load the package
+    install most recent / potentially unstable development branch)
 
 <!-- end list -->
 
 ``` r
-library(devtools)
-
 # Master branch
-install_github("USCbiostats/hierr")
+devtools::install_github("USCbiostats/hierr")
 
 # Or the development branch
-install_github("USCbiostats/hierr", ref = "development")
+devtools::install_github("USCbiostats/hierr", ref = "development")
 ```
+
+4.  Load the package
+
+<!-- end list -->
 
 ``` r
 library(hierr)
@@ -169,3 +170,12 @@ plot(cvhierr)
 ```
 
 ![](readme_files/readmecv_results-1.png)<!-- -->
+
+The `predict` function can be used to predict responses and to obtain
+the coefficient estimates (or the `coef` function) at the optimal
+penalty combination (default) or any other penalty combination.
+
+``` r
+predy <- predict(cvhierr, newdata = x_linear)
+estimates <- coef(cvhierr)
+```
