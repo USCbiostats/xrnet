@@ -127,6 +127,7 @@ Rcpp::List fitModel(const TX & x,
     Eigen::VectorXd betas_outer = solver->getBetas();
     Eigen::VectorXd strong_sum = Eigen::VectorXd::Zero(num_combn);
     Eigen::VectorXd active_sum = Eigen::VectorXd::Zero(num_combn);
+    Eigen::VectorXd nzero = Eigen::VectorXd::Zero(num_combn);
 
     int idx_pen = 0;
     for (int m = 0; m < num_penalty[0]; ++m) {
@@ -146,6 +147,7 @@ Rcpp::List fitModel(const TX & x,
             }
             strong_sum[idx_pen] = sum(solver->getStrongSet());
             active_sum[idx_pen] = sum(solver->getActiveSet());
+            nzero[idx_pen] = (solver->getBetas().array() != 0.0).count();
             estimates.add_results(solver->getBeta0(), solver->getBetas(), idx_pen);
         }
     }
@@ -171,6 +173,7 @@ Rcpp::List fitModel(const TX & x,
             Rcpp::Named("num_passes") = solver->getNumPasses(),
             Rcpp::Named("strong_sum") = strong_sum,
             Rcpp::Named("active_sum") = active_sum,
+            Rcpp::Named("nzero") = nzero,
             Rcpp::Named("family") = family,
             Rcpp::Named("status") = status
         );
