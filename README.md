@@ -4,10 +4,10 @@ xrnet: R Package for Hierarchical Regularized Regression
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![Build
-Status](https://travis-ci.org/USCbiostats/hierr.svg?branch=development)](https://travis-ci.org/USCbiostats/hierr)
+Status](https://travis-ci.org/USCbiostats/xrnet.svg?branch=development)](https://travis-ci.org/USCbiostats/xrnet)
 [![Build
-status](https://ci.appveyor.com/api/projects/status/6pr8hlc4wg9vjcxd?svg=true)](https://ci.appveyor.com/project/gmweaver/hierr)
-[![codecov](https://codecov.io/gh/USCbiostats/hierr/branch/development/graph/badge.svg)](https://codecov.io/gh/USCbiostats/hierr)
+status](https://ci.appveyor.com/api/projects/status/6pr8hlc4wg9vjcxd?svg=true)](https://ci.appveyor.com/project/gmweaver/xrnet)
+[![codecov](https://codecov.io/gh/USCbiostats/xrnet/branch/development/graph/badge.svg)](https://codecov.io/gh/USCbiostats/xrnet)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
 # Introduction
