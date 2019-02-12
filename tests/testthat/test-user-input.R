@@ -1,5 +1,4 @@
 context("user input check")
-library(hierr)
 
 test_that("throw error when matching family not found", {
 
