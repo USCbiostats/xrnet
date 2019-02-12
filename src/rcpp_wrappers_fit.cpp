@@ -125,11 +125,6 @@ Rcpp::List fitModel(const TX & x,
     // solve grid of penalties in decreasing order
     double b0_outer = solver->getBeta0();
     Eigen::VectorXd betas_outer = solver->getBetas();
-    Eigen::VectorXd strong_sum = Eigen::VectorXd::Zero(num_combn);
-    Eigen::VectorXd active_sum = Eigen::VectorXd::Zero(num_combn);
-    Eigen::VectorXd nzero = Eigen::VectorXd::Zero(num_combn);
-    Eigen::VectorXi nlp = Eigen::VectorXi::Zero(num_combn);
-    int nlp_old = 0;
 
     int idx_pen = 0;
     for (int m = 0; m < num_penalty[0]; ++m) {
@@ -147,11 +142,6 @@ Rcpp::List fitModel(const TX & x,
                 solver->update_strong(path, path_ext, m, m2);
                 solver->solve();
             }
-            strong_sum[idx_pen] = sum(solver->getStrongSet());
-            active_sum[idx_pen] = sum(solver->getActiveSet());
-            nzero[idx_pen] = (solver->getBetas().array() != 0.0).count();
-            nlp[idx_pen] = solver->getNumPasses() - nlp_old;
-            nlp_old = solver->getNumPasses();
             estimates.add_results(solver->getBeta0(), solver->getBetas(), idx_pen);
         }
     }
@@ -175,12 +165,6 @@ Rcpp::List fitModel(const TX & x,
             Rcpp::Named("penalty") = ys * path,
             Rcpp::Named("penalty_ext") = ys * path_ext,
             Rcpp::Named("num_passes") = solver->getNumPasses(),
-            Rcpp::Named("nlp") = nlp,
-            Rcpp::Named("strong_sum") = strong_sum,
-            Rcpp::Named("active_sum") = active_sum,
-            Rcpp::Named("nzero") = nzero,
-            Rcpp::Named("xm") = xm,
-            Rcpp::Named("cent") = cent,
             Rcpp::Named("family") = family,
             Rcpp::Named("status") = status
         );

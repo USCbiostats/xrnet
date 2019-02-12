@@ -366,7 +366,7 @@ public:
                 std::fill(strong_set.begin() + X.cols() + Fixed.cols(), strong_set.end(), false);
                 std::fill(active_set.begin() + X.cols() + Fixed.cols(), active_set.end(), false);
             }
-            penalty_old = m2 > 1 ? path[m2 - 1] : 0.0;
+            penalty_old = m2 > 1 ? path_ext[m2 - 1] : 0.0;
             lam_diff = 2.0 * path_ext[m2] - penalty_old;
             for (int k = 0; k < XZ.cols(); ++k, ++idx) {
                 if (!strong_set[idx]) {
