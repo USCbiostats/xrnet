@@ -58,7 +58,7 @@ test_that("x standardized, intercept",{
     myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 1],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -67,7 +67,7 @@ test_that("x standardized, intercept",{
                  tolerance = 1e-5)
 
     expect_equal(b0_glmnet[1],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -85,7 +85,7 @@ test_that("x NOT standardized, intercept",{
     myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 2],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -95,7 +95,7 @@ test_that("x NOT standardized, intercept",{
                  tolerance = 1e-5)
 
     expect_equal(b0_glmnet[2],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -114,7 +114,7 @@ test_that("x standardized, NO intercept",{
     myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 3],
-                hierr(x = xtest,
+                xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
@@ -132,7 +132,7 @@ test_that("x NOT standardized, NO intercept",{
     myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 4],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
@@ -141,7 +141,7 @@ test_that("x NOT standardized, NO intercept",{
                  tolerance = 1e-5)
 
     expect_equal(b0_glmnet[4],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
@@ -162,7 +162,7 @@ test_that("x standardized, intercept",{
     myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 5],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -171,7 +171,7 @@ test_that("x standardized, intercept",{
                  tolerance = 1e-5)
 
     expect_equal(b0_glmnet[5],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -189,7 +189,7 @@ test_that("x NOT standardized, intercept",{
     myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 6],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -199,7 +199,7 @@ test_that("x NOT standardized, intercept",{
                  tolerance = 1e-5)
 
     expect_equal(b0_glmnet[6],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -218,7 +218,7 @@ test_that("x standardized, NO intercept",{
     myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 7],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
@@ -236,7 +236,7 @@ test_that("x NOT standardized, NO intercept",{
     myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 8],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
@@ -257,7 +257,7 @@ test_that("x standardized, intercept",{
     myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 9],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -266,7 +266,7 @@ test_that("x standardized, intercept",{
                  tolerance = 1e-5)
 
     expect_equal(b0_glmnet[9],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -284,7 +284,7 @@ test_that("x NOT standardized, intercept",{
     myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 10],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -294,7 +294,7 @@ test_that("x NOT standardized, intercept",{
                  tolerance = 1e-5)
 
     expect_equal(b0_glmnet[10],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(T, F),
@@ -313,7 +313,7 @@ test_that("x standardized, NO intercept",{
     myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 11],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),
@@ -331,7 +331,7 @@ test_that("x NOT standardized, NO intercept",{
     myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
 
     expect_equal(betas_glmnet[, 12],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        family = "gaussian",
                        intercept = c(F, F),

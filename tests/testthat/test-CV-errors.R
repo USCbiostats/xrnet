@@ -9,14 +9,14 @@ test_that("gaussian", {
 
     expect_equal(
         cv_mean,
-        check <- cv_hierr(x = xtest,
-                 y = ytest,
-                 external = ztest,
-                 family = "gaussian",
-                 penalty = myPenalty,
-                 control = list(tolerance = 1e-10),
-                 loss = "mse",
-                 foldid = foldid)$cv_mean,
+        tune_xrnet(x = xtest,
+                   y = ytest,
+                   external = ztest,
+                   family = "gaussian",
+                   penalty = myPenalty,
+                   control = list(tolerance = 1e-10),
+                   loss = "mse",
+                   foldid = foldid)$cv_mean,
         tolerance = 1e-5,
         check.attribute = FALSE
     )
@@ -30,7 +30,7 @@ test_that("gaussian", {
 #errormat <- matrix(NA, nrow = 400, ncol = 5)
 #for (k in 1:5) {
 #
-#    fit_fold <- hierr(x = xtest[foldid != k,],
+#    fit_fold <- xrnet(x = xtest[foldid != k,],
 #                      y = ytest[foldid != k],
 #                      external = ztest,
 #                      family = "gaussian",

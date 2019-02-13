@@ -5,7 +5,7 @@
 #' @importFrom bigmemory describe
 #' @importFrom bigmemory attach.big.matrix
 #'
-#' @description k-fold cross-validation for hierarchical regularized regression \code{\link{hierr}}
+#' @description k-fold cross-validation for hierarchical regularized regression \code{\link{xrnet}}
 #'
 #' @param x predictor design matrix of dimension \eqn{n x p}, matrix options include:
 #' \itemize{
@@ -39,31 +39,31 @@
 #' @param nfolds number of folds for cross-validation. Default is 5.
 #' @param foldid (optional) vector that identifies user-specified fold for each observation. If NULL, folds are automatically generated.
 #' @param parallel use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.
-#' @param control specifies hierr control object. See \code{\link{hierr.control}} for more details.
-#' @return A list of class \code{cvhierr} with components
+#' @param control specifies xrnet control object. See \code{\link{xrnet.control}} for more details.
+#' @return A list of class \code{tune_xrnet} with components
 #' \item{cv_mean}{mean cross-validated error for each penalty combination. Object returned is
 #' a vector if there is no external data (external = NULL) and matrix if there is external data.}
 #' \item{cv_sd}{estimated standard deviation for cross-validated errors}
 #' \item{opt_loss}{the value for the optimal cross-validated error}
 #' \item{opt_penalty}{first-level penalty value that achieves the optimal loss}
 #' \item{opt_penalty_ext}{second-level penalty value that achieves the optimal loss (if external data is present)}
-#' \item{fitted_model}{fitted hierr object using all data, see \code{\link{hierr}} for details of object}
+#' \item{fitted_model}{fitted xrnet object using all data, see \code{\link{xrnet}} for details of object}
 
 #' @export
-cv_hierr <- function(x,
-                     y,
-                     external = NULL,
-                     unpen = NULL,
-                     family = c("gaussian", "binomial"),
-                     penalty = define_penalty(),
-                     weights = NULL,
-                     standardize = c(TRUE, TRUE),
-                     intercept = c(TRUE, FALSE),
-                     loss = c("mse", "mae", "auc"),
-                     nfolds = 5,
-                     foldid = NULL,
-                     parallel = FALSE,
-                     control = list())
+tune_xrnet <- function(x,
+                       y,
+                       external = NULL,
+                       unpen = NULL,
+                       family = c("gaussian", "binomial"),
+                       penalty = define_penalty(),
+                       weights = NULL,
+                       standardize = c(TRUE, TRUE),
+                       intercept = c(TRUE, FALSE),
+                       loss = c("mse", "mae", "auc"),
+                       nfolds = 5,
+                       foldid = NULL,
+                       parallel = FALSE,
+                       control = list())
 {
 
     # Check family argument
@@ -107,14 +107,14 @@ cv_hierr <- function(x,
     # check y type
     y <- drop(as.numeric(y))
 
-    # Get arguments to cvhierr() function and filter for calls to fitting procedure
-    hierr_call <- match.call(expand.dots = TRUE)
-    cv_args <- match(c("loss", "nfolds", "foldid", "parallel"), names(hierr_call), FALSE)
+    # Get arguments to tune_xrnet() function and filter for calls to fitting procedure
+    xrnet_call <- match.call(expand.dots = TRUE)
+    cv_args <- match(c("loss", "nfolds", "foldid", "parallel"), names(xrnet_call), FALSE)
 
     if (any(cv_args)) {
-        hierr_call <- hierr_call[-cv_args]
+        xrnet_call <- xrnet_call[-cv_args]
     }
-    hierr_call[[1]] <- as.name("hierr")
+    xrnet_call[[1]] <- as.name("xrnet")
 
     # Set sample size / weights
     n <- length(y)
@@ -123,7 +123,7 @@ cv_hierr <- function(x,
     }
 
     # Fit model on all training data
-    hierr_object <- hierr(x = x,
+    xrnet_object <- xrnet(x = x,
                           y = y,
                           external = external,
                           unpen = unpen,
@@ -133,7 +133,7 @@ cv_hierr <- function(x,
                           intercept = intercept,
                           penalty = penalty,
                           control = control)
-    hierr_object$call <- hierr_call
+    xrnet_object$call <- xrnet_call
 
     # Check whether fixed and external are empty
     if (is.null(unpen)) {
@@ -151,11 +151,11 @@ cv_hierr <- function(x,
 
     # Prepare penalty and control object for folds
     penalty_fold <- penalty
-    penalty_fold$user_penalty <- hierr_object$penalty
-    if (is.null(hierr_object$penalty_ext))
+    penalty_fold$user_penalty <- xrnet_object$penalty
+    if (is.null(xrnet_object$penalty_ext))
         penalty_fold$user_penalty_ext <- as.double(0.0)
     else
-        penalty_fold$user_penalty_ext <- hierr_object$penalty_ext
+        penalty_fold$user_penalty_ext <- xrnet_object$penalty_ext
 
     penalty_fold <- initialize_penalty(penalty_fold,
                                        NROW(x),
@@ -168,7 +168,7 @@ cv_hierr <- function(x,
     num_pen <- penalty_fold$num_penalty
     num_pen_ext <- penalty_fold$num_penalty_ext
 
-    control <- do.call("hierr.control", control)
+    control <- do.call("xrnet.control", control)
     control <- initialize_control(control, NCOL(x), nc_unpen, nc_ext, intercept)
 
     # Randomly sample observations into folds / check nfolds
@@ -190,7 +190,7 @@ cv_hierr <- function(x,
     if (parallel) {
         if (is.big.matrix(x)) {
             xdesc <- describe(x)
-            errormat <- foreach(k = 1L:nfolds, .packages = c("hierr", "bigmemory"), .combine = cbind) %dopar% {
+            errormat <- foreach(k = 1L:nfolds, .packages = c("xrnet", "bigmemory"), .combine = cbind) %dopar% {
                 weights_train <- weights
                 weights_train[foldid == k] <- 0.0
                 test_idx <- as.integer(which(foldid == k) - 1)
@@ -226,7 +226,7 @@ cv_hierr <- function(x,
                                           pmax = control$pmax)
             }
         } else {
-            errormat <- foreach(k = 1L:nfolds, .packages = c("hierr", "Matrix"), .combine = cbind) %dopar% {
+            errormat <- foreach(k = 1L:nfolds, .packages = c("xrnet", "Matrix"), .combine = cbind) %dopar% {
                 weights_train <- weights
                 weights_train[foldid == k] <- 0.0
                 test_idx <- as.integer(which(foldid == k) - 1)
@@ -303,11 +303,11 @@ cv_hierr <- function(x,
     cv_sd <- sqrt(rowSums((errormat - cv_mean)^2) / (nfolds - 1))
     cv_mean <- matrix(cv_mean, nrow = num_pen, byrow = TRUE)
     cv_sd <- matrix(cv_sd, nrow = num_pen, byrow = TRUE)
-    row.names(cv_mean) <- rev(sort(hierr_object$penalty))
-    row.names(cv_sd) <- rev(sort(hierr_object$penalty))
+    row.names(cv_mean) <- rev(sort(xrnet_object$penalty))
+    row.names(cv_sd) <- rev(sort(xrnet_object$penalty))
     if (num_pen_ext > 1) {
-        colnames(cv_mean) <- rev(sort(hierr_object$penalty_ext))
-        colnames(cv_sd) <- rev(sort(hierr_object$penalty_ext))
+        colnames(cv_mean) <- rev(sort(xrnet_object$penalty_ext))
+        colnames(cv_sd) <- rev(sort(xrnet_object$penalty_ext))
     }
     if (loss %in% c("mse", "mae")) {
         opt_loss <- min(cv_mean, na.rm = TRUE)
@@ -318,11 +318,11 @@ cv_hierr <- function(x,
     }
 
     if (is.null(dim(optIndex))) {
-        opt_penalty <- hierr_object$penalty[optIndex[1]]
-        opt_penalty_ext <- hierr_object$penalty_ext[optIndex[2]]
+        opt_penalty <- xrnet_object$penalty[optIndex[1]]
+        opt_penalty_ext <- xrnet_object$penalty_ext[optIndex[2]]
     } else {
-        opt_penalty <- hierr_object$penalty[optIndex[1, 1]]
-        opt_penalty_ext <- hierr_object$penalty_ext[optIndex[1, 2]]
+        opt_penalty <- xrnet_object$penalty[optIndex[1, 1]]
+        opt_penalty_ext <- xrnet_object$penalty_ext[optIndex[1, 2]]
     }
 
     cvfit <- list(cv_mean = cv_mean,
@@ -330,10 +330,10 @@ cv_hierr <- function(x,
                   opt_loss = opt_loss,
                   opt_penalty = opt_penalty,
                   opt_penalty_ext = opt_penalty_ext,
-                  fitted_model = hierr_object,
-                  call = hierr_object$call)
+                  fitted_model = xrnet_object,
+                  call = xrnet_object$call)
 
-    class(cvfit) <- c("cv_hierr")
+    class(cvfit) <- c("tune_xrnet")
     return(cvfit)
 }
 

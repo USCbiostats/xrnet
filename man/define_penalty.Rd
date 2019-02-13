@@ -42,5 +42,5 @@ define_penalty(penalty_type = 0, quantile = 0.5,
 \item{custom_multiplier_ext}{variable-specific penalty multipliers for external data. Default is 1 for all variables. 0 is no penalization.}
 }
 \description{
-Defines regularization terms for predictor and external data in \code{\link{hierr}} fitting.
+Defines regularization terms for predictor and external data in \code{\link{xrnet}} fitting.
 }

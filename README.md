@@ -1,4 +1,5 @@
-xrnet: R Package for Hierarchical Regularized Regression
+xrnet: R Package for Hierarchical Regularized Regression to Incorporate
+External Data
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -96,7 +97,7 @@ data(GaussianExample)
 #### Fitting a Model
 
 To fit a linear hierarchical regularized regression model, use the main
-`hierr` function. At a minimum, you should specify the predictor matrix
+`xrnet` function. At a minimum, you should specify the predictor matrix
 `x`, outcome variable `y`, and `family` (outcome distribution). The
 `external` option allows you to incorporate external data in the
 regularized regression model. If you do not include external data, a
@@ -105,7 +106,7 @@ penalty is applied to the predictors and a lasso penalty is applied to
 the external data.
 
 ``` r
-xrnet_model <- hierr(x = x_linear, 
+xrnet_model <- xrnet(x = x_linear, 
                      y = y_linear, 
                      external = ext_linear, 
                      family = "gaussian")
@@ -139,7 +140,7 @@ myPenalty <- define_penalty(penalty_type = 0,
                             num_penalty = 30, 
                             num_penalty_ext = 30)
 
-xrnet_model <- hierr(x = x_linear, 
+xrnet_model <- xrnet(x = x_linear, 
                      y = y_linear, 
                      external = ext_linear, 
                      family = "gaussian", 
@@ -152,13 +153,13 @@ In general, we need a method to determine the penalty values that
 produce the optimal out-of-sample prediction. We provide a simple
 two-dimensional grid search that uses k-fold cross-validation to
 determine the optimal values for the penalties. The cross-validation
-function `cvhierr` is used as follows.
+function `tune_xrnet` is used as follows.
 
 ``` r
-cvxrnet <- cv_hierr(x = x_linear, 
-                    y = y_linear, 
-                    external = ext_linear, 
-                    family = "gaussian")
+cv_xrnet <- tune_xrnet(x = x_linear, 
+                       y = y_linear, 
+                       external = ext_linear, 
+                       family = "gaussian")
 ```
 
 To visualize the results of the cross-validation we provide a contour
@@ -166,7 +167,7 @@ plot of the mean cross-validation error across the grid of penalties
 with the `plot` function.
 
 ``` r
-plot(cvxrnet)
+plot(cv_xrnet)
 ```
 
 ![](readme_files/readmecv_results-1.png)<!-- -->
@@ -176,6 +177,6 @@ the coefficient estimates (or the `coef` function) at the optimal
 penalty combination (default) or any other penalty combination.
 
 ``` r
-predy <- predict(cvxrnet, newdata = x_linear)
-estimates <- coef(cvxrnet)
+predy <- predict(cv_xrnet, newdata = x_linear)
+estimates <- coef(cv_xrnet)
 ```

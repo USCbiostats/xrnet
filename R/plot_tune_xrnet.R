@@ -1,13 +1,13 @@
 #' Plot k-fold cross-validation error grid
 #'
-#' @param x A cv_hierr class object
+#' @param x A tune_xrnet class object
 #' @param ... Additional graphics parameters
 
 #' @export
 #' @importFrom graphics filled.contour axis points
 #' @importFrom grDevices colorRampPalette
 
-plot.cv_hierr <- function(x, ...) {
+plot.tune_xrnet <- function(x, ...) {
     cvgrid <- x$cv_mean
     cvgrid <- cvgrid[rev(seq_len(nrow(cvgrid))), ]
     cvgrid <- cvgrid[ , rev(seq_len(ncol(cvgrid)))]

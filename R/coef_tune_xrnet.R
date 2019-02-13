@@ -1,20 +1,20 @@
-#' Get coefficient estimates from "cv_hierr" model object
+#' Get coefficient estimates from "tune_xrnet" model object
 #'
-#' @description Returns coefficents from 'hierr' model or refits model to estimate
+#' @description Returns coefficents from 'xrnet' model or refits model to estimate
 #' coefficients not computed in path(s).
 #'
-#' @param object A \code{\link{cv_hierr}} object
+#' @param object A \code{\link{tune_xrnet}} object
 #' @param p vector of penalty values to apply to predictor variables.
-#' Default is optimal value in cv_hierr object.
+#' Default is optimal value in tune_xrnet object.
 #' @param pext vector of penalty values to apply to external data variables.
-#' Default is optimal value in cv_hierr object.
+#' Default is optimal value in tune_xrnet object.
 #' @param penalty (optional) regularization object applied to original model object, only needed
 #' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
 #' more information on regularization object.
-#' @param ... pass other arguments to hierr function (if needed)
+#' @param ... pass other arguments to xrnet function (if needed)
 
 #' @export
-coef.cv_hierr <- function(object,
+coef.tune_xrnet <- function(object,
                           p = "opt",
                           pext = "opt",
                           penalty = NULL,

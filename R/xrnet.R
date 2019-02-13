@@ -37,8 +37,8 @@ NULL
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
 #' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
 #' @param intercept indicates whether an intercept term is included for x and/or external. Default is c(TRUE, FALSE).
-#' @param control specifies hierr control object. See \code{\link{hierr.control}} for more details.
-#' @return A list of class \code{hierr} with components
+#' @param control specifies xrnet control object. See \code{\link{xrnet.control}} for more details.
+#' @return A list of class \code{xrnet} with components
 #' \item{beta0}{matrix of first-level intercepts indexed by penalty values}
 #' \item{betas}{3-dimensional array of first-level penalized coefficients indexed by penalty values}
 #' \item{gammas}{3-dimensional array of first-level non-penalized coefficients indexed by penalty values}
@@ -51,7 +51,7 @@ NULL
 #' \item{status}{0 = success, other values indicate issues fitting model}
 
 #' @export
-hierr <- function(x,
+xrnet <- function(x,
                   y,
                   external = NULL,
                   unpen = NULL,
@@ -172,7 +172,7 @@ hierr <- function(x,
     penalty <- initialize_penalty(penalty, nr_x, nc_x, nc_unpen, nr_ext, nc_ext, intercept)
 
     # check control object
-    control <- do.call("hierr.control", control)
+    control <- do.call("xrnet.control", control)
     control <- initialize_control(control, nc_x, nc_unpen, nc_ext, intercept)
 
     # fit model
@@ -240,13 +240,13 @@ hierr <- function(x,
     }
 
     fit$call <- this.call
-    class(fit) <- "hierr"
+    class(fit) <- "xrnet"
     return(fit)
 }
 
-#' Control function for hierr fitting
+#' Control function for xrnet fitting
 #'
-#' @description Control function for \code{\link{hierr}} fitting.
+#' @description Control function for \code{\link{xrnet}} fitting.
 #'
 #' @param tolerance positive convergence criterion. Default is 1e-08.
 #' @param max_iterations maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.
@@ -257,7 +257,7 @@ hierr <- function(x,
 #' @param upper_limits vector of upper limits for each coefficient. Default is Inf for all variables.
 
 #' @export
-hierr.control <- function(tolerance = 1e-08,
+xrnet.control <- function(tolerance = 1e-08,
                           max_iterations = 1e+05,
                           earlyStop = FALSE,
                           dfmax = NULL,

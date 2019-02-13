@@ -1,11 +1,11 @@
-#ifndef HIERR_H
-#define HIERR_H
+#ifndef XRNET_H
+#define XRNET_H
 
 #include <RcppEigen.h>
 #include "CoordSolver.h"
 
 template <typename TX, typename TZ>
-class Hierr {
+class Xrnet {
 
     typedef Eigen::VectorXd VecXd;
     typedef Eigen::MatrixXd MatXd;
@@ -34,7 +34,7 @@ protected:
 
 public:
     // constructor (dense external)
-    Hierr(const int & n_,
+    Xrnet(const int & n_,
           const int & nv_x_,
           const int & nv_fixed_,
           const int & nv_ext_,
@@ -70,7 +70,7 @@ public:
     };
 
     // constructor (sparse external)
-    Hierr(const int & n_,
+    Xrnet(const int & n_,
           const int & nv_x_,
           const int & nv_fixed_,
           const int & nv_ext_,
@@ -106,7 +106,7 @@ public:
     };
 
     // destructor
-    virtual ~Hierr(){};
+    virtual ~Xrnet(){};
 
     // getters
     VecXd getXm(){return xm;};
@@ -169,7 +169,7 @@ public:
     };
 };
 
-#endif // HIERR_H
+#endif // XRNET_H
 
 
 

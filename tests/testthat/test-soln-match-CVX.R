@@ -57,7 +57,7 @@ test_that("x and ext standardized, both intercepts",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 1],
-                  hierr(x = xtest,
+                  xrnet(x = xtest,
                         y = ytest_scaled,
                         external = ztest,
                         family = "gaussian",
@@ -67,7 +67,7 @@ test_that("x and ext standardized, both intercepts",{
                         control = myControl)$alphas[1:5, 1, 1] * sd_y,
                  tolerance = 1e-5)
     expect_equal(betas_cvx_mat[, 1],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -88,7 +88,7 @@ test_that("x NOT standardized, ext standardized, both intercepts",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 2],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -99,7 +99,7 @@ test_that("x NOT standardized, ext standardized, both intercepts",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 2],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -120,7 +120,7 @@ test_that("x standardized, ext NOT standardized, both intercepts",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 3],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -131,7 +131,7 @@ test_that("x standardized, ext NOT standardized, both intercepts",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 3],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -152,7 +152,7 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 4],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -163,7 +163,7 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 4],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -184,7 +184,7 @@ test_that("x standardized, ext standardized, no 2nd level intercept",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 5],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -195,7 +195,7 @@ test_that("x standardized, ext standardized, no 2nd level intercept",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 5],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -216,7 +216,7 @@ test_that("x NOT standardized, ext standardized, no 2nd level intercept",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 6],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -227,7 +227,7 @@ test_that("x NOT standardized, ext standardized, no 2nd level intercept",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 6],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -248,7 +248,7 @@ test_that("x standardized, ext NOT standardized, no 2nd level intercept",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 7],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -259,7 +259,7 @@ test_that("x standardized, ext NOT standardized, no 2nd level intercept",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 7],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -280,7 +280,7 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level intercept",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 8],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external  = ztest,
                        family = "gaussian",
@@ -291,7 +291,7 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level intercept",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 8],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -312,7 +312,7 @@ test_that("x standardized, ext standardized, no 1st level intercept",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 9],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -323,7 +323,7 @@ test_that("x standardized, ext standardized, no 1st level intercept",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 9],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -344,7 +344,7 @@ test_that("x NOT standardized, ext standardized, no 1st level intercept",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 10],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -355,7 +355,7 @@ test_that("x NOT standardized, ext standardized, no 1st level intercept",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 10],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -376,7 +376,7 @@ test_that("x standardized, ext NOT standardized, no 1st level intercept",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 11],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -387,7 +387,7 @@ test_that("x standardized, ext NOT standardized, no 1st level intercept",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 11],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -408,7 +408,7 @@ test_that("x NOT standardized, ext NOT standardized, no 1st level intercept",{
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 12],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
@@ -419,7 +419,7 @@ test_that("x NOT standardized, ext NOT standardized, no 1st level intercept",{
                  tolerance = 1e-5)
 
     expect_equal(betas_cvx_mat[, 12],
-                 hierr(x = xtest,
+                 xrnet(x = xtest,
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",

@@ -1,12 +1,12 @@
-#ifndef HIERR_CV_H
-#define HIERR_CV_H
+#ifndef XRNET_CV_H
+#define XRNET_CV_H
 
 #include <RcppEigen.h>
 #include <unordered_map>
-#include "Hierr.h"
+#include "Xrnet.h"
 
 template <typename TX, typename TZ>
-class HierrCV : public Hierr<TX, TZ>  {
+class XrnetCV : public Xrnet<TX, TZ>  {
 
     typedef Eigen::VectorXd VecXd;
     typedef Eigen::MatrixXd MatXd;
@@ -26,7 +26,7 @@ protected:
 
 public:
     // constructor (dense X)
-    HierrCV(const int & n_,
+    XrnetCV(const int & n_,
             const int & nv_x_,
             const int & nv_fixed_,
             const int & nv_ext_,
@@ -45,7 +45,7 @@ public:
             const Eigen::Ref<const Eigen::VectorXi> & test_idx_,
             const Eigen::Ref<const Eigen::MatrixXd> & X_,
             const Eigen::Ref<const Eigen::VectorXd> & y_) :
-    Hierr<TX, TZ>(
+    Xrnet<TX, TZ>(
             n_,
             nv_x_,
             nv_fixed_,
@@ -69,7 +69,7 @@ public:
             };
 
     // constructor (sparse X)
-    HierrCV(const int & n_,
+    XrnetCV(const int & n_,
             const int & nv_x_,
             const int & nv_fixed_,
             const int & nv_ext_,
@@ -88,7 +88,7 @@ public:
             const Eigen::Ref<const Eigen::VectorXi> & test_idx_,
             const MapSpMat X_,
             const Eigen::Ref<const Eigen::VectorXd> & y_) :
-        Hierr<TX, TZ>(
+        Xrnet<TX, TZ>(
                 n_,
                 nv_x_,
                 nv_fixed_,
@@ -112,7 +112,7 @@ public:
                 };
 
     // destructor
-    virtual ~HierrCV(){};
+    virtual ~XrnetCV(){};
 
     // getters
     MatXd get_error_mat(){return error_mat;};
@@ -240,7 +240,7 @@ public:
     }
 };
 
-#endif // HIERR_CV_H
+#endif // XRNET_CV_H
 
 
 

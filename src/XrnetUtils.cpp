@@ -1,4 +1,4 @@
-#include "HierrUtils.h"
+#include "XrnetUtils.h"
 #include <bigmemory/MatrixAccessor.hpp>
 
 typedef Eigen::Map<const Eigen::MatrixXd> MapMat;

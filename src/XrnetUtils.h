@@ -1,5 +1,5 @@
-#ifndef HIERR_UTILS_H
-#define HIERR_UTILS_H
+#ifndef XRNET_UTILS_H
+#define XRNET_UTILS_H
 
 #include <RcppEigen.h>
 #include <string.h>
@@ -39,4 +39,4 @@ Eigen::MatrixXd computeResponse(const TX & X,
     return pred;
 }
 
-#endif // HIERR_UTILS_H
+#endif // XRNET_UTILS_H

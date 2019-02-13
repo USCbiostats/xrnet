@@ -1,13 +1,13 @@
-#' Predict function for "hierr" object
+#' Predict function for "xrnet" object
 #'
 #' @description Predict coefficients or response in new data
 #'
-#' @param object A \code{\link{hierr}} object
+#' @param object A \code{\link{xrnet}} object
 #' @param newdata matrix with new values for penalized variables
 #' @param newdata_fixed matrix with new values for unpenalized variables
 #' @param p vector of penalty values to apply to predictor variables
 #' @param pext vector of penalty values to apply to external data variables
-#' @param type type of prediction to make using the hierr model, options include
+#' @param type type of prediction to make using the xrnet model, options include
 #' \itemize{
 #'    \item coefficients
 #'    \item response
@@ -16,11 +16,11 @@
 #' @param penalty (optional) regularization object applied to original model object, only needed
 #' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
 #' more information on regularization object.
-#' @param ... pass other arguments to hierr function (if needed)
+#' @param ... pass other arguments to xrnet function (if needed)
 
 #' @export
 #' @importFrom stats update
-predict.hierr <- function(object,
+predict.xrnet <- function(object,
                           newdata = NULL,
                           newdata_fixed = NULL,
                           p = NULL,
@@ -67,17 +67,17 @@ predict.hierr <- function(object,
             }
         }
 
-        hierr_call <- object$call
-        hierr_call[["penalty"]] <- as.name("penalty")
-        add_args <- match.call(expand.dots = FALSE, call = hierr_call)$...
+        xrnet_call <- object$call
+        xrnet_call[["penalty"]] <- as.name("penalty")
+        add_args <- match.call(expand.dots = FALSE, call = xrnet_call)$...
         if (length(add_args)) {
-            existing <- !is.na(match(names(add_args), names(hierr_call)))
+            existing <- !is.na(match(names(add_args), names(xrnet_call)))
             for (arg in names(add_args[existing]))
-                hierr_call[[arg]] <- add_args[[arg]]
+                xrnet_call[[arg]] <- add_args[[arg]]
         }
 
-        tryCatch(object <- eval(hierr_call),
-                 error = function(e) stop("Error: Unable to refit 'hierr' object,
+        tryCatch(object <- eval(xrnet_call),
+                 error = function(e) stop("Error: Unable to refit 'xrnet' object,
                                           please supply arguments used in original function call")
         )
     }

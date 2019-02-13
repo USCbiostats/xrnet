@@ -1,6 +1,6 @@
 #' Define regularization object for predictor and external data
 #'
-#' @description Defines regularization terms for predictor and external data in \code{\link{hierr}} fitting.
+#' @description Defines regularization terms for predictor and external data in \code{\link{xrnet}} fitting.
 #'
 #' @param penalty_type type of regularization for x. Default is 0 (Ridge). Can supply either a scalar value or vector with length equal to the number of variables in x.
 #' \itemize{

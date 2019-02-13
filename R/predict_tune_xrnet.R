@@ -1,15 +1,15 @@
-#' Predict function for "cv_hierr" object
+#' Predict function for "tune_xrnet" object
 #'
 #' @description Predict coefficients or response in new data
 #'
-#' @param object A \code{\link{cv_hierr}} object
+#' @param object A \code{\link{tune_xrnet}} object
 #' @param newdata matrix with new values for penalized variables
 #' @param newdata_fixed matrix with new values for unpenalized variables
 #' @param p vector of penalty values to apply to predictor variables.
-#' Default is optimal value in cv_hierr object.
+#' Default is optimal value in tune_xrnet object.
 #' @param pext vector of penalty values to apply to external data variables.
-#' Default is optimal value in cv_hierr object.
-#' @param type type of prediction to make using the hierr model, options include:
+#' Default is optimal value in tune_xrnet object.
+#' @param type type of prediction to make using the xrnet model, options include:
 #' \itemize{
 #'    \item coefficients
 #'    \item response
@@ -18,17 +18,17 @@
 #' @param penalty (optional) regularization object applied to original model object, only needed
 #' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
 #' more information on regularization object.
-#' @param ... pass other arguments to hierr function (if needed)
+#' @param ... pass other arguments to xrnet function (if needed)
 
 #' @export
-predict.cv_hierr <- function(object,
-                             newdata = NULL,
-                             newdata_fixed = NULL,
-                             p = "opt",
-                             pext = "opt",
-                             type = c("response", "coefficients", "link"),
-                             penalty = NULL,
-                             ...)
+predict.tune_xrnet <- function(object,
+                               newdata = NULL,
+                               newdata_fixed = NULL,
+                               p = "opt",
+                               pext = "opt",
+                               type = c("response", "coefficients", "link"),
+                               penalty = NULL,
+                               ...)
 {
     if (p == "opt")
         p <- object$opt_penalty
