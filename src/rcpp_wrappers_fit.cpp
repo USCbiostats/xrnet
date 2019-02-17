@@ -154,8 +154,6 @@ Rcpp::List fitModel(const TX & x,
         path_ext[0] = exp(2 * log(path_ext[1]) - log(path_ext[2]));
     }
 
-    int status = 0;
-
     // collect results in list and return to R
     return Rcpp::List::create(
             Rcpp::Named("beta0") = estimates.getBeta0(),
