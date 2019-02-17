@@ -53,9 +53,9 @@ predict.xrnet <- function(object,
             if (is.null(pext)) {
                 stop("Error: pext not specified")
             }
-            penalty$user_penalty <- c(object$penalty, p)
+            penalty$user_penalty <- rev(sort(c(object$penalty, p)))
             penalty$num_penalty <- length(penalty$user_penalty)
-            penalty$user_penalty_ext <- c(object$penalty_ext, pext)
+            penalty$user_penalty_ext <- rev(sort(c(object$penalty_ext, pext)))
             penalty$num_penalty_ext <- length(penalty$user_penalty_ext)
         } else {
             penalty$user_penalty <- c(object$penalty, p)

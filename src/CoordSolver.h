@@ -50,6 +50,7 @@ protected:
     const double tolerance_irls;
     Rcpp::LogicalVector strong_set;
     Rcpp::LogicalVector active_set;
+    int status;
 
 public:
     // constructor (dense X matrix)
@@ -103,7 +104,8 @@ public:
     b0_prior(0.0),
     tolerance_irls(tolerance_),
     strong_set(nv_total, false),
-    active_set(nv_total, false)
+    active_set(nv_total, false),
+    status(0)
     {
         betas = Eigen::VectorXd::Zero(nv_total);
         betas_prior = Eigen::VectorXd::Zero(nv_total);
@@ -161,7 +163,8 @@ public:
         b0_prior(0.0),
         tolerance_irls(tolerance_),
         strong_set(nv_total, false),
-        active_set(nv_total, false)
+        active_set(nv_total, false),
+        status(0)
     {
         betas = Eigen::VectorXd::Zero(nv_total);
         betas_prior = Eigen::VectorXd::Zero(nv_total);
@@ -187,6 +190,7 @@ public:
     VecXd getCmult(){return cmult;};
     Rcpp::LogicalVector getStrongSet(){return strong_set;};
     Rcpp::LogicalVector getActiveSet(){return active_set;};
+    int getStatus(){return status;};
 
     // setters
     void setPenalty(double val, int pos) {penalty[pos] = val;};
@@ -200,6 +204,9 @@ public:
             if (converged())  {
                 if (check_kkt()) break;
             }
+        }
+        if (num_passes == max_iterations) {
+            status = 1; // max iterations reached
         }
     };
 
@@ -297,6 +304,13 @@ public:
         wgts_sum = wgts.sum();
         double resids_sum = residuals.sum();
 
+        // add fixed vars to strong set
+        std::fill(
+            strong_set.begin() + X.cols(),
+            strong_set.begin() + X.cols() + Fixed.cols(),
+            true
+        );
+
         int idx = 0;
         for (int k = 0; k < X.cols(); ++k, ++idx) {
             gradient[idx] = xs[idx] * (X.col(k).dot(residuals) - xm[idx] * resids_sum);
@@ -354,19 +368,20 @@ public:
                        const int & m,
                        const int & m2) {
         int idx = 0;
-        double penalty_old = m > 1 ? path[m - 1] : 0.0;
+        double penalty_old = (m == 0 || (m == 1 && path[m - 1] == 9.9e35)) ? 0.0 : path[m - 1];
         double lam_diff = 2.0 * path[m] - penalty_old;
-        for (int k = 0; k < X.cols() + Fixed.cols(); ++k, ++idx) {
+        for (int k = 0; k < X.cols(); ++k, ++idx) {
             if (!strong_set[idx]) {
                 strong_set[idx] = std::abs(gradient[idx]) > lam_diff * penalty_type[idx] * cmult[idx];
             }
         }
+        idx += Fixed.cols();
         if (XZ.cols() > 0) {
             if (m2 == 0) {
                 std::fill(strong_set.begin() + X.cols() + Fixed.cols(), strong_set.end(), false);
                 std::fill(active_set.begin() + X.cols() + Fixed.cols(), active_set.end(), false);
             }
-            penalty_old = m2 > 1 ? path_ext[m2 - 1] : 0.0;
+            penalty_old = (m2 == 0 || (m2 == 1 && path[m2 - 1] == 9.9e35)) ? 0.0 : path[m2 - 1];;
             lam_diff = 2.0 * path_ext[m2] - penalty_old;
             for (int k = 0; k < XZ.cols(); ++k, ++idx) {
                 if (!strong_set[idx]) {

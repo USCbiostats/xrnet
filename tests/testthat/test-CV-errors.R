@@ -48,7 +48,7 @@ test_that("gaussian", {
 #}
 #cv_mean <- rowMeans(errormat)
 #cv_mean <- matrix(cv_mean, nrow = 20, byrow = TRUE)
-
+#all.equal(check$cv_mean, cv_mean, check.attributes = F)
 
 
 

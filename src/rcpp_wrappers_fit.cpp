@@ -160,13 +160,14 @@ Rcpp::List fitModel(const TX & x,
     return Rcpp::List::create(
             Rcpp::Named("beta0") = estimates.getBeta0(),
             Rcpp::Named("betas") = estimates.getBetas(),
+            Rcpp::Named("gammas") = estimates.getGammas(),
             Rcpp::Named("alpha0") = estimates.getAlpha0(),
             Rcpp::Named("alphas") = estimates.getAlphas(),
             Rcpp::Named("penalty") = ys * path,
             Rcpp::Named("penalty_ext") = ys * path_ext,
             Rcpp::Named("num_passes") = solver->getNumPasses(),
             Rcpp::Named("family") = family,
-            Rcpp::Named("status") = status
+            Rcpp::Named("status") = solver->getStatus()
         );
 }
 

@@ -34,13 +34,15 @@ xrnet(x, y, external = NULL, unpen = NULL, family = c("gaussian",
     \item binomial
 }}
 
-\item{penalty}{specifies regularization object for x and external. See \code{\link{define_penalty}} for more details.}
+\item{penalty}{specifies regularization object for x and external. See \code{\link{define_penalty}}
+for more details.}
 
 \item{weights}{optional vector of observation-specific weights. Default is 1 for all observations.}
 
 \item{standardize}{indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).}
 
-\item{intercept}{indicates whether an intercept term is included for x and/or external. Default is c(TRUE, FALSE).}
+\item{intercept}{indicates whether an intercept term is included for x and/or external.
+Default is c(TRUE, FALSE).}
 
 \item{control}{specifies xrnet control object. See \code{\link{xrnet.control}} for more details.}
 }
@@ -55,12 +57,17 @@ A list of class \code{xrnet} with components
 \item{penalty_ext}{vector of second-level penalty values}
 \item{family}{error distribution for outcome variable}
 \item{num_passes}{total number of passes over the data in the coordinate descent algorithm}
-\item{status}{0 = success, other values indicate issues fitting model}
+\item{status}{error status for xrnet fitting}
+\itemize{
+    \item 0 = OK
+    \item 1 = Error/Warning
+}
+\item{error_msg}{description of error}
 }
 \description{
 Fits hierarchical regularized regression model that enables the incorporation of external data
-for the predictor variables. Both the predictor variables and external data can be regularized
-by the most common penalties (lasso, ridge, elastic net) and we have included an additional "quantile" penalty.
+for predictor variables. Both the predictor variables and external data can be regularized
+by the most common penalties (lasso, ridge, elastic net).
 Solutions are computed across a two-dimensional grid of penalties (a separate penalty path is computed
 for the predictors and external variables). Currently support regularized linear and logistic regression,
 future extensions to other outcomes (i.e. Cox regression) will be implemented in the next major update.

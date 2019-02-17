@@ -72,7 +72,7 @@ extend to other outcomes (i.e. survival) in the next release.
 # Master branch
 devtools::install_github("USCbiostats/xrnet")
 
-# Or the development branch
+# Development branch
 devtools::install_github("USCbiostats/xrnet", ref = "development")
 ```
 
@@ -86,9 +86,9 @@ library(xrnet)
 
 # A First Example
 
-As an example of how you might use the xrnet package, we have provided a
-small set of simulated external data variables (ext), predictors (x),
-and a continuous outcome variable (y). First, load the example data:
+As an example of how you might use xrnet, we have provided a small set
+of simulated external data variables (ext), predictors (x), and a
+continuous outcome variable (y). First, load the example data:
 
 ``` r
 data(GaussianExample)
@@ -170,7 +170,7 @@ with the `plot` function.
 plot(cv_xrnet)
 ```
 
-![](readme_files/readmecv_results-1.png)<!-- -->
+![](man/readme_files/cv_results-1.png)<!-- -->
 
 The `predict` function can be used to predict responses and to obtain
 the coefficient estimates (or the `coef` function) at the optimal

@@ -8,8 +8,8 @@ NULL
 #' Fit hierarchical regularized regression model
 #'
 #' @description Fits hierarchical regularized regression model that enables the incorporation of external data
-#' for the predictor variables. Both the predictor variables and external data can be regularized
-#' by the most common penalties (lasso, ridge, elastic net) and we have included an additional "quantile" penalty.
+#' for predictor variables. Both the predictor variables and external data can be regularized
+#' by the most common penalties (lasso, ridge, elastic net).
 #' Solutions are computed across a two-dimensional grid of penalties (a separate penalty path is computed
 #' for the predictors and external variables). Currently support regularized linear and logistic regression,
 #' future extensions to other outcomes (i.e. Cox regression) will be implemented in the next major update.
@@ -33,10 +33,12 @@ NULL
 #'     \item gaussian
 #'     \item binomial
 #' }
-#' @param penalty specifies regularization object for x and external. See \code{\link{define_penalty}} for more details.
+#' @param penalty specifies regularization object for x and external. See \code{\link{define_penalty}}
+#' for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
 #' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
-#' @param intercept indicates whether an intercept term is included for x and/or external. Default is c(TRUE, FALSE).
+#' @param intercept indicates whether an intercept term is included for x and/or external.
+#' Default is c(TRUE, FALSE).
 #' @param control specifies xrnet control object. See \code{\link{xrnet.control}} for more details.
 #' @return A list of class \code{xrnet} with components
 #' \item{beta0}{matrix of first-level intercepts indexed by penalty values}
@@ -48,7 +50,12 @@ NULL
 #' \item{penalty_ext}{vector of second-level penalty values}
 #' \item{family}{error distribution for outcome variable}
 #' \item{num_passes}{total number of passes over the data in the coordinate descent algorithm}
-#' \item{status}{0 = success, other values indicate issues fitting model}
+#' \item{status}{error status for xrnet fitting}
+#' \itemize{
+#'     \item 0 = OK
+#'     \item 1 = Error/Warning
+#' }
+#' \item{error_msg}{description of error}
 
 #' @export
 xrnet <- function(x,
@@ -201,6 +208,7 @@ xrnet <- function(x,
 
     # check status of model fit
     if (fit$status == 0) {
+        fit$status <- "0 (OK)"
         # Create arrays ordering coefficients by 1st level penalty / 2nd level penalty
         fit$beta0 <- matrix(fit$beta0, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
         fit$betas <- aperm(array(t(fit$betas), c(penalty$num_penalty_ext, penalty$num_penalty, nc_x)), c(3, 2, 1))
@@ -234,9 +242,11 @@ xrnet <- function(x,
 
         #fit$nzero_betas <- matrix(fit$nzero_betas, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
     } else {
-        if (fit$status == -10000) {
-            fit$errmsg <- "max iterations reached"
+        if (fit$status == 1) {
+            fit$error_msg <- "Max number of iterations reached"
+            warning("Max number of iterations reached")
         }
+        fit$status <- "1 (Error/Warning)"
     }
 
     fit$call <- this.call
@@ -311,6 +321,7 @@ initialize_penalty <- function(penalty_obj,
                 stop("Warning: num_penalty must be at least 3 when automatically computing penalty path")
             }
         } else {
+            penalty_obj$user_penalty <- rev(sort(penalty_obj$user_penalty))
             penalty_obj$penalty_ratio <- 0.0
         }
     }
@@ -343,6 +354,7 @@ initialize_penalty <- function(penalty_obj,
                     stop("Warning: num_penalty_ext must be at least 3 when automatically computing penalty path")
                 }
             } else {
+                penalty_obj$user_penalty_ext <- rev(sort(penalty_obj$user_penalty_ext))
                 penalty_obj$penalty_ratio_ext <- 0.0
             }
         }

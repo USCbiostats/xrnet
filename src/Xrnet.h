@@ -114,6 +114,7 @@ public:
     double getBeta0(const int & idx){return beta0[idx];};
     MatXd getBetas(){return betas;};
     VecXd getBetas(const int & idx){return betas.col(idx);};
+    MatXd getGammas(){return gammas;};
     VecXd getAlpha0(){return alpha0;};
     MatXd getAlphas(){return alphas;};
 

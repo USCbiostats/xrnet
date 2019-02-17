@@ -9,7 +9,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "readme_files/readme"
+  fig.path = 'man/readme_files/'
 )
 ```
 
@@ -45,7 +45,7 @@ This package extends the coordinate descent algorithm of Friedman et al. 2010 (u
 # Master branch
 devtools::install_github("USCbiostats/xrnet")
 
-# Or the development branch
+# Development branch
 devtools::install_github("USCbiostats/xrnet", ref = "development")
 ```
 
@@ -57,7 +57,7 @@ library(xrnet)
 
 # A First Example
 
-As an example of how you might use the xrnet package, we have provided a small set of simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:
+As an example of how you might use xrnet, we have provided a small set of simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:
 
 ```{r load data}
 data(GaussianExample)

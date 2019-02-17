@@ -130,6 +130,13 @@ public:
         // initial residuals
         this->residuals.array() = this->wgts_user.array() * (this->y.array() - prob0);
 
+        // add fixed vars to strong set
+        std::fill(
+            this->strong_set.begin() + this->X.cols(),
+            this->strong_set.begin() + this->X.cols() + this->Fixed.cols(),
+            true
+        );
+
         // initial weighted sum squares x / xz cols and gradient
         int idx = 0;
         for (int k = 0; k < this->X.cols(); ++k, ++idx) {
