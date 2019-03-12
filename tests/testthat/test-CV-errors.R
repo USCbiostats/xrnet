@@ -20,6 +20,48 @@ test_that("gaussian", {
         tolerance = 1e-5,
         check.attribute = FALSE
     )
+
+    expect_equal(
+        cv_mean,
+        tune_xrnet(x = xsparse,
+                   y = ytest,
+                   external = ztest,
+                   family = "gaussian",
+                   penalty = myPenalty,
+                   control = list(tolerance = 1e-10),
+                   loss = "mse",
+                   foldid = foldid)$cv_mean,
+        tolerance = 1e-5,
+        check.attribute = FALSE
+    )
+
+    expect_equal(
+        cv_mean,
+        tune_xrnet(x = xtest,
+                   y = ytest,
+                   external = zsparse,
+                   family = "gaussian",
+                   penalty = myPenalty,
+                   control = list(tolerance = 1e-10),
+                   loss = "mse",
+                   foldid = foldid)$cv_mean,
+        tolerance = 1e-5,
+        check.attribute = FALSE
+    )
+
+    expect_equal(
+        cv_mean,
+        tune_xrnet(x = xsparse,
+                   y = ytest,
+                   external = zsparse,
+                   family = "gaussian",
+                   penalty = myPenalty,
+                   control = list(tolerance = 1e-10),
+                   loss = "mse",
+                   foldid = foldid)$cv_mean,
+        tolerance = 1e-5,
+        check.attribute = FALSE
+    )
 })
 
 #myPenalty <- define_penalty(penalty_type = 0,
