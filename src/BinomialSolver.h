@@ -182,7 +182,7 @@ public:
         xbeta.array() = this->b0;
         int idx = 0;
         for (int j = 0; j < this->X.cols(); ++j, ++idx) {
-            if (this->strong_set[idx]) {
+            if (this->strong_set[idx] && this->betas[idx] != 0.0) {
                 xbeta += this->xs[idx] * (this->X.col(j) - this->xm[idx] * Eigen::VectorXd::Ones(this->n)) * this->betas[idx];
             }
         }
@@ -190,7 +190,7 @@ public:
             xbeta += this->xs[idx] * (this->Fixed.col(j) - this->xm[idx] * Eigen::VectorXd::Ones(this->n)) * this->betas[idx];
         }
         for (int j = 0; j < this->XZ.cols(); ++j, ++idx) {
-            if (this->strong_set[idx]) {
+            if (this->strong_set[idx] && this->betas[idx] != 0.0) {
                 xbeta += this->xs[idx] * (this->XZ.col(j) - this->xm[idx] * Eigen::VectorXd::Ones(this->n)) * this->betas[idx];
             }
         }
