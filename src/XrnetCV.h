@@ -158,7 +158,8 @@ public:
         }
 
         // compute predicted values
-        VecXd yhat = this->beta0[0] + (X * this->betas.col(0)).array();
+        VecXd yhat = Eigen::VectorXd::Constant(this->n, this->beta0[0]);
+        yhat += X * this->betas.sparseView();
 
         // compute error for test data
         error_mat[idx] = loss_func(y, yhat, test_idx);
