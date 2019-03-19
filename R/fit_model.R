@@ -25,7 +25,7 @@ fit_model <- function(x,
 
     # pass matrices or ptrs to matrices depending on type
     if (mattype_x %in% c(1, 3)) {
-        if (is_sparse_ext)
+        if (is_sparse_ext) {
             fit <- fitModelRcpp(x = x,
                                 mattype_x = mattype_x,
                                 y = y,
@@ -49,7 +49,7 @@ fit_model <- function(x,
                                 maxit = maxit,
                                 ne = dfmax,
                                 nx = pmax)
-        else
+        } else {
             fit <- fitModelRcpp(x = x,
                                 mattype_x = mattype_x,
                                 y = y,
@@ -73,8 +73,9 @@ fit_model <- function(x,
                                 maxit = maxit,
                                 ne = dfmax,
                                 nx = pmax)
+        }
     } else {
-        if (is_sparse_ext)
+        if (is_sparse_ext) {
             fit <- fitModelRcpp(x = x@address,
                                 mattype_x = mattype_x,
                                 y = y,
@@ -98,7 +99,8 @@ fit_model <- function(x,
                                 maxit = maxit,
                                 ne = dfmax,
                                 nx = pmax)
-        else
+        }
+        else {
             fit <- fitModelRcpp(x = x@address,
                                 mattype_x = mattype_x,
                                 y = y,
@@ -122,6 +124,7 @@ fit_model <- function(x,
                                 maxit = maxit,
                                 ne = dfmax,
                                 nx = pmax)
+        }
     }
     return(fit)
 }

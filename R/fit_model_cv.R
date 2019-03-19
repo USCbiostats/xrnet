@@ -27,7 +27,33 @@ fit_model_cv <- function(x,
 
     # choose rcpp function based on matrix type of x and z
     if (mattype_x %in% c(1, 3)) {
-        if (is_sparse_ext)
+        if (is_sparse_ext) {
+                fit <- fitModelCVRcpp(x = x,
+                                      mattype_x = mattype_x,
+                                      y = y,
+                                      ext = external,
+                                      is_sparse_ext = is_sparse_ext,
+                                      fixed = fixed,
+                                      weights_user = weights_user,
+                                      intr = intercept,
+                                      stnd = standardize,
+                                      penalty_type = penalty_type,
+                                      cmult = cmult,
+                                      quantiles = quantiles,
+                                      num_penalty = num_penalty,
+                                      penalty_ratio = penalty_ratio,
+                                      penalty_user = user_penalty,
+                                      penalty_user_ext = user_penalty_ext,
+                                      lower_cl = lower_cl,
+                                      upper_cl = upper_cl,
+                                      family = family,
+                                      user_loss = user_loss,
+                                      test_idx = test_idx,
+                                      thresh = thresh,
+                                      maxit = maxit,
+                                      ne = dfmax,
+                                      nx = pmax)
+        } else {
             fit <- fitModelCVRcpp(x = x,
                                   mattype_x = mattype_x,
                                   y = y,
@@ -53,34 +79,9 @@ fit_model_cv <- function(x,
                                   maxit = maxit,
                                   ne = dfmax,
                                   nx = pmax)
-        else
-            fit <- fitModelCVRcpp(x = x,
-                                  mattype_x = mattype_x,
-                                  y = y,
-                                  ext = external,
-                                  is_sparse_ext = is_sparse_ext,
-                                  fixed = fixed,
-                                  weights_user = weights_user,
-                                  intr = intercept,
-                                  stnd = standardize,
-                                  penalty_type = penalty_type,
-                                  cmult = cmult,
-                                  quantiles = quantiles,
-                                  num_penalty = num_penalty,
-                                  penalty_ratio = penalty_ratio,
-                                  penalty_user = user_penalty,
-                                  penalty_user_ext = user_penalty_ext,
-                                  lower_cl = lower_cl,
-                                  upper_cl = upper_cl,
-                                  family = family,
-                                  user_loss = user_loss,
-                                  test_idx = test_idx,
-                                  thresh = thresh,
-                                  maxit = maxit,
-                                  ne = dfmax,
-                                  nx = pmax)
+        }
     } else {
-        if (is_sparse_ext)
+        if (is_sparse_ext) {
             fit <- fitModelCVRcpp(x = x@address,
                                   mattype_x = mattype_x,
                                   y = y,
@@ -106,7 +107,7 @@ fit_model_cv <- function(x,
                                   maxit = maxit,
                                   ne = dfmax,
                                   nx = pmax)
-        else {
+        } else {
             fit <- fitModelCVRcpp(x = x@address,
                                   mattype_x = mattype_x,
                                   y = y,
@@ -134,6 +135,5 @@ fit_model_cv <- function(x,
                                   nx = pmax)
         }
     }
-
     return(fit)
 }

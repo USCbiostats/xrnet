@@ -71,34 +71,39 @@ tune_xrnet <- function(x,
 
     # Set measure used to assess model prediction performance
     if (missing(loss)) {
-        if (family == "gaussian")
+        if (family == "gaussian") {
             loss <- "mse"
-        else if (family == "binomial")
+        } else if (family == "binomial") {
             loss <- "auc"
+        }
     } else {
         loss <- match.arg(loss)
         loss_available <- TRUE
-        if (family == "gaussian" && !(loss %in% c("mse", "mae")))
+        if (family == "gaussian" && !(loss %in% c("mse", "mae"))) {
             loss_available <- FALSE
-        else if(family == "binomial" && !(loss %in% c("auc")))
+        } else if (family == "binomial" && !(loss %in% c("auc"))) {
             loss_available <- FALSE
-        if (!loss_available)
+        }
+        if (!loss_available) {
             stop(paste0("Error: loss = '", loss, "' is not available for family = '", family,"'"))
+        }
     }
 
     # check type of x matrix
     if (is(x, "matrix")) {
-        if (!(typeof(x) %in% c("integer", "double")))
+        if (!(typeof(x) %in% c("integer", "double"))) {
             stop("Error: x contains non-numeric values")
+        }
         mattype_x <- 1
-    }
-    else if (is.big.matrix(x)) {
-        if (!(bigmemory::describe(x)@description$type %in% c("integer", "double")))
+    } else if (is.big.matrix(x)) {
+        if (!(bigmemory::describe(x)@description$type %in% c("integer", "double"))) {
             stop("Error: x contains non-numeric values")
+        }
         mattype_x <- 2
     } else if ("dgCMatrix" %in% class(x)) {
-        if (!(typeof(x@x) %in% c("integer", "double")))
+        if (!(typeof(x@x) %in% c("integer", "double"))) {
             stop("Error: x contains non-numeric values")
+        }
         mattype_x <- 3
     } else {
         stop("Error: x must be a big.matrix, filebacked.big.matrix, or dgCMatrix")
@@ -152,11 +157,11 @@ tune_xrnet <- function(x,
     # Prepare penalty and control object for folds
     penalty_fold <- penalty
     penalty_fold$user_penalty <- xrnet_object$penalty
-    if (is.null(xrnet_object$penalty_ext))
+    if (is.null(xrnet_object$penalty_ext)) {
         penalty_fold$user_penalty_ext <- as.double(0.0)
-    else
+    } else {
         penalty_fold$user_penalty_ext <- xrnet_object$penalty_ext
-
+    }
     penalty_fold <- initialize_penalty(penalty_fold,
                                        NROW(x),
                                        NCOL(x),
@@ -173,8 +178,9 @@ tune_xrnet <- function(x,
 
     # Randomly sample observations into folds / check nfolds
     if (is.null(foldid)) {
-        if (nfolds < 2)
+        if (nfolds < 2) {
             stop("number of folds (nfolds) must be at least 2")
+        }
         foldid <- sample(rep(seq(nfolds), length = n))
     } else {
         if (length(foldid) != n) {
@@ -182,8 +188,9 @@ tune_xrnet <- function(x,
         }
         foldid <- as.numeric(factor(foldid))
         nfolds <- length(unique(foldid))
-        if (nfolds < 2)
+        if (nfolds < 2) {
             stop("number of folds (nfolds) must be at least 2")
+        }
     }
 
     # Run k-fold CV
