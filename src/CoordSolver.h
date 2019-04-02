@@ -175,26 +175,26 @@ public:
     virtual ~CoordSolver(){};
 
     // getters
-    int getN(){return n;};
-    int getNvar(){return nv_total;};
-    T getX(){return X;};
-    VecXd getXV(){return xv;};
-    double getTolerance(){return tolerance;};
-    VecXd getPenalty(){return penalty;};
-    VecXd getResiduals(){return residuals;};
-    VecXd getUserWeights(){return wgts_user;};
-    VecXd getBetas(){return betas;};
-    double getBeta0(){return b0;};
-    int getNumPasses(){return num_passes;};
-    VecXd getGradient(){return gradient;};
-    VecXd getCmult(){return cmult;};
-    Rcpp::LogicalVector getStrongSet(){return strong_set;};
-    Rcpp::LogicalVector getActiveSet(){return active_set;};
-    int getStatus(){return status;};
+    int getN(){return n;}
+    int getNvar(){return nv_total;}
+    T getX(){return X;}
+    VecXd getXV(){return xv;}
+    double getTolerance(){return tolerance;}
+    VecXd getPenalty(){return penalty;}
+    VecXd getResiduals(){return residuals;}
+    VecXd getUserWeights(){return wgts_user;}
+    VecXd getBetas(){return betas;}
+    double getBeta0(){return b0;}
+    int getNumPasses(){return num_passes;}
+    VecXd getGradient(){return gradient;}
+    VecXd getCmult(){return cmult;}
+    Rcpp::LogicalVector getStrongSet(){return strong_set;}
+    Rcpp::LogicalVector getActiveSet(){return active_set;}
+    int getStatus(){return status;}
 
     // setters
-    void setPenalty(double val, int pos) {penalty[pos] = val;};
-    void setBetas(const Eigen::Ref<const Eigen::VectorXd> & betas_) {betas = betas_;};
+    void setPenalty(double val, int pos) {penalty[pos] = val;}
+    void setBetas(const Eigen::Ref<const Eigen::VectorXd> & betas_) {betas = betas_;}
 
     // solve GLM CD problem
     void solve() {
@@ -208,7 +208,7 @@ public:
         if (num_passes == max_iterations) {
             status = 1; // max iterations reached
         }
-    };
+    }
 
     // coord desc to solve weighted linear regularized regression
     void coord_desc() {
@@ -232,7 +232,7 @@ public:
                 if (dlx < tolerance) break;
             }
         }
-    };
+    }
 
     // coordinatewise update of features in strong set
     template <typename matType>
@@ -261,7 +261,7 @@ public:
                 }
             }
         }
-    };
+    }
 
     // coordinatewise update of features in active set
     template <typename matType>
@@ -287,7 +287,7 @@ public:
                 }
             }
         }
-    };
+    }
 
     // update intercept
     void update_intercept(){
@@ -295,7 +295,7 @@ public:
         b0 += del;
         residuals.array() -= del * wgts.array();
         dlx = std::max(dlx, del * del * wgts_sum);
-    };
+    }
 
     // base initialize function
     virtual void init(){
@@ -319,7 +319,7 @@ public:
         for (int k = 0; k < XZ.cols(); ++k, ++idx) {
             gradient[idx] = xs[idx] * (XZ.col(k).dot(residuals) - xm[idx] * resids_sum);
         }
-    };
+    }
 
     // warm start initialization given current estimates
     virtual void warm_start(const Eigen::Ref<const Eigen::VectorXd> & y,
@@ -353,14 +353,14 @@ public:
         for (int k = 0; k < XZ.cols(); ++k, ++idx) {
             gradient[idx] = xs[idx] * (XZ.col(k).dot(residuals) - xm[idx] * resids_sum);
         }
-    };
+    }
 
     // update quadratic approx. of likelihood function
     // (linear case has no update)
-    virtual void update_quadratic(){};
+    virtual void update_quadratic(){}
 
     // check convergence of IRLS (always converged in linear case)
-    virtual bool converged() {return true;};
+    virtual bool converged() {return true;}
 
     // update strong set
     void update_strong(const Eigen::Ref<const VecXd> & path,
@@ -389,7 +389,7 @@ public:
                 }
             }
         }
-    };
+    }
 
     // check kkt conditions
     virtual bool check_kkt() {
@@ -416,7 +416,7 @@ public:
             }
         }
         return num_violations == 0;
-    };
+    }
 };
 
 #endif // COORD_SOLVER_H

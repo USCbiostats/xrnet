@@ -20,12 +20,11 @@ interest. Let \(y\) be an n-dimensional observed outcome vector, \(X\)
 be a set of *p* potential predictors observed on the *n* observations,
 and \(Z\) be a set of *q* external features available for the *p*
 predictors. Our model builds off the standard two-level hierarchical
-regression
-model,
+regression model,
 
-![img](https://latex.codecogs.com/gif.latex?y%20%3D%20X%5Cbeta%20+%20%5Cepsilon)
+![](man/figures/eqn1.gif)
 
-![img](https://latex.codecogs.com/gif.latex?%5Cbeta%20%3D%20Z%5Calpha%20+%20%5Cgamma)
+![](man/figures/eqn2.gif)
 
 but allows regularization of both the predictors and the external
 features, where beta is the vector of coefficients describing the
@@ -34,10 +33,9 @@ of coefficients describing the association of each external feature with
 the predictor coefficients, beta. As an example, assume that the outcome
 is continuous and that we want to apply a ridge penalty to the
 predictors and lasso penalty to the external features. We minimize the
-following objective function (ignoring intercept
-terms):
+following objective function (ignoring intercept terms):
 
-![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cbeta%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cbeta%7C%7C%5E2_2%20+%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cbeta%20-%20Z%5Calpha%7C%7C%5E2_2%20+%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
+![](man/figures/eqn3.gif)
 
 Note that our model allows for the predictor coefficients, beta, to
 shrink towards potentially informative values based on the matrix \(Z\).
@@ -46,10 +44,9 @@ towards zero, returning back to a standard regularized regression. To
 efficiently fit the model, we rewrite this convex optimization with the
 variable subsitution \(gamma = beta - Z * alpha\). The problem is then
 solved as a standard regularized regression in which we allow the
-penalty value and type (ridge / lasso) to be
-variable-specific:
+penalty value and type (ridge / lasso) to be variable-specific:
 
-![img](https://latex.codecogs.com/gif.latex?%5Cmin_%7B%5Cgamma%2C%20%5Calpha%7D%5Cfrac%7B1%7D%7B2%7D%7C%7Cy%20-%20X%5Cgamma%20-%20XZ%5Calpha%7C%7C%5E2_2%20+%20%5Cfrac%7B%5Clambda_1%7D%7B2%7D%7C%7C%5Cgamma%7C%7C%5E2_2%20+%20%5Clambda_2%7C%7C%5Calpha%7C%7C_1)
+![](man/figures/eqn4.gif)
 
 This package extends the coordinate descent algorithm of Friedman et
 al. 2010 (used in the R package **glmnet**) to allow for this
@@ -170,7 +167,7 @@ with the `plot` function.
 plot(cv_xrnet)
 ```
 
-![](man/readme_files/cv_results-1.png)<!-- -->
+![](man/figures/cv_results-1.png)<!-- -->
 
 The `predict` function can be used to predict responses and to obtain
 the coefficient estimates (or the `coef` function) at the optimal

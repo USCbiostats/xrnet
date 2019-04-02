@@ -167,7 +167,7 @@ public:
                 beta0[idx] -= cent.segment(nv_x, nv_fixed).dot(gammas.col(idx));
             }
         }
-    };
+    }
 };
 
 #endif // XRNET_H

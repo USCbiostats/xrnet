@@ -163,7 +163,7 @@ public:
 
         // compute error for test data
         error_mat[idx] = loss_func(y, yhat, test_idx);
-    };
+    }
 
     // returns pointer to appropriate loss function based on family / user_loss
     lossPtr select_loss(const std::string & family, const std::string & user_loss) {

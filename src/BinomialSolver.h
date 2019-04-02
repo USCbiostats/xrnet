@@ -108,7 +108,7 @@ public:
                        };
 
     // destructor
-    virtual ~BinomialSolver() {};
+    virtual ~BinomialSolver() {}
 
     // initialize function
     virtual void init() {
@@ -151,7 +151,7 @@ public:
             this->gradient[idx] = this->xs[idx] * (this->XZ.col(k).dot(this->residuals) - this->xm[idx] * this->residuals.sum());
             this->xv[idx] = std::pow(this->xs[idx], 2) * (this->XZ.col(k).cwiseProduct(this->XZ.col(k)) - 2 * this->xm[idx] * this->XZ.col(k) + std::pow(this->xm[idx], 2) * Eigen::VectorXd::Ones(this->n)).adjoint() * this->wgts;
         }
-    };
+    }
 
     // warm start initialization given current estimates
     virtual void warm_start(const Eigen::Ref<const Eigen::VectorXd> & y,
@@ -174,7 +174,7 @@ public:
         for (int k = 0; k < this->XZ.cols(); ++k, ++idx) {
             this->gradient[idx] = this->xs[idx] * (this->XZ.col(k).dot(this->residuals) - this->xm[idx] * this->residuals.sum());
         }
-    };
+    }
 
     // update quadratic approx. of log-likelihood
     virtual void update_quadratic() {
@@ -227,7 +227,7 @@ public:
             if (this->strong_set[idx])
                 this->xv[idx] = std::pow(this->xs[idx], 2) * (this->XZ.col(k).cwiseProduct(this->XZ.col(k)) - 2 * this->xm[idx] * this->XZ.col(k) + std::pow(this->xm[idx], 2) * Eigen::VectorXd::Ones(this->n)).adjoint() * this->wgts;
         }
-    };
+    }
 
     // check convergence of IRLS
     virtual bool converged() {
@@ -248,7 +248,7 @@ public:
         this->betas_prior = this->betas;
         this->b0_prior = this->b0;
         return converged_outer;
-    };
+    }
 
     // check kkt conditions
     virtual bool check_kkt() {
@@ -277,7 +277,7 @@ public:
             }
         }
         return num_violations == 0;
-    };
+    }
 };
 
 #endif // BINOMIAL_SOLVER_H

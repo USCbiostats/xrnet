@@ -47,7 +47,7 @@ void compute_moments(const matType & X,
             }
         }
     }
-};
+}
 
 template <typename matA, typename matB>
 Eigen::MatrixXd create_XZ(const matA & X,
@@ -100,6 +100,6 @@ Eigen::MatrixXd create_XZ(const matA & X,
 
     }
     return XZ;
-};
+}
 
 #endif // DATA_FUNCTIONS_H
