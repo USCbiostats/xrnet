@@ -1,5 +1,5 @@
 
-# xrnet: R Package for Hierarchical Regularized Regression to Incorporate External Data <img src="man/figures/logo.svg" align="right" height="180px"/>
+# xrnet: R Package for Hierarchical Regularized Regression to Incorporate External Data <img src="man/figures/logo.png" align="right" height="180px"/>
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
