@@ -115,8 +115,8 @@
     <pre class="usage"><span class='fu'>tune_xrnet</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>external</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>unpen</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span>), <span class='kw'>penalty</span> <span class='kw'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(),
   <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>TRUE</span>, <span class='fl'>TRUE</span>), <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>TRUE</span>,
-  <span class='fl'>FALSE</span>), <span class='kw'>loss</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"mse"</span>, <span class='st'>"mae"</span>, <span class='st'>"auc"</span>), <span class='kw'>nfolds</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>foldid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
+  <span class='fl'>FALSE</span>), <span class='kw'>loss</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"deviance"</span>, <span class='st'>"mse"</span>, <span class='st'>"mae"</span>, <span class='st'>"auc"</span>), <span class='kw'>nfolds</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>foldid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -143,7 +143,9 @@
     </tr>
     <tr>
       <th>unpen</th>
-      <td><p>(optional) unpenalized predictor design matrix</p></td>
+      <td><p>(optional) unpenalized predictor design matrix, matrix options include:</p><ul>
+<li><p>matrix</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>family</th>
@@ -154,23 +156,28 @@
     </tr>
     <tr>
       <th>penalty</th>
-      <td><p>specifies regularization object for x and external. See <code><a href='define_penalty.html'>define_penalty</a></code> for more details.</p></td>
+      <td><p>specifies regularization object for x and external.
+See <code><a href='define_penalty.html'>define_penalty</a></code> for more details.</p></td>
     </tr>
     <tr>
       <th>weights</th>
-      <td><p>optional vector of observation-specific weights. Default is 1 for all observations.</p></td>
+      <td><p>optional vector of observation-specific weights.
+Default is 1 for all observations.</p></td>
     </tr>
     <tr>
       <th>standardize</th>
-      <td><p>indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).</p></td>
+      <td><p>indicates whether x and/or external should be standardized.
+Default is c(TRUE, TRUE).</p></td>
     </tr>
     <tr>
       <th>intercept</th>
-      <td><p>indicates whether an intercept term is included for x and/or external. Default is c(TRUE, FALSE).</p></td>
+      <td><p>indicates whether an intercept term is included for x and/or external.
+Default is c(TRUE, FALSE).</p></td>
     </tr>
     <tr>
       <th>loss</th>
       <td><p>loss function for cross-validation. Options include:</p><ul>
+<li><p>deviance</p></li>
 <li><p>mse (Mean Squared Error)</p></li>
 <li><p>mae (Mean Absolute Error)</p></li>
 <li><p>auc (Area under the curve)</p></li>
@@ -182,11 +189,13 @@
     </tr>
     <tr>
       <th>foldid</th>
-      <td><p>(optional) vector that identifies user-specified fold for each observation. If NULL, folds are automatically generated.</p></td>
+      <td><p>(optional) vector that identifies user-specified fold for each observation.
+If NULL, folds are automatically generated.</p></td>
     </tr>
     <tr>
       <th>parallel</th>
-      <td><p>use <code>foreach</code> function to fit folds in parallel if TRUE, must register cluster (<code>doParallel</code>) before using.</p></td>
+      <td><p>use <code>foreach</code> function to fit folds in parallel if TRUE,
+must register cluster (<code>doParallel</code>) before using.</p></td>
     </tr>
     <tr>
       <th>control</th>
@@ -199,14 +208,30 @@
     <p>A list of class <code>tune_xrnet</code> with components</p>
 <dt>cv_mean</dt><dd><p>mean cross-validated error for each penalty combination. Object returned is
 a vector if there is no external data (external = NULL) and matrix if there is external data.</p></dd>
-<dt>cv_sd</dt><dd><p>estimated standard deviation for cross-validated errors</p></dd>
-<dt>opt_loss</dt><dd><p>the value for the optimal cross-validated error</p></dd>
+<dt>cv_sd</dt><dd><p>estimated standard deviation for cross-validated errorsObject returned is
+a vector if there is no external data (external = NULL) and matrix if there is external data.</p></dd>
+<dt>loss</dt><dd><p>loss function used to compute cross-validation error</p></dd>
+<dt>opt_loss</dt><dd><p>the value of the loss function for the optimal cross-validated error</p></dd>
 <dt>opt_penalty</dt><dd><p>first-level penalty value that achieves the optimal loss</p></dd>
 <dt>opt_penalty_ext</dt><dd><p>second-level penalty value that achieves the optimal loss (if external data is present)</p></dd>
 <dt>fitted_model</dt><dd><p>fitted xrnet object using all data, see <code><a href='xrnet.html'>xrnet</a></code> for details of object</p></dd>
 
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## cross validation of hierarchical linear regression model</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>GaussianExample</span>)
+
+<span class='co'>## 5-fold cross validation</span>
+<span class='no'>cv_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'>tune_xrnet</span>(
+    <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x_linear</span>,
+    <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y_linear</span>,
+    <span class='kw'>external</span> <span class='kw'>=</span> <span class='no'>ext_linear</span>,
+    <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>
+ )
+
+ <span class='co'>## contour plot of cross-validated error</span>
+ <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>cv_xrnet</span>)</div><div class='img'><img src='tune_xrnet-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -214,7 +239,9 @@ a vector if there is no external data (external = NULL) and matrix if there is e
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

@@ -32,7 +32,7 @@
 
 <meta property="og:title" content="Define regularization object for predictor and external data — define_penalty" />
 
-<meta property="og:description" content="Defines regularization terms for predictor and external data in xrnet fitting." />
+<meta property="og:description" content="Defines regularization for predictors and external data variables in xrnet fitting." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -108,7 +108,7 @@
 
     <div class="ref-description">
     
-    <p>Defines regularization terms for predictor and external data in <code><a href='xrnet.html'>xrnet</a></code> fitting.</p>
+    <p>Defines regularization for predictors and external data variables in <code><a href='xrnet.html'>xrnet</a></code> fitting.</p>
     
     </div>
 
@@ -124,7 +124,8 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>penalty_type</th>
-      <td><p>type of regularization for x. Default is 0 (Ridge). Can supply either a scalar value or vector with length equal to the number of variables in x.</p><ul>
+      <td><p>type of regularization for x. Default is 0 (Ridge).
+Can supply either a scalar value or vector with length equal to the number of variables in x.</p><ul>
 <li><p>0 = Ridge</p></li>
 <li><p>(0,1) = Elastic-Net</p></li>
 <li><p>1 = Lasso / Quantile</p></li>
@@ -136,7 +137,8 @@
     </tr>
     <tr>
       <th>penalty_type_ext</th>
-      <td><p>type of regularization for external data. See penalty_type for options. Default is 1 (lasso). Can supply either a scalar value or vector with length equal to the number of variables in external.</p></td>
+      <td><p>type of regularization for external data. See penalty_type for options.
+Default is 1 (lasso). Can supply either a scalar value or vector with length equal to the number of variables in external.</p></td>
     </tr>
     <tr>
       <th>quantile_ext</th>
@@ -152,11 +154,13 @@
     </tr>
     <tr>
       <th>penalty_ratio</th>
-      <td><p>ratio between minimum and maximum penalty for x. Default is 1e-04 if \(n &gt; p\) and 0.01 if \(n &lt;= p\).</p></td>
+      <td><p>ratio between minimum and maximum penalty for x.
+Default is 1e-04 if \(n &gt; p\) and 0.01 if \(n &lt;= p\).</p></td>
     </tr>
     <tr>
       <th>penalty_ratio_ext</th>
-      <td><p>ratio between minimum and maximum penalty for external data. Default is 1e-04 if \(p &gt; q\) and 0.01 if \(p &lt;= q\).</p></td>
+      <td><p>ratio between minimum and maximum penalty for external data.
+Default is 1e-04 if \(p &gt; q\) and 0.01 if \(p &lt;= q\).</p></td>
     </tr>
     <tr>
       <th>user_penalty</th>
@@ -168,11 +172,13 @@
     </tr>
     <tr>
       <th>custom_multiplier</th>
-      <td><p>variable-specific penalty multipliers for x. Default is 1 for all variables. 0 is no penalization.</p></td>
+      <td><p>variable-specific penalty multipliers for x.
+Default is 1 for all variables. 0 is no penalization.</p></td>
     </tr>
     <tr>
       <th>custom_multiplier_ext</th>
-      <td><p>variable-specific penalty multipliers for external data. Default is 1 for all variables. 0 is no penalization.</p></td>
+      <td><p>variable-specific penalty multipliers for external data.
+Default is 1 for all variables. 0 is no penalization.</p></td>
     </tr>
     </table>
     

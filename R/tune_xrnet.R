@@ -72,9 +72,10 @@
 #'     external = ext_linear,
 #'     family = "gaussian"
 #'  )
-#'
+#'  \dontrun{
 #'  ## contour plot of cross-validated error
 #'  plot(cv_xrnet)
+#'  }
 
 #' @export
 tune_xrnet <- function(x,

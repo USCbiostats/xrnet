@@ -152,7 +152,9 @@ future extensions to other outcomes (i.e. Cox regression) will be implemented in
     </tr>
     <tr>
       <th>unpen</th>
-      <td><p>(optional) unpenalized predictor design matrix</p></td>
+      <td><p>(optional) unpenalized predictor design matrix, matrix options include:</p><ul>
+<li><p>matrix</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>family</th>
@@ -187,7 +189,7 @@ Default is c(TRUE, FALSE).</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of class <code>xrnet</code> with components</p>
+    <p>A list of class <code>xrnet</code> with components:</p>
 <dt>beta0</dt><dd><p>matrix of first-level intercepts indexed by penalty values</p></dd>
 <dt>betas</dt><dd><p>3-dimensional array of first-level penalized coefficients indexed by penalty values</p></dd>
 <dt>gammas</dt><dd><p>3-dimensional array of first-level non-penalized coefficients indexed by penalty values</p></dd>
@@ -205,7 +207,48 @@ Default is c(TRUE, FALSE).</p></td>
 <dt>error_msg</dt><dd><p>description of error</p></dd>
 
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>This function extends the coordinate descent algorithm of the R package <code>glmnet</code> to allow the
+type of regularization (i.e. ridge, lasso) to be feature-specific. In addition, elements of the R package <code>biglasso</code>
+are utilized to enable the use of standard R matrices, memory-mapped matrices from the <code>bigmemory</code> package,
+or sparse matrices from the <code>Matrix</code> package.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Jerome Friedman, Trevor Hastie, Robert Tibshirani (2010).
+Regularization Paths for Generalized Linear Models via Coordinate Descent.
+Journal of Statistical Software, 33(1), 1-22. URL http://www.jstatsoft.org/v33/i01/.</p>
+<p>Zeng, Y., and Breheny, P. (2017).
+The biglasso Package: A Memory- and Computation-Efficient Solver for Lasso Model Fitting with Big Data in R.
+arXiv preprint arXiv:1701.05936. URL https://arxiv.org/abs/1701.05936.</p>
+<p>Michael J. Kane, John Emerson, Stephen Weston (2013).
+Scalable Strategies for Computing with Massive Data.
+Journal of Statistical Software, 55(14), 1-19. URL http://www.jstatsoft.org/v55/i14/.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>### hierarchical regularized linear regression ###</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>GaussianExample</span>)
+
+<span class='co'>## define penalty for predictors and external variables</span>
+<span class='co'>## default is ridge for predictors and lasso for external</span>
+<span class='co'>## see define_penalty() function for more details</span>
+<span class='no'>penalty</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(
+    <span class='kw'>penalty_type</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+    <span class='kw'>penalty_type_ext</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+    <span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>30</span>,
+    <span class='kw'>num_penalty_ext</span> <span class='kw'>=</span> <span class='fl'>30</span>
+)
+
+<span class='co'>## fit model with defined regularization</span>
+<span class='no'>fit_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'>xrnet</span>(
+    <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x_linear</span>,
+    <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y_linear</span>,
+    <span class='kw'>external</span> <span class='kw'>=</span> <span class='no'>ext_linear</span>,
+    <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
+    <span class='kw'>penalty</span> <span class='kw'>=</span> <span class='no'>penalty</span>
+)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -213,7 +256,13 @@ Default is c(TRUE, FALSE).</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+
+      <li><a href="#details">Details</a></li>
+
+      <li><a href="#references">References</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

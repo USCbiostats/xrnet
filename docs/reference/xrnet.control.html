@@ -113,8 +113,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>xrnet.control</span>(<span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>1e-08</span>, <span class='kw'>max_iterations</span> <span class='kw'>=</span> <span class='fl'>1e+05</span>,
-  <span class='kw'>earlyStop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>dfmax</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pmax</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>lower_limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>upper_limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>dfmax</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pmax</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>lower_limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>upper_limits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -125,19 +125,18 @@
     </tr>
     <tr>
       <th>max_iterations</th>
-      <td><p>maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.</p></td>
-    </tr>
-    <tr>
-      <th>earlyStop</th>
-      <td><p>indicator for whether stopping criterion on penalty path based on deviance (i.e. no change in deviance). Default is FALSE.</p></td>
+      <td><p>maximum number of iterations to run coordinate gradient descent
+across all penalties before returning an error. Default is 1e+05.</p></td>
     </tr>
     <tr>
       <th>dfmax</th>
-      <td><p>maximum number of variables allowed in model. Default is \(ncol(x) + ncol(external) + intercept[1] + intercept[2]\).</p></td>
+      <td><p>maximum number of variables allowed in model. Default
+is \(ncol(x) + ncol(external) + intercept[1] + intercept[2]\).</p></td>
     </tr>
     <tr>
       <th>pmax</th>
-      <td><p>maximum number of variables with nonzero coefficient estimate. Default is \(min(2 * dfmax + 20, ncol(x) + ncol(external) + intercept[2])\).</p></td>
+      <td><p>maximum number of variables with nonzero coefficient estimate.
+Default is \(min(2 * dfmax + 20, ncol(x) + ncol(external) + intercept[2])\).</p></td>
     </tr>
     <tr>
       <th>lower_limits</th>

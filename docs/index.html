@@ -102,29 +102,29 @@
 </li>
 <li>Install xrnet package with the install_github function (optionally install most recent / potentially unstable development branch)</li>
 </ol>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># Master branch</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"USCbiostats/xrnet"</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co"># Development branch</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"USCbiostats/xrnet"</span>, <span class="dt">ref =</span> <span class="st">"development"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># Master branch</span></a>
+<a class="sourceLine" id="cb1-2" title="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"USCbiostats/xrnet"</span>)</a>
+<a class="sourceLine" id="cb1-3" title="3"></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="co"># Development branch</span></a>
+<a class="sourceLine" id="cb1-5" title="5">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"USCbiostats/xrnet"</span>, <span class="dt">ref =</span> <span class="st">"development"</span>)</a></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>Load the package</li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(xrnet)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(xrnet)</a></code></pre></div>
 </div>
 <div id="a-first-example" class="section level1">
 <h1 class="hasAnchor">
 <a href="#a-first-example" class="anchor"></a>A First Example</h1>
 <p>As an example of how you might use xrnet, we have provided a small set of simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(GaussianExample)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(GaussianExample)</a></code></pre></div>
 <div id="fitting-a-model" class="section level4">
 <h4 class="hasAnchor">
 <a href="#fitting-a-model" class="anchor"></a>Fitting a Model</h4>
 <p>To fit a linear hierarchical regularized regression model, use the main <code>xrnet</code> function. At a minimum, you should specify the predictor matrix <code>x</code>, outcome variable <code>y</code>, and <code>family</code> (outcome distribution). The <code>external</code> option allows you to incorporate external data in the regularized regression model. If you do not include external data, a standard regularized regression model will be fit. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(<span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">                     <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">                     <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">                     <span class="dt">family =</span> <span class="st">"gaussian"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(<span class="dt">x =</span> x_linear, </a>
+<a class="sourceLine" id="cb4-2" title="2">                     <span class="dt">y =</span> y_linear, </a>
+<a class="sourceLine" id="cb4-3" title="3">                     <span class="dt">external =</span> ext_linear, </a>
+<a class="sourceLine" id="cb4-4" title="4">                     <span class="dt">family =</span> <span class="st">"gaussian"</span>)</a></code></pre></div>
 </div>
 <div id="modifying-regularization-terms" class="section level4">
 <h4 class="hasAnchor">
@@ -147,31 +147,31 @@
 <li>User-defined set of penalties</li>
 </ul>
 <p>As an example, we may want to apply a ridge penalty to both the x variables and external data variables. In addition, we may want to have 30 penalty values computed for the regularization path associated with both x and external. We modify our model fitting as follows.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">myPenalty &lt;-<span class="st"> </span><span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dt">penalty_type =</span> <span class="dv">0</span>, </a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">                            <span class="dt">penalty_type_ext =</span> <span class="dv">0</span>, </a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">                            <span class="dt">num_penalty =</span> <span class="dv">30</span>, </a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">                            <span class="dt">num_penalty_ext =</span> <span class="dv">30</span>)</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(<span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">                     <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">                     <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">                     <span class="dt">family =</span> <span class="st">"gaussian"</span>, </a>
-<a class="sourceLine" id="cb5-10" data-line-number="10">                     <span class="dt">penalty =</span> myPenalty)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">myPenalty &lt;-<span class="st"> </span><span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dt">penalty_type =</span> <span class="dv">0</span>, </a>
+<a class="sourceLine" id="cb5-2" title="2">                            <span class="dt">penalty_type_ext =</span> <span class="dv">0</span>, </a>
+<a class="sourceLine" id="cb5-3" title="3">                            <span class="dt">num_penalty =</span> <span class="dv">30</span>, </a>
+<a class="sourceLine" id="cb5-4" title="4">                            <span class="dt">num_penalty_ext =</span> <span class="dv">30</span>)</a>
+<a class="sourceLine" id="cb5-5" title="5"></a>
+<a class="sourceLine" id="cb5-6" title="6">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(<span class="dt">x =</span> x_linear, </a>
+<a class="sourceLine" id="cb5-7" title="7">                     <span class="dt">y =</span> y_linear, </a>
+<a class="sourceLine" id="cb5-8" title="8">                     <span class="dt">external =</span> ext_linear, </a>
+<a class="sourceLine" id="cb5-9" title="9">                     <span class="dt">family =</span> <span class="st">"gaussian"</span>, </a>
+<a class="sourceLine" id="cb5-10" title="10">                     <span class="dt">penalty =</span> myPenalty)</a></code></pre></div>
 </div>
 <div id="tuning-penalty-parameters-by-cross-validation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#tuning-penalty-parameters-by-cross-validation" class="anchor"></a>Tuning Penalty Parameters by Cross-Validation</h4>
 <p>In general, we need a method to determine the penalty values that produce the optimal out-of-sample prediction. We provide a simple two-dimensional grid search that uses k-fold cross-validation to determine the optimal values for the penalties. The cross-validation function <code>tune_xrnet</code> is used as follows.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">cv_xrnet &lt;-<span class="st"> </span><span class="kw"><a href="reference/tune_xrnet.html">tune_xrnet</a></span>(<span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">                       <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">                       <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">                       <span class="dt">family =</span> <span class="st">"gaussian"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">cv_xrnet &lt;-<span class="st"> </span><span class="kw"><a href="reference/tune_xrnet.html">tune_xrnet</a></span>(<span class="dt">x =</span> x_linear, </a>
+<a class="sourceLine" id="cb6-2" title="2">                       <span class="dt">y =</span> y_linear, </a>
+<a class="sourceLine" id="cb6-3" title="3">                       <span class="dt">external =</span> ext_linear, </a>
+<a class="sourceLine" id="cb6-4" title="4">                       <span class="dt">family =</span> <span class="st">"gaussian"</span>)</a></code></pre></div>
 <p>To visualize the results of the cross-validation we provide a contour plot of the mean cross-validation error across the grid of penalties with the <code>plot</code> function.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(cv_xrnet)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(cv_xrnet)</a></code></pre></div>
 <p><img src="reference/figures/cv_results-1.png" width="700"></p>
 <p>The <code>predict</code> function can be used to predict responses and to obtain the coefficient estimates (or the <code>coef</code> function) at the optimal penalty combination (default) or any other penalty combination.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">predy &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(cv_xrnet, <span class="dt">newdata =</span> x_linear)</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">estimates &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(cv_xrnet)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">predy &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(cv_xrnet, <span class="dt">newdata =</span> x_linear)</a>
+<a class="sourceLine" id="cb8-2" title="2">estimates &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(cv_xrnet)</a></code></pre></div>
 </div>
 </div>
   </div>
@@ -187,7 +187,9 @@
 <div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-2">GPL-2</a></li>
+<li>
+<a href="https://www.r-project.org/Licenses/GPL-2">GPL-2</a> | file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
 <div class="developers">

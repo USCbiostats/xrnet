@@ -32,8 +32,8 @@
 
 <meta property="og:title" content="Get coefficient estimates from "xrnet" model object — coef.xrnet" />
 
-<meta property="og:description" content="Returns coefficents from 'xrnet' model or refits model to estimate
-coefficients not computed in path(s)." />
+<meta property="og:description" content="Returns coefficents from 'xrnet' model or refit model to estimate
+coefficients not computed in original path(s) of model object." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -109,8 +109,8 @@ coefficients not computed in path(s)." />
 
     <div class="ref-description">
     
-    <p>Returns coefficents from 'xrnet' model or refits model to estimate
-coefficients not computed in path(s).</p>
+    <p>Returns coefficents from 'xrnet' model or refit model to estimate
+coefficients not computed in original path(s) of model object.</p>
     
     </div>
 
@@ -145,13 +145,40 @@ more information on regularization object.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A list with coefficient estimates at each of the requested penalty combinations</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>GaussianExample</span>)
+
+<span class='no'>fit_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='xrnet.html'>xrnet</a></span>(
+    <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x_linear</span>,
+    <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y_linear</span>,
+    <span class='kw'>external</span> <span class='kw'>=</span> <span class='no'>ext_linear</span>,
+    <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>
+)
+
+<span class='no'>lambda1</span> <span class='kw'>&lt;-</span> <span class='no'>fit_xrnet</span>$<span class='no'>penalty</span>[<span class='fl'>10</span>]
+<span class='no'>lambda2</span> <span class='kw'>&lt;-</span> <span class='no'>fit_xrnet</span>$<span class='no'>penalty</span>[<span class='fl'>10</span>]</div><span class='co'># NOT RUN {</span>
+<span class='no'>coef_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(
+    <span class='no'>fit_xrnet</span>,
+    <span class='kw'>p</span> <span class='kw'>=</span> <span class='no'>lambda1</span>,
+    <span class='kw'>pext</span> <span class='kw'>=</span> <span class='no'>lambda2</span>,
+)
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
