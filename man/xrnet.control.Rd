@@ -5,19 +5,20 @@
 \title{Control function for xrnet fitting}
 \usage{
 xrnet.control(tolerance = 1e-08, max_iterations = 1e+05,
-  earlyStop = FALSE, dfmax = NULL, pmax = NULL,
-  lower_limits = NULL, upper_limits = NULL)
+  dfmax = NULL, pmax = NULL, lower_limits = NULL,
+  upper_limits = NULL)
 }
 \arguments{
 \item{tolerance}{positive convergence criterion. Default is 1e-08.}
 
-\item{max_iterations}{maximum number of iterations to run coordinate gradient descent across all penalties before returning an error. Default is 1e+05.}
+\item{max_iterations}{maximum number of iterations to run coordinate gradient descent
+across all penalties before returning an error. Default is 1e+05.}
 
-\item{earlyStop}{indicator for whether stopping criterion on penalty path based on deviance (i.e. no change in deviance). Default is FALSE.}
+\item{dfmax}{maximum number of variables allowed in model. Default
+is \eqn{ncol(x) + ncol(external) + intercept[1] + intercept[2]}.}
 
-\item{dfmax}{maximum number of variables allowed in model. Default is \eqn{ncol(x) + ncol(external) + intercept[1] + intercept[2]}.}
-
-\item{pmax}{maximum number of variables with nonzero coefficient estimate. Default is \eqn{min(2 * dfmax + 20, ncol(x) + ncol(external) + intercept[2])}.}
+\item{pmax}{maximum number of variables with nonzero coefficient estimate.
+Default is \eqn{min(2 * dfmax + 20, ncol(x) + ncol(external) + intercept[2])}.}
 
 \item{lower_limits}{vector of lower limits for each coefficient. Default is -Inf for all variables.}
 

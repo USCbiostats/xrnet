@@ -20,7 +20,31 @@ more information on regularization object.}
 
 \item{...}{pass other arguments to xrnet function (if needed)}
 }
+\value{
+A list with coefficient estimates at each of the requested penalty combinations
+}
 \description{
-Returns coefficents from 'xrnet' model or refits model to estimate
-coefficients not computed in path(s).
+Returns coefficents from 'xrnet' model or refit model to estimate
+coefficients not computed in original path(s) of model object.
+}
+\examples{
+data(GaussianExample)
+
+fit_xrnet <- xrnet(
+    x = x_linear,
+    y = y_linear,
+    external = ext_linear,
+    family = "gaussian"
+)
+
+lambda1 <- fit_xrnet$penalty[10]
+lambda2 <- fit_xrnet$penalty[10]
+\dontrun{
+coef_xrnet <- coef(
+    fit_xrnet,
+    p = lambda1,
+    pext = lambda2,
+)
+}
+
 }

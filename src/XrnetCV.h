@@ -172,17 +172,28 @@ public:
         lossMap.insert(std::make_pair<std::string, lossPtr>("mse", mean_squared_error));
         lossMap.insert(std::make_pair<std::string, lossPtr>("mae", mean_absolute_error));
         lossMap.insert(std::make_pair<std::string, lossPtr>("auc", auc));
+        lossMap.insert(std::make_pair<std::string, lossPtr>("deviance_binomial", deviance_binomial));
 
         lossPtr loss_func = nullptr;
         if (user_loss == "default")
         {
-            if (family == "gaussian")
+            if (family == "gaussian") {
                 loss_func = mean_squared_error;
-            else if (family == "binomial")
+            }
+            else if (family == "binomial") {
                 loss_func = auc;
+            }
         }
-        else
+        else if (user_loss == "deviance")
         {
+            if (family == "gaussian"){
+                loss_func = mean_squared_error;
+            }
+            else if (family == "binomial") {
+                loss_func = deviance_binomial;
+            }
+        }
+        else {
             loss_func = lossMap[user_loss];
         }
         return loss_func;
@@ -193,9 +204,9 @@ public:
                                      const Eigen::Ref<const Eigen::VectorXi> & test_idx) {
         double error = 0.0;
         for (int i = 0; i < test_idx.size(); ++i) {
-            error += std::pow(actual[test_idx[i]] - predicted[test_idx[i]], 2);
+            error += std::pow(actual[test_idx[i]] - predicted[test_idx[i]], 2) / test_idx.size();
         }
-        return error / test_idx.size();
+        return error;
     }
 
     static double mean_absolute_error(const Eigen::Ref<const Eigen::VectorXd> & actual,
@@ -203,9 +214,9 @@ public:
                                       const Eigen::Ref<const Eigen::VectorXi> & test_idx) {
         double error = 0.0;
         for (int i = 0; i < test_idx.size(); ++i) {
-            error += std::abs(actual[test_idx[i]] - predicted[test_idx[i]]);
+            error += std::abs(actual[test_idx[i]] - predicted[test_idx[i]]) / test_idx.size();
         }
-        return error / test_idx.size();
+        return error;
     }
 
     static double auc(const Eigen::Ref<const Eigen::VectorXd> & actual,
@@ -225,7 +236,9 @@ public:
         const int n = pred_sub.size();
         std::vector<size_t> indx(n);
         std::iota(indx.begin(), indx.end(), 0);
-        std::sort(indx.begin(), indx.end(), [&pred_sub](int i1, int i2) {return pred_sub[i1] < pred_sub[i2];});
+        std::sort(indx.begin(), indx.end(), [&pred_sub](int i1, int i2) {
+            return pred_sub[i1] < pred_sub[i2];
+        });
 
         // compute mann whitney u --> use to get auc
         int n1 = 0;
@@ -238,6 +251,16 @@ public:
         }
         double u_value = rank_sum - (n1 * (n1 + 1)) / 2.0;
         return u_value / (n1 * (n - n1));
+    }
+
+    static double deviance_binomial(const Eigen::Ref<const Eigen::VectorXd> & actual,
+                                    const Eigen::Ref<const Eigen::VectorXd> & predicted,
+                                    const Eigen::Ref<const Eigen::VectorXi> & test_idx) {
+        double error = 0.0;
+        for (int i = 0; i < test_idx.size(); ++i){
+            error += (actual[test_idx[i]] * predicted[test_idx[i]] - log(1.0 + exp(predicted[test_idx[i]]))) / test_idx.size();
+        }
+        return -2 * error;
     }
 };
 

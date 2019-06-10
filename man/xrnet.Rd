@@ -26,7 +26,10 @@ xrnet(x, y, external = NULL, unpen = NULL, family = c("gaussian",
     \item sparse matrix (dgCMatrix)
 }}
 
-\item{unpen}{(optional) unpenalized predictor design matrix}
+\item{unpen}{(optional) unpenalized predictor design matrix, matrix options include:
+\itemize{
+    \item matrix
+}}
 
 \item{family}{error distribution for outcome variable, options include:
 \itemize{
@@ -47,7 +50,7 @@ Default is c(TRUE, FALSE).}
 \item{control}{specifies xrnet control object. See \code{\link{xrnet.control}} for more details.}
 }
 \value{
-A list of class \code{xrnet} with components
+A list of class \code{xrnet} with components:
 \item{beta0}{matrix of first-level intercepts indexed by penalty values}
 \item{betas}{3-dimensional array of first-level penalized coefficients indexed by penalty values}
 \item{gammas}{3-dimensional array of first-level non-penalized coefficients indexed by penalty values}
@@ -71,4 +74,46 @@ by the most common penalties (lasso, ridge, elastic net).
 Solutions are computed across a two-dimensional grid of penalties (a separate penalty path is computed
 for the predictors and external variables). Currently support regularized linear and logistic regression,
 future extensions to other outcomes (i.e. Cox regression) will be implemented in the next major update.
+}
+\details{
+This function extends the coordinate descent algorithm of the R package \code{glmnet} to allow the
+type of regularization (i.e. ridge, lasso) to be feature-specific. In addition, elements of the R package \code{biglasso}
+are utilized to enable the use of standard R matrices, memory-mapped matrices from the \code{bigmemory} package,
+or sparse matrices from the \code{Matrix} package.
+}
+\examples{
+### hierarchical regularized linear regression ###
+data(GaussianExample)
+
+## define penalty for predictors and external variables
+## default is ridge for predictors and lasso for external
+## see define_penalty() function for more details
+penalty <- define_penalty(
+    penalty_type = 0,
+    penalty_type_ext = 1,
+    num_penalty = 30,
+    num_penalty_ext = 30
+)
+
+## fit model with defined regularization
+fit_xrnet <- xrnet(
+    x = x_linear,
+    y = y_linear,
+    external = ext_linear,
+    family = "gaussian",
+    penalty = penalty
+)
+}
+\references{
+Jerome Friedman, Trevor Hastie, Robert Tibshirani (2010).
+Regularization Paths for Generalized Linear Models via Coordinate Descent.
+Journal of Statistical Software, 33(1), 1-22. URL http://www.jstatsoft.org/v33/i01/.
+
+Zeng, Y., and Breheny, P. (2017).
+The biglasso Package: A Memory- and Computation-Efficient Solver for Lasso Model Fitting with Big Data in R.
+arXiv preprint arXiv:1701.05936. URL https://arxiv.org/abs/1701.05936.
+
+Michael J. Kane, John Emerson, Stephen Weston (2013).
+Scalable Strategies for Computing with Massive Data.
+Journal of Statistical Software, 55(14), 1-19. URL http://www.jstatsoft.org/v55/i14/.
 }

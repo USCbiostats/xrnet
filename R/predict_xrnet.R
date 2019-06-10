@@ -1,6 +1,6 @@
 #' Predict function for "xrnet" object
 #'
-#' @description Predict coefficients or response in new data
+#' @description Predict coefficients or response in new data using fitted model from an \code{\link{xrnet}} object
 #'
 #' @param object A \code{\link{xrnet}} object
 #' @param newdata matrix with new values for penalized variables
@@ -17,6 +17,41 @@
 #' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
 #' more information on regularization object.
 #' @param ... pass other arguments to xrnet function (if needed)
+#' @return The object returned based on the type object is as follows:
+#' \itemize{
+#'     \item coefficients: A list with the coefficient estimates for each penalty combination
+#'     \item response: An array with the response predictions based on the data for each penalty combination
+#'     \item link: An array with linear predictions based on the data for each penalty combination
+#' }
+#' @examples
+#' data(GaussianExample)
+#'
+#' fit_xrnet <- xrnet(
+#'     x = x_linear,
+#'     y = y_linear,
+#'     external = ext_linear,
+#'     family = "gaussian"
+#' )
+#'
+#' \dontrun{
+#' lambda1 <- fit_xrnet$penalty[10]
+#' lambda2 <- fit_xrnet$penalty[10]
+#'
+#' coef_xrnet <- predict(
+#'     fit_xrnet,
+#'     p = lambda1,
+#'     pext = lambda2,
+#'     type = "coefficients"
+#' )
+#'
+#' pred_xrnet <- predict(
+#'     fit_xrnet,
+#'     p = lambda1,
+#'     pext = lambda2,
+#'     newdata = x_linear,
+#'     type = "response"
+#' )
+#' }
 
 #' @export
 #' @importFrom stats update
@@ -62,7 +97,8 @@ predict.xrnet <- function(object,
             penalty$num_penalty <- length(penalty$user_penalty)
 
             if(!is.null(pext)) {
-                warning(paste("Warning: No external data variables in model fit, ignoring supplied external penalties pext = ", pext))
+                warning(paste("Warning: No external data variables in model fit,
+                              ignoring supplied external penalties pext = ", pext))
                 pext <- NULL
             }
         }
@@ -129,35 +165,52 @@ predict.xrnet <- function(object,
         }
 
         beta0 <- as.vector(beta0)
-        betas <- `dim<-`(aperm(betas, c(1, 3, 2)), c(dim(betas)[1], dim(betas)[2] * dim(betas)[3]))
+        betas <- `dim<-`(
+            aperm(betas, c(1, 3, 2)),
+            c(dim(betas)[1], dim(betas)[2] * dim(betas)[3])
+        )
         if (!is.null(gammas)) {
-            gammas <- `dim<-`(aperm(gammas, c(1, 3, 2)), c(dim(gammas)[1], dim(gammas)[2] * dim(gammas)[3]))
+            gammas <- `dim<-`(
+                aperm(gammas, c(1, 3, 2)),
+                c(dim(gammas)[1], dim(gammas)[2] * dim(gammas)[3])
+            )
         } else {
             gammas <- matrix(vector("numeric", 0), 0, 0)
             newdata_fixed <- matrix(vector("numeric", 0), 0, 0)
         }
 
         if (mattype_x == 2)
-            result <- computeResponseRcpp(newdata@address,
-                                          mattype_x,
-                                          newdata_fixed,
-                                          beta0,
-                                          betas,
-                                          gammas,
-                                          type,
-                                          object$family)
+            result <- computeResponseRcpp(
+                newdata@address,
+                mattype_x,
+                newdata_fixed,
+                beta0,
+                betas,
+                gammas,
+                type,
+                object$family
+            )
         else
-            result <- computeResponseRcpp(newdata,
-                                          mattype_x,
-                                          newdata_fixed,
-                                          beta0,
-                                          betas,
-                                          gammas,
-                                          type,
-                                          object$family)
+            result <- computeResponseRcpp(
+                newdata,
+                mattype_x,
+                newdata_fixed,
+                beta0,
+                betas,
+                gammas,
+                type,
+                object$family
+            )
 
         if (length(pext) > 1) {
-            result <- aperm(array(t(result), c(length(pext), length(p), dim(result)[1])), c(3, 2, 1))
+            result <- aperm(
+                a= array(
+                      data = t(result),
+                      c(length(pext), length(p),
+                      dim(result)[1])
+                ),
+                perm = c(3, 2, 1)
+            )
         } else {
 
         }

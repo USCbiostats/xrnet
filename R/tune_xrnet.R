@@ -20,34 +20,61 @@
 #'     \item matrix
 #'     \item sparse matrix (dgCMatrix)
 #' }
-#' @param unpen (optional) unpenalized predictor design matrix
+#' @param unpen (optional) unpenalized predictor design matrix, matrix options include:
+#' \itemize{
+#'     \item matrix
+#' }
 #' @param family error distribution for outcome variable, options include:
 #' \itemize{
 #'     \item gaussian
 #'     \item binomial
 #' }
-#' @param penalty specifies regularization object for x and external. See \code{\link{define_penalty}} for more details.
-#' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
-#' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
-#' @param intercept indicates whether an intercept term is included for x and/or external. Default is c(TRUE, FALSE).
+#' @param penalty specifies regularization object for x and external.
+#' See \code{\link{define_penalty}} for more details.
+#' @param weights optional vector of observation-specific weights.
+#' Default is 1 for all observations.
+#' @param standardize indicates whether x and/or external should be standardized.
+#' Default is c(TRUE, TRUE).
+#' @param intercept indicates whether an intercept term is included for x and/or external.
+#'  Default is c(TRUE, FALSE).
 #' @param loss loss function for cross-validation. Options include:
 #' \itemize{
+#'    \item deviance
 #'    \item mse (Mean Squared Error)
 #'    \item mae (Mean Absolute Error)
 #'    \item auc (Area under the curve)
 #' }
 #' @param nfolds number of folds for cross-validation. Default is 5.
-#' @param foldid (optional) vector that identifies user-specified fold for each observation. If NULL, folds are automatically generated.
-#' @param parallel use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.
+#' @param foldid (optional) vector that identifies user-specified fold for each observation.
+#' If NULL, folds are automatically generated.
+#' @param parallel use \code{foreach} function to fit folds in parallel if TRUE,
+#' must register cluster (\code{doParallel}) before using.
 #' @param control specifies xrnet control object. See \code{\link{xrnet.control}} for more details.
 #' @return A list of class \code{tune_xrnet} with components
 #' \item{cv_mean}{mean cross-validated error for each penalty combination. Object returned is
 #' a vector if there is no external data (external = NULL) and matrix if there is external data.}
-#' \item{cv_sd}{estimated standard deviation for cross-validated errors}
-#' \item{opt_loss}{the value for the optimal cross-validated error}
+#' \item{cv_sd}{estimated standard deviation for cross-validated errorsObject returned is
+#' a vector if there is no external data (external = NULL) and matrix if there is external data.}
+#' \item{loss}{loss function used to compute cross-validation error}
+#' \item{opt_loss}{the value of the loss function for the optimal cross-validated error}
 #' \item{opt_penalty}{first-level penalty value that achieves the optimal loss}
 #' \item{opt_penalty_ext}{second-level penalty value that achieves the optimal loss (if external data is present)}
 #' \item{fitted_model}{fitted xrnet object using all data, see \code{\link{xrnet}} for details of object}
+#'
+#' @examples
+#' ## cross validation of hierarchical linear regression model
+#' data(GaussianExample)
+#'
+#' ## 5-fold cross validation
+#' cv_xrnet <- tune_xrnet(
+#'     x = x_linear,
+#'     y = y_linear,
+#'     external = ext_linear,
+#'     family = "gaussian"
+#'  )
+#'
+#'  ## contour plot of cross-validated error
+#'  plot(cv_xrnet)
 
 #' @export
 tune_xrnet <- function(x,
@@ -59,12 +86,14 @@ tune_xrnet <- function(x,
                        weights = NULL,
                        standardize = c(TRUE, TRUE),
                        intercept = c(TRUE, FALSE),
-                       loss = c("mse", "mae", "auc"),
+                       loss = c("deviance", "mse", "mae", "auc"),
                        nfolds = 5,
                        foldid = NULL,
                        parallel = FALSE,
                        control = list())
 {
+    # function call
+    this_call <- match.call()
 
     # Check family argument
     family <- match.arg(family)
@@ -79,9 +108,9 @@ tune_xrnet <- function(x,
     } else {
         loss <- match.arg(loss)
         loss_available <- TRUE
-        if (family == "gaussian" && !(loss %in% c("mse", "mae"))) {
+        if (family == "gaussian" && !(loss %in% c("deviance", "mse", "mae"))) {
             loss_available <- FALSE
-        } else if (family == "binomial" && !(loss %in% c("auc"))) {
+        } else if (family == "binomial" && !(loss %in% c("deviance", "auc"))) {
             loss_available <- FALSE
         }
         if (!loss_available) {
@@ -128,16 +157,18 @@ tune_xrnet <- function(x,
     }
 
     # Fit model on all training data
-    xrnet_object <- xrnet(x = x,
-                          y = y,
-                          external = external,
-                          unpen = unpen,
-                          family = family,
-                          weights = weights,
-                          standardize = standardize,
-                          intercept = intercept,
-                          penalty = penalty,
-                          control = control)
+    xrnet_object <- xrnet(
+        x = x,
+        y = y,
+        external = external,
+        unpen = unpen,
+        family = family,
+        weights = weights,
+        standardize = standardize,
+        intercept = intercept,
+        penalty = penalty,
+        control = control
+    )
     xrnet_object$call <- xrnet_call
 
     # Check whether fixed and external are empty
@@ -162,19 +193,27 @@ tune_xrnet <- function(x,
     } else {
         penalty_fold$user_penalty_ext <- xrnet_object$penalty_ext
     }
-    penalty_fold <- initialize_penalty(penalty_fold,
-                                       NROW(x),
-                                       NCOL(x),
-                                       nc_unpen,
-                                       NROW(external),
-                                       nc_ext,
-                                       intercept)
+    penalty_fold <- initialize_penalty(
+        penalty_obj = penalty_fold,
+        nr_x = NROW(x),
+        nc_x = NCOL(x),
+        nc_unpen = nc_unpen,
+        nr_ext = NROW(external),
+        nc_ext = nc_ext,
+        intercept = intercept
+    )
 
     num_pen <- penalty_fold$num_penalty
     num_pen_ext <- penalty_fold$num_penalty_ext
 
     control <- do.call("xrnet.control", control)
-    control <- initialize_control(control, NCOL(x), nc_unpen, nc_ext, intercept)
+    control <- initialize_control(
+        control_obj = control,
+        nc_x = NCOL(x),
+        nc_unpen = nc_unpen,
+        nc_ext = nc_ext,
+        intercept = intercept
+    )
 
     # Randomly sample observations into folds / check nfolds
     if (is.null(foldid)) {
@@ -197,75 +236,77 @@ tune_xrnet <- function(x,
     if (parallel) {
         if (is.big.matrix(x)) {
             xdesc <- describe(x)
-            errormat <- foreach(k = 1L:nfolds, .packages = c("xrnet", "bigmemory"), .combine = cbind) %dopar% {
+            errormat <- foreach(k = 1L:nfolds,
+                                .packages = c("xrnet", "bigmemory"),
+                                .combine = cbind) %dopar% {
                 weights_train <- weights
                 weights_train[foldid == k] <- 0.0
                 test_idx <- as.integer(which(foldid == k) - 1)
                 xref <- attach.big.matrix(xdesc)
 
                 # Get errors for k-th fold
-                error_vec <- fit_model_cv(x = xref,
-                                          mattype_x = mattype_x,
-                                          y = y,
-                                          external = external,
-                                          fixed = unpen,
-                                          weights_user = weights_train,
-                                          intercept = intercept,
-                                          standardize = standardize,
-                                          penalty_type = penalty_fold$ptype,
-                                          cmult = penalty_fold$cmult,
-                                          quantiles = c(penalty_fold$quantile,
-                                                        penalty_fold$quantile_ext),
-                                          num_penalty = c(penalty_fold$num_penalty,
-                                                          penalty_fold$num_penalty_ext),
-                                          penalty_ratio = c(penalty_fold$penalty_ratio,
-                                                            penalty_fold$penalty_ratio_ext),
-                                          user_penalty = penalty_fold$user_penalty,
-                                          user_penalty_ext = penalty_fold$user_penalty_ext,
-                                          lower_cl = control$lower_limits,
-                                          upper_cl = control$upper_limits,
-                                          family = family,
-                                          user_loss = loss,
-                                          test_idx = test_idx,
-                                          thresh = control$tolerance,
-                                          maxit = control$max_iterations,
-                                          dfmax = control$dfmax,
-                                          pmax = control$pmax)
+                error_vec <- fit_model_cv(
+                    x = xref,
+                    mattype_x = mattype_x,
+                    y = y,
+                    external = external,
+                    fixed = unpen,
+                    weights_user = weights_train,
+                    intercept = intercept,
+                    standardize = standardize,
+                    penalty_type = penalty_fold$ptype,
+                    cmult = penalty_fold$cmult,
+                    quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
+                    num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
+                    penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
+                    user_penalty = penalty_fold$user_penalty,
+                    user_penalty_ext = penalty_fold$user_penalty_ext,
+                    lower_cl = control$lower_limits,
+                    upper_cl = control$upper_limits,
+                    family = family,
+                    user_loss = loss,
+                    test_idx = test_idx,
+                    thresh = control$tolerance,
+                    maxit = control$max_iterations,
+                    dfmax = control$dfmax,
+                    pmax = control$pmax
+                )
             }
         } else {
-            errormat <- foreach(k = 1L:nfolds, .packages = c("xrnet", "Matrix"), .combine = cbind) %dopar% {
+            errormat <- foreach(k = 1L:nfolds,
+                                .packages = c("xrnet", "Matrix"),
+                                .combine = cbind) %dopar% {
                 weights_train <- weights
                 weights_train[foldid == k] <- 0.0
                 test_idx <- as.integer(which(foldid == k) - 1)
 
                 # Get errors for k-th fold
-                error_vec <- fit_model_cv(x = x,
-                                          mattype_x = mattype_x,
-                                          y = y,
-                                          external = external,
-                                          fixed = unpen,
-                                          weights_user = weights_train,
-                                          intercept = intercept,
-                                          standardize = standardize,
-                                          penalty_type = penalty_fold$ptype,
-                                          cmult = penalty_fold$cmult,
-                                          quantiles = c(penalty_fold$quantile,
-                                                        penalty_fold$quantile_ext),
-                                          num_penalty = c(penalty_fold$num_penalty,
-                                                          penalty_fold$num_penalty_ext),
-                                          penalty_ratio = c(penalty_fold$penalty_ratio,
-                                                            penalty_fold$penalty_ratio_ext),
-                                          user_penalty = penalty_fold$user_penalty,
-                                          user_penalty_ext = penalty_fold$user_penalty_ext,
-                                          lower_cl = control$lower_limits,
-                                          upper_cl = control$upper_limits,
-                                          family = family,
-                                          user_loss = loss,
-                                          test_idx = test_idx,
-                                          thresh = control$tolerance,
-                                          maxit = control$max_iterations,
-                                          dfmax = control$dfmax,
-                                          pmax = control$pmax)
+                error_vec <- fit_model_cv(
+                    x = x,
+                    mattype_x = mattype_x,
+                    y = y,
+                    external = external,
+                    fixed = unpen,
+                    weights_user = weights_train,
+                    intercept = intercept,
+                    standardize = standardize,
+                    penalty_type = penalty_fold$ptype,
+                    cmult = penalty_fold$cmult,
+                    quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
+                    num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
+                    penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
+                    user_penalty = penalty_fold$user_penalty,
+                    user_penalty_ext = penalty_fold$user_penalty_ext,
+                    lower_cl = control$lower_limits,
+                    upper_cl = control$upper_limits,
+                    family = family,
+                    user_loss = loss,
+                    test_idx = test_idx,
+                    thresh = control$tolerance,
+                    maxit = control$max_iterations,
+                    dfmax = control$dfmax,
+                    pmax = control$pmax
+                )
             }
         }
     } else {
@@ -277,46 +318,45 @@ tune_xrnet <- function(x,
             test_idx <- as.integer(which(foldid == k) - 1)
 
             # Fit model on k-th training fold
-            errormat[, k] <- fit_model_cv(x = x,
-                                          mattype_x = mattype_x,
-                                          y = y,
-                                          external = external,
-                                          fixed = unpen,
-                                          weights_user = weights_train,
-                                          intercept = intercept,
-                                          standardize = standardize,
-                                          penalty_type = penalty_fold$ptype,
-                                          cmult = penalty_fold$cmult,
-                                          quantiles = c(penalty_fold$quantile,
-                                                        penalty_fold$quantile_ext),
-                                          num_penalty = c(penalty_fold$num_penalty,
-                                                          penalty_fold$num_penalty_ext),
-                                          penalty_ratio = c(penalty_fold$penalty_ratio,
-                                                            penalty_fold$penalty_ratio_ext),
-                                          user_penalty = penalty_fold$user_penalty,
-                                          user_penalty_ext = penalty_fold$user_penalty_ext,
-                                          lower_cl = control$lower_limits,
-                                          upper_cl = control$upper_limits,
-                                          family = family,
-                                          user_loss = loss,
-                                          test_idx = test_idx,
-                                          thresh = control$tolerance,
-                                          maxit = control$max_iterations,
-                                          dfmax = control$dfmax,
-                                          pmax = control$pmax)
+            errormat[, k] <- fit_model_cv(
+                x = x,
+                mattype_x = mattype_x,
+                y = y,
+                external = external,
+                fixed = unpen,
+                weights_user = weights_train,
+                intercept = intercept,
+                standardize = standardize,
+                penalty_type = penalty_fold$ptype,
+                cmult = penalty_fold$cmult,
+                quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
+                num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
+                penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
+                user_penalty = penalty_fold$user_penalty,
+                user_penalty_ext = penalty_fold$user_penalty_ext,
+                lower_cl = control$lower_limits,
+                upper_cl = control$upper_limits,
+                family = family,
+                user_loss = loss,
+                test_idx = test_idx,
+                thresh = control$tolerance,
+                maxit = control$max_iterations,
+                dfmax = control$dfmax,
+                pmax = control$pmax
+            )
         }
     }
     cv_mean <- rowMeans(errormat)
     cv_sd <- sqrt(rowSums((errormat - cv_mean)^2) / (nfolds - 1))
     cv_mean <- matrix(cv_mean, nrow = num_pen, byrow = TRUE)
     cv_sd <- matrix(cv_sd, nrow = num_pen, byrow = TRUE)
-    row.names(cv_mean) <- rev(sort(xrnet_object$penalty))
-    row.names(cv_sd) <- rev(sort(xrnet_object$penalty))
+    rownames(cv_mean) <- rev(sort(xrnet_object$penalty))
+    rownames(cv_sd) <- rev(sort(xrnet_object$penalty))
     if (num_pen_ext > 1) {
         colnames(cv_mean) <- rev(sort(xrnet_object$penalty_ext))
         colnames(cv_sd) <- rev(sort(xrnet_object$penalty_ext))
     }
-    if (loss %in% c("mse", "mae")) {
+    if (loss %in% c("deviance", "mse", "mae")) {
         opt_loss <- min(cv_mean, na.rm = TRUE)
         optIndex <- which(opt_loss == cv_mean, arr.ind = TRUE)
     } else {
@@ -332,15 +372,18 @@ tune_xrnet <- function(x,
         opt_penalty_ext <- xrnet_object$penalty_ext[optIndex[1, 2]]
     }
 
-    cvfit <- list(cv_mean = cv_mean,
-                  cv_sd = cv_sd,
-                  opt_loss = opt_loss,
-                  opt_penalty = opt_penalty,
-                  opt_penalty_ext = opt_penalty_ext,
-                  fitted_model = xrnet_object,
-                  call = xrnet_object$call)
+    cvfit <- list(
+        cv_mean = cv_mean,
+        cv_sd = cv_sd,
+        loss = loss,
+        opt_loss = opt_loss,
+        opt_penalty = opt_penalty,
+        opt_penalty_ext = opt_penalty_ext,
+        fitted_model = xrnet_object,
+        call = this_call
+    )
 
-    class(cvfit) <- c("tune_xrnet")
+    class(cvfit) <- "tune_xrnet"
     return(cvfit)
 }
 

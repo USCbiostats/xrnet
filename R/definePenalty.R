@@ -1,24 +1,30 @@
 #' Define regularization object for predictor and external data
 #'
-#' @description Defines regularization terms for predictor and external data in \code{\link{xrnet}} fitting.
+#' @description Defines regularization for predictors and external data variables in \code{\link{xrnet}} fitting.
 #'
-#' @param penalty_type type of regularization for x. Default is 0 (Ridge). Can supply either a scalar value or vector with length equal to the number of variables in x.
+#' @param penalty_type type of regularization for x. Default is 0 (Ridge).
+#' Can supply either a scalar value or vector with length equal to the number of variables in x.
 #' \itemize{
 #'    \item 0 = Ridge
 #'    \item (0,1) = Elastic-Net
 #'    \item 1 = Lasso / Quantile
 #' }
 #' @param quantile specifies quantile for predictors. Default of 0.5 reduces to lasso.
-#' @param penalty_type_ext type of regularization for external data. See penalty_type for options. Default is 1 (lasso). Can supply either a scalar value or vector with length equal to the number of variables in external.
+#' @param penalty_type_ext type of regularization for external data. See penalty_type for options.
+#' Default is 1 (lasso). Can supply either a scalar value or vector with length equal to the number of variables in external.
 #' @param quantile_ext specifies quantile for external data. Default of 0.5 reduces to lasso.
 #' @param num_penalty number of penalty values to fit in grid for x. Default is 20.
 #' @param num_penalty_ext number of penalty values to fit in grid for external data. Default is 20.
-#' @param penalty_ratio ratio between minimum and maximum penalty for x. Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.
-#' @param penalty_ratio_ext ratio between minimum and maximum penalty for external data. Default is 1e-04 if \eqn{p > q} and 0.01 if \eqn{p <= q}.
+#' @param penalty_ratio ratio between minimum and maximum penalty for x.
+#' Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.
+#' @param penalty_ratio_ext ratio between minimum and maximum penalty for external data.
+#' Default is 1e-04 if \eqn{p > q} and 0.01 if \eqn{p <= q}.
 #' @param user_penalty user-defined vector of penalty values to fit for x.
 #' @param user_penalty_ext user-defined vector of penalty values to fit for external data.
-#' @param custom_multiplier variable-specific penalty multipliers for x. Default is 1 for all variables. 0 is no penalization.
-#' @param custom_multiplier_ext variable-specific penalty multipliers for external data. Default is 1 for all variables. 0 is no penalization.
+#' @param custom_multiplier variable-specific penalty multipliers for x.
+#' Default is 1 for all variables. 0 is no penalization.
+#' @param custom_multiplier_ext variable-specific penalty multipliers for external data.
+#'  Default is 1 for all variables. 0 is no penalization.
 
 #' @export
 define_penalty <- function(penalty_type = 0,
@@ -104,16 +110,18 @@ define_penalty <- function(penalty_type = 0,
         stop("Error: custom_multiplier_ext can only contain non-negative values")
     }
 
-    penalty_obj <- list(penalty_type = penalty_type,
-                        quantile = quantile,
-                        penalty_type_ext = penalty_type_ext,
-                        quantile_ext = quantile_ext,
-                        num_penalty = num_penalty,
-                        num_penalty_ext = num_penalty_ext,
-                        penalty_ratio = penalty_ratio,
-                        penalty_ratio_ext = penalty_ratio_ext,
-                        user_penalty = user_penalty,
-                        user_penalty_ext = user_penalty_ext,
-                        custom_multiplier = custom_multiplier,
-                        custom_multiplier_ext = custom_multiplier_ext)
+    penalty_obj <- list(
+        penalty_type = penalty_type,
+        quantile = quantile,
+        penalty_type_ext = penalty_type_ext,
+        quantile_ext = quantile_ext,
+        num_penalty = num_penalty,
+        num_penalty_ext = num_penalty_ext,
+        penalty_ratio = penalty_ratio,
+        penalty_ratio_ext = penalty_ratio_ext,
+        user_penalty = user_penalty,
+        user_penalty_ext = user_penalty_ext,
+        custom_multiplier = custom_multiplier,
+        custom_multiplier_ext = custom_multiplier_ext
+    )
 }

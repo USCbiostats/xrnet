@@ -11,7 +11,7 @@ Description: Fits hierarchical regularized regression models
     external information with the most common penalties used in practice
     (i.e. ridge, lasso, elastic net). Support for standard R matrices, sparse
     matrices and big.matrix objects.
-License: GPL-2
+License: GPL-2 | file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1

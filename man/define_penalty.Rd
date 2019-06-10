@@ -12,7 +12,8 @@ define_penalty(penalty_type = 0, quantile = 0.5,
   custom_multiplier_ext = NULL)
 }
 \arguments{
-\item{penalty_type}{type of regularization for x. Default is 0 (Ridge). Can supply either a scalar value or vector with length equal to the number of variables in x.
+\item{penalty_type}{type of regularization for x. Default is 0 (Ridge).
+Can supply either a scalar value or vector with length equal to the number of variables in x.
 \itemize{
    \item 0 = Ridge
    \item (0,1) = Elastic-Net
@@ -21,7 +22,8 @@ define_penalty(penalty_type = 0, quantile = 0.5,
 
 \item{quantile}{specifies quantile for predictors. Default of 0.5 reduces to lasso.}
 
-\item{penalty_type_ext}{type of regularization for external data. See penalty_type for options. Default is 1 (lasso). Can supply either a scalar value or vector with length equal to the number of variables in external.}
+\item{penalty_type_ext}{type of regularization for external data. See penalty_type for options.
+Default is 1 (lasso). Can supply either a scalar value or vector with length equal to the number of variables in external.}
 
 \item{quantile_ext}{specifies quantile for external data. Default of 0.5 reduces to lasso.}
 
@@ -29,18 +31,22 @@ define_penalty(penalty_type = 0, quantile = 0.5,
 
 \item{num_penalty_ext}{number of penalty values to fit in grid for external data. Default is 20.}
 
-\item{penalty_ratio}{ratio between minimum and maximum penalty for x. Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.}
+\item{penalty_ratio}{ratio between minimum and maximum penalty for x.
+Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.}
 
-\item{penalty_ratio_ext}{ratio between minimum and maximum penalty for external data. Default is 1e-04 if \eqn{p > q} and 0.01 if \eqn{p <= q}.}
+\item{penalty_ratio_ext}{ratio between minimum and maximum penalty for external data.
+Default is 1e-04 if \eqn{p > q} and 0.01 if \eqn{p <= q}.}
 
 \item{user_penalty}{user-defined vector of penalty values to fit for x.}
 
 \item{user_penalty_ext}{user-defined vector of penalty values to fit for external data.}
 
-\item{custom_multiplier}{variable-specific penalty multipliers for x. Default is 1 for all variables. 0 is no penalization.}
+\item{custom_multiplier}{variable-specific penalty multipliers for x.
+Default is 1 for all variables. 0 is no penalization.}
 
-\item{custom_multiplier_ext}{variable-specific penalty multipliers for external data. Default is 1 for all variables. 0 is no penalization.}
+\item{custom_multiplier_ext}{variable-specific penalty multipliers for external data.
+Default is 1 for all variables. 0 is no penalization.}
 }
 \description{
-Defines regularization terms for predictor and external data in \code{\link{xrnet}} fitting.
+Defines regularization for predictors and external data variables in \code{\link{xrnet}} fitting.
 }

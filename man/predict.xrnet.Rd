@@ -32,6 +32,44 @@ more information on regularization object.}
 
 \item{...}{pass other arguments to xrnet function (if needed)}
 }
+\value{
+The object returned based on the type object is as follows:
+\itemize{
+    \item coefficients: A list with the coefficient estimates for each penalty combination
+    \item response: An array with the response predictions based on the data for each penalty combination
+    \item link: An array with linear predictions based on the data for each penalty combination
+}
+}
 \description{
-Predict coefficients or response in new data
+Predict coefficients or response in new data using fitted model from an \code{\link{xrnet}} object
+}
+\examples{
+data(GaussianExample)
+
+fit_xrnet <- xrnet(
+    x = x_linear,
+    y = y_linear,
+    external = ext_linear,
+    family = "gaussian"
+)
+
+\dontrun{
+lambda1 <- fit_xrnet$penalty[10]
+lambda2 <- fit_xrnet$penalty[10]
+
+coef_xrnet <- predict(
+    fit_xrnet,
+    p = lambda1,
+    pext = lambda2,
+    type = "coefficients"
+)
+
+pred_xrnet <- predict(
+    fit_xrnet,
+    p = lambda1,
+    pext = lambda2,
+    newdata = x_linear,
+    type = "response"
+)
+}
 }

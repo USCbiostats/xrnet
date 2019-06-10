@@ -7,8 +7,8 @@
 tune_xrnet(x, y, external = NULL, unpen = NULL,
   family = c("gaussian", "binomial"), penalty = define_penalty(),
   weights = NULL, standardize = c(TRUE, TRUE), intercept = c(TRUE,
-  FALSE), loss = c("mse", "mae", "auc"), nfolds = 5, foldid = NULL,
-  parallel = FALSE, control = list())
+  FALSE), loss = c("deviance", "mse", "mae", "auc"), nfolds = 5,
+  foldid = NULL, parallel = FALSE, control = list())
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options include:
@@ -27,7 +27,10 @@ tune_xrnet(x, y, external = NULL, unpen = NULL,
     \item sparse matrix (dgCMatrix)
 }}
 
-\item{unpen}{(optional) unpenalized predictor design matrix}
+\item{unpen}{(optional) unpenalized predictor design matrix, matrix options include:
+\itemize{
+    \item matrix
+}}
 
 \item{family}{error distribution for outcome variable, options include:
 \itemize{
@@ -35,16 +38,21 @@ tune_xrnet(x, y, external = NULL, unpen = NULL,
     \item binomial
 }}
 
-\item{penalty}{specifies regularization object for x and external. See \code{\link{define_penalty}} for more details.}
+\item{penalty}{specifies regularization object for x and external.
+See \code{\link{define_penalty}} for more details.}
 
-\item{weights}{optional vector of observation-specific weights. Default is 1 for all observations.}
+\item{weights}{optional vector of observation-specific weights.
+Default is 1 for all observations.}
 
-\item{standardize}{indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).}
+\item{standardize}{indicates whether x and/or external should be standardized.
+Default is c(TRUE, TRUE).}
 
-\item{intercept}{indicates whether an intercept term is included for x and/or external. Default is c(TRUE, FALSE).}
+\item{intercept}{indicates whether an intercept term is included for x and/or external.
+Default is c(TRUE, FALSE).}
 
 \item{loss}{loss function for cross-validation. Options include:
 \itemize{
+   \item deviance
    \item mse (Mean Squared Error)
    \item mae (Mean Absolute Error)
    \item auc (Area under the curve)
@@ -52,9 +60,11 @@ tune_xrnet(x, y, external = NULL, unpen = NULL,
 
 \item{nfolds}{number of folds for cross-validation. Default is 5.}
 
-\item{foldid}{(optional) vector that identifies user-specified fold for each observation. If NULL, folds are automatically generated.}
+\item{foldid}{(optional) vector that identifies user-specified fold for each observation.
+If NULL, folds are automatically generated.}
 
-\item{parallel}{use \code{foreach} function to fit folds in parallel if TRUE, must register cluster (\code{doParallel}) before using.}
+\item{parallel}{use \code{foreach} function to fit folds in parallel if TRUE,
+must register cluster (\code{doParallel}) before using.}
 
 \item{control}{specifies xrnet control object. See \code{\link{xrnet.control}} for more details.}
 }
@@ -62,12 +72,29 @@ tune_xrnet(x, y, external = NULL, unpen = NULL,
 A list of class \code{tune_xrnet} with components
 \item{cv_mean}{mean cross-validated error for each penalty combination. Object returned is
 a vector if there is no external data (external = NULL) and matrix if there is external data.}
-\item{cv_sd}{estimated standard deviation for cross-validated errors}
-\item{opt_loss}{the value for the optimal cross-validated error}
+\item{cv_sd}{estimated standard deviation for cross-validated errorsObject returned is
+a vector if there is no external data (external = NULL) and matrix if there is external data.}
+\item{loss}{loss function used to compute cross-validation error}
+\item{opt_loss}{the value of the loss function for the optimal cross-validated error}
 \item{opt_penalty}{first-level penalty value that achieves the optimal loss}
 \item{opt_penalty_ext}{second-level penalty value that achieves the optimal loss (if external data is present)}
 \item{fitted_model}{fitted xrnet object using all data, see \code{\link{xrnet}} for details of object}
 }
 \description{
 k-fold cross-validation for hierarchical regularized regression \code{\link{xrnet}}
+}
+\examples{
+## cross validation of hierarchical linear regression model
+data(GaussianExample)
+
+## 5-fold cross validation
+cv_xrnet <- tune_xrnet(
+    x = x_linear,
+    y = y_linear,
+    external = ext_linear,
+    family = "gaussian"
+ )
+
+ ## contour plot of cross-validated error
+ plot(cv_xrnet)
 }
