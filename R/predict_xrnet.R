@@ -71,18 +71,19 @@ predict.xrnet <- function(object,
         type <- match.arg(type)
     }
 
-    if (missing(newdata)) {
-        if (!match(type, c("coefficients"), FALSE))
-            stop("Error: 'newdata' needs to be specified")
+    if (missing(newdata) && !match(type, c("coefficients"), FALSE)) {
+        stop("Error: 'newdata' needs to be specified")
     }
 
-    if (is.null(p))
+    if (is.null(p)){
         stop("Error: p not specified")
+    }
 
     if (!(all(p %in% object$penalty)) || !(all(pext %in% object$penalty_ext))) {
 
-        if (is.null(penalty))
+        if (is.null(penalty)) {
             stop("Error: Not all penalty values in path(s), please provide original regularization object")
+        }
 
         if (!is.null(object$penalty_ext)) {
             if (is.null(pext)) {
@@ -93,7 +94,7 @@ predict.xrnet <- function(object,
             penalty$user_penalty_ext <- rev(sort(c(object$penalty_ext, pext)))
             penalty$num_penalty_ext <- length(penalty$user_penalty_ext)
         } else {
-            penalty$user_penalty <- c(object$penalty, p)
+            penalty$user_penalty <- rev(sort(c(object$penalty, p)))
             penalty$num_penalty <- length(penalty$user_penalty)
 
             if(!is.null(pext)) {
@@ -148,17 +149,20 @@ predict.xrnet <- function(object,
     if (type %in% c("link", "response")) {
 
         if (is(newdata, "matrix")) {
-            if (!(typeof(newdata) %in% c("integer", "double")))
+            if (!(typeof(newdata) %in% c("integer", "double"))) {
                 stop("Error: newdata contains non-numeric values")
+            }
             mattype_x <- 1
         }
         else if (is.big.matrix(newdata)) {
-            if (!(bigmemory::describe(newdata)@description$type %in% c("integer", "double")))
+            if (!(bigmemory::describe(newdata)@description$type %in% c("integer", "double"))) {
                 stop("Error: newdata contains non-numeric values")
+            }
             mattype_x <- 2
         } else if ("dgCMatrix" %in% class(newdata)) {
-            if (!(typeof(newdata@x) %in% c("integer", "double")))
+            if (!(typeof(newdata@x) %in% c("integer", "double"))){
                 stop("Error: newdata contains non-numeric values")
+            }
             mattype_x <- 3
         } else {
             stop("Error: newdata must be a matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")

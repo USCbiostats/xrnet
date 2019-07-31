@@ -136,7 +136,7 @@ tune_xrnet <- function(x,
         }
         mattype_x <- 3
     } else {
-        stop("Error: x must be a big.matrix, filebacked.big.matrix, or dgCMatrix")
+        stop("Error: x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
     }
 
     # check y type
