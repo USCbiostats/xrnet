@@ -28,7 +28,7 @@ Regularized regression is a popular method for both variable selection and predi
 
 Along with the extesion described above, popular features from the R packages **glmnet** and **biglasso**, both common and unique, were integrated into **xrnet**. 
 
-Features that are not found in both **glment** and **biglasso** or novel in this package, include:
+Features not found in both **glmnet** and **biglasso** or novel in this package, include:
 
 * Integration of external data in a hierarchical regularization framework
 
@@ -38,9 +38,11 @@ Features that are not found in both **glment** and **biglasso** or novel in this
 
 * Reduced memory usage by using 'on the fly' variable standardization
 
-* User-specified standardization of features
+* User-specified options for feature standardization and whether to include an intercept
 
-* Inclusion of unpenalized features as a separate matrix or in the primary feature matrix 
+* Inclusion of unpenalized features as a separate matrix or in the primary feature matrix
+
+* Box (upper/lower) constraints on coefficient estimates
 
 To maintain computational efficiency, the core functionality was developed in C++ with usage of the Eigen linear algebra library for the primary data structures. Overall, this R package aims to provide a set of functions to fit and tune a hierarchical regularized regression models and attempts to unify some of the best features from currently available R packages for regularized regression into a single easy to use interface.
 
