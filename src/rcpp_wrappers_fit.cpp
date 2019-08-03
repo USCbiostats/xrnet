@@ -1,8 +1,8 @@
 #include <string.h>
+#include "CoordDescTypes.h"
 #include "DataFunctions.h"
 #include "Xrnet.h"
 #include "XrnetUtils.h"
-#include "CoordDescTypes.h"
 #include "BinomialSolver.h"
 
 template <typename TX, typename TZ>

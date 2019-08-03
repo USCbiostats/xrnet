@@ -9,11 +9,11 @@
 template <typename T>
 class CoordSolver {
 
-    typedef Eigen::VectorXd VecXd;
-    typedef Eigen::VectorXi VecXi;
     typedef Eigen::Map<const Eigen::MatrixXd> MapMat;
     typedef Eigen::MappedSparseMatrix<double> MapSpMat;
     typedef Eigen::Map<const Eigen::VectorXd> MapVec;
+    typedef Eigen::VectorXd VecXd;
+    typedef Eigen::VectorXi VecXi;
 
 protected:
     const int n;

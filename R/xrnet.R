@@ -168,7 +168,7 @@ xrnet <- function(x,
     if (!is.null(external)) {
 
         # check if external is a sparse matrix
-        if (is(x, "sparseMatrix")) {
+        if (is(external, "sparseMatrix")) {
             is_sparse_ext = TRUE
         } else {
             is_sparse_ext = FALSE
