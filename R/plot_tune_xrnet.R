@@ -1,5 +1,7 @@
 #' Plot k-fold cross-validation error grid
 #'
+#' @description Creates a contour plot of the mean cross-validated error from tune_xrnet object
+#'
 #' @param x A tune_xrnet class object
 #' @param ... Additional graphics parameters
 

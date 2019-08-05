@@ -12,5 +12,5 @@
 \item{...}{Additional graphics parameters}
 }
 \description{
-Plot k-fold cross-validation error grid
+Creates a contour plot of the mean cross-validated error from tune_xrnet object
 }
