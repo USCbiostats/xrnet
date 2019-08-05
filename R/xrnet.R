@@ -127,17 +127,17 @@ xrnet <- function(x,
 
     # check type of x matrix
     if (is(x, "matrix")) {
-        if (!(typeof(x) %in% c("integer", "double")))
-            stop("Error: x contains non-numeric values")
+        if (typeof(x) != "double")
+            stop("Error: x must be of type double")
         mattype_x <- 1
     }
     else if (is.big.matrix(x)) {
-        if (!(bigmemory::describe(x)@description$type %in% c("integer", "double")))
-            stop("Error: x contains non-numeric values")
+        if (bigmemory::describe(x)@description$type != "double")
+            stop("Error: x must be of type double")
         mattype_x <- 2
     } else if ("dgCMatrix" %in% class(x)) {
-        if (!(typeof(x@x) %in% c("integer", "double")))
-            stop("Error: x contains non-numeric values")
+        if (typeof(x@x) != "double")
+            stop("Error: x must be of type double")
         mattype_x <- 3
     } else {
         stop("Error: x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
@@ -150,10 +150,6 @@ xrnet <- function(x,
     nr_x <- NROW(x)
     nc_x <- NCOL(x)
     y_len <- NROW(y)
-
-    if (nc_x < 2) {
-        stop("Error: x must have at least 2 columns")
-    }
 
     if (y_len != nr_x) {
         stop(

@@ -8,13 +8,6 @@ test_that("throw error when matching family not found", {
     expect_error(xrnet(x, y, external, family = "badfamily"))
 })
 
-test_that("throw error when x or ext do not have at least 2 columns", {
-    x <- matrix(runif(10), ncol = 1)
-    y <- 1:10
-    external <- matrix(runif(10), 1)
-    expect_error(xrnet(x, y, external, family = "gaussian"), "Error: x must have at least 2 columns")
-})
-
 test_that("throw error when dimensions of x and y do not match", {
     x <- matrix(runif(10), ncol = 2)
     y <- 1:10
