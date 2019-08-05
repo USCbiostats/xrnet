@@ -49,6 +49,7 @@ test_that("predict returns right predictions for penalties already fit by xrnet 
 })
 
 test_that("predict returns estimates for penalties not fit by xrnet object", {
+    skip("Internal")
     myPenalty <- define_penalty(penalty_type = 0,
                                 penalty_type_ext = 1,
                                 num_penalty = 25,
@@ -116,6 +117,7 @@ test_that("predict returns estimates for penalties not fit by xrnet object", {
 })
 
 test_that("predict returns right predictions for penalties not already fit by xrnet object", {
+    skip("Internal")
     myPenalty <- define_penalty(penalty_type = 0,
                                 penalty_type_ext = 1,
                                 num_penalty = 15,
