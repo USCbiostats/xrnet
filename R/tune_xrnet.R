@@ -139,6 +139,9 @@ tune_xrnet <- function(x,
         stop("Error: x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
     }
 
+    # check external type
+    is_sparse_ext <- is(external, "sparseMatrix")
+
     # check y type
     y <- drop(as.numeric(y))
 
@@ -245,23 +248,23 @@ tune_xrnet <- function(x,
                 test_idx <- as.integer(which(foldid == k) - 1)
                 xref <- attach.big.matrix(xdesc)
 
-                # Get errors for k-th fold
-                error_vec <- fit_model_cv(
+                error_vec <- fitModelCVRcpp(
                     x = xref,
                     mattype_x = mattype_x,
                     y = y,
-                    external = external,
+                    ext = external,
+                    is_sparse_ext = is_sparse_ext,
                     fixed = unpen,
                     weights_user = weights_train,
-                    intercept = intercept,
-                    standardize = standardize,
+                    intr = intercept,
+                    stnd = standardize,
                     penalty_type = penalty_fold$ptype,
                     cmult = penalty_fold$cmult,
                     quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
                     num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
                     penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
-                    user_penalty = penalty_fold$user_penalty,
-                    user_penalty_ext = penalty_fold$user_penalty_ext,
+                    penalty_user = penalty_fold$user_penalty,
+                    penalty_user_ext = penalty_fold$user_penalty_ext,
                     lower_cl = control$lower_limits,
                     upper_cl = control$upper_limits,
                     family = family,
@@ -269,8 +272,8 @@ tune_xrnet <- function(x,
                     test_idx = test_idx,
                     thresh = control$tolerance,
                     maxit = control$max_iterations,
-                    dfmax = control$dfmax,
-                    pmax = control$pmax
+                    ne = control$dfmax,
+                    nx = control$pmax
                 )
             }
         } else {
@@ -282,22 +285,23 @@ tune_xrnet <- function(x,
                 test_idx <- as.integer(which(foldid == k) - 1)
 
                 # Get errors for k-th fold
-                error_vec <- fit_model_cv(
+                error_vec <- fitModelCVRcpp(
                     x = x,
                     mattype_x = mattype_x,
                     y = y,
-                    external = external,
+                    ext = external,
+                    is_sparse_ext = is_sparse_ext,
                     fixed = unpen,
                     weights_user = weights_train,
-                    intercept = intercept,
-                    standardize = standardize,
+                    intr = intercept,
+                    stnd = standardize,
                     penalty_type = penalty_fold$ptype,
                     cmult = penalty_fold$cmult,
                     quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
                     num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
                     penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
-                    user_penalty = penalty_fold$user_penalty,
-                    user_penalty_ext = penalty_fold$user_penalty_ext,
+                    penalty_user = penalty_fold$user_penalty,
+                    penalty_user_ext = penalty_fold$user_penalty_ext,
                     lower_cl = control$lower_limits,
                     upper_cl = control$upper_limits,
                     family = family,
@@ -305,8 +309,8 @@ tune_xrnet <- function(x,
                     test_idx = test_idx,
                     thresh = control$tolerance,
                     maxit = control$max_iterations,
-                    dfmax = control$dfmax,
-                    pmax = control$pmax
+                    ne = control$dfmax,
+                    nx = control$pmax
                 )
             }
         }
@@ -319,22 +323,23 @@ tune_xrnet <- function(x,
             test_idx <- as.integer(which(foldid == k) - 1)
 
             # Fit model on k-th training fold
-            errormat[, k] <- fit_model_cv(
+            errormat[, k] <- fitModelCVRcpp(
                 x = x,
                 mattype_x = mattype_x,
                 y = y,
-                external = external,
+                ext = external,
+                is_sparse_ext = is_sparse_ext,
                 fixed = unpen,
                 weights_user = weights_train,
-                intercept = intercept,
-                standardize = standardize,
+                intr = intercept,
+                stnd = standardize,
                 penalty_type = penalty_fold$ptype,
                 cmult = penalty_fold$cmult,
                 quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
                 num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
                 penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
-                user_penalty = penalty_fold$user_penalty,
-                user_penalty_ext = penalty_fold$user_penalty_ext,
+                penalty_user = penalty_fold$user_penalty,
+                penalty_user_ext = penalty_fold$user_penalty_ext,
                 lower_cl = control$lower_limits,
                 upper_cl = control$upper_limits,
                 family = family,
@@ -342,8 +347,8 @@ tune_xrnet <- function(x,
                 test_idx = test_idx,
                 thresh = control$tolerance,
                 maxit = control$max_iterations,
-                dfmax = control$dfmax,
-                pmax = control$pmax
+                ne = control$dfmax,
+                nx = control$pmax
             )
         }
     }

@@ -165,13 +165,13 @@ xrnet <- function(x,
     }
 
     ## Prepare external ##
+    is_sparse_ext = FALSE
     if (!is.null(external)) {
 
         # check if external is a sparse matrix
         if (is(external, "sparseMatrix")) {
             is_sparse_ext = TRUE
         } else {
-            is_sparse_ext = FALSE
             # convert to matrix
             if (class(external) != "matrix") {
                 external <- as.matrix(external)
@@ -267,29 +267,30 @@ xrnet <- function(x,
     )
 
     # fit model
-    fit <- fit_model(
+    fit <- fitModelRcpp(
         x = x,
         mattype_x = mattype_x,
         y = y,
-        external = external,
+        ext = external,
+        is_sparse_ext = is_sparse_ext,
         fixed = unpen,
         weights_user = weights,
-        intercept = intercept,
-        standardize = standardize,
+        intr = intercept,
+        stnd = standardize,
         penalty_type = penalty$ptype,
         cmult = penalty$cmult,
         quantiles = c(penalty$quantile, penalty$quantile_ext),
         num_penalty = c(penalty$num_penalty, penalty$num_penalty_ext),
         penalty_ratio = c(penalty$penalty_ratio, penalty$penalty_ratio_ext),
-        user_penalty = penalty$user_penalty,
-        user_penalty_ext = penalty$user_penalty_ext,
+        penalty_user = penalty$user_penalty,
+        penalty_user_ext = penalty$user_penalty_ext,
         lower_cl = control$lower_limits,
         upper_cl = control$upper_limits,
         family = family,
         thresh = control$tolerance,
         maxit = control$max_iterations,
-        dfmax = control$dfmax,
-        pmax = control$pmax
+        ne = control$dfmax,
+        nx = control$pmax
     )
 
     # check status of model fit
@@ -302,13 +303,9 @@ xrnet <- function(x,
             ncol = penalty$num_penalty_ext,
             byrow = TRUE
         )
-        fit$betas <- aperm(
-            array(
-                t(fit$betas),
-                c(penalty$num_penalty_ext, penalty$num_penalty, nc_x)
-            ),
-            c(3, 2, 1)
-        )
+
+        dim(fit$betas) <- c(nc_x, penalty$num_penalty_ext, penalty$num_penalty)
+        fit$betas <- aperm(fit$betas, c(1, 3, 2))
         #fit$deviance <- matrix(fit$deviance, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
         #fit$custom_mult <- penalty$custom_multiplier
 
@@ -324,13 +321,8 @@ xrnet <- function(x,
 
         if (nc_ext > 0) {
             #fit$custom_mult_ext <- penalty$custom_multiplier_ext
-            fit$alphas <- aperm(
-                array(
-                    t(fit$alphas),
-                    c(penalty$num_penalty_ext, penalty$num_penalty, nc_ext)
-                ),
-                c(3, 2, 1)
-            )
+            dim(fit$alphas) <- c(nc_ext, penalty$num_penalty_ext, penalty$num_penalty)
+            fit$alphas <- aperm(fit$alphas, c(1, 3, 2))
             #fit$nzero_alphas <- matrix(fit$nzero_alphas, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
         } else {
             fit$alphas <- NULL
@@ -342,13 +334,8 @@ xrnet <- function(x,
         }
 
         if (nc_unpen > 0) {
-            fit$gammas <- aperm(
-                array(
-                    t(fit$gammas),
-                    c(penalty$num_penalty_ext, penalty$num_penalty, nc_unpen)
-                ),
-                c(3, 2, 1)
-            )
+            dim(fit$gammas) <- c(nc_unpen, penalty$num_penalty_ext, penalty$num_penalty)
+            fit$gammas <- aperm(fit$gammas, c(1, 3, 2))
         } else {
             fit$gammas <- NULL
         }

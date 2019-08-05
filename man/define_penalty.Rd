@@ -20,12 +20,12 @@ Can supply either a scalar value or vector with length equal to the number of va
    \item 1 = Lasso / Quantile
 }}
 
-\item{quantile}{specifies quantile for predictors. Default of 0.5 reduces to lasso.}
+\item{quantile}{specifies quantile for predictors. Default of 0.5 reduces to lasso (currently not implemented).}
 
 \item{penalty_type_ext}{type of regularization for external data. See penalty_type for options.
 Default is 1 (lasso). Can supply either a scalar value or vector with length equal to the number of variables in external.}
 
-\item{quantile_ext}{specifies quantile for external data. Default of 0.5 reduces to lasso.}
+\item{quantile_ext}{specifies quantile for external data. Default of 0.5 reduces to lasso (currently not implemented).}
 
 \item{num_penalty}{number of penalty values to fit in grid for x. Default is 20.}
 

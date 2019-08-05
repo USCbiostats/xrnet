@@ -219,7 +219,8 @@ Rcpp::List fitModelRcpp(SEXP x,
         }
     } else if (mattype_x == 2) {
         const bool is_sparse_x = false;
-        Rcpp::XPtr<BigMatrix> xptr(x);
+        Rcpp::S4 x_info(x);
+        Rcpp::XPtr<BigMatrix> xptr((SEXP) x_info.slot("address"));
         MapMat xmap((const double *)xptr->matrix(), xptr->nrow(), xptr->ncol());
         if (is_sparse_ext) {
             return fitModel<MapMat, MapSpMat>(
