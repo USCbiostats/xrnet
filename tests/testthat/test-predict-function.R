@@ -208,3 +208,30 @@ test_that("predict returns right predictions for penalties already fit by xrnet 
         cbind(predy1, predy2, predy3)
     )
 })
+
+test_that("predict returns estimates for penalties already fit by tune_xrnet object", {
+    myPenalty <- define_penalty(
+        penalty_type = 0,
+        penalty_type_ext = 1,
+        user_penalty = c(2, 1, 0.05),
+        user_penalty_ext = c(0.2, 0.1, 0.05)
+    )
+
+    myControl <- xrnet.control(tolerance = 1e-15)
+
+    xrnet_object <- tune_xrnet(
+        x = xtest,
+        y = ytest,
+        external = ztest,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = myControl
+    )
+
+    test <- predict(xrnet_object, p = 1, pext = 0.05, type = "coefficients")
+    expect_identical(drop(predict(xrnet_object, p = 1, pext = 0.05, type = "coefficients")$betas), xrnet_object$fitted_model$betas[, 2, 3])
+    expect_identical(drop(coef(xrnet_object, p = 1, pext = 0.05)$betas), xrnet_object$fitted_model$betas[, 2, 3])
+    expect_identical(drop(test$beta0), xrnet_object$fitted_model$beta0[2, 3])
+    expect_identical(drop(test$alphas), xrnet_object$fitted_model$alphas[ , 2, 3])
+    expect_identical(drop(test$alpha0), xrnet_object$fitted_model$alpha0[2, 3])
+})
