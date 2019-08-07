@@ -117,6 +117,7 @@ test_that("predict returns estimates for penalties not fit by xrnet object", {
 })
 
 test_that("predict returns right predictions for penalties not already fit by xrnet object", {
+    skip("Internal")
     myPenalty <- define_penalty(penalty_type = 0,
                                 penalty_type_ext = 1,
                                 num_penalty = 15,
@@ -229,10 +230,12 @@ test_that("predict returns estimates for penalties already fit by tune_xrnet obj
         control = myControl
     )
 
-    test <- predict(xrnet_object, p = 1, pext = 0.05, type = "coefficients")
-    expect_identical(drop(predict(xrnet_object, p = 1, pext = 0.05, type = "coefficients")$betas), xrnet_object$fitted_model$betas[, 2, 3])
-    expect_identical(drop(coef(xrnet_object, p = 1, pext = 0.05)$betas), xrnet_object$fitted_model$betas[, 2, 3])
-    expect_identical(drop(test$beta0), xrnet_object$fitted_model$beta0[2, 3])
-    expect_identical(drop(test$alphas), xrnet_object$fitted_model$alphas[ , 2, 3])
-    expect_identical(drop(test$alpha0), xrnet_object$fitted_model$alpha0[2, 3])
+    test_pred <- predict(xrnet_object, p = 1, pext = 0.05, type = "coefficients")
+    test_coef <- coef(xrnet_object, p = 1, pext = 0.05)
+
+    expect_identical(drop(test_pred$betas), xrnet_object$fitted_model$betas[, 2, 3])
+    expect_identical(drop(test_coef$betas), xrnet_object$fitted_model$betas[, 2, 3])
+    expect_identical(drop(test_pred$beta0), xrnet_object$fitted_model$beta0[2, 3])
+    expect_identical(drop(test_pred$alphas), xrnet_object$fitted_model$alphas[ , 2, 3])
+    expect_identical(drop(test_pred$alpha0), xrnet_object$fitted_model$alpha0[2, 3])
 })

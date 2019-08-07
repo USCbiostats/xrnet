@@ -88,12 +88,12 @@ predict.xrnet <- function(object,
             if (is.null(pext)) {
                 stop("Error: pext not specified")
             }
-            penalty$user_penalty <- rev(sort(c(object$penalty, p)))
+            penalty$user_penalty <- unique(rev(sort(c(object$penalty, p))))
             penalty$num_penalty <- length(penalty$user_penalty)
-            penalty$user_penalty_ext <- rev(sort(c(object$penalty_ext, pext)))
+            penalty$user_penalty_ext <- unique(rev(sort(c(object$penalty_ext, pext))))
             penalty$num_penalty_ext <- length(penalty$user_penalty_ext)
         } else {
-            penalty$user_penalty <- rev(sort(c(object$penalty, p)))
+            penalty$user_penalty <- unique(rev(sort(c(object$penalty, p))))
             penalty$num_penalty <- length(penalty$user_penalty)
 
             if(!is.null(pext)) {
@@ -106,12 +106,13 @@ predict.xrnet <- function(object,
         xrnet_call <- object$call
         xrnet_call[["penalty"]] <- as.name("penalty")
         add_args <- match.call(expand.dots = FALSE, call = xrnet_call)$...
+
         if (length(add_args)) {
             existing <- !is.na(match(names(add_args), names(xrnet_call)))
             for (arg in names(add_args[existing]))
                 xrnet_call[[arg]] <- add_args[[arg]]
         }
-        tryCatch(object <- eval(xrnet_call, enclos = parent.frame()),
+        tryCatch(object <- eval(xrnet_call),
                  error = function(e) stop("Error: Unable to refit 'xrnet' object,
                                           please supply arguments used in original function call")
         )
