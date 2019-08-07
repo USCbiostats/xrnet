@@ -19,7 +19,8 @@ Suggests:
     knitr,
     rmarkdown,
     testthat,
-    Matrix
+    Matrix,
+    bigmemory
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,

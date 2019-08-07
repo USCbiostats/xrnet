@@ -182,28 +182,16 @@ predict.xrnet <- function(object,
             newdata_fixed <- matrix(vector("numeric", 0), 0, 0)
         }
 
-        if (mattype_x == 2)
-            result <- computeResponseRcpp(
-                newdata@address,
-                mattype_x,
-                newdata_fixed,
-                beta0,
-                betas,
-                gammas,
-                type,
-                object$family
-            )
-        else
-            result <- computeResponseRcpp(
-                newdata,
-                mattype_x,
-                newdata_fixed,
-                beta0,
-                betas,
-                gammas,
-                type,
-                object$family
-            )
+        result <- computeResponseRcpp(
+            newdata,
+            mattype_x,
+            newdata_fixed,
+            beta0,
+            betas,
+            gammas,
+            type,
+            object$family
+        )
 
         if (length(pext) > 1) {
             result <- aperm(
