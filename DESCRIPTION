@@ -20,7 +20,7 @@ Suggests:
     rmarkdown,
     testthat,
     Matrix,
-    bigmemory
+    glmnet
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,

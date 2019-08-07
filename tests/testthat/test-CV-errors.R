@@ -27,44 +27,56 @@ test_that("gaussian", {
         check.attribute = FALSE
     )
 
-    expect_equal(
-        cv_mean,
-        tune_xrnet(x = xsparse,
-                   y = ytest,
-                   external = ztest,
-                   family = "gaussian",
-                   penalty = myPenalty,
-                   control = list(tolerance = 1e-10),
-                   loss = "mse",
-                   foldid = foldid)$cv_mean,
-        tolerance = 1e-5,
-        check.attribute = FALSE
+    fit_xrnet <- tune_xrnet(
+        x = xsparse,
+        y = ytest,
+        external = ztest,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mse",
+        foldid = foldid
     )
 
     expect_equal(
         cv_mean,
-        tune_xrnet(x = xtest,
-                   y = ytest,
-                   external = zsparse,
-                   family = "gaussian",
-                   penalty = myPenalty,
-                   control = list(tolerance = 1e-10),
-                   loss = "mse",
-                   foldid = foldid)$cv_mean,
+        fit_xrnet$cv_mean,
         tolerance = 1e-5,
         check.attribute = FALSE
     )
 
+    fit_xrnet <- tune_xrnet(
+        x = xtest,
+        y = ytest,
+        external = zsparse,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mse",
+        foldid = foldid
+    )
+
     expect_equal(
         cv_mean,
-        tune_xrnet(x = xsparse,
-                   y = ytest,
-                   external = zsparse,
-                   family = "gaussian",
-                   penalty = myPenalty,
-                   control = list(tolerance = 1e-10),
-                   loss = "mse",
-                   foldid = foldid)$cv_mean,
+        fit_xrnet$cv_mean,
+        tolerance = 1e-5,
+        check.attribute = FALSE
+    )
+
+    fit_xrnet <- tune_xrnet(
+        x = xsparse,
+        y = ytest,
+        external = zsparse,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mse",
+        foldid = foldid
+    )
+
+    expect_equal(
+        cv_mean,
+        fit_xrnet$cv_mean,
         tolerance = 1e-5,
         check.attribute = FALSE
     )
