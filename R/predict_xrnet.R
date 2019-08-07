@@ -149,19 +149,19 @@ predict.xrnet <- function(object,
     if (type %in% c("link", "response")) {
 
         if (is(newdata, "matrix")) {
-            if (!(typeof(newdata) %in% c("integer", "double"))) {
-                stop("Error: newdata contains non-numeric values")
+            if (typeof(newdata) != "double") {
+                stop("Error: newdata must be of type double")
             }
             mattype_x <- 1
         }
         else if (is.big.matrix(newdata)) {
-            if (!(bigmemory::describe(newdata)@description$type %in% c("integer", "double"))) {
-                stop("Error: newdata contains non-numeric values")
+            if (bigmemory::describe(newdata)@description$type != "double") {
+                stop("Error: newdata must be of type double")
             }
             mattype_x <- 2
         } else if ("dgCMatrix" %in% class(newdata)) {
-            if (!(typeof(newdata@x) %in% c("integer", "double"))){
-                stop("Error: newdata contains non-numeric values")
+            if (typeof(newdata@x) != "double") {
+                stop("Error: newdata must be of type double")
             }
             mattype_x <- 3
         } else {
