@@ -1,9 +1,5 @@
 library(bigmemory)
 
-xtest <- readRDS(file = "testdata/xtest.rds")
-ytest <- readRDS(file = "testdata/ytest.rds")
-ztest <- readRDS(file = "testdata/ztest.rds")
-
 context("test predict function works correctly")
 
 test_that("predict returns estimates for penalties already fit by xrnet object", {
@@ -92,7 +88,8 @@ test_that("predict returns estimates for penalties not fit by xrnet object", {
         external = ztest,
         family = "gaussian",
         penalty = myPenalty,
-        control = myControl)
+        control = myControl
+    )
 
     myPenalty2 <- define_penalty()
 
@@ -216,12 +213,8 @@ test_that("predict returns right predictions for penalties already fit by xrnet 
     predy1 <- cbind(1, xtest) %*% c(xrnet_object$beta0[1, 1], xrnet_object$betas[, 1, 1])
     predy2 <- cbind(1, xtest) %*% c(xrnet_object$beta0[2, 1], xrnet_object$betas[, 2, 1])
     predy3 <- cbind(1, xtest) %*% c(xrnet_object$beta0[3, 1], xrnet_object$betas[, 3, 1])
-    expect_equivalent(
-        predict(xrnet_object,
-                p = c(0.05, 1, 2),
-                newdata = xtest),
-        cbind(predy1, predy2, predy3)
-    )
+    pred_xrnet <- predict(xrnet_object, p = c(0.05, 1, 2), newdata = xtest)
+    expect_equivalent(pred_xrnet, cbind(predy1, predy2, predy3))
 })
 
 test_that("predict returns estimates for penalties already fit by tune_xrnet object", {
