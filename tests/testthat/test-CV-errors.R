@@ -2,21 +2,27 @@ context("check computation of CV fold errors")
 
 test_that("gaussian", {
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                num_penalty = 20,
-                                penalty_type_ext = 1,
-                                num_penalty_ext = 20)
+    myPenalty <- define_penalty(
+        penalty_type = 0,
+        num_penalty = 20,
+        penalty_type_ext = 1,
+        num_penalty_ext = 20
+    )
+
+    fit_xrnet <- tune_xrnet(
+        x = xtest,
+        y = ytest,
+        external = ztest,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mse",
+        foldid = foldid
+    )
 
     expect_equal(
         cv_mean,
-        tune_xrnet(x = xtest,
-                   y = ytest,
-                   external = ztest,
-                   family = "gaussian",
-                   penalty = myPenalty,
-                   control = list(tolerance = 1e-10),
-                   loss = "mse",
-                   foldid = foldid)$cv_mean,
+        fit_xrnet$cv_mean,
         tolerance = 1e-5,
         check.attribute = FALSE
     )

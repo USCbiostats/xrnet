@@ -195,16 +195,8 @@ predict.xrnet <- function(object,
         )
 
         if (length(pext) > 1) {
-            result <- aperm(
-                a= array(
-                      data = t(result),
-                      c(length(pext), length(p),
-                      dim(result)[1])
-                ),
-                perm = c(3, 2, 1)
-            )
-        } else {
-
+            dim(result) <- c(NROW(result), length(pext), length(p))
+            result <- aperm(result, c(1, 3, 2))
         }
         return(drop(result))
     }

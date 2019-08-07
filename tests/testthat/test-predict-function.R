@@ -22,10 +22,10 @@ test_that("predict returns estimates for penalties already fit by xrnet object",
     )
 
     test_pred <- predict(xrnet_object, p = 1, pext = 0.05, type = "coefficients")
-    test_pred <- coef(xrnet_object, p = 1, pext = 0.05)
+    test_coef <- coef(xrnet_object, p = 1, pext = 0.05)
 
     expect_identical(drop(test_pred$betas), xrnet_object$betas[, 2, 3])
-    expect_identical(drop(test_pred$betas), xrnet_object$betas[, 2, 3])
+    expect_identical(drop(test_coef$betas), xrnet_object$betas[, 2, 3])
     expect_identical(drop(test_pred$beta0), xrnet_object$beta0[2, 3])
     expect_identical(drop(test_pred$alphas), xrnet_object$alphas[ , 2, 3])
     expect_identical(drop(test_pred$alpha0), xrnet_object$alpha0[2, 3])
@@ -55,20 +55,26 @@ test_that("predict returns right predictions for penalties already fit by xrnet 
     predy <- cbind(1, xtest) %*% c(xrnet_object$beta0[2, 2], xrnet_object$betas[, 2, 2])
     pred_xrnet <- predict(xrnet_object, p = 1, pext = 0.1, newdata = xtest)
     pred_xrnet_big <- predict(xrnet_object, p = 1, pext = 0.1, newdata = xtest_big)
+    pred_xrnet_sparse <- predict(xrnet_object, p = 1, pext = 0.1, newdata = xsparse)
     expect_equivalent(pred_xrnet, predy)
     expect_equivalent(pred_xrnet_big, predy)
+    expect_equivalent(pred_xrnet_sparse, predy)
 
     predy <- cbind(1, xtest) %*% c(xrnet_object$beta0[2, 3], xrnet_object$betas[, 2, 3])
     pred_xrnet <- predict(xrnet_object, p = 1, pext = 0.05, newdata = xtest)
     pred_xrnet_big <- predict(xrnet_object, p = 1, pext = 0.05, newdata = xtest_big)
+    pred_xrnet_sparse <- predict(xrnet_object, p = 1, pext = 0.05, newdata = xsparse)
     expect_equivalent(pred_xrnet, predy)
     expect_equivalent(pred_xrnet_big, predy)
+    expect_equivalent(pred_xrnet_sparse, predy)
 
     predy <- cbind(1, xtest) %*% c(xrnet_object$beta0[1, 3], xrnet_object$betas[, 1, 3])
     pred_xrnet <- predict(xrnet_object, p = 2, pext = 0.05, newdata = xtest)
     pred_xrnet_big <- predict(xrnet_object, p = 2, pext = 0.05, newdata = xtest_big)
+    pred_xrnet_sparse <- predict(xrnet_object, p = 2, pext = 0.05, newdata = xsparse)
     expect_equivalent(pred_xrnet, predy)
     expect_equivalent(pred_xrnet_big, predy)
+    expect_equivalent(pred_xrnet_sparse, predy)
 })
 
 test_that("predict returns estimates for penalties not fit by xrnet object", {
