@@ -111,7 +111,7 @@ predict.xrnet <- function(object,
             for (arg in names(add_args[existing]))
                 xrnet_call[[arg]] <- add_args[[arg]]
         }
-        tryCatch(object <- eval(xrnet_call),
+        tryCatch(object <- eval(xrnet_call, enclos = parent.frame()),
                  error = function(e) stop("Error: Unable to refit 'xrnet' object,
                                           please supply arguments used in original function call")
         )
