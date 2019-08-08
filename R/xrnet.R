@@ -91,8 +91,8 @@ NULL
 #' penalty <- define_penalty(
 #'     penalty_type = 0,
 #'     penalty_type_ext = 1,
-#'     num_penalty = 30,
-#'     num_penalty_ext = 30
+#'     num_penalty = 20,
+#'     num_penalty_ext = 20
 #' )
 #'
 #' ## fit model with defined regularization
@@ -153,10 +153,11 @@ xrnet <- function(x,
 
     if (y_len != nr_x) {
         stop(
-            paste("Error: Length of y (", y_len,
-                ") not equal to the number of rows of x (", nr_x,
-                ")", sep = ""
-            )
+            paste(
+                "Error: Length of y (", y_len,
+                ") not equal to the number of rows of x (", nr_x,")",
+                sep = ""
+             )
         )
     }
 
@@ -172,8 +173,8 @@ xrnet <- function(x,
             if (class(external) != "matrix") {
                 external <- as.matrix(external)
             }
-            if (!(typeof(external) %in% c("double", "integer"))) {
-                stop("Error: external contains non-numeric values")
+            if (typeof(external) != "double") {
+                stop("Error: external must be of type double")
             }
         }
 
@@ -216,7 +217,7 @@ xrnet <- function(x,
         if (class(unpen) != "matrix") {
             unpen <- as.matrix(unpen)
         }
-        if (!(typeof(x) %in% c("double", "integer"))) {
+        if (typeof(x) != "double") {
             stop("Error: unpen contains non-numeric values")
         }
     } else {
@@ -292,6 +293,7 @@ xrnet <- function(x,
     # check status of model fit
     if (fit$status == 0) {
         fit$status <- "0 (OK)"
+
         # Create arrays ordering coefficients by 1st level penalty / 2nd level penalty
         fit$beta0 <- matrix(
             fit$beta0,
@@ -302,8 +304,6 @@ xrnet <- function(x,
 
         dim(fit$betas) <- c(nc_x, penalty$num_penalty_ext, penalty$num_penalty)
         fit$betas <- aperm(fit$betas, c(1, 3, 2))
-        #fit$deviance <- matrix(fit$deviance, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
-        #fit$custom_mult <- penalty$custom_multiplier
 
         if (intercept[2]) {
             fit$alpha0 <- matrix(
@@ -316,17 +316,11 @@ xrnet <- function(x,
         }
 
         if (nc_ext > 0) {
-            #fit$custom_mult_ext <- penalty$custom_multiplier_ext
             dim(fit$alphas) <- c(nc_ext, penalty$num_penalty_ext, penalty$num_penalty)
             fit$alphas <- aperm(fit$alphas, c(1, 3, 2))
-            #fit$nzero_alphas <- matrix(fit$nzero_alphas, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
         } else {
             fit$alphas <- NULL
-            #fit$nzero_alphas <- NULL
-            #fit$penalty_type_ext <- NULL
-            #fit$quantile_ext <- NULL
             fit$penalty_ext <- NULL
-            #fit$penalty_ratio_ext <- NULL
         }
 
         if (nc_unpen > 0) {
@@ -335,8 +329,6 @@ xrnet <- function(x,
         } else {
             fit$gammas <- NULL
         }
-
-        #fit$nzero_betas <- matrix(fit$nzero_betas, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
     } else {
         if (fit$status == 1) {
             fit$error_msg <- "Max number of iterations reached"
@@ -372,12 +364,12 @@ xrnet.control <- function(tolerance = 1e-08,
                           lower_limits = NULL,
                           upper_limits = NULL) {
 
-    if (tolerance < 0) {
+    if (tolerance <= 0) {
         stop("Error: tolerance must be greater than 0")
     }
 
-    if (max_iterations < 0) {
-        stop("Error: max_iterations must be a postive integer")
+    if (max_iterations <= 0 || as.integer(max_iterations) != max_iterations) {
+        stop("Error: max_iterations must be a positive integer")
     }
 
     control_obj <- list(
@@ -528,13 +520,13 @@ initialize_control <- function(control_obj,
                                intercept) {
     if (is.null(control_obj$dfmax)) {
         control_obj$dfmax <- as.integer(nc_x + nc_ext + nc_unpen + intercept[1] + intercept[2])
-    } else if (control_obj$dfmax < 0) {
+    } else if (control_obj$dfmax <= 0 || as.integer(control_obj$dfmax) != control_obj$dfmax) {
         stop("Error: dfmax can only contain postive integers")
     }
 
     if (is.null(control_obj$pmax)) {
         control_obj$pmax <- as.integer(min(2 * control_obj$dfmax + 20, nc_x + nc_ext + nc_unpen + intercept[2]))
-    } else if (control_obj$pmax < 0) {
+    } else if (control_obj$pmax <= 0 || as.integer(control_obj$pmax) != control_obj$pmax) {
         stop("Error: pmax can only contain positive integers")
     }
 
