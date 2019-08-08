@@ -1,4 +1,5 @@
 library(glmnet)
+library(Matrix)
 
 context("compare coefficients to glmnet when no external data (binomial)")
 
@@ -31,8 +32,19 @@ test_that("x standardized, intercept",{
         control = xrnet.control(tolerance = 1e-15)
     )
 
+    fit_xrnet_sparse <- xrnet(
+        x = Matrix(xtest, sparse = TRUE),
+        y = ytest,
+        family = "binomial",
+        penalty = myPenalty,
+        control = xrnet.control(tolerance = 1e-15)
+    )
+
     expect_equal(unname(fit_glmnet$a0), drop(fit_xrnet$beta0), tolerance = 1e-5)
     expect_equal(unname(as.matrix(fit_glmnet$beta)), drop(fit_xrnet$betas), tolerance = 1e-5)
+
+    expect_equal(unname(fit_glmnet$a0), drop(fit_xrnet_sparse$beta0), tolerance = 1e-5)
+    expect_equal(unname(as.matrix(fit_glmnet$beta)), drop(fit_xrnet_sparse$betas), tolerance = 1e-5)
 })
 
 test_that("x NOT standardized, intercept",{
