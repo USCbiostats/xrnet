@@ -1,4 +1,4 @@
-context("compare coefficients to glmnet when no external data")
+context("compare coefficients to glmnet when no external data (gaussian)")
 
 ##### Code used to generate data files for all tests #####
 

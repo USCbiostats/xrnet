@@ -1,96 +1,241 @@
+library(parallel)
+library(doParallel)
+library(bigmemory)
+library(glmnet)
+
 context("check computation of CV fold errors")
 
-test_that("gaussian", {
+test_that("gaussian, mse (sequential)", {
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                num_penalty = 20,
-                                penalty_type_ext = 1,
-                                num_penalty_ext = 20)
+    myPenalty <- define_penalty(
+        penalty_type = 0,
+        num_penalty = 20,
+        penalty_type_ext = 1,
+        num_penalty_ext = 20
+    )
 
-    expect_equal(
-        cv_mean,
-        tune_xrnet(x = xtest,
-                   y = ytest,
-                   external = ztest,
-                   family = "gaussian",
-                   penalty = myPenalty,
-                   control = list(tolerance = 1e-10),
-                   loss = "mse",
-                   foldid = foldid)$cv_mean,
-        tolerance = 1e-5,
-        check.attribute = FALSE
+    fit_xrnet <- tune_xrnet(
+        x = xtest,
+        y = ytest,
+        external = ztest,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mse",
+        foldid = foldid
     )
 
     expect_equal(
         cv_mean,
-        tune_xrnet(x = xsparse,
-                   y = ytest,
-                   external = ztest,
-                   family = "gaussian",
-                   penalty = myPenalty,
-                   control = list(tolerance = 1e-10),
-                   loss = "mse",
-                   foldid = foldid)$cv_mean,
+        fit_xrnet$cv_mean,
         tolerance = 1e-5,
         check.attribute = FALSE
     )
 
-    expect_equal(
-        cv_mean,
-        tune_xrnet(x = xtest,
-                   y = ytest,
-                   external = zsparse,
-                   family = "gaussian",
-                   penalty = myPenalty,
-                   control = list(tolerance = 1e-10),
-                   loss = "mse",
-                   foldid = foldid)$cv_mean,
-        tolerance = 1e-5,
-        check.attribute = FALSE
+    fit_xrnet <- tune_xrnet(
+        x = xsparse,
+        y = ytest,
+        external = ztest,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mse",
+        foldid = foldid
     )
 
     expect_equal(
         cv_mean,
-        tune_xrnet(x = xsparse,
-                   y = ytest,
-                   external = zsparse,
-                   family = "gaussian",
-                   penalty = myPenalty,
-                   control = list(tolerance = 1e-10),
-                   loss = "mse",
-                   foldid = foldid)$cv_mean,
+        fit_xrnet$cv_mean,
+        tolerance = 1e-5,
+        check.attribute = FALSE
+    )
+
+    fit_xrnet <- tune_xrnet(
+        x = xtest,
+        y = ytest,
+        external = zsparse,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mse",
+        foldid = foldid
+    )
+
+    expect_equal(
+        cv_mean,
+        fit_xrnet$cv_mean,
+        tolerance = 1e-5,
+        check.attribute = FALSE
+    )
+
+    fit_xrnet <- tune_xrnet(
+        x = xsparse,
+        y = ytest,
+        external = zsparse,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mse",
+        foldid = foldid
+    )
+
+    expect_equal(
+        cv_mean,
+        fit_xrnet$cv_mean,
         tolerance = 1e-5,
         check.attribute = FALSE
     )
 })
 
-#myPenalty <- define_penalty(penalty_type = 0,
-#                            penalty_type_ext = 1,
-#                            user_penalty = check$fitted_model$penalty,
-#                            user_penalty_ext = check$fitted_model$penalty_ext)
+test_that("gaussian, mse (parallel)", {
 
-#errormat <- matrix(NA, nrow = 400, ncol = 5)
-#for (k in 1:5) {
-#
-#    fit_fold <- xrnet(x = xtest[foldid != k,],
-#                      y = ytest[foldid != k],
-#                      external = ztest,
-#                      family = "gaussian",
-#                      penalty = myPenalty,
-#                      control = list(tolerance = 1e-10))
-#
-#    betas <- rbind(as.vector(t(fit_fold$beta0)),
-#                   `dim<-`(aperm(fit_fold$betas, c(1, 3, 2)),
-#                           c(dim(fit_fold$betas)[1],
-#                             dim(fit_fold$betas)[2] * dim(fit_fold$betas)[3])))
-#
-#    predy <- cbind(1, xtest[foldid == k, ]) %*% betas
-#
-#    errormat[, k] <- apply(predy, 2, function(p) mean((ytest[foldid == k] - p)^2))
-#}
-#cv_mean <- rowMeans(errormat)
-#cv_mean <- matrix(cv_mean, nrow = 20, byrow = TRUE)
-#all.equal(check$cv_mean, cv_mean, check.attributes = F)
+    myPenalty <- define_penalty(
+        penalty_type = 0,
+        num_penalty = 20,
+        penalty_type_ext = 1,
+        num_penalty_ext = 20
+    )
 
+    cl <- makeCluster(2, type = "PSOCK")
+    registerDoParallel(cl)
 
+    fit_xrnet <- tune_xrnet(
+        x = xtest,
+        y = ytest,
+        external = ztest,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mse",
+        foldid = foldid,
+        parallel = TRUE
+    )
 
+    expect_equal(
+        cv_mean,
+        fit_xrnet$cv_mean,
+        tolerance = 1e-5,
+        check.attribute = FALSE
+    )
+
+    fit_xrnet <- tune_xrnet(
+        x = as.big.matrix(xtest),
+        y = ytest,
+        external = ztest,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mse",
+        foldid = foldid,
+        parallel = TRUE
+    )
+
+    expect_equal(
+        cv_mean,
+        fit_xrnet$cv_mean,
+        tolerance = 1e-5,
+        check.attribute = FALSE
+    )
+})
+
+test_that("gaussian, mae (sequential)", {
+
+    myPenalty <- define_penalty(
+        penalty_type = 0,
+        num_penalty = 20
+    )
+
+    fit_xrnet <- tune_xrnet(
+        x = xtest,
+        y = ytest,
+        family = "gaussian",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "mae",
+        foldid = foldid
+    )
+
+    fit_glmnet <- cv.glmnet(
+        x = xtest,
+        y = ytest,
+        family = "gaussian",
+        alpha = 0,
+        foldid = foldid,
+        lambda = fit_xrnet$fitted_model$penalty,
+        thresh = 1e-10,
+        type.measure = "mae"
+    )
+
+    expect_equal(unname(fit_glmnet$cvm), drop(fit_xrnet$cv_mean), check.attribute = FALSE)
+})
+
+n <- 100
+p <- 10
+xbin <- matrix(rnorm(n*p), n, p)
+b <- rnorm(p)
+ybin <- rbinom(n, 1, prob = exp(1 + xbin %*% b) / (1 + exp(1 + xbin %*% b)))
+foldid_bin <- sample(rep(seq(5), length = n))
+
+test_that("binomial, auc (sequential)", {
+
+    myPenalty <- define_penalty(
+        penalty_type = 0,
+        num_penalty = 20,
+        penalty_ratio = 0.001
+    )
+
+    fit_xrnet <- tune_xrnet(
+        x = xbin,
+        y = ybin,
+        family = "binomial",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "auc",
+        foldid = foldid_bin
+    )
+
+    fit_glmnet <- cv.glmnet(
+        x = xbin,
+        y = ybin,
+        family = "binomial",
+        alpha = 0,
+        foldid = foldid_bin,
+        lambda = fit_xrnet$fitted_model$penalty,
+        thresh = 1e-10,
+        type.measure = "auc"
+    )
+
+    expect_equal(unname(fit_glmnet$cvm), drop(fit_xrnet$cv_mean), check.attribute = FALSE)
+})
+
+test_that("binomial, deviance (sequential)", {
+
+    myPenalty <- define_penalty(
+        penalty_type = 0,
+        num_penalty = 20,
+        penalty_ratio = 0.001
+    )
+
+    fit_xrnet <- tune_xrnet(
+        x = xbin,
+        y = ybin,
+        family = "binomial",
+        penalty = myPenalty,
+        control = list(tolerance = 1e-10),
+        loss = "deviance",
+        foldid = foldid_bin
+    )
+
+    fit_glmnet <- cv.glmnet(
+        x = xbin,
+        y = ybin,
+        family = "binomial",
+        alpha = 0,
+        foldid = foldid_bin,
+        lambda = fit_xrnet$fitted_model$penalty,
+        thresh = 1e-10,
+        type.measure = "deviance"
+    )
+
+    expect_equal(unname(fit_glmnet$cvm), drop(fit_xrnet$cv_mean), check.attribute = FALSE)
+})

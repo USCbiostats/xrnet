@@ -92,7 +92,8 @@ cv_xrnet <- tune_xrnet(
     x = x_linear,
     y = y_linear,
     external = ext_linear,
-    family = "gaussian"
+    family = "gaussian",
+    control = xrnet.control(tolerance = 1e-6)
  )
  \dontrun{
  ## contour plot of cross-validated error

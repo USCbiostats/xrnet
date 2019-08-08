@@ -19,7 +19,9 @@ Suggests:
     knitr,
     rmarkdown,
     testthat,
-    Matrix
+    Matrix,
+    glmnet,
+    doParallel
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,

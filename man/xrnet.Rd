@@ -91,8 +91,8 @@ data(GaussianExample)
 penalty <- define_penalty(
     penalty_type = 0,
     penalty_type_ext = 1,
-    num_penalty = 30,
-    num_penalty_ext = 30
+    num_penalty = 20,
+    num_penalty_ext = 20
 )
 
 ## fit model with defined regularization

@@ -54,7 +54,6 @@
 #' }
 
 #' @export
-#' @importFrom stats update
 predict.xrnet <- function(object,
                           newdata = NULL,
                           newdata_fixed = NULL,
@@ -89,12 +88,12 @@ predict.xrnet <- function(object,
             if (is.null(pext)) {
                 stop("Error: pext not specified")
             }
-            penalty$user_penalty <- rev(sort(c(object$penalty, p)))
+            penalty$user_penalty <- unique(rev(sort(c(object$penalty, p))))
             penalty$num_penalty <- length(penalty$user_penalty)
-            penalty$user_penalty_ext <- rev(sort(c(object$penalty_ext, pext)))
+            penalty$user_penalty_ext <- unique(rev(sort(c(object$penalty_ext, pext))))
             penalty$num_penalty_ext <- length(penalty$user_penalty_ext)
         } else {
-            penalty$user_penalty <- rev(sort(c(object$penalty, p)))
+            penalty$user_penalty <- unique(rev(sort(c(object$penalty, p))))
             penalty$num_penalty <- length(penalty$user_penalty)
 
             if(!is.null(pext)) {
@@ -107,12 +106,12 @@ predict.xrnet <- function(object,
         xrnet_call <- object$call
         xrnet_call[["penalty"]] <- as.name("penalty")
         add_args <- match.call(expand.dots = FALSE, call = xrnet_call)$...
+
         if (length(add_args)) {
             existing <- !is.na(match(names(add_args), names(xrnet_call)))
             for (arg in names(add_args[existing]))
                 xrnet_call[[arg]] <- add_args[[arg]]
         }
-
         tryCatch(object <- eval(xrnet_call),
                  error = function(e) stop("Error: Unable to refit 'xrnet' object,
                                           please supply arguments used in original function call")
@@ -149,19 +148,19 @@ predict.xrnet <- function(object,
     if (type %in% c("link", "response")) {
 
         if (is(newdata, "matrix")) {
-            if (!(typeof(newdata) %in% c("integer", "double"))) {
-                stop("Error: newdata contains non-numeric values")
+            if (typeof(newdata) != "double") {
+                stop("Error: newdata must be of type double")
             }
             mattype_x <- 1
         }
         else if (is.big.matrix(newdata)) {
-            if (!(bigmemory::describe(newdata)@description$type %in% c("integer", "double"))) {
-                stop("Error: newdata contains non-numeric values")
+            if (bigmemory::describe(newdata)@description$type != "double") {
+                stop("Error: newdata must be of type double")
             }
             mattype_x <- 2
         } else if ("dgCMatrix" %in% class(newdata)) {
-            if (!(typeof(newdata@x) %in% c("integer", "double"))){
-                stop("Error: newdata contains non-numeric values")
+            if (typeof(newdata@x) != "double") {
+                stop("Error: newdata must be of type double")
             }
             mattype_x <- 3
         } else {
@@ -183,40 +182,20 @@ predict.xrnet <- function(object,
             newdata_fixed <- matrix(vector("numeric", 0), 0, 0)
         }
 
-        if (mattype_x == 2)
-            result <- computeResponseRcpp(
-                newdata@address,
-                mattype_x,
-                newdata_fixed,
-                beta0,
-                betas,
-                gammas,
-                type,
-                object$family
-            )
-        else
-            result <- computeResponseRcpp(
-                newdata,
-                mattype_x,
-                newdata_fixed,
-                beta0,
-                betas,
-                gammas,
-                type,
-                object$family
-            )
+        result <- computeResponseRcpp(
+            newdata,
+            mattype_x,
+            newdata_fixed,
+            beta0,
+            betas,
+            gammas,
+            type,
+            object$family
+        )
 
         if (length(pext) > 1) {
-            result <- aperm(
-                a= array(
-                      data = t(result),
-                      c(length(pext), length(p),
-                      dim(result)[1])
-                ),
-                perm = c(3, 2, 1)
-            )
-        } else {
-
+            dim(result) <- c(NROW(result), length(pext), length(p))
+            result <- aperm(result, c(1, 3, 2))
         }
         return(drop(result))
     }
