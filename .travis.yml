@@ -18,6 +18,13 @@ os:
 
 osx_image: xcode10.2
 
+r_check_args: '--use-valgrind'
+
+addons:
+  apt:
+    packages:
+      - valgrind
+
 env:
   - VALGRIND_OPTS='--leak-check=full --track-origins=yes'
 
