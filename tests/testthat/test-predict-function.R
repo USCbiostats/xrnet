@@ -116,8 +116,8 @@ test_that("predict returns right estimates for penalties already fit by tune_xrn
         control = myControl
     )
 
-    test_pred <- predict(xrnet_object, p = 1, pext = 0.05, type = "coefficients")
-    test_coef <- coef(xrnet_object, p = 1, pext = 0.05)
+    test_pred <- predict(xrnet_object, p = "opt", pext = "opt", type = "coefficients")
+    test_coef <- coef(xrnet_object, p = "opt", pext = "opt")
 
     expect_identical(drop(test_pred$betas), xrnet_object$fitted_model$betas[, 2, 3])
     expect_identical(drop(test_coef$betas), xrnet_object$fitted_model$betas[, 2, 3])

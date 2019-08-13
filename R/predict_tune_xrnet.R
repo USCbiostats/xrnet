@@ -11,9 +11,9 @@
 #' Default is optimal value in tune_xrnet object.
 #' @param type type of prediction to make using the xrnet model, options include:
 #' \itemize{
-#'    \item coefficients
 #'    \item response
 #'    \item link (linear predictor)
+#'    \item coefficients
 #' }
 #' @param penalty (optional) regularization object applied to original model object, only needed
 #' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
@@ -26,7 +26,7 @@ predict.tune_xrnet <- function(object,
                                newdata_fixed = NULL,
                                p = "opt",
                                pext = "opt",
-                               type = c("response", "coefficients", "link"),
+                               type = c("response", "link", "coefficients"),
                                penalty = NULL,
                                ...)
 {

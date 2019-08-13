@@ -9,7 +9,7 @@
 #' @param pext vector of penalty values to apply to external data variables
 #' @param type type of prediction to make using the xrnet model, options include
 #' \itemize{
-#'    \item response (default)
+#'    \item response
 #'    \item link (linear predictor)
 #'    \item coefficients
 #' }
@@ -19,9 +19,9 @@
 #' @param ... pass other arguments to xrnet function (if needed)
 #' @return The object returned based on the type object is as follows:
 #' \itemize{
-#'     \item coefficients: A list with the coefficient estimates for each penalty combination
 #'     \item response: An array with the response predictions based on the data for each penalty combination
 #'     \item link: An array with linear predictions based on the data for each penalty combination
+#'     \item coefficients: A list with the coefficient estimates for each penalty combination
 #' }
 #' @examples
 #' data(GaussianExample)
