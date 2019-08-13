@@ -67,24 +67,6 @@ test_that("gaussian, mse (sequential)", {
         tolerance = 1e-5,
         check.attribute = FALSE
     )
-
-    fit_xrnet <- tune_xrnet(
-        x = xsparse,
-        y = ytest,
-        external = zsparse,
-        family = "gaussian",
-        penalty = myPenalty,
-        control = list(tolerance = 1e-10),
-        loss = "mse",
-        foldid = foldid
-    )
-
-    expect_equal(
-        cv_mean,
-        fit_xrnet$cv_mean,
-        tolerance = 1e-5,
-        check.attribute = FALSE
-    )
 })
 
 test_that("gaussian, mse (parallel)", {

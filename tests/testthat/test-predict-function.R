@@ -77,132 +77,6 @@ test_that("predict returns right predictions for penalties already fit by xrnet 
     expect_equivalent(pred_xrnet_sparse, predy)
 })
 
-test_that("predict returns estimates for penalties not fit by xrnet object", {
-    skip("Internal")
-    myPenalty <- define_penalty(
-        penalty_type = 0,
-        penalty_type_ext = 1,
-        num_penalty = 25,
-        num_penalty_ext = 25
-    )
-
-    myControl <- xrnet.control(tolerance = 1e-15)
-
-    xrnet_object <- xrnet(
-        x = xtest,
-        y = ytest,
-        external = ztest,
-        family = "gaussian",
-        penalty = myPenalty,
-        control = myControl
-    )
-
-    myPenalty2 <- define_penalty()
-
-    xrnet_object2 <- xrnet(
-        x = xtest,
-        y = ytest,
-        external = ztest,
-        family = "gaussian",
-        penalty = myPenalty2,
-        control = myControl
-    )
-
-    idx1 <- 10
-    idx2 <- 15
-
-    test_pred <- predict(
-        xrnet_object2,
-        p = xrnet_object$penalty[idx1],
-        pext = xrnet_object$penalty_ext[idx2],
-        type = "coefficients",
-        penalty = myPenalty2
-    )
-
-    test_coef <- coef(
-        xrnet_object2,
-        p = xrnet_object$penalty[idx1],
-        pext = xrnet_object$penalty_ext[idx2],
-        penalty = myPenalty2
-    )
-
-    expect_equal(drop(test_pred$betas), xrnet_object$betas[, idx1, idx2], tolerance = 1e-6)
-    expect_equal(drop(test_coef$betas), xrnet_object$betas[, idx1, idx2], tolerance = 1e-6)
-    expect_equal(drop(test_pred$beta0), xrnet_object$beta0[idx1, idx2], tolerance = 1e-6)
-    expect_equal(drop(test_pred$alphas), xrnet_object$alphas[ , idx1, idx2], tolerance = 1e-6)
-    expect_equal(drop(test_pred$alpha0), xrnet_object$alpha0[idx1, idx2], tolerance = 1e-6)
-})
-
-test_that("predict returns right predictions for penalties not already fit by xrnet object", {
-    skip("Internal")
-    myPenalty <- define_penalty(
-        penalty_type = 0,
-        penalty_type_ext = 1,
-        num_penalty = 15,
-        num_penalty_ext = 15
-    )
-
-    myControl <- xrnet.control(tolerance = 1e-20)
-
-    xrnet_object <- xrnet(
-        x = xtest,
-        y = ytest,
-        external = ztest,
-        family = "gaussian",
-        penalty = myPenalty,
-        control = myControl
-    )
-
-    myPenalty2 <- define_penalty(
-        penalty_type = 0,
-        penalty_type_ext = 1,
-        num_penalty = 20,
-        num_penalty_ext = 20
-    )
-
-    xrnet_object2 <- xrnet(
-        x = xtest,
-        y = ytest,
-        external = ztest,
-        family = "gaussian",
-        penalty = myPenalty2,
-        control = myControl
-    )
-
-    idx1 <- 3
-    idx2 <- 2
-
-    predy <- cbind(1, xtest) %*% c(xrnet_object$beta0[idx1, idx2], xrnet_object$betas[, idx1, idx2])
-    pred_xrnet <- predict(
-        xrnet_object2,
-        p = xrnet_object$penalty[idx1],
-        pext = xrnet_object$penalty_ext[idx2],
-        newdata = xtest,
-        penalty = myPenalty
-    )
-    expect_equivalent(pred_xrnet, predy, tolerance = 1e-6)
-
-    predy <- cbind(1, xtest) %*% c(xrnet_object$beta0[idx1 + 1, idx2 + 1], xrnet_object$betas[, idx1 + 1, idx2 + 1])
-    pred_xrnet <- predict(
-        xrnet_object2,
-        p = xrnet_object$penalty[idx1 + 1],
-        pext = xrnet_object$penalty_ext[idx2 + 1],
-        newdata = xtest,
-        penalty = myPenalty
-    )
-    expect_equivalent(pred_xrnet, predy, tolerance = 1e-6)
-
-    predy <- cbind(1, xtest) %*% c(xrnet_object$beta0[idx1 + 2, idx2 + 2], xrnet_object$betas[, idx1 + 2, idx2 + 2])
-    pred_xrnet <- predict(
-        xrnet_object2,
-        p = xrnet_object$penalty[idx1 + 2],
-        pext = xrnet_object$penalty_ext[idx2 + 2],
-        newdata = xtest,
-        penalty = myPenalty
-    )
-    expect_equivalent(pred_xrnet, predy, tolerance = 1e-6)
-})
-
 test_that("predict returns right predictions for penalties already fit by xrnet object, no external data", {
     myPenalty <- define_penalty(penalty_type = 0,
                                 user_penalty = c(2, 1, 0.05))
@@ -223,7 +97,7 @@ test_that("predict returns right predictions for penalties already fit by xrnet 
     expect_equivalent(pred_xrnet, cbind(predy1, predy2, predy3))
 })
 
-test_that("predict returns estimates for penalties already fit by tune_xrnet object", {
+test_that("predict returns right estimates for penalties already fit by tune_xrnet object", {
     myPenalty <- define_penalty(
         penalty_type = 0,
         penalty_type_ext = 1,
@@ -242,12 +116,15 @@ test_that("predict returns estimates for penalties already fit by tune_xrnet obj
         control = myControl
     )
 
-    test_pred <- predict(xrnet_object, p = 1, pext = 0.05, type = "coefficients")
-    test_coef <- coef(xrnet_object, p = 1, pext = 0.05)
+    test_pred <- predict(xrnet_object, p = "opt", pext = "opt", type = "coefficients")
+    test_coef <- coef(xrnet_object, p = "opt", pext = "opt")
 
-    expect_identical(drop(test_pred$betas), xrnet_object$fitted_model$betas[, 2, 3])
-    expect_identical(drop(test_coef$betas), xrnet_object$fitted_model$betas[, 2, 3])
-    expect_identical(drop(test_pred$beta0), xrnet_object$fitted_model$beta0[2, 3])
-    expect_identical(drop(test_pred$alphas), xrnet_object$fitted_model$alphas[ , 2, 3])
-    expect_identical(drop(test_pred$alpha0), xrnet_object$fitted_model$alpha0[2, 3])
+    optl1 <- which(xrnet_object$fitted_model$penalty == xrnet_object$opt_penalty)
+    optl2 <- which(xrnet_object$fitted_model$penalty_ext == xrnet_object$opt_penalty_ext)
+
+    expect_identical(drop(test_pred$betas), xrnet_object$fitted_model$betas[, optl1, optl2])
+    expect_identical(drop(test_coef$betas), xrnet_object$fitted_model$betas[, optl1, optl2])
+    expect_identical(drop(test_pred$beta0), xrnet_object$fitted_model$beta0[optl1, optl2])
+    expect_identical(drop(test_pred$alphas), xrnet_object$fitted_model$alphas[, optl1, optl2])
+    expect_identical(drop(test_pred$alpha0), xrnet_object$fitted_model$alpha0[optl1, optl2])
 })

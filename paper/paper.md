@@ -1,5 +1,5 @@
 ---
-title: 'xrnet: R Package for Hierarchical Regularized Regression to Incorporate External Data'
+title: 'xrnet: Hierarchical Regularized Regression to Incorporate External Data'
 authors:
 - affiliation: 1
   name: Garrett M Weaver
@@ -24,25 +24,23 @@ affiliations:
 
 # Summary
 
-Regularized regression is a popular method for both variable selection and prediction in high-dimensional data. A number of R packages have been developed to fit regularized regression models in a generalized modelling framework with the option to use a variety of penalty types, including **glmnet** [@friedman2010], **biglasso** [@zeng2017], and **ncvreg** [@breheny2011]. The form of the constraints imposed by different penalties lead to different behavior, but all share one common attribute of shrinking estimates toward zero as regularization is increased. 
+Regularized regression is a popular method for both variable selection and prediction in high-dimensional data. A number of R packages have been developed to fit regularized regression models in a generalized modelling framework with the option to use a variety of penalty types, including *glmnet* [@friedman2010], *biglasso* [@zeng2017], and *ncvreg* [@breheny2011]. The form of the constraints imposed by different penalties lead to different behavior, but all share one common attribute of shrinking estimates toward zero as regularization is increased. 
 
-The **xrnet** R [@R] package extends the regularized regression framework to enable the inclusion of external data that may be informative for the mean effect of predictors on an outcome, an extension we have termed 'hierarchical regularized regression'. Incorporation of external data can improve predictive performance by allowing predictor effects to shrink towards potentially informative values other than zero. An additional regularization term on the external data enables variable selection and ensures there is little to no penalty when the external data is truly non informative. Along with this extension, popular features from the R packages **glmnet** and **biglasso** were integrated into **xrnet**. 
+The *xrnet* R [@R] package extends the regularized regression framework to enable the inclusion of external data that may be informative for the mean effect of predictors on an outcome, an extension we have termed 'hierarchical regularized regression'. Incorporation of external data can improve predictive performance by allowing predictor effects to shrink towards potentially informative values other than zero. An additional regularization term on the external data enables variable selection and ensures there is little to no penalty when the external data is truly non informative.
 
-Features that are not available across all currently available packages or novel to this R package, include:
+Along with this extension, *xrnet* can also fit standard regularized regression models and integrates popular features from the R packages *glmnet* and *biglasso*. Below is a comparison of features that are available in *xrnet*, *glmnet*, *biglasso*:
 
-* Integration of external data in a hierarchical regularization framework
-
-* Support for standard R matrices, sparse matrices, and memory-mapped matrices from the bigmemory R package [@kane2013]
-
-* Feature-specific penalty types and penalty scaling
-
-* Reduced memory usage by using 'on the fly' variable standardization
-
-* User-specified options for feature standardization and whether to include an intercept
-
-* Inclusion of unpenalized features as a separate matrix or in the primary feature matrix
-
-* Box (upper/lower) constraints on coefficient estimates
+| Feature | xrnet | glmnet | biglasso |
+|---------|-------|--------|----------|
+| Matrix types supported | Dense, Sparse, Memory-mapped | Dense, Sparse | Memory-mapped |
+| Outcome types supported | Gaussian, Binomial | Gaussian, Multiresponse Gaussain, Binomial, Poisson, Cox | Gaussian, Binomial |
+| Feature-specific penalty scaling | yes | yes | yes |
+| User controls feature standardization | yes | yes | no |
+| User controls inclusion of intercept | yes | yes | no |
+| Box (upper/lower constrains on) estimates | yes | yes | no |
+| Enhanced feature screening | no | no | yes |
+| Integration of external data | yes | no | no |
+| Feature-specific penalty types | yes | no | no |
 
 To maintain computational efficiency, the core functionality was developed in C++ with usage of the Eigen linear algebra library [@eigenweb] for the primary data structures. Overall, this R package aims to provide a set of functions to fit and tune hierarchical regularized regression models and attempts to unify some of the best features from currently available R packages for regularized regression into a single easy to use interface.
 

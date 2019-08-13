@@ -6,7 +6,7 @@
 \usage{
 \method{predict}{tune_xrnet}(object, newdata = NULL,
   newdata_fixed = NULL, p = "opt", pext = "opt",
-  type = c("response", "coefficients", "link"), penalty = NULL, ...)
+  type = c("response", "link", "coefficients"), penalty = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{tune_xrnet}} object}
@@ -23,9 +23,9 @@ Default is optimal value in tune_xrnet object.}
 
 \item{type}{type of prediction to make using the xrnet model, options include:
 \itemize{
-   \item coefficients
    \item response
    \item link (linear predictor)
+   \item coefficients
 }}
 
 \item{penalty}{(optional) regularization object applied to original model object, only needed
