@@ -9,9 +9,9 @@
 #' @param pext vector of penalty values to apply to external data variables
 #' @param type type of prediction to make using the xrnet model, options include
 #' \itemize{
-#'    \item coefficients
-#'    \item response
+#'    \item response (default)
 #'    \item link (linear predictor)
+#'    \item coefficients
 #' }
 #' @param penalty (optional) regularization object applied to original model object, only needed
 #' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
@@ -59,7 +59,7 @@ predict.xrnet <- function(object,
                           newdata_fixed = NULL,
                           p = NULL,
                           pext = NULL,
-                          type = c("response", "coefficients", "link"),
+                          type = c("response", "link", "coefficients"),
                           penalty = NULL,
                           ...)
 {
@@ -78,44 +78,12 @@ predict.xrnet <- function(object,
         stop("Error: p not specified")
     }
 
+    if (!is.null(object$penalty_ext) && is.null(pext)) {
+        stop("Error: pext not specified")
+    }
+
     if (!(all(p %in% object$penalty)) || !(all(pext %in% object$penalty_ext))) {
-
-        if (is.null(penalty)) {
-            stop("Error: Not all penalty values in path(s), please provide original regularization object")
-        }
-
-        if (!is.null(object$penalty_ext)) {
-            if (is.null(pext)) {
-                stop("Error: pext not specified")
-            }
-            penalty$user_penalty <- unique(rev(sort(c(object$penalty, p))))
-            penalty$num_penalty <- length(penalty$user_penalty)
-            penalty$user_penalty_ext <- unique(rev(sort(c(object$penalty_ext, pext))))
-            penalty$num_penalty_ext <- length(penalty$user_penalty_ext)
-        } else {
-            penalty$user_penalty <- unique(rev(sort(c(object$penalty, p))))
-            penalty$num_penalty <- length(penalty$user_penalty)
-
-            if(!is.null(pext)) {
-                warning(paste("Warning: No external data variables in model fit,
-                              ignoring supplied external penalties pext = ", pext))
-                pext <- NULL
-            }
-        }
-
-        xrnet_call <- object$call
-        xrnet_call[["penalty"]] <- as.name("penalty")
-        add_args <- match.call(expand.dots = FALSE, call = xrnet_call)$...
-
-        if (length(add_args)) {
-            existing <- !is.na(match(names(add_args), names(xrnet_call)))
-            for (arg in names(add_args[existing]))
-                xrnet_call[[arg]] <- add_args[[arg]]
-        }
-        tryCatch(object <- eval(xrnet_call),
-                 error = function(e) stop("Error: Unable to refit 'xrnet' object,
-                                          please supply arguments used in original function call")
-        )
+        stop("Error: Not all penalty values in path(s), please refit xrnet() model with desired penalty values")
     }
 
     p <- rev(sort(p))
