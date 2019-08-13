@@ -119,9 +119,12 @@ test_that("predict returns right estimates for penalties already fit by tune_xrn
     test_pred <- predict(xrnet_object, p = "opt", pext = "opt", type = "coefficients")
     test_coef <- coef(xrnet_object, p = "opt", pext = "opt")
 
-    expect_identical(drop(test_pred$betas), xrnet_object$fitted_model$betas[, 2, 3])
-    expect_identical(drop(test_coef$betas), xrnet_object$fitted_model$betas[, 2, 3])
-    expect_identical(drop(test_pred$beta0), xrnet_object$fitted_model$beta0[2, 3])
-    expect_identical(drop(test_pred$alphas), xrnet_object$fitted_model$alphas[ , 2, 3])
-    expect_identical(drop(test_pred$alpha0), xrnet_object$fitted_model$alpha0[2, 3])
+    optl1 <- which(xrnet_object$fitted_model$penalty == xrnet_object$opt_penalty)
+    optl2 <- which(xrnet_object$fitted_model$penalty_ext == xrnet_object$opt_penalty_ext)
+
+    expect_identical(drop(test_pred$betas), xrnet_object$fitted_model$betas[, optl1, optl2])
+    expect_identical(drop(test_coef$betas), xrnet_object$fitted_model$betas[, optl1, optl2])
+    expect_identical(drop(test_pred$beta0), xrnet_object$fitted_model$beta0[optl1, optl2])
+    expect_identical(drop(test_pred$alphas), xrnet_object$fitted_model$alphas[, optl1, optl2])
+    expect_identical(drop(test_pred$alpha0), xrnet_object$fitted_model$alpha0[optl1, optl2])
 })
