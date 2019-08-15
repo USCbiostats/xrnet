@@ -41,7 +41,7 @@ shrink towards potentially informative values based on the matrix \(Z\).
 In the event the external data is not informative, we can shrink alpha
 towards zero, returning back to a standard regularized regression. To
 efficiently fit the model, we rewrite this convex optimization with the
-variable subsitution \(gamma = beta - Z * alpha\). The problem is then
+variable substitution \(gamma = beta - Z * alpha\). The problem is then
 solved as a standard regularized regression in which we allow the
 penalty value and type (ridge / lasso) to be variable-specific:
 
@@ -102,10 +102,12 @@ penalty is applied to the predictors and a lasso penalty is applied to
 the external data.
 
 ``` r
-xrnet_model <- xrnet(x = x_linear, 
-                     y = y_linear, 
-                     external = ext_linear, 
-                     family = "gaussian")
+xrnet_model <- xrnet(
+  x = x_linear, 
+  y = y_linear, 
+  external = ext_linear, 
+  family = "gaussian"
+)
 ```
 
 #### Modifying Regularization Terms
@@ -119,7 +121,7 @@ attributes:
       - Ridge = 0
       - Elastic Net = (0, 1)
       - Lasso / Quantile = 1 (additional parameter `quantile` used to
-        specify quantile)
+        specify quantile, not currently implemented)
   - Penalty path
       - Number of penalty values in the full penalty path (default = 20)
       - Ratio of min(penalty) / max(penalty)
@@ -131,16 +133,20 @@ variables and external data variables. In addition, we may want to have
 both x and external. We modify our model fitting as follows.
 
 ``` r
-myPenalty <- define_penalty(penalty_type = 0, 
-                            penalty_type_ext = 0, 
-                            num_penalty = 30, 
-                            num_penalty_ext = 30)
+myPenalty <- define_penalty(
+  penalty_type = 0, 
+  penalty_type_ext = 0, 
+  num_penalty = 30, 
+  num_penalty_ext = 30
+)
 
-xrnet_model <- xrnet(x = x_linear, 
-                     y = y_linear, 
-                     external = ext_linear, 
-                     family = "gaussian", 
-                     penalty = myPenalty)
+xrnet_model <- xrnet(
+  x = x_linear, 
+  y = y_linear, 
+  external = ext_linear, 
+  family = "gaussian", 
+  penalty = myPenalty
+)
 ```
 
 #### Tuning Penalty Parameters by Cross-Validation
@@ -152,10 +158,12 @@ determine the optimal values for the penalties. The cross-validation
 function `tune_xrnet` is used as follows.
 
 ``` r
-cv_xrnet <- tune_xrnet(x = x_linear, 
-                       y = y_linear, 
-                       external = ext_linear, 
-                       family = "gaussian")
+cv_xrnet <- tune_xrnet(
+  x = x_linear, 
+  y = y_linear, 
+  external = ext_linear, 
+  family = "gaussian"
+)
 ```
 
 To visualize the results of the cross-validation we provide a contour
