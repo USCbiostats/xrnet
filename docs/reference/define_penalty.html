@@ -102,7 +102,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Define regularization object for predictor and external data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/USCbiostats/xrnet/blob/master/R/definePenalty.R'><code>R/definePenalty.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/USCbiostats/xrnet/blob/master/R/define_penalty.R'><code>R/define_penalty.R</code></a></small>
     <div class="hidden name"><code>define_penalty.Rd</code></div>
     </div>
 
@@ -112,20 +112,17 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>define_penalty</span>(<span class='kw'>penalty_type</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>quantile</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
-  <span class='kw'>penalty_type_ext</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>quantile_ext</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>20</span>,
-  <span class='kw'>num_penalty_ext</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>penalty_ratio</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>penalty_ratio_ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>user_penalty</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>user_penalty_ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>custom_multiplier</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>custom_multiplier_ext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>define_penalty</span>(<span class='kw'>penalty_type</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>quantile</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>20</span>,
+  <span class='kw'>penalty_ratio</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>user_penalty</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>custom_multiplier</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>penalty_type</th>
-      <td><p>type of regularization for x. Default is 0 (Ridge).
-Can supply either a scalar value or vector with length equal to the number of variables in x.</p><ul>
+      <td><p>type of regularization. Default is 1 (Lasso).
+Can supply either a scalar value or vector with length equal to the number of variables the matrix.</p><ul>
 <li><p>0 = Ridge</p></li>
 <li><p>(0,1) = Elastic-Net</p></li>
 <li><p>1 = Lasso / Quantile</p></li>
@@ -133,24 +130,11 @@ Can supply either a scalar value or vector with length equal to the number of va
     </tr>
     <tr>
       <th>quantile</th>
-      <td><p>specifies quantile for predictors. Default of 0.5 reduces to lasso (currently not implemented).</p></td>
-    </tr>
-    <tr>
-      <th>penalty_type_ext</th>
-      <td><p>type of regularization for external data. See penalty_type for options.
-Default is 1 (lasso). Can supply either a scalar value or vector with length equal to the number of variables in external.</p></td>
-    </tr>
-    <tr>
-      <th>quantile_ext</th>
-      <td><p>specifies quantile for external data. Default of 0.5 reduces to lasso (currently not implemented).</p></td>
+      <td><p>specifies quantile for quantile penalty. Default of 0.5 reduces to lasso (currently not implemented).</p></td>
     </tr>
     <tr>
       <th>num_penalty</th>
-      <td><p>number of penalty values to fit in grid for x. Default is 20.</p></td>
-    </tr>
-    <tr>
-      <th>num_penalty_ext</th>
-      <td><p>number of penalty values to fit in grid for external data. Default is 20.</p></td>
+      <td><p>number of penalty values to fit in grid. Default is 20.</p></td>
     </tr>
     <tr>
       <th>penalty_ratio</th>
@@ -158,26 +142,12 @@ Default is 1 (lasso). Can supply either a scalar value or vector with length equ
 Default is 1e-04 if \(n &gt; p\) and 0.01 if \(n &lt;= p\).</p></td>
     </tr>
     <tr>
-      <th>penalty_ratio_ext</th>
-      <td><p>ratio between minimum and maximum penalty for external data.
-Default is 1e-04 if \(p &gt; q\) and 0.01 if \(p &lt;= q\).</p></td>
-    </tr>
-    <tr>
       <th>user_penalty</th>
-      <td><p>user-defined vector of penalty values to fit for x.</p></td>
-    </tr>
-    <tr>
-      <th>user_penalty_ext</th>
-      <td><p>user-defined vector of penalty values to fit for external data.</p></td>
+      <td><p>user-defined vector of penalty values to use in penalty path.</p></td>
     </tr>
     <tr>
       <th>custom_multiplier</th>
-      <td><p>variable-specific penalty multipliers for x.
-Default is 1 for all variables. 0 is no penalization.</p></td>
-    </tr>
-    <tr>
-      <th>custom_multiplier_ext</th>
-      <td><p>variable-specific penalty multipliers for external data.
+      <td><p>variable-specific penalty multipliers to apply to overall penalty.
 Default is 1 for all variables. 0 is no penalization.</p></td>
     </tr>
     </table>
