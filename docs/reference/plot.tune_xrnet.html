@@ -32,7 +32,12 @@
 
 <meta property="og:title" content="Plot k-fold cross-validation error grid — plot.tune_xrnet" />
 
-<meta property="og:description" content="Plot k-fold cross-validation error grid" />
+<meta property="og:description" content="Generates plots to visualize the mean cross-validation error. If no external
+data was used in the model fit, a plot of the cross-validated error with standard error
+bars is generated for all penalty values. If external data was used in the model fit, a
+countour plot of the cross-validated errors is created. Error curves can also be
+generated for a fixed value of the primary penalty on x (p) or the external penalty (pext) when
+external data is used." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -108,12 +113,17 @@
 
     <div class="ref-description">
     
-    <p>Plot k-fold cross-validation error grid</p>
+    <p>Generates plots to visualize the mean cross-validation error. If no external
+data was used in the model fit, a plot of the cross-validated error with standard error
+bars is generated for all penalty values. If external data was used in the model fit, a
+countour plot of the cross-validated errors is created. Error curves can also be
+generated for a fixed value of the primary penalty on x (p) or the external penalty (pext) when
+external data is used.</p>
     
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tune_xrnet</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -123,10 +133,26 @@
       <td><p>A tune_xrnet class object</p></td>
     </tr>
     <tr>
+      <th>p</th>
+      <td><p>(optional) penalty value for x (for generating an error curve across external penalties).
+Use value "opt" to use the optimal penalty value.</p></td>
+    </tr>
+    <tr>
+      <th>pext</th>
+      <td><p>(optional) penalty value for external (for generating an error curve across primary penalties)
+Use value "opt" to use the optimal penalty value.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Additional graphics parameters</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The parameter values p and pext can be used to generate profiled error curves by fixing either
+the penalty on x or the penalty on the penalty on external to a fixed value. You cannot specify
+both at the same time as this would only return a single point.</p>
     
 
   </div>
@@ -134,7 +160,9 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#details">Details</a></li>
+          </ul>
 
   </div>
 </div>

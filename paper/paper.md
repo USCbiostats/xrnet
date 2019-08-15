@@ -33,7 +33,7 @@ Along with this extension, *xrnet* can also fit standard regularized regression 
 | Feature | xrnet | glmnet | biglasso |
 |---------|-------|--------|----------|
 | Matrix types supported | Dense, Sparse, Memory-mapped | Dense, Sparse | Memory-mapped |
-| Outcome types supported | Gaussian, Binomial | Gaussian, Multiresponse Gaussain, Binomial, Poisson, Cox | Gaussian, Binomial |
+| Outcome types supported | Gaussian, Binomial | Gaussian, Multiresponse Gaussian, Binomial, Poisson, Cox | Gaussian, Binomial |
 | Feature-specific penalty scaling | yes | yes | yes |
 | User controls feature standardization | yes | yes | no |
 | User controls inclusion of intercept | yes | yes | no |
