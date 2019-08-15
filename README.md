@@ -133,19 +133,13 @@ variables and external data variables. In addition, we may want to have
 both x and external. We modify our model fitting as follows.
 
 ``` r
-myPenalty <- define_penalty(
-  penalty_type = 0, 
-  penalty_type_ext = 0, 
-  num_penalty = 30, 
-  num_penalty_ext = 30
-)
-
 xrnet_model <- xrnet(
   x = x_linear, 
   y = y_linear, 
   external = ext_linear, 
   family = "gaussian", 
-  penalty = myPenalty
+  penalty_main = define_penalty(0, num_penalty = 30),
+  penalty_external = define_penalty(0, num_penalty = 30)
 )
 ```
 
@@ -162,7 +156,9 @@ cv_xrnet <- tune_xrnet(
   x = x_linear, 
   y = y_linear, 
   external = ext_linear, 
-  family = "gaussian"
+  family = "gaussian",
+  penalty_main = define_penalty(0),
+  penalty_external = define_penalty(1)
 )
 ```
 

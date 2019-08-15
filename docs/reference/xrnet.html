@@ -239,8 +239,7 @@ Journal of Statistical Software, 55(14), 1-19. URL http://www.jstatsoft.org/v55/
     <span class='kw'>penalty_type_ext</span> <span class='kw'>=</span> <span class='fl'>1</span>,
     <span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>20</span>,
     <span class='kw'>num_penalty_ext</span> <span class='kw'>=</span> <span class='fl'>20</span>
-)
-
+)</div><div class='output co'>#&gt; <span class='error'>Error in define_penalty(penalty_type = 0, penalty_type_ext = 1, num_penalty = 20,     num_penalty_ext = 20): unused arguments (penalty_type_ext = 1, num_penalty_ext = 20)</span></div><div class='input'>
 <span class='co'>## fit model with defined regularization</span>
 <span class='no'>fit_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'>xrnet</span>(
     <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x_linear</span>,
@@ -248,7 +247,7 @@ Journal of Statistical Software, 55(14), 1-19. URL http://www.jstatsoft.org/v55/
     <span class='kw'>external</span> <span class='kw'>=</span> <span class='no'>ext_linear</span>,
     <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
     <span class='kw'>penalty</span> <span class='kw'>=</span> <span class='no'>penalty</span>
-)</div></pre>
+)</div><div class='output co'>#&gt; <span class='error'>Error in xrnet(x = x_linear, y = y_linear, external = ext_linear, family = "gaussian",     penalty = penalty): argument 5 matches multiple formal arguments</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

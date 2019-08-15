@@ -28,7 +28,7 @@ test_that("x standardized, intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         control = xrnet.control(tolerance = 1e-15)
     )
 
@@ -36,7 +36,7 @@ test_that("x standardized, intercept",{
         x = Matrix(xtest, sparse = TRUE),
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         control = xrnet.control(tolerance = 1e-15)
     )
 
@@ -65,7 +65,7 @@ test_that("x NOT standardized, intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         standardize = c(F, F),
         control = xrnet.control(tolerance = 1e-15)
     )
@@ -92,7 +92,7 @@ test_that("x standardized, NO intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         intercept = c(F, F),
         control = xrnet.control(tolerance = 1e-15)
     )
@@ -120,7 +120,7 @@ test_that("x NOT standardized, NO intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         intercept = c(F, F),
         standardize = c(F,F),
         control = xrnet.control(tolerance = 1e-15)
@@ -149,7 +149,7 @@ test_that("x standardized, intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         control = xrnet.control(tolerance = 1e-15)
     )
 
@@ -175,7 +175,7 @@ test_that("x NOT standardized, intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         standardize = c(F, F),
         control = xrnet.control(tolerance = 1e-15)
     )
@@ -202,7 +202,7 @@ test_that("x standardized, NO intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         intercept = c(F, F),
         control = xrnet.control(tolerance = 1e-15)
     )
@@ -230,7 +230,7 @@ test_that("x NOT standardized, NO intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         intercept = c(F, F),
         standardize = c(F,F),
         control = xrnet.control(tolerance = 1e-15)
@@ -259,7 +259,7 @@ test_that("x standardized, intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         control = xrnet.control(tolerance = 1e-15)
     )
 
@@ -285,7 +285,7 @@ test_that("x NOT standardized, intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         standardize = c(F, F),
         control = xrnet.control(tolerance = 1e-15)
     )
@@ -312,7 +312,7 @@ test_that("x standardized, NO intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         intercept = c(F, F),
         control = xrnet.control(tolerance = 1e-15)
     )
@@ -340,7 +340,7 @@ test_that("x NOT standardized, NO intercept",{
         x = xtest,
         y = ytest,
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         intercept = c(F, F),
         standardize = c(F,F),
         control = xrnet.control(tolerance = 1e-15)
@@ -377,7 +377,7 @@ test_that("x NOT standardized, intercept",{
         y = ytest,
         unpen = xtest[, c(1, 2)],
         family = "binomial",
-        penalty = myPenalty,
+        penalty_main = myPenalty,
         control = xrnet.control(tolerance = 1e-15)
     )
 

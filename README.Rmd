@@ -93,19 +93,13 @@ To modify the regularization terms and penalty path associated with the predicto
 As an example, we may want to apply a ridge penalty to both the x variables and external data variables. In addition, we may want to have 30 penalty values computed for the regularization path associated with both x and external. We modify our model fitting as follows.
 
 ```{r fit simple model with other penalty}
-myPenalty <- define_penalty(
-  penalty_type = 0, 
-  penalty_type_ext = 0, 
-  num_penalty = 30, 
-  num_penalty_ext = 30
-)
-
 xrnet_model <- xrnet(
   x = x_linear, 
   y = y_linear, 
   external = ext_linear, 
   family = "gaussian", 
-  penalty = myPenalty
+  penalty_main = define_penalty(0, num_penalty = 30),
+  penalty_external = define_penalty(0, num_penalty = 30)
 )
 ```
 
@@ -122,7 +116,9 @@ cv_xrnet <- tune_xrnet(
   x = x_linear, 
   y = y_linear, 
   external = ext_linear, 
-  family = "gaussian"
+  family = "gaussian",
+  penalty_main = define_penalty(0),
+  penalty_external = define_penalty(1)
 )
 ```
 To visualize the results of the cross-validation we provide a contour plot of the mean cross-validation error across the grid of penalties with the `plot` function.

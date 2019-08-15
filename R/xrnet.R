@@ -36,8 +36,8 @@ NULL
 #'     \item gaussian
 #'     \item binomial
 #' }
-#' @param penalty specifies regularization object for x and external. See \code{\link{define_penalty}}
-#' for more details.
+#' @param penalty_main specifies regularization object for x. See \code{\link{define_penalty}} for more details.
+#' @param penalty_external specifies regularization object for external. See \code{\link{define_penalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
 #' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
 #' @param intercept indicates whether an intercept term is included for x and/or external.
@@ -88,12 +88,9 @@ NULL
 #' ## define penalty for predictors and external variables
 #' ## default is ridge for predictors and lasso for external
 #' ## see define_penalty() function for more details
-#' penalty <- define_penalty(
-#'     penalty_type = 0,
-#'     penalty_type_ext = 1,
-#'     num_penalty = 20,
-#'     num_penalty_ext = 20
-#' )
+#'
+#' penMain <- define_penalty(0, num_penalty = 20)
+#' penExt <- define_penalty(1, num_penalty = 20)
 #'
 #' ## fit model with defined regularization
 #' fit_xrnet <- xrnet(
@@ -101,7 +98,8 @@ NULL
 #'     y = y_linear,
 #'     external = ext_linear,
 #'     family = "gaussian",
-#'     penalty = penalty
+#'     penalty_main = penMain,
+#'     penalty_external = penExt
 #' )
 
 #' @export
@@ -110,7 +108,8 @@ xrnet <- function(x,
                   external = NULL,
                   unpen = NULL,
                   family = c("gaussian", "binomial"),
-                  penalty = define_penalty(),
+                  penalty_main = define_penalty(),
+                  penalty_external = define_penalty(),
                   weights = NULL,
                   standardize = c(TRUE, TRUE),
                   intercept = c(TRUE, FALSE),
@@ -242,9 +241,10 @@ xrnet <- function(x,
         weights <- as.double(weights)
     }
 
-    # check penalty object
+    # check penalty objects
     penalty <- initialize_penalty(
-        penalty_obj = penalty,
+        penalty_main = penalty_main,
+        penalty_external = penalty_external,
         nr_x = nr_x,
         nc_x = nc_x,
         nc_unpen = nc_unpen,
@@ -383,13 +383,26 @@ xrnet.control <- function(tolerance = 1e-08,
 }
 
 
-initialize_penalty <- function(penalty_obj,
+initialize_penalty <- function(penalty_main,
+                               penalty_external,
                                nr_x,
                                nc_x,
                                nc_unpen,
                                nr_ext,
                                nc_ext,
                                intercept) {
+
+    names(penalty_external) <- c(
+        "penalty_type_ext",
+        "quantile_ext",
+        "num_penalty_ext",
+        "penalty_ratio_ext",
+        "user_penalty_ext",
+        "custom_multiplier_ext"
+    )
+
+    penalty_obj <- c(penalty_main, penalty_external)
+
     # check penalty object for x
     if (length(penalty_obj$penalty_type) > 1) {
         if (length(penalty_obj$penalty_type) != nc_x) {
@@ -518,6 +531,7 @@ initialize_control <- function(control_obj,
                                nc_unpen,
                                nc_ext,
                                intercept) {
+
     if (is.null(control_obj$dfmax)) {
         control_obj$dfmax <- as.integer(nc_x + nc_ext + nc_unpen + intercept[1] + intercept[2])
     } else if (control_obj$dfmax <= 0 || as.integer(control_obj$dfmax) != control_obj$dfmax) {

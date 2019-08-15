@@ -5,7 +5,8 @@
 \title{Fit hierarchical regularized regression model}
 \usage{
 xrnet(x, y, external = NULL, unpen = NULL, family = c("gaussian",
-  "binomial"), penalty = define_penalty(), weights = NULL,
+  "binomial"), penalty_main = define_penalty(),
+  penalty_external = define_penalty(), weights = NULL,
   standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
   control = list())
 }
@@ -37,8 +38,9 @@ xrnet(x, y, external = NULL, unpen = NULL, family = c("gaussian",
     \item binomial
 }}
 
-\item{penalty}{specifies regularization object for x and external. See \code{\link{define_penalty}}
-for more details.}
+\item{penalty_main}{specifies regularization object for x. See \code{\link{define_penalty}} for more details.}
+
+\item{penalty_external}{specifies regularization object for external. See \code{\link{define_penalty}} for more details.}
 
 \item{weights}{optional vector of observation-specific weights. Default is 1 for all observations.}
 
@@ -88,12 +90,9 @@ data(GaussianExample)
 ## define penalty for predictors and external variables
 ## default is ridge for predictors and lasso for external
 ## see define_penalty() function for more details
-penalty <- define_penalty(
-    penalty_type = 0,
-    penalty_type_ext = 1,
-    num_penalty = 20,
-    num_penalty_ext = 20
-)
+
+penMain <- define_penalty(0, num_penalty = 20)
+penExt <- define_penalty(1, num_penalty = 20)
 
 ## fit model with defined regularization
 fit_xrnet <- xrnet(
@@ -101,7 +100,8 @@ fit_xrnet <- xrnet(
     y = y_linear,
     external = ext_linear,
     family = "gaussian",
-    penalty = penalty
+    penalty_main = penMain,
+    penalty_external = penExt
 )
 }
 \references{

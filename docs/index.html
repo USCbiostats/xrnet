@@ -149,20 +149,14 @@
 <li>User-defined set of penalties</li>
 </ul>
 <p>As an example, we may want to apply a ridge penalty to both the x variables and external data variables. In addition, we may want to have 30 penalty values computed for the regularization path associated with both x and external. We modify our model fitting as follows.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">myPenalty &lt;-<span class="st"> </span><span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(</a>
-<a class="sourceLine" id="cb5-2" title="2">  <span class="dt">penalty_type =</span> <span class="dv">0</span>, </a>
-<a class="sourceLine" id="cb5-3" title="3">  <span class="dt">penalty_type_ext =</span> <span class="dv">0</span>, </a>
-<a class="sourceLine" id="cb5-4" title="4">  <span class="dt">num_penalty =</span> <span class="dv">30</span>, </a>
-<a class="sourceLine" id="cb5-5" title="5">  <span class="dt">num_penalty_ext =</span> <span class="dv">30</span></a>
-<a class="sourceLine" id="cb5-6" title="6">)</a>
-<a class="sourceLine" id="cb5-7" title="7"></a>
-<a class="sourceLine" id="cb5-8" title="8">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</a>
-<a class="sourceLine" id="cb5-9" title="9">  <span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb5-10" title="10">  <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb5-11" title="11">  <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb5-12" title="12">  <span class="dt">family =</span> <span class="st">"gaussian"</span>, </a>
-<a class="sourceLine" id="cb5-13" title="13">  <span class="dt">penalty =</span> myPenalty</a>
-<a class="sourceLine" id="cb5-14" title="14">)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</a>
+<a class="sourceLine" id="cb5-2" title="2">  <span class="dt">x =</span> x_linear, </a>
+<a class="sourceLine" id="cb5-3" title="3">  <span class="dt">y =</span> y_linear, </a>
+<a class="sourceLine" id="cb5-4" title="4">  <span class="dt">external =</span> ext_linear, </a>
+<a class="sourceLine" id="cb5-5" title="5">  <span class="dt">family =</span> <span class="st">"gaussian"</span>, </a>
+<a class="sourceLine" id="cb5-6" title="6">  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dv">0</span>, <span class="dt">num_penalty =</span> <span class="dv">30</span>),</a>
+<a class="sourceLine" id="cb5-7" title="7">  <span class="dt">penalty_external =</span> <span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dv">0</span>, <span class="dt">num_penalty =</span> <span class="dv">30</span>)</a>
+<a class="sourceLine" id="cb5-8" title="8">)</a></code></pre></div>
 </div>
 <div id="tuning-penalty-parameters-by-cross-validation" class="section level4">
 <h4 class="hasAnchor">
@@ -172,8 +166,10 @@
 <a class="sourceLine" id="cb6-2" title="2">  <span class="dt">x =</span> x_linear, </a>
 <a class="sourceLine" id="cb6-3" title="3">  <span class="dt">y =</span> y_linear, </a>
 <a class="sourceLine" id="cb6-4" title="4">  <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb6-5" title="5">  <span class="dt">family =</span> <span class="st">"gaussian"</span></a>
-<a class="sourceLine" id="cb6-6" title="6">)</a></code></pre></div>
+<a class="sourceLine" id="cb6-5" title="5">  <span class="dt">family =</span> <span class="st">"gaussian"</span>,</a>
+<a class="sourceLine" id="cb6-6" title="6">  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb6-7" title="7">  <span class="dt">penalty_external =</span> <span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb6-8" title="8">)</a></code></pre></div>
 <p>To visualize the results of the cross-validation we provide a contour plot of the mean cross-validation error across the grid of penalties with the <code>plot</code> function.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(cv_xrnet)</a></code></pre></div>
 <p><img src="reference/figures/cv_results-1.png" width="700"></p>
