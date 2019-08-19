@@ -1,6 +1,7 @@
 #' Define regularization object for predictor and external data
 #'
 #' @description Defines regularization for predictors and external data variables in \code{\link{xrnet}} fitting.
+#' Use helper functions define_lasso, define_ridge, or define_enet to specify a common penalty on x or external.
 #'
 #' @param penalty_type type of regularization. Default is 1 (Lasso).
 #' Can supply either a scalar value or vector with length equal to the number of variables the matrix.
@@ -68,4 +69,88 @@ define_penalty <- function(penalty_type = 1,
         user_penalty = user_penalty,
         custom_multiplier = custom_multiplier
     )
+}
+
+#' Define lasso regularization object for predictor and external data
+#'
+#' @description Helper function to define a lasso penalty regularization object.
+#'
+#' @param num_penalty number of penalty values to fit in grid. Default is 20.
+#' @param penalty_ratio ratio between minimum and maximum penalty for x.
+#' Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.
+#' @param user_penalty user-defined vector of penalty values to use in penalty path.
+#' @param custom_multiplier variable-specific penalty multipliers to apply to overall penalty.
+#' Default is 1 for all variables. 0 is no penalization.
+
+#' @export
+define_lasso <- function(num_penalty = 20,
+                         penalty_ratio = NULL,
+                         user_penalty = NULL,
+                         custom_multiplier = NULL) {
+
+    define_penalty(
+        penalty_type = 1,
+        quantile = 0.5,
+        num_penalty = num_penalty,
+        penalty_ratio = penalty_ratio,
+        user_penalty = user_penalty,
+        custom_multiplier = custom_multiplier
+    )
+}
+
+#' Define ridge regularization object for predictor and external data
+#'
+#' @description Helper function to define a ridge penalty regularization object.
+#'
+#' @param num_penalty number of penalty values to fit in grid. Default is 20.
+#' @param penalty_ratio ratio between minimum and maximum penalty for x.
+#' Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.
+#' @param user_penalty user-defined vector of penalty values to use in penalty path.
+#' @param custom_multiplier variable-specific penalty multipliers to apply to overall penalty.
+#' Default is 1 for all variables. 0 is no penalization.
+
+#' @export
+define_ridge <- function(num_penalty = 20,
+                         penalty_ratio = NULL,
+                         user_penalty = NULL,
+                         custom_multiplier = NULL) {
+
+    define_penalty(
+        penalty_type = 0,
+        quantile = 0.5,
+        num_penalty = num_penalty,
+        penalty_ratio = penalty_ratio,
+        user_penalty = user_penalty,
+        custom_multiplier = custom_multiplier
+    )
+}
+
+#' Define elastic net regularization object for predictor and external data
+#'
+#' @description Helper function to define a elastic net penalty regularization object.
+#'
+#' @param en_param elastic net parameter, between 0 and 1
+#' @param num_penalty number of penalty values to fit in grid. Default is 20.
+#' @param penalty_ratio ratio between minimum and maximum penalty for x.
+#' Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.
+#' @param user_penalty user-defined vector of penalty values to use in penalty path.
+#' @param custom_multiplier variable-specific penalty multipliers to apply to overall penalty.
+#' Default is 1 for all variables. 0 is no penalization.
+
+#' @export
+define_enet <- function(en_param = 0.5,
+                        num_penalty = 20,
+                        penalty_ratio = NULL,
+                        user_penalty = NULL,
+                        custom_multiplier = NULL) {
+
+    define_penalty(
+        penalty_type = en_param,
+        quantile = 0.5,
+        num_penalty = num_penalty,
+        penalty_ratio = penalty_ratio,
+        user_penalty = user_penalty,
+        custom_multiplier = custom_multiplier
+    )
+
 }

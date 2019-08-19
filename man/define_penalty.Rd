@@ -31,4 +31,5 @@ Default is 1 for all variables. 0 is no penalization.}
 }
 \description{
 Defines regularization for predictors and external data variables in \code{\link{xrnet}} fitting.
+Use helper functions define_lasso, define_ridge, or define_enet to specify a common penalty on x or external.
 }
