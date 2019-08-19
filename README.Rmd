@@ -52,7 +52,7 @@ devtools::install_github("USCbiostats/xrnet", ref = "development")
 
 4. Load the package 
 
-```{r load package}
+```{r load-package}
 library(xrnet)
 ```
 
@@ -60,7 +60,7 @@ library(xrnet)
 
 As an example of how you might use xrnet, we have provided a small set of simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:
 
-```{r load data}
+```{r load-data}
 data(GaussianExample)
 ```
 
@@ -68,7 +68,7 @@ data(GaussianExample)
 
 To fit a linear hierarchical regularized regression model, use the main `xrnet` function. At a minimum, you should specify the predictor matrix `x`, outcome variable `y`, and `family` (outcome distribution). The `external` option allows you to incorporate external data in the regularized regression model. If you do not include external data, a standard regularized regression model will be fit. By default, a lasso penalty is applied to both the predictors and the external data.
 
-```{r fit simple model}
+```{r fit-xrnet-model}
 xrnet_model <- xrnet(
   x = x_linear, 
   y = y_linear, 
@@ -95,7 +95,7 @@ As an example, we may want to apply a ridge penalty to the x variables and a las
 1) `penalty_main` is used to specify the regularization for the x variables
 2) `penalty_external` is used to specify the regularization for the external variables
 
-```{r fit simple model with other penalty}
+```{r fit-model-define-penalty}
 xrnet_model <- xrnet(
   x = x_linear, 
   y = y_linear, 
@@ -108,7 +108,7 @@ xrnet_model <- xrnet(
 
 Helper functions are also available to define the available penalty types (`define_lasso`, `define_ridge`, and `define_enet`). The example below exemplifies fitting a standard ridge regression model with 100 penalty values by using the `define_ridge` helper function. As mentioned previously, a standard regularized regression is fit if no external data is provided.
 
-```{r fit standard ridge regression with helper function}
+```{r ridge-regression-with-helper}
 xrnet_model <- xrnet(
   x = x_linear, 
   y = y_linear, 
@@ -144,13 +144,13 @@ plot(cv_xrnet)
 
 Cross-validation error curves can also be generated with `plot` by fixing the value of either the penalty on `x` or the external penalty on `external`. By default, either penalty defaults the optimal penalty on `x` or `external`.
 
-```{r plot error curve, fixed penalty on x}
+```{r plot-error-curve}
 plot(cv_xrnet, p = "opt")
 ```
 
 The `predict` function can be used to predict responses and to obtain the coefficient estimates at the optimal penalty combination (the default) or any other penalty combination that is within the penalty path(s). `coef` is a another help function that can be used to return the coefficients for a combination of penalty values as well.
 
-```{r cv pred and coef, eval = FALSE}
+```{r cv-pred-and-coef, eval = FALSE}
 predy <- predict(cv_xrnet, newdata = x_linear)
 estimates <- coef(cv_xrnet)
 ```

@@ -198,14 +198,13 @@ plot(cv_xrnet)
 Cross-validation error curves can also be generated with `plot` by
 fixing the value of either the penalty on `x` or the external penalty on
 `external`. By default, either penalty defaults the optimal penalty on
-`x` or
-`external`.
+`x` or `external`.
 
 ``` r
 plot(cv_xrnet, p = "opt")
 ```
 
-![](man/figures/plot%20error%20curve,%20fixed%20penalty%20on%20x-1.png)<!-- -->
+![](man/figures/plot-error-curve-1.png)<!-- -->
 
 The `predict` function can be used to predict responses and to obtain
 the coefficient estimates at the optimal penalty combination (the

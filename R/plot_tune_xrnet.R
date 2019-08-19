@@ -61,7 +61,7 @@ plot.tune_xrnet <- function(x, p = NULL, pext = NULL, ...) {
                 xopt_val <- log(x$opt_penalty)
             }
         }
-        plot(
+        graphics::plot(
             x = xval,
             y = cverr,
             ylab = paste0("Mean CV Error (", x$loss, ")"),
@@ -69,7 +69,7 @@ plot.tune_xrnet <- function(x, p = NULL, pext = NULL, ...) {
             ylim=range(c(cverr - cvsd, cverr + cvsd)),
             type = "n"
         )
-        arrows(
+        graphics::arrows(
             xval,
             cverr - cvsd,
             xval,
@@ -79,13 +79,13 @@ plot.tune_xrnet <- function(x, p = NULL, pext = NULL, ...) {
             code = 3,
             col = "lightgray"
         )
-        points(
+        graphics::points(
             x = xval,
             y = cverr,
             col = "dodgerblue4",
             pch = 16,
         )
-        abline(v = xopt_val, col = "firebrick")
+        graphics::abline(v = xopt_val, col = "firebrick")
     } else {
         cvgrid <- x$cv_mean
         cvgrid <- cvgrid[rev(seq_len(nrow(cvgrid))), ]
@@ -96,7 +96,7 @@ plot.tune_xrnet <- function(x, p = NULL, pext = NULL, ...) {
         contour_colors <- c("#014636", "#016C59", "#02818A", "#3690C0",
                             "#67A9CF", "#A6BDDB", "#D0D1E6", "#ECE2F0", "#FFF7FB")
 
-        filled.contour(
+        graphics::filled.contour(
             x = log(as.numeric(colnames(cvgrid))),
             y = log(as.numeric(rownames(cvgrid))),
             z = t(cvgrid),
