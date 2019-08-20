@@ -107,9 +107,10 @@ xrnet <- function(x,
                   y,
                   external = NULL,
                   unpen = NULL,
-                  family = c("gaussian", "binomial"),
+                  family = c("gaussian", "binomial", "survival"),
                   penalty_main = define_penalty(),
                   penalty_external = define_penalty(),
+                  survival_family = define_surv(),
                   weights = NULL,
                   standardize = c(TRUE, TRUE),
                   intercept = c(TRUE, FALSE),
@@ -140,6 +141,12 @@ xrnet <- function(x,
         mattype_x <- 3
     } else {
         stop("Error: x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
+    }
+
+
+    # ESK: Checks on survival type:
+    if (class(y) != "Surv" & family == "survival") {
+       stop("Models with 'family = survival' must have a 'Surv' object outcome.")
     }
 
     # check type of y
@@ -262,6 +269,11 @@ xrnet <- function(x,
         nc_ext = nc_ext,
         intercept = intercept
     )
+
+    # ESK: To incorporate survival model correctly.
+    if (family == "survival") {
+        family = survival_family$model
+    }
 
     # fit model
     fit <- fitModelRcpp(
