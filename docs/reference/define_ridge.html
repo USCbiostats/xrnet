@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • xrnet</title>
+<title>Define ridge regularization object for predictor and external data — define_ridge • xrnet</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Define ridge regularization object for predictor and external data — define_ridge" />
+
+<meta property="og:description" content="Helper function to define a ridge penalty regularization object." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -50,7 +52,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -97,126 +99,53 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Define ridge regularization object for predictor and external data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/USCbiostats/xrnet/blob/master/R/define_penalty.R'><code>R/define_penalty.R</code></a></small>
+    <div class="hidden name"><code>define_ridge.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>Helper function to define a ridge penalty regularization object.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="coef.tune_xrnet.html">coef(<i>&lt;tune_xrnet&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Get coefficient estimates from "tune_xrnet" model object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="coef.xrnet.html">coef(<i>&lt;xrnet&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Get coefficient estimates from "xrnet" model object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="define_enet.html">define_enet()</a></code> </p>
-        </td>
-        <td><p>Define elastic net regularization object for predictor and external data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="define_lasso.html">define_lasso()</a></code> </p>
-        </td>
-        <td><p>Define lasso regularization object for predictor and external data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="define_penalty.html">define_penalty()</a></code> </p>
-        </td>
-        <td><p>Define regularization object for predictor and external data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="define_ridge.html">define_ridge()</a></code> </p>
-        </td>
-        <td><p>Define ridge regularization object for predictor and external data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ext_linear.html">ext_linear</a></code> </p>
-        </td>
-        <td><p>Simulated external data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot.tune_xrnet.html">plot(<i>&lt;tune_xrnet&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Plot k-fold cross-validation error grid</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict.tune_xrnet.html">predict(<i>&lt;tune_xrnet&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Predict function for "tune_xrnet" object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict.xrnet.html">predict(<i>&lt;xrnet&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Predict function for "xrnet" object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tune_xrnet.html">tune_xrnet()</a></code> </p>
-        </td>
-        <td><p>k-fold cross-validation for hierarchical regularized regression</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="xrnet.control.html">xrnet.control()</a></code> </p>
-        </td>
-        <td><p>Control function for xrnet fitting</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="xrnet.html">xrnet()</a></code> </p>
-        </td>
-        <td><p>Fit hierarchical regularized regression model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="x_linear.html">x_linear</a></code> </p>
-        </td>
-        <td><p>Simulated example data for hierarchical regularized linear regression</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="y_linear.html">y_linear</a></code> </p>
-        </td>
-        <td><p>Simulated outcome data</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>define_ridge</span>(<span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>penalty_ratio</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>user_penalty</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>custom_multiplier</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>num_penalty</th>
+      <td><p>number of penalty values to fit in grid. Default is 20.</p></td>
+    </tr>
+    <tr>
+      <th>penalty_ratio</th>
+      <td><p>ratio between minimum and maximum penalty for x.
+Default is 1e-04 if \(n &gt; p\) and 0.01 if \(n &lt;= p\).</p></td>
+    </tr>
+    <tr>
+      <th>user_penalty</th>
+      <td><p>user-defined vector of penalty values to use in penalty path.</p></td>
+    </tr>
+    <tr>
+      <th>custom_multiplier</th>
+      <td><p>variable-specific penalty multipliers to apply to overall penalty.
+Default is 1 for all variables. 0 is no penalization.</p></td>
+    </tr>
     </table>
-  </div>
+    
 
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-    </ul>
+      <li><a href="#arguments">Arguments</a></li>
+                </ul>
+
   </div>
 </div>
 

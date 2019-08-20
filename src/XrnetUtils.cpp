@@ -49,7 +49,8 @@ Eigen::MatrixXd computeResponseRcpp(SEXP X,
         MapMat xmap((const double *) &x_mat[0], x_mat.rows(), x_mat.cols());
         return computeResponse<MapMat>(xmap, Fixed, beta0, betas, gammas, response_type, family);
     } else if (mattype_x == 2) {
-        Rcpp::XPtr<BigMatrix> xptr(X);
+        Rcpp::S4 x_info(X);
+        Rcpp::XPtr<BigMatrix> xptr((SEXP) x_info.slot("address"));
         MapMat xmap((const double *)xptr->matrix(), xptr->nrow(), xptr->ncol());
         return computeResponse<MapMat>(xmap, Fixed, beta0, betas, gammas, response_type, family);
     } else {

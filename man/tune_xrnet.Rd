@@ -5,9 +5,10 @@
 \title{k-fold cross-validation for hierarchical regularized regression}
 \usage{
 tune_xrnet(x, y, external = NULL, unpen = NULL,
-  family = c("gaussian", "binomial"), penalty = define_penalty(),
-  weights = NULL, standardize = c(TRUE, TRUE), intercept = c(TRUE,
-  FALSE), loss = c("deviance", "mse", "mae", "auc"), nfolds = 5,
+  family = c("gaussian", "binomial"), penalty_main = define_penalty(),
+  penalty_external = define_penalty(), weights = NULL,
+  standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
+  loss = c("deviance", "mse", "mae", "auc"), nfolds = 5,
   foldid = NULL, parallel = FALSE, control = list())
 }
 \arguments{
@@ -38,7 +39,9 @@ tune_xrnet(x, y, external = NULL, unpen = NULL,
     \item binomial
 }}
 
-\item{penalty}{specifies regularization object for x and external.
+\item{penalty_main}{specifies regularization object for x. See \code{\link{define_penalty}} for more details.}
+
+\item{penalty_external}{specifies regularization object for external. See \code{\link{define_penalty}} for more details.
 See \code{\link{define_penalty}} for more details.}
 
 \item{weights}{optional vector of observation-specific weights.
@@ -92,7 +95,8 @@ cv_xrnet <- tune_xrnet(
     x = x_linear,
     y = y_linear,
     external = ext_linear,
-    family = "gaussian"
+    family = "gaussian",
+    control = xrnet.control(tolerance = 1e-6)
  )
  \dontrun{
  ## contour plot of cross-validated error

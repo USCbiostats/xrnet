@@ -9,9 +9,9 @@
 #' @param pext vector of penalty values to apply to external data variables
 #' @param type type of prediction to make using the xrnet model, options include
 #' \itemize{
-#'    \item coefficients
 #'    \item response
 #'    \item link (linear predictor)
+#'    \item coefficients
 #' }
 #' @param penalty (optional) regularization object applied to original model object, only needed
 #' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
@@ -19,9 +19,9 @@
 #' @param ... pass other arguments to xrnet function (if needed)
 #' @return The object returned based on the type object is as follows:
 #' \itemize{
-#'     \item coefficients: A list with the coefficient estimates for each penalty combination
 #'     \item response: An array with the response predictions based on the data for each penalty combination
 #'     \item link: An array with linear predictions based on the data for each penalty combination
+#'     \item coefficients: A list with the coefficient estimates for each penalty combination
 #' }
 #' @examples
 #' data(GaussianExample)
@@ -54,13 +54,12 @@
 #' }
 
 #' @export
-#' @importFrom stats update
 predict.xrnet <- function(object,
                           newdata = NULL,
                           newdata_fixed = NULL,
                           p = NULL,
                           pext = NULL,
-                          type = c("response", "coefficients", "link"),
+                          type = c("response", "link", "coefficients"),
                           penalty = NULL,
                           ...)
 {
@@ -71,51 +70,20 @@ predict.xrnet <- function(object,
         type <- match.arg(type)
     }
 
-    if (missing(newdata)) {
-        if (!match(type, c("coefficients"), FALSE))
-            stop("Error: 'newdata' needs to be specified")
+    if (missing(newdata) && !match(type, c("coefficients"), FALSE)) {
+        stop("Error: 'newdata' needs to be specified")
     }
 
-    if (is.null(p))
+    if (is.null(p)){
         stop("Error: p not specified")
+    }
+
+    if (!is.null(object$penalty_ext) && is.null(pext)) {
+        stop("Error: pext not specified")
+    }
 
     if (!(all(p %in% object$penalty)) || !(all(pext %in% object$penalty_ext))) {
-
-        if (is.null(penalty))
-            stop("Error: Not all penalty values in path(s), please provide original regularization object")
-
-        if (!is.null(object$penalty_ext)) {
-            if (is.null(pext)) {
-                stop("Error: pext not specified")
-            }
-            penalty$user_penalty <- rev(sort(c(object$penalty, p)))
-            penalty$num_penalty <- length(penalty$user_penalty)
-            penalty$user_penalty_ext <- rev(sort(c(object$penalty_ext, pext)))
-            penalty$num_penalty_ext <- length(penalty$user_penalty_ext)
-        } else {
-            penalty$user_penalty <- c(object$penalty, p)
-            penalty$num_penalty <- length(penalty$user_penalty)
-
-            if(!is.null(pext)) {
-                warning(paste("Warning: No external data variables in model fit,
-                              ignoring supplied external penalties pext = ", pext))
-                pext <- NULL
-            }
-        }
-
-        xrnet_call <- object$call
-        xrnet_call[["penalty"]] <- as.name("penalty")
-        add_args <- match.call(expand.dots = FALSE, call = xrnet_call)$...
-        if (length(add_args)) {
-            existing <- !is.na(match(names(add_args), names(xrnet_call)))
-            for (arg in names(add_args[existing]))
-                xrnet_call[[arg]] <- add_args[[arg]]
-        }
-
-        tryCatch(object <- eval(xrnet_call),
-                 error = function(e) stop("Error: Unable to refit 'xrnet' object,
-                                          please supply arguments used in original function call")
-        )
+        stop("Error: Not all penalty values in path(s), please refit xrnet() model with desired penalty values")
     }
 
     p <- rev(sort(p))
@@ -148,17 +116,20 @@ predict.xrnet <- function(object,
     if (type %in% c("link", "response")) {
 
         if (is(newdata, "matrix")) {
-            if (!(typeof(newdata) %in% c("integer", "double")))
-                stop("Error: newdata contains non-numeric values")
+            if (typeof(newdata) != "double") {
+                stop("Error: newdata must be of type double")
+            }
             mattype_x <- 1
         }
         else if (is.big.matrix(newdata)) {
-            if (!(bigmemory::describe(newdata)@description$type %in% c("integer", "double")))
-                stop("Error: newdata contains non-numeric values")
+            if (bigmemory::describe(newdata)@description$type != "double") {
+                stop("Error: newdata must be of type double")
+            }
             mattype_x <- 2
         } else if ("dgCMatrix" %in% class(newdata)) {
-            if (!(typeof(newdata@x) %in% c("integer", "double")))
-                stop("Error: newdata contains non-numeric values")
+            if (typeof(newdata@x) != "double") {
+                stop("Error: newdata must be of type double")
+            }
             mattype_x <- 3
         } else {
             stop("Error: newdata must be a matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
@@ -179,40 +150,20 @@ predict.xrnet <- function(object,
             newdata_fixed <- matrix(vector("numeric", 0), 0, 0)
         }
 
-        if (mattype_x == 2)
-            result <- computeResponseRcpp(
-                newdata@address,
-                mattype_x,
-                newdata_fixed,
-                beta0,
-                betas,
-                gammas,
-                type,
-                object$family
-            )
-        else
-            result <- computeResponseRcpp(
-                newdata,
-                mattype_x,
-                newdata_fixed,
-                beta0,
-                betas,
-                gammas,
-                type,
-                object$family
-            )
+        result <- computeResponseRcpp(
+            newdata,
+            mattype_x,
+            newdata_fixed,
+            beta0,
+            betas,
+            gammas,
+            type,
+            object$family
+        )
 
         if (length(pext) > 1) {
-            result <- aperm(
-                a= array(
-                      data = t(result),
-                      c(length(pext), length(p),
-                      dim(result)[1])
-                ),
-                perm = c(3, 2, 1)
-            )
-        } else {
-
+            dim(result) <- c(NROW(result), length(pext), length(p))
+            result <- aperm(result, c(1, 3, 2))
         }
         return(drop(result))
     }

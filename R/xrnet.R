@@ -36,8 +36,8 @@ NULL
 #'     \item gaussian
 #'     \item binomial
 #' }
-#' @param penalty specifies regularization object for x and external. See \code{\link{define_penalty}}
-#' for more details.
+#' @param penalty_main specifies regularization object for x. See \code{\link{define_penalty}} for more details.
+#' @param penalty_external specifies regularization object for external. See \code{\link{define_penalty}} for more details.
 #' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
 #' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
 #' @param intercept indicates whether an intercept term is included for x and/or external.
@@ -88,12 +88,9 @@ NULL
 #' ## define penalty for predictors and external variables
 #' ## default is ridge for predictors and lasso for external
 #' ## see define_penalty() function for more details
-#' penalty <- define_penalty(
-#'     penalty_type = 0,
-#'     penalty_type_ext = 1,
-#'     num_penalty = 30,
-#'     num_penalty_ext = 30
-#' )
+#'
+#' penMain <- define_penalty(0, num_penalty = 20)
+#' penExt <- define_penalty(1, num_penalty = 20)
 #'
 #' ## fit model with defined regularization
 #' fit_xrnet <- xrnet(
@@ -101,7 +98,8 @@ NULL
 #'     y = y_linear,
 #'     external = ext_linear,
 #'     family = "gaussian",
-#'     penalty = penalty
+#'     penalty_main = penMain,
+#'     penalty_external = penExt
 #' )
 
 #' @export
@@ -110,7 +108,8 @@ xrnet <- function(x,
                   external = NULL,
                   unpen = NULL,
                   family = c("gaussian", "binomial"),
-                  penalty = define_penalty(),
+                  penalty_main = define_penalty(),
+                  penalty_external = define_penalty(),
                   weights = NULL,
                   standardize = c(TRUE, TRUE),
                   intercept = c(TRUE, FALSE),
@@ -127,20 +126,20 @@ xrnet <- function(x,
 
     # check type of x matrix
     if (is(x, "matrix")) {
-        if (!(typeof(x) %in% c("integer", "double")))
-            stop("Error: x contains non-numeric values")
+        if (typeof(x) != "double")
+            stop("Error: x must be of type double")
         mattype_x <- 1
     }
     else if (is.big.matrix(x)) {
-        if (!(bigmemory::describe(x)@description$type %in% c("integer", "double")))
-            stop("Error: x contains non-numeric values")
+        if (bigmemory::describe(x)@description$type != "double")
+            stop("Error: x must be of type double")
         mattype_x <- 2
     } else if ("dgCMatrix" %in% class(x)) {
-        if (!(typeof(x@x) %in% c("integer", "double")))
-            stop("Error: x contains non-numeric values")
+        if (typeof(x@x) != "double")
+            stop("Error: x must be of type double")
         mattype_x <- 3
     } else {
-        stop("Error: x must be a matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
+        stop("Error: x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
     }
 
     # check type of y
@@ -151,33 +150,30 @@ xrnet <- function(x,
     nc_x <- NCOL(x)
     y_len <- NROW(y)
 
-    if (nc_x < 2) {
-        stop("Error: x must have at least 2 columns")
-    }
-
     if (y_len != nr_x) {
         stop(
-            paste("Error: Length of y (", y_len,
-                ") not equal to the number of rows of x (", nr_x,
-                ")", sep = ""
-            )
+            paste(
+                "Error: Length of y (", y_len,
+                ") not equal to the number of rows of x (", nr_x,")",
+                sep = ""
+             )
         )
     }
 
     ## Prepare external ##
+    is_sparse_ext = FALSE
     if (!is.null(external)) {
 
         # check if external is a sparse matrix
-        if (is(x, "sparseMatrix")) {
+        if (is(external, "sparseMatrix")) {
             is_sparse_ext = TRUE
         } else {
-            is_sparse_ext = FALSE
             # convert to matrix
             if (class(external) != "matrix") {
                 external <- as.matrix(external)
             }
-            if (!(typeof(external) %in% c("double", "integer"))) {
-                stop("Error: external contains non-numeric values")
+            if (typeof(external) != "double") {
+                stop("Error: external must be of type double")
             }
         }
 
@@ -220,7 +216,7 @@ xrnet <- function(x,
         if (class(unpen) != "matrix") {
             unpen <- as.matrix(unpen)
         }
-        if (!(typeof(x) %in% c("double", "integer"))) {
+        if (typeof(x) != "double") {
             stop("Error: unpen contains non-numeric values")
         }
     } else {
@@ -245,9 +241,10 @@ xrnet <- function(x,
         weights <- as.double(weights)
     }
 
-    # check penalty object
+    # check penalty objects
     penalty <- initialize_penalty(
-        penalty_obj = penalty,
+        penalty_main = penalty_main,
+        penalty_external = penalty_external,
         nr_x = nr_x,
         nc_x = nc_x,
         nc_unpen = nc_unpen,
@@ -267,34 +264,36 @@ xrnet <- function(x,
     )
 
     # fit model
-    fit <- fit_model(
+    fit <- fitModelRcpp(
         x = x,
         mattype_x = mattype_x,
         y = y,
-        external = external,
+        ext = external,
+        is_sparse_ext = is_sparse_ext,
         fixed = unpen,
         weights_user = weights,
-        intercept = intercept,
-        standardize = standardize,
+        intr = intercept,
+        stnd = standardize,
         penalty_type = penalty$ptype,
         cmult = penalty$cmult,
         quantiles = c(penalty$quantile, penalty$quantile_ext),
         num_penalty = c(penalty$num_penalty, penalty$num_penalty_ext),
         penalty_ratio = c(penalty$penalty_ratio, penalty$penalty_ratio_ext),
-        user_penalty = penalty$user_penalty,
-        user_penalty_ext = penalty$user_penalty_ext,
+        penalty_user = penalty$user_penalty,
+        penalty_user_ext = penalty$user_penalty_ext,
         lower_cl = control$lower_limits,
         upper_cl = control$upper_limits,
         family = family,
         thresh = control$tolerance,
         maxit = control$max_iterations,
-        dfmax = control$dfmax,
-        pmax = control$pmax
+        ne = control$dfmax,
+        nx = control$pmax
     )
 
     # check status of model fit
     if (fit$status == 0) {
         fit$status <- "0 (OK)"
+
         # Create arrays ordering coefficients by 1st level penalty / 2nd level penalty
         fit$beta0 <- matrix(
             fit$beta0,
@@ -302,15 +301,9 @@ xrnet <- function(x,
             ncol = penalty$num_penalty_ext,
             byrow = TRUE
         )
-        fit$betas <- aperm(
-            array(
-                t(fit$betas),
-                c(penalty$num_penalty_ext, penalty$num_penalty, nc_x)
-            ),
-            c(3, 2, 1)
-        )
-        #fit$deviance <- matrix(fit$deviance, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
-        #fit$custom_mult <- penalty$custom_multiplier
+
+        dim(fit$betas) <- c(nc_x, penalty$num_penalty_ext, penalty$num_penalty)
+        fit$betas <- aperm(fit$betas, c(1, 3, 2))
 
         if (intercept[2]) {
             fit$alpha0 <- matrix(
@@ -323,37 +316,19 @@ xrnet <- function(x,
         }
 
         if (nc_ext > 0) {
-            #fit$custom_mult_ext <- penalty$custom_multiplier_ext
-            fit$alphas <- aperm(
-                array(
-                    t(fit$alphas),
-                    c(penalty$num_penalty_ext, penalty$num_penalty, nc_ext)
-                ),
-                c(3, 2, 1)
-            )
-            #fit$nzero_alphas <- matrix(fit$nzero_alphas, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
+            dim(fit$alphas) <- c(nc_ext, penalty$num_penalty_ext, penalty$num_penalty)
+            fit$alphas <- aperm(fit$alphas, c(1, 3, 2))
         } else {
             fit$alphas <- NULL
-            #fit$nzero_alphas <- NULL
-            #fit$penalty_type_ext <- NULL
-            #fit$quantile_ext <- NULL
             fit$penalty_ext <- NULL
-            #fit$penalty_ratio_ext <- NULL
         }
 
         if (nc_unpen > 0) {
-            fit$gammas <- aperm(
-                array(
-                    t(fit$gammas),
-                    c(penalty$num_penalty_ext, penalty$num_penalty, nc_unpen)
-                ),
-                c(3, 2, 1)
-            )
+            dim(fit$gammas) <- c(nc_unpen, penalty$num_penalty_ext, penalty$num_penalty)
+            fit$gammas <- aperm(fit$gammas, c(1, 3, 2))
         } else {
             fit$gammas <- NULL
         }
-
-        #fit$nzero_betas <- matrix(fit$nzero_betas, nrow = penalty$num_penalty, ncol = penalty$num_penalty_ext, byrow = TRUE)
     } else {
         if (fit$status == 1) {
             fit$error_msg <- "Max number of iterations reached"
@@ -389,12 +364,12 @@ xrnet.control <- function(tolerance = 1e-08,
                           lower_limits = NULL,
                           upper_limits = NULL) {
 
-    if (tolerance < 0) {
+    if (tolerance <= 0) {
         stop("Error: tolerance must be greater than 0")
     }
 
-    if (max_iterations < 0) {
-        stop("Error: max_iterations must be a postive integer")
+    if (max_iterations <= 0 || as.integer(max_iterations) != max_iterations) {
+        stop("Error: max_iterations must be a positive integer")
     }
 
     control_obj <- list(
@@ -408,13 +383,26 @@ xrnet.control <- function(tolerance = 1e-08,
 }
 
 
-initialize_penalty <- function(penalty_obj,
+initialize_penalty <- function(penalty_main,
+                               penalty_external,
                                nr_x,
                                nc_x,
                                nc_unpen,
                                nr_ext,
                                nc_ext,
                                intercept) {
+
+    names(penalty_external) <- c(
+        "penalty_type_ext",
+        "quantile_ext",
+        "num_penalty_ext",
+        "penalty_ratio_ext",
+        "user_penalty_ext",
+        "custom_multiplier_ext"
+    )
+
+    penalty_obj <- c(penalty_main, penalty_external)
+
     # check penalty object for x
     if (length(penalty_obj$penalty_type) > 1) {
         if (length(penalty_obj$penalty_type) != nc_x) {
@@ -543,15 +531,16 @@ initialize_control <- function(control_obj,
                                nc_unpen,
                                nc_ext,
                                intercept) {
+
     if (is.null(control_obj$dfmax)) {
         control_obj$dfmax <- as.integer(nc_x + nc_ext + nc_unpen + intercept[1] + intercept[2])
-    } else if (control_obj$dfmax < 0) {
+    } else if (control_obj$dfmax <= 0 || as.integer(control_obj$dfmax) != control_obj$dfmax) {
         stop("Error: dfmax can only contain postive integers")
     }
 
     if (is.null(control_obj$pmax)) {
         control_obj$pmax <- as.integer(min(2 * control_obj$dfmax + 20, nc_x + nc_ext + nc_unpen + intercept[2]))
-    } else if (control_obj$pmax < 0) {
+    } else if (control_obj$pmax <= 0 || as.integer(control_obj$pmax) != control_obj$pmax) {
         stop("Error: pmax can only contain positive integers")
     }
 

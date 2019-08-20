@@ -89,7 +89,7 @@
 <p><img src="reference/figures/eqn2.gif"></p>
 <p>but allows regularization of both the predictors and the external features, where beta is the vector of coefficients describing the association of each predictor with the outcome and alpha is the vector of coefficients describing the association of each external feature with the predictor coefficients, beta. As an example, assume that the outcome is continuous and that we want to apply a ridge penalty to the predictors and lasso penalty to the external features. We minimize the following objective function (ignoring intercept terms):</p>
 <p><img src="reference/figures/eqn3.gif"></p>
-<p>Note that our model allows for the predictor coefficients, beta, to shrink towards potentially informative values based on the matrix <span class="math inline">\(Z\)</span>. In the event the external data is not informative, we can shrink alpha towards zero, returning back to a standard regularized regression. To efficiently fit the model, we rewrite this convex optimization with the variable subsitution <span class="math inline">\(gamma = beta - Z * alpha\)</span>. The problem is then solved as a standard regularized regression in which we allow the penalty value and type (ridge / lasso) to be variable-specific:</p>
+<p>Note that our model allows for the predictor coefficients, beta, to shrink towards potentially informative values based on the matrix <span class="math inline">\(Z\)</span>. In the event the external data is not informative, we can shrink alpha towards zero, returning back to a standard regularized regression. To efficiently fit the model, we rewrite this convex optimization with the variable substitution <span class="math inline">\(gamma = beta - Z * alpha\)</span>. The problem is then solved as a standard regularized regression in which we allow the penalty value and type (ridge / lasso) to be variable-specific:</p>
 <p><img src="reference/figures/eqn4.gif"></p>
 <p>This package extends the coordinate descent algorithm of Friedman et al. 2010 (used in the R package <strong>glmnet</strong>) to allow for this variable-specific generalization and to fit the model described above. Currently, we allow for continuous and binary outcomes, but plan to extend to other outcomes (i.e. survival) in the next release.</p>
 </div>
@@ -120,11 +120,13 @@
 <div id="fitting-a-model" class="section level4">
 <h4 class="hasAnchor">
 <a href="#fitting-a-model" class="anchor"></a>Fitting a Model</h4>
-<p>To fit a linear hierarchical regularized regression model, use the main <code>xrnet</code> function. At a minimum, you should specify the predictor matrix <code>x</code>, outcome variable <code>y</code>, and <code>family</code> (outcome distribution). The <code>external</code> option allows you to incorporate external data in the regularized regression model. If you do not include external data, a standard regularized regression model will be fit. By default, a ridge penalty is applied to the predictors and a lasso penalty is applied to the external data.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(<span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb4-2" title="2">                     <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb4-3" title="3">                     <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb4-4" title="4">                     <span class="dt">family =</span> <span class="st">"gaussian"</span>)</a></code></pre></div>
+<p>To fit a linear hierarchical regularized regression model, use the main <code>xrnet</code> function. At a minimum, you should specify the predictor matrix <code>x</code>, outcome variable <code>y</code>, and <code>family</code> (outcome distribution). The <code>external</code> option allows you to incorporate external data in the regularized regression model. If you do not include external data, a standard regularized regression model will be fit. By default, a lasso penalty is applied to both the predictors and the external data.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</a>
+<a class="sourceLine" id="cb4-2" title="2">  <span class="dt">x =</span> x_linear, </a>
+<a class="sourceLine" id="cb4-3" title="3">  <span class="dt">y =</span> y_linear, </a>
+<a class="sourceLine" id="cb4-4" title="4">  <span class="dt">external =</span> ext_linear, </a>
+<a class="sourceLine" id="cb4-5" title="5">  <span class="dt">family =</span> <span class="st">"gaussian"</span></a>
+<a class="sourceLine" id="cb4-6" title="6">)</a></code></pre></div>
 </div>
 <div id="modifying-regularization-terms" class="section level4">
 <h4 class="hasAnchor">
@@ -135,7 +137,7 @@
 <ul>
 <li>Ridge = 0</li>
 <li>Elastic Net = (0, 1)</li>
-<li>Lasso / Quantile = 1 (additional parameter <code>quantile</code> used to specify quantile)</li>
+<li>Lasso / Quantile = 1 (additional parameter <code>quantile</code> used to specify quantile, not currently implemented)</li>
 </ul>
 </li>
 <li>Penalty path
@@ -146,32 +148,50 @@
 </li>
 <li>User-defined set of penalties</li>
 </ul>
-<p>As an example, we may want to apply a ridge penalty to both the x variables and external data variables. In addition, we may want to have 30 penalty values computed for the regularization path associated with both x and external. We modify our model fitting as follows.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">myPenalty &lt;-<span class="st"> </span><span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dt">penalty_type =</span> <span class="dv">0</span>, </a>
-<a class="sourceLine" id="cb5-2" title="2">                            <span class="dt">penalty_type_ext =</span> <span class="dv">0</span>, </a>
-<a class="sourceLine" id="cb5-3" title="3">                            <span class="dt">num_penalty =</span> <span class="dv">30</span>, </a>
-<a class="sourceLine" id="cb5-4" title="4">                            <span class="dt">num_penalty_ext =</span> <span class="dv">30</span>)</a>
-<a class="sourceLine" id="cb5-5" title="5"></a>
-<a class="sourceLine" id="cb5-6" title="6">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(<span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb5-7" title="7">                     <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb5-8" title="8">                     <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb5-9" title="9">                     <span class="dt">family =</span> <span class="st">"gaussian"</span>, </a>
-<a class="sourceLine" id="cb5-10" title="10">                     <span class="dt">penalty =</span> myPenalty)</a></code></pre></div>
+<p>As an example, we may want to apply a ridge penalty to the x variables and a lasso penalty to the external data variables. In addition, we may want to have 30 penalty values computed for the regularization path associated with both x and external. We modify our model call to <code>xrnet</code> follows.</p>
+<ol style="list-style-type: decimal">
+<li>
+<code>penalty_main</code> is used to specify the regularization for the x variables</li>
+<li>
+<code>penalty_external</code> is used to specify the regularization for the external variables</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</a>
+<a class="sourceLine" id="cb5-2" title="2">  <span class="dt">x =</span> x_linear, </a>
+<a class="sourceLine" id="cb5-3" title="3">  <span class="dt">y =</span> y_linear, </a>
+<a class="sourceLine" id="cb5-4" title="4">  <span class="dt">external =</span> ext_linear, </a>
+<a class="sourceLine" id="cb5-5" title="5">  <span class="dt">family =</span> <span class="st">"gaussian"</span>, </a>
+<a class="sourceLine" id="cb5-6" title="6">  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dv">0</span>, <span class="dt">num_penalty =</span> <span class="dv">30</span>),</a>
+<a class="sourceLine" id="cb5-7" title="7">  <span class="dt">penalty_external =</span> <span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dv">1</span>, <span class="dt">num_penalty =</span> <span class="dv">30</span>)</a>
+<a class="sourceLine" id="cb5-8" title="8">)</a></code></pre></div>
+<p>Helper functions are also available to define the available penalty types (<code>define_lasso</code>, <code>define_ridge</code>, and <code>define_enet</code>). The example below exemplifies fitting a standard ridge regression model with 100 penalty values by using the <code>define_ridge</code> helper function. As mentioned previously, a standard regularized regression is fit if no external data is provided.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</a>
+<a class="sourceLine" id="cb6-2" title="2">  <span class="dt">x =</span> x_linear, </a>
+<a class="sourceLine" id="cb6-3" title="3">  <span class="dt">y =</span> y_linear, </a>
+<a class="sourceLine" id="cb6-4" title="4">  <span class="dt">family =</span> <span class="st">"gaussian"</span>, </a>
+<a class="sourceLine" id="cb6-5" title="5">  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_ridge.html">define_ridge</a></span>(<span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb6-6" title="6">)</a></code></pre></div>
 </div>
 <div id="tuning-penalty-parameters-by-cross-validation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#tuning-penalty-parameters-by-cross-validation" class="anchor"></a>Tuning Penalty Parameters by Cross-Validation</h4>
 <p>In general, we need a method to determine the penalty values that produce the optimal out-of-sample prediction. We provide a simple two-dimensional grid search that uses k-fold cross-validation to determine the optimal values for the penalties. The cross-validation function <code>tune_xrnet</code> is used as follows.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">cv_xrnet &lt;-<span class="st"> </span><span class="kw"><a href="reference/tune_xrnet.html">tune_xrnet</a></span>(<span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb6-2" title="2">                       <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb6-3" title="3">                       <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb6-4" title="4">                       <span class="dt">family =</span> <span class="st">"gaussian"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">cv_xrnet &lt;-<span class="st"> </span><span class="kw"><a href="reference/tune_xrnet.html">tune_xrnet</a></span>(</a>
+<a class="sourceLine" id="cb7-2" title="2">  <span class="dt">x =</span> x_linear, </a>
+<a class="sourceLine" id="cb7-3" title="3">  <span class="dt">y =</span> y_linear, </a>
+<a class="sourceLine" id="cb7-4" title="4">  <span class="dt">external =</span> ext_linear, </a>
+<a class="sourceLine" id="cb7-5" title="5">  <span class="dt">family =</span> <span class="st">"gaussian"</span>,</a>
+<a class="sourceLine" id="cb7-6" title="6">  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_ridge.html">define_ridge</a></span>(),</a>
+<a class="sourceLine" id="cb7-7" title="7">  <span class="dt">penalty_external =</span> <span class="kw"><a href="reference/define_lasso.html">define_lasso</a></span>()</a>
+<a class="sourceLine" id="cb7-8" title="8">)</a></code></pre></div>
 <p>To visualize the results of the cross-validation we provide a contour plot of the mean cross-validation error across the grid of penalties with the <code>plot</code> function.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(cv_xrnet)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(cv_xrnet)</a></code></pre></div>
 <p><img src="reference/figures/cv_results-1.png" width="700"></p>
-<p>The <code>predict</code> function can be used to predict responses and to obtain the coefficient estimates (or the <code>coef</code> function) at the optimal penalty combination (default) or any other penalty combination.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">predy &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(cv_xrnet, <span class="dt">newdata =</span> x_linear)</a>
-<a class="sourceLine" id="cb8-2" title="2">estimates &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(cv_xrnet)</a></code></pre></div>
+<p>Cross-validation error curves can also be generated with <code>plot</code> by fixing the value of either the penalty on <code>x</code> or the external penalty on <code>external</code>. By default, either penalty defaults the optimal penalty on <code>x</code> or <code>external</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(cv_xrnet, <span class="dt">p =</span> <span class="st">"opt"</span>)</a></code></pre></div>
+<p><img src="reference/figures/plot-error-curve-1.png" width="700"></p>
+<p>The <code>predict</code> function can be used to predict responses and to obtain the coefficient estimates at the optimal penalty combination (the default) or any other penalty combination that is within the penalty path(s). <code>coef</code> is a another help function that can be used to return the coefficients for a combination of penalty values as well.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">predy &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(cv_xrnet, <span class="dt">newdata =</span> x_linear)</a>
+<a class="sourceLine" id="cb10-2" title="2">estimates &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(cv_xrnet)</a></code></pre></div>
 </div>
 </div>
   </div>

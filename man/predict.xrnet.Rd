@@ -5,8 +5,8 @@
 \title{Predict function for "xrnet" object}
 \usage{
 \method{predict}{xrnet}(object, newdata = NULL, newdata_fixed = NULL,
-  p = NULL, pext = NULL, type = c("response", "coefficients",
-  "link"), penalty = NULL, ...)
+  p = NULL, pext = NULL, type = c("response", "link",
+  "coefficients"), penalty = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{xrnet}} object}
@@ -21,9 +21,9 @@
 
 \item{type}{type of prediction to make using the xrnet model, options include
 \itemize{
-   \item coefficients
    \item response
    \item link (linear predictor)
+   \item coefficients
 }}
 
 \item{penalty}{(optional) regularization object applied to original model object, only needed
@@ -35,9 +35,9 @@ more information on regularization object.}
 \value{
 The object returned based on the type object is as follows:
 \itemize{
-    \item coefficients: A list with the coefficient estimates for each penalty combination
     \item response: An array with the response predictions based on the data for each penalty combination
     \item link: An array with linear predictions based on the data for each penalty combination
+    \item coefficients: A list with the coefficient estimates for each penalty combination
 }
 }
 \description{
