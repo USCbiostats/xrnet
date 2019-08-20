@@ -29,7 +29,8 @@
 #'     \item gaussian
 #'     \item binomial
 #' }
-#' @param penalty specifies regularization object for x and external.
+#' @param penalty_main specifies regularization object for x. See \code{\link{define_penalty}} for more details.
+#' @param penalty_external specifies regularization object for external. See \code{\link{define_penalty}} for more details.
 #' See \code{\link{define_penalty}} for more details.
 #' @param weights optional vector of observation-specific weights.
 #' Default is 1 for all observations.
@@ -84,7 +85,8 @@ tune_xrnet <- function(x,
                        external = NULL,
                        unpen = NULL,
                        family = c("gaussian", "binomial"),
-                       penalty = define_penalty(),
+                       penalty_main = define_penalty(),
+                       penalty_external = define_penalty(),
                        weights = NULL,
                        standardize = c(TRUE, TRUE),
                        intercept = c(TRUE, FALSE),
@@ -171,7 +173,8 @@ tune_xrnet <- function(x,
         weights = weights,
         standardize = standardize,
         intercept = intercept,
-        penalty = penalty,
+        penalty_main = penalty_main,
+        penalty_external = penalty_external,
         control = control
     )
     xrnet_object$call <- xrnet_call
@@ -191,15 +194,19 @@ tune_xrnet <- function(x,
     }
 
     # Prepare penalty and control object for folds
-    penalty_fold <- penalty
-    penalty_fold$user_penalty <- xrnet_object$penalty
+    penalty_main_fold <- penalty_main
+    penalty_external_fold <- penalty_external
+
+    penalty_main_fold$user_penalty <- xrnet_object$penalty
     if (is.null(xrnet_object$penalty_ext)) {
-        penalty_fold$user_penalty_ext <- as.double(0.0)
+        penalty_external_fold$user_penalty <- as.double(0.0)
     } else {
-        penalty_fold$user_penalty_ext <- xrnet_object$penalty_ext
+        penalty_external_fold$user_penalty <- xrnet_object$penalty_ext
     }
+
     penalty_fold <- initialize_penalty(
-        penalty_obj = penalty_fold,
+        penalty_main = penalty_main_fold,
+        penalty_external = penalty_external_fold,
         nr_x = NROW(x),
         nc_x = NCOL(x),
         nc_unpen = nc_unpen,

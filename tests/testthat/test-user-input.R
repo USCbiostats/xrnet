@@ -110,48 +110,48 @@ test_that("throw error when length of penalty_type != ncol(x)", {
     x <- matrix(runif(20), ncol = 5)
     y <- 1:4
     p <- define_penalty(penalty_type = rep(1, 4))
-    expect_error(xrnet(x, y, family = "gaussian", penalty = p))
+    expect_error(xrnet(x, y, family = "gaussian", penalty_main = p))
 })
 
 test_that("throw error when num_penalty < 3", {
     x <- matrix(runif(20), ncol = 5)
     y <- 1:4
     p <- define_penalty(num_penalty = 2)
-    expect_error(xrnet(x, y, family = "gaussian", penalty = p))
+    expect_error(xrnet(x, y, family = "gaussian", penalty_main = p))
 })
 
 test_that("throw error when length of custom_multiplier != ncol(x)", {
     x <- matrix(runif(20), ncol = 5)
     y <- 1:4
     p <- define_penalty(custom_multiplier = rep(10, 4))
-    expect_error(xrnet(x, y, family = "gaussian", penalty = p))
+    expect_error(xrnet(x, y, family = "gaussian", penalty_main = p))
 })
 
 test_that("throw error when length of penalty_type_ext != ncol(external)", {
     x <- matrix(runif(20), ncol = 5)
     y <- 1:4
     external <- matrix(runif(20), nrow = 5)
-    p <- define_penalty(penalty_type_ext = rep(0, 2))
-    expect_error(xrnet(x, y, external, family = "gaussian", penalty = p))
+    p <- define_penalty(penalty_type = rep(0, 2))
+    expect_error(xrnet(x, y, external, family = "gaussian", penalty_external = p))
 })
 
 test_that("throw error when num_penalty_ext < 3", {
     x <- matrix(runif(20), ncol = 5)
     y <- 1:4
     external <- matrix(runif(20), nrow = 5)
-    p <- define_penalty(num_penalty_ext = 2)
-    expect_error(xrnet(x, y, external, family = "gaussian", penalty = p))
+    p <- define_penalty(num_penalty = 2)
+    expect_error(xrnet(x, y, external, family = "gaussian", penalty_external = p))
 })
 
 test_that("throw error when length of custom_multiplier_ext != ncol(external)", {
     x <- matrix(runif(20), ncol = 5)
     y <- 1:4
     external <- matrix(runif(20), nrow = 5)
-    p <- define_penalty(custom_multiplier_ext = rep(10, 2))
-    expect_error(xrnet(x, y, external, family = "gaussian", penalty = p))
+    p <- define_penalty(custom_multiplier = rep(10, 2))
+    expect_error(xrnet(x, y, external, family = "gaussian", penalty_external = p))
 })
 
-######################### initialize_penalty() errors #########################
+######################### initialize_control() errors #########################
 
 test_that("throw error when dfmax non-positive or not an integer", {
     x <- matrix(runif(10), nrow = 5)
