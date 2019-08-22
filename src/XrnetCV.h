@@ -13,16 +13,31 @@ class XrnetCV : public Xrnet<TX, TZ>  {
     typedef Eigen::Map<const Eigen::VectorXd> MapVec;
     typedef Eigen::Map<const Eigen::MatrixXd> MapMat;
     typedef Eigen::MappedSparseMatrix<double> MapSpMat;
-    typedef double (*lossPtr)(const Eigen::Ref<const Eigen::VectorXd> &,
+    typedef double (*lossPtr)(const Eigen::Ref<const Eigen::MatrixXd> &,
                               const Eigen::Ref<const Eigen::VectorXd> &,
                               const Eigen::Ref<const Eigen::VectorXi> &);
 
 protected:
     Eigen::Map<const Eigen::VectorXi> test_idx;
     TX X;
-    MapVec y;
+    MapMat y;
     VecXd error_mat;
     lossPtr loss_func;
+    using Xrnet<TX, TZ>::n;
+    using Xrnet<TX, TZ>::ym;
+    using Xrnet<TX, TZ>::ys;
+    using Xrnet<TX, TZ>::xs;
+    using Xrnet<TX, TZ>::cent;
+    using Xrnet<TX, TZ>::beta0;
+    using Xrnet<TX, TZ>::betas;
+    using Xrnet<TX, TZ>::gammas;
+    using Xrnet<TX, TZ>::alphas;
+    using Xrnet<TX, TZ>::ext;
+    using Xrnet<TX, TZ>::intr;
+    using Xrnet<TX, TZ>::intr_ext;
+    using Xrnet<TX, TZ>::nv_x;
+    using Xrnet<TX, TZ>::nv_fixed;
+    using Xrnet<TX, TZ>::nv_ext;
 
 public:
     // constructor (dense X)
@@ -44,7 +59,7 @@ public:
             const std::string & user_loss_,
             const Eigen::Ref<const Eigen::VectorXi> & test_idx_,
             const Eigen::Ref<const Eigen::MatrixXd> & X_,
-            const Eigen::Ref<const Eigen::VectorXd> & y_) :
+            const Eigen::Ref<const Eigen::MatrixXd> & y_) :
     Xrnet<TX, TZ>(
             n_,
             nv_x_,
@@ -62,7 +77,7 @@ public:
             1),
             test_idx(test_idx_.data(), test_idx_.size()),
             X(X_.data(), n_, X_.cols()),
-            y(y_.data(), n_)
+            y(y_.data(), n_, y_.cols())
             {
                 error_mat = Eigen::VectorXd::Zero(num_penalty_);
                 loss_func = select_loss(family_, user_loss_);
@@ -87,7 +102,7 @@ public:
             const std::string & user_loss_,
             const Eigen::Ref<const Eigen::VectorXi> & test_idx_,
             const MapSpMat X_,
-            const Eigen::Ref<const Eigen::VectorXd> & y_) :
+            const Eigen::Ref<const Eigen::MatrixXd> & y_) :
         Xrnet<TX, TZ>(
                 n_,
                 nv_x_,
@@ -105,7 +120,7 @@ public:
                 1),
                 test_idx(test_idx_.data(), test_idx_.size()),
                 X(X_),
-                y(y_.data(), n_)
+                y(y_.data(), n_, y_.cols())
                 {
                     error_mat = Eigen::VectorXd::Zero(num_penalty_);
                     loss_func = select_loss(family_, user_loss_);
@@ -121,45 +136,45 @@ public:
     virtual void add_results(double b0, VecXd coef, const int & idx) {
 
         // unstandardize variables
-        coef = this->ys * coef.cwiseProduct(this->xs);
-        b0 *= this->ys;
+        coef = ys * coef.cwiseProduct(xs);
+        b0 *= ys;
 
         // get external coefficients
-        if (this->nv_ext > 0) {
-            this->alphas.col(0) = coef.tail(this->nv_ext);
+        if (nv_ext > 0) {
+            alphas.col(0) = coef.tail(nv_ext);
         }
 
         // unstandardize predictors w/ external data (x)
-        if (this->nv_ext + this->intr_ext > 0) {
-            VecXd z_alpha = Eigen::VectorXd::Zero(this->nv_x);
-            if (this->intr_ext) {
-                z_alpha.array() += coef[this->nv_x + this->nv_fixed];
+        if (nv_ext + intr_ext > 0) {
+            VecXd z_alpha = Eigen::VectorXd::Zero(nv_x);
+            if (intr_ext) {
+                z_alpha.array() += coef[nv_x + nv_fixed];
             }
-            if (this->nv_ext > 0) {
-                z_alpha += this->ext * coef.tail(this->nv_ext);
+            if (nv_ext > 0) {
+                z_alpha += ext * coef.tail(nv_ext);
             }
-            this->betas.col(0) = z_alpha.cwiseProduct(this->xs.head(this->nv_x)) + coef.head(this->nv_x);
+            betas.col(0) = z_alpha.cwiseProduct(xs.head(nv_x)) + coef.head(nv_x);
         }
         else {
-            this->betas.col(0) = coef.head(this->nv_x);
+            betas.col(0) = coef.head(nv_x);
         }
 
         // unstandardize predictors w/o external data (fixed)
-        if (this->nv_fixed > 0) {
-            this->gammas.col(0) = coef.segment(this->nv_x, this->nv_fixed);
+        if (nv_fixed > 0) {
+            gammas.col(0) = coef.segment(nv_x, nv_fixed);
         }
 
         // compute 1st level intercept
-        if (this->intr) {
-            this->beta0[0] = (this->ym + b0) - this->cent.head(this->nv_x).dot(this->betas.col(0));
-            if (this->nv_fixed > 0) {
-                this->beta0[0] -= this->cent.segment(this->nv_x, this->nv_fixed).dot(this->gammas.col(0));
+        if (intr) {
+            beta0[0] = (ym + b0) - cent.head(nv_x).dot(betas.col(0));
+            if (nv_fixed > 0) {
+                beta0[0] -= cent.segment(nv_x, nv_fixed).dot(gammas.col(0));
             }
         }
 
         // compute predicted values
-        VecXd yhat = Eigen::VectorXd::Constant(this->n, this->beta0[0]);
-        yhat += X * this->betas.sparseView();
+        VecXd yhat = Eigen::VectorXd::Constant(n, beta0[0]);
+        yhat += X * betas.sparseView();
 
         // compute error for test data
         error_mat[idx] = loss_func(y, yhat, test_idx);
@@ -199,27 +214,27 @@ public:
         return loss_func;
     }
 
-    static double mean_squared_error(const Eigen::Ref<const Eigen::VectorXd> & actual,
+    static double mean_squared_error(const Eigen::Ref<const Eigen::MatrixXd> & actual,
                                      const Eigen::Ref<const Eigen::VectorXd> & predicted,
                                      const Eigen::Ref<const Eigen::VectorXi> & test_idx) {
         double error = 0.0;
         for (int i = 0; i < test_idx.size(); ++i) {
-            error += std::pow(actual[test_idx[i]] - predicted[test_idx[i]], 2) / test_idx.size();
+            error += std::pow(actual(test_idx[i], 0) - predicted[test_idx[i]], 2) / test_idx.size();
         }
         return error;
     }
 
-    static double mean_absolute_error(const Eigen::Ref<const Eigen::VectorXd> & actual,
+    static double mean_absolute_error(const Eigen::Ref<const Eigen::MatrixXd> & actual,
                                       const Eigen::Ref<const Eigen::VectorXd> & predicted,
                                       const Eigen::Ref<const Eigen::VectorXi> & test_idx) {
         double error = 0.0;
         for (int i = 0; i < test_idx.size(); ++i) {
-            error += std::abs(actual[test_idx[i]] - predicted[test_idx[i]]) / test_idx.size();
+            error += std::abs(actual(test_idx[i], 0) - predicted[test_idx[i]]) / test_idx.size();
         }
         return error;
     }
 
-    static double auc(const Eigen::Ref<const Eigen::VectorXd> & actual,
+    static double auc(const Eigen::Ref<const Eigen::MatrixXd> & actual,
                       const Eigen::Ref<const Eigen::VectorXd> & predicted,
                       const Eigen::Ref<const Eigen::VectorXi> & test_idx) {
 
@@ -228,7 +243,7 @@ public:
         Eigen::VectorXd actual_sub(test_size);
         Eigen::VectorXd pred_sub(test_size);
         for (int i = 0; i < test_size; ++i) {
-            actual_sub[i] = actual[test_idx[i]];
+            actual_sub[i] = actual(test_idx[i], 0);
             pred_sub[i] = predicted[test_idx[i]];
         }
 
@@ -253,12 +268,12 @@ public:
         return u_value / (n1 * (n - n1));
     }
 
-    static double deviance_binomial(const Eigen::Ref<const Eigen::VectorXd> & actual,
+    static double deviance_binomial(const Eigen::Ref<const Eigen::MatrixXd> & actual,
                                     const Eigen::Ref<const Eigen::VectorXd> & predicted,
                                     const Eigen::Ref<const Eigen::VectorXi> & test_idx) {
         double error = 0.0;
         for (int i = 0; i < test_idx.size(); ++i){
-            error += (actual[test_idx[i]] * predicted[test_idx[i]] - log(1.0 + exp(predicted[test_idx[i]]))) / test_idx.size();
+            error += (actual(test_idx[i], 0) * predicted[test_idx[i]] - log(1.0 + exp(predicted[test_idx[i]]))) / test_idx.size();
         }
         return -2 * error;
     }

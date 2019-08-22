@@ -3,12 +3,13 @@
 #include "XrnetCV.h"
 #include "XrnetUtils.h"
 #include "CoordDescTypes.h"
+#include "GaussianSolver.h"
 #include "BinomialSolver.h"
 
 template <typename TX, typename TZ>
 Eigen::VectorXd fitModelCV(const TX & x,
                            const bool & is_sparse_x,
-                           const Eigen::Ref<const Eigen::VectorXd> & y,
+                           const Eigen::Ref<const Eigen::MatrixXd> & y,
                            const TZ & ext,
                            const Eigen::Ref<const Eigen::MatrixXd> & fixed,
                            Eigen::VectorXd weights_user,
@@ -57,43 +58,35 @@ Eigen::VectorXd fitModelCV(const TX & x,
         xv, xs, intr[1], stnd[1], nv_x + nv_fixed
     );
 
-    // standardize y if continuous
-    Eigen::VectorXd yscaled = y;
-    double ys = 1.0;
-    double ym = 0.0;
-    if (family == "gaussian") {
-        ym = y.cwiseProduct(weights_user).sum();
-        ys = std::sqrt(y.cwiseProduct(y.cwiseProduct(weights_user)).sum() - ym * ym);
-        if (!intr[0])
-            ym = 0.0;
-        yscaled.array() = (yscaled.array() - ym) / ys;
-    }
-
     // choose solver based on outcome
     std::unique_ptr<CoordSolver<TX> > solver;
     if (family == "gaussian") {
-        solver.reset(new CoordSolver<TX>(
-                yscaled, x, fixedmap, xz, cent.data(), xv.data(), xs.data(),
-                weights_user, intr[0], penalty_type.data(),
-                cmult.data(), quantiles, upper_cl.data(),
-                lower_cl.data(), ne, nx, thresh, maxit)
+        solver.reset(
+            new GaussianSolver<TX>(
+                    y, x, fixedmap, xz, cent.data(), xv.data(), xs.data(),
+                    weights_user, intr[0], penalty_type.data(),
+                    cmult.data(), quantiles, upper_cl.data(),
+                    lower_cl.data(), ne, nx, thresh, maxit
+            )
         );
+
     }
     else if (family == "binomial") {
-        solver.reset(new BinomialSolver<TX>(
-                yscaled, x, fixedmap, xz, cent.data(), xv.data(), xs.data(),
-                weights_user, intr[0], penalty_type.data(),
-                cmult.data(), quantiles, upper_cl.data(),
-                lower_cl.data(), ne, nx, thresh, maxit)
+        solver.reset(
+            new BinomialSolver<TX>(
+                    y, x, fixedmap, xz, cent.data(), xv.data(),
+                    xs.data(), weights_user, intr[0], penalty_type.data(),
+                    cmult.data(), quantiles, upper_cl.data(),
+                    lower_cl.data(), ne, nx, thresh, maxit
+            )
         );
     }
-
     // Object to hold results for all penalty combinations
     const int num_combn = num_penalty[0] * num_penalty[1];
     XrnetCV<TX, TZ> results = XrnetCV<TX, TZ>(
         n, nv_x, nv_fixed, nv_ext, nv_total,
         intr[0], intr[1], ext, xm.data(), cent.data(),
-        xs.data(), ym, ys, num_combn, family, user_loss,
+        xs.data(), solver->getYm(), solver->getYs(), num_combn, family, user_loss,
         test_idx, x, y
     );
 
@@ -103,7 +96,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
     compute_penalty(
         path, penalty_user, penalty_type[0],
         penalty_ratio[0], solver->getGradient(),
-        solver->getCmult(), 0, nv_x, ys
+        solver->getCmult(), 0, nv_x, solver->getYs()
     );
 
     // compute penalty path for 2nd level variables
@@ -114,7 +107,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
             penalty_type[nv_x + nv_fixed + intr[1]],
             penalty_ratio[1], solver->getGradient(),
             solver->getCmult(), nv_x + nv_fixed + intr[1],
-            nv_total, ys
+            nv_total, solver->getYs()
         );
     } else {
         path_ext[0] = 0.0;
@@ -130,7 +123,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
         for (int m2 = 0; m2 < num_penalty[1]; ++m2, ++idx_pen) {
             solver->setPenalty(path_ext[m2], 1);
             if (m2 == 0 && num_penalty[1] > 1) {
-                solver->warm_start(yscaled, b0_outer, betas_outer);
+                solver->warm_start(b0_outer, betas_outer);
                 solver->update_strong(path, path_ext, m, m2);
                 solver->solve();
                 b0_outer = solver->getBeta0();
@@ -152,7 +145,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
 // [[Rcpp::export]]
 Eigen::VectorXd fitModelCVRcpp(SEXP x,
                                const int mattype_x,
-                               const Eigen::Map<Eigen::VectorXd> y,
+                               const Eigen::Map<Eigen::MatrixXd> y,
                                SEXP ext,
                                const bool & is_sparse_ext,
                                const Eigen::Map<Eigen::MatrixXd> fixed,
