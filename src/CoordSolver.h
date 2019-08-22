@@ -74,7 +74,7 @@ public:
                 int nx_,
                 double tolerance_,
                 int max_iterations_) :
-    n(y_.size()),
+    n(y_.rows()),
     nv_total(X_.cols() + Fixed_.cols() + XZ_.cols()),
     y(y_.data(), n, y_.cols()),
     ym(0.0),
@@ -133,7 +133,7 @@ public:
                 int nx_,
                 double tolerance_,
                 int max_iterations_) :
-        n(y_.size()),
+        n(y_.rows()),
         nv_total(X_.cols() + Fixed_.cols() + XZ_.cols()),
         y(y_.data(), n, y_.cols()),
         ym(0.0),
