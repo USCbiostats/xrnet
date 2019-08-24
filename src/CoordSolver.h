@@ -18,7 +18,9 @@ class CoordSolver {
 protected:
     const int n;
     const int nv_total;
-    MapVec y;
+    MapMat y;
+    double ym;
+    double ys;
     T X;
     MapMat Fixed;
     MapMat XZ;
@@ -54,7 +56,7 @@ protected:
 
 public:
     // constructor (dense X matrix)
-    CoordSolver(const Eigen::Ref<const Eigen::VectorXd> & y_,
+    CoordSolver(const Eigen::Ref<const Eigen::MatrixXd> & y_,
                 const Eigen::Ref<const Eigen::MatrixXd> & X_,
                 const Eigen::Ref<const Eigen::MatrixXd> & Fixed_,
                 const Eigen::Ref<const Eigen::MatrixXd> & XZ_,
@@ -72,9 +74,11 @@ public:
                 int nx_,
                 double tolerance_,
                 int max_iterations_) :
-    n(y_.size()),
+    n(X_.rows()),
     nv_total(X_.cols() + Fixed_.cols() + XZ_.cols()),
-    y(y_.data(), n),
+    y(y_.data(), n, y_.cols()),
+    ym(0.0),
+    ys(1.0),
     X(X_.data(), n, X_.cols()),
     Fixed(Fixed_.data(), n, Fixed_.cols()),
     XZ(XZ_.data(), n, XZ_.cols()),
@@ -107,13 +111,11 @@ public:
     active_set(nv_total, false),
     status(0)
     {
-        betas = Eigen::VectorXd::Zero(nv_total);
-        betas_prior = Eigen::VectorXd::Zero(nv_total);
         init();
     };
 
     // constructor (sparse X matrix)
-    CoordSolver(const Eigen::Ref<const Eigen::VectorXd> & y_,
+    CoordSolver(const Eigen::Ref<const Eigen::MatrixXd> & y_,
                 const MapSpMat X_,
                 const Eigen::Ref<const Eigen::MatrixXd> & Fixed_,
                 const Eigen::Ref<const Eigen::MatrixXd> & XZ_,
@@ -131,9 +133,11 @@ public:
                 int nx_,
                 double tolerance_,
                 int max_iterations_) :
-        n(y_.size()),
+        n(X_.rows()),
         nv_total(X_.cols() + Fixed_.cols() + XZ_.cols()),
-        y(y_.data(), n),
+        y(y_.data(), n, y_.cols()),
+        ym(0.0),
+        ys(1.0),
         X(X_),
         Fixed(Fixed_.data(), n, Fixed_.cols()),
         XZ(XZ_.data(), n, XZ_.cols()),
@@ -166,8 +170,6 @@ public:
         active_set(nv_total, false),
         status(0)
     {
-        betas = Eigen::VectorXd::Zero(nv_total);
-        betas_prior = Eigen::VectorXd::Zero(nv_total);
         init();
     };
 
@@ -191,6 +193,8 @@ public:
     Rcpp::LogicalVector getStrongSet(){return strong_set;}
     Rcpp::LogicalVector getActiveSet(){return active_set;}
     int getStatus(){return status;}
+    double getYm(){return ym;}
+    double getYs(){return ys;}
 
     // setters
     void setPenalty(double val, int pos) {penalty[pos] = val;}
@@ -298,11 +302,9 @@ public:
     }
 
     // base initialize function
-    virtual void init(){
-        wgts = wgts_user;
-        residuals = y.cwiseProduct(wgts);
-        wgts_sum = wgts.sum();
-        double resids_sum = residuals.sum();
+    void init(){
+        betas = Eigen::VectorXd::Zero(nv_total);
+        betas_prior = Eigen::VectorXd::Zero(nv_total);
 
         // add fixed vars to strong set
         std::fill(
@@ -310,20 +312,10 @@ public:
             strong_set.begin() + X.cols() + Fixed.cols(),
             true
         );
-
-        int idx = 0;
-        for (int k = 0; k < X.cols(); ++k, ++idx) {
-            gradient[idx] = xs[idx] * (X.col(k).dot(residuals) - xm[idx] * resids_sum);
-        }
-        idx += Fixed.cols();
-        for (int k = 0; k < XZ.cols(); ++k, ++idx) {
-            gradient[idx] = xs[idx] * (XZ.col(k).dot(residuals) - xm[idx] * resids_sum);
-        }
     }
 
     // warm start initialization given current estimates
-    virtual void warm_start(const Eigen::Ref<const Eigen::VectorXd> & y,
-                            const double & b0_start,
+    virtual void warm_start(const double & b0_start,
                             const Eigen::Ref<const Eigen::VectorXd> & betas_start) {
 
         // initialize estimates with provided values
@@ -332,7 +324,7 @@ public:
 
         // compute residuals given starting values
         int idx = 0;
-        residuals.array() = (y.array() - b0) * wgts.array();
+        residuals.array() = wgts.array() * ((y.col(0).array() - ym) / ys - b0);
         for (int k = 0; k < X.cols(); ++k, ++idx) {
             residuals -= betas[idx] * xs[idx] * (X.col(k) - xm[idx]  * Eigen::VectorXd::Ones(n)).cwiseProduct(wgts);
         }
@@ -343,7 +335,7 @@ public:
             residuals -= betas[idx] * xs[idx] * (XZ.col(k) - xm[idx]  * Eigen::VectorXd::Ones(n)).cwiseProduct(wgts);
         }
 
-        // compute partial gradients given current residuals (penalized features only)
+        // compute gradients given current residuals (penalized features only)
         idx = 0;
         double resids_sum = residuals.sum();
         for (int k = 0; k < X.cols(); ++k, ++idx) {

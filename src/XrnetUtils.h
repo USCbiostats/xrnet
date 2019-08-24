@@ -39,4 +39,8 @@ Eigen::MatrixXd computeResponse(const TX & X,
     return pred;
 }
 
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
+
 #endif // XRNET_UTILS_H
