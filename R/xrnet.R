@@ -341,6 +341,9 @@ xrnet <- function(x,
         } else {
             fit$gammas <- NULL
         }
+
+        # Modify gradient here.
+
     } else {
         if (fit$status == 1) {
             fit$error_msg <- "Max number of iterations reached"

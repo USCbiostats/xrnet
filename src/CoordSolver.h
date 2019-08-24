@@ -51,6 +51,7 @@ protected:
     Rcpp::LogicalVector strong_set;
     Rcpp::LogicalVector active_set;
     int status;
+    double deviance;
 
 public:
     // constructor (dense X matrix)
@@ -105,7 +106,8 @@ public:
     tolerance_irls(tolerance_),
     strong_set(nv_total, false),
     active_set(nv_total, false),
-    status(0)
+    status(0),
+    deviance(0)
     {
         betas = Eigen::VectorXd::Zero(nv_total);
         betas_prior = Eigen::VectorXd::Zero(nv_total);
@@ -164,7 +166,8 @@ public:
         tolerance_irls(tolerance_),
         strong_set(nv_total, false),
         active_set(nv_total, false),
-        status(0)
+        status(0),
+        deviance(0)
     {
         betas = Eigen::VectorXd::Zero(nv_total);
         betas_prior = Eigen::VectorXd::Zero(nv_total);
@@ -191,6 +194,7 @@ public:
     Rcpp::LogicalVector getStrongSet(){return strong_set;}
     Rcpp::LogicalVector getActiveSet(){return active_set;}
     int getStatus(){return status;}
+    double getDeviance(){return deviance;}
 
     // setters
     void setPenalty(double val, int pos) {penalty[pos] = val;}
@@ -208,6 +212,7 @@ public:
         if (num_passes == max_iterations) {
             status = 1; // max iterations reached
         }
+        calculate_deviance(); // ESK
     }
 
     // coord desc to solve weighted linear regularized regression
@@ -358,6 +363,11 @@ public:
     // update quadratic approx. of likelihood function
     // (linear case has no update)
     virtual void update_quadratic(){}
+
+    // calculate deviance (for OLS regression deviance = sum of residuals^2)
+    virtual void calculate_deviance(){
+        deviance = residuals.dot(residuals);
+    }
 
     // check convergence of IRLS (always converged in linear case)
     virtual bool converged() {return true;}

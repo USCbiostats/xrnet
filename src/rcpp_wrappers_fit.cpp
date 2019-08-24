@@ -161,6 +161,7 @@ Rcpp::List fitModel(const TX & x,
             Rcpp::Named("gammas") = estimates.getGammas(),
             Rcpp::Named("alpha0") = estimates.getAlpha0(),
             Rcpp::Named("alphas") = estimates.getAlphas(),
+            Rcpp::Named("deviance") = estimates.getDeviance(), // ESK
             Rcpp::Named("penalty") = ys * path,
             Rcpp::Named("penalty_ext") = ys * path_ext,
             Rcpp::Named("num_passes") = solver->getNumPasses(),

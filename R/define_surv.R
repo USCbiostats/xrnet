@@ -4,11 +4,12 @@
 #'
 #' @param model String. Model name. Currently \code{cox} is supported.
 #' @export
-define_surv() <- function(model = "cox") {
+define_surv <- function(model = "cox") {
     # Checks
     # More will be added later
     surv_obj <- list(
         model = model
     )
+    return(surv_obj)
 }
 
