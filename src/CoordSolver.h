@@ -74,7 +74,7 @@ public:
                 int nx_,
                 double tolerance_,
                 int max_iterations_) :
-    n(y_.rows()),
+    n(X_.rows()),
     nv_total(X_.cols() + Fixed_.cols() + XZ_.cols()),
     y(y_.data(), n, y_.cols()),
     ym(0.0),
@@ -133,7 +133,7 @@ public:
                 int nx_,
                 double tolerance_,
                 int max_iterations_) :
-        n(y_.rows()),
+        n(X_.rows()),
         nv_total(X_.cols() + Fixed_.cols() + XZ_.cols()),
         y(y_.data(), n, y_.cols()),
         ym(0.0),
@@ -324,8 +324,7 @@ public:
 
         // compute residuals given starting values
         int idx = 0;
-
-        residuals.array() = wgts.array() * (y.col(0).array() - ym - b0) / ys;
+        residuals.array() = wgts.array() * ((y.col(0).array() - ym) / ys - b0);
         for (int k = 0; k < X.cols(); ++k, ++idx) {
             residuals -= betas[idx] * xs[idx] * (X.col(k) - xm[idx]  * Eigen::VectorXd::Ones(n)).cwiseProduct(wgts);
         }
