@@ -44,6 +44,7 @@ protected:
     VecXd residuals;
     VecXd wgts;
     double wgts_sum;
+    VecXd xbeta;
     VecXd betas;
     VecXd betas_prior;
     VecXd gradient;
@@ -102,6 +103,7 @@ public:
     wgts_user(wgts_user_),
     residuals(n),
     wgts(n),
+    xbeta(n),
     betas(nv_total),
     betas_prior(nv_total),
     gradient(nv_total),
@@ -111,7 +113,7 @@ public:
     strong_set(nv_total, false),
     active_set(nv_total, false),
     status(0),
-    deviance(0)
+    deviance(0.0)
     {
         init();
     };
@@ -162,6 +164,7 @@ public:
         wgts_user(wgts_user_),
         residuals(n),
         wgts(n),
+        xbeta(n),
         betas(nv_total),
         betas_prior(nv_total),
         gradient(nv_total),
@@ -171,7 +174,7 @@ public:
         strong_set(nv_total, false),
         active_set(nv_total, false),
         status(0),
-        deviance(0)
+        deviance(0.0)
     {
         init();
     };
@@ -190,18 +193,15 @@ public:
     VecXd getUserWeights(){return wgts_user;}
     VecXd getBetas(){return betas;}
     double getBeta0(){return b0;}
+    double getDeviance(){return deviance;}
     int getNumPasses(){return num_passes;}
     VecXd getGradient(){return gradient;}
     VecXd getCmult(){return cmult;}
     Rcpp::LogicalVector getStrongSet(){return strong_set;}
     Rcpp::LogicalVector getActiveSet(){return active_set;}
     int getStatus(){return status;}
-<<<<<<< HEAD
-    double getDeviance(){return deviance;}
-=======
     double getYm(){return ym;}
     double getYs(){return ys;}
->>>>>>> 5a314a36a6dff49b5b689134f22d4b81b5f18a80
 
     // setters
     void setPenalty(double val, int pos) {penalty[pos] = val;}
@@ -219,7 +219,7 @@ public:
         if (num_passes == max_iterations) {
             status = 1; // max iterations reached
         }
-        calculate_deviance(); // ESK
+        calculate_deviance(); // ESK (Calculate deviance if converged)
     }
 
     // coord desc to solve weighted linear regularized regression
@@ -311,6 +311,7 @@ public:
 
     // base initialize function
     void init(){
+        xbeta = Eigen::VectorXd::Zero(n);
         betas = Eigen::VectorXd::Zero(nv_total);
         betas_prior = Eigen::VectorXd::Zero(nv_total);
 
@@ -356,12 +357,29 @@ public:
     }
 
     // update quadratic approx. of likelihood function
-    // (linear case has no update)
     virtual void update_quadratic(){}
 
     // calculate deviance (for OLS regression deviance = sum of residuals^2)
-    virtual void calculate_deviance(){
-        deviance = residuals.dot(residuals);
+    virtual double calculate_deviance(){
+        deviance = 0;
+        // First calcuate linear predictor, then extract (y - eta)^2
+        xbeta.array() = 0;
+        int idx = 0;
+        for (int j = 0; j < X.cols(); ++j, ++idx) {
+            if (strong_set[idx] && betas[idx] != 0.0) {
+                xbeta += xs[idx] * (X.col(j) - xm[idx] * Eigen::VectorXd::Ones(n)) * betas[idx];
+            }
+        }
+        for (int j = 0; j < Fixed.cols(); ++j, ++idx) {
+            xbeta += xs[idx] * (Fixed.col(j) - xm[idx] * Eigen::VectorXd::Ones(n)) * betas[idx];
+        }
+        for (int j = 0; j < XZ.cols(); ++j, ++idx) {
+            if (strong_set[idx] && betas[idx] != 0.0) {
+                xbeta += xs[idx] * (XZ.col(j) - xm[idx] * Eigen::VectorXd::Ones(n)) * betas[idx];
+            }
+        }
+        for (int i = 0; i < n; ++i) deviance += pow(y.col(0)[i] - xbeta[i], 2);
+        return deviance;
     }
 
     // check convergence of IRLS (always converged in linear case)

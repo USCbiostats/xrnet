@@ -121,10 +121,13 @@ public:
     VecXd getAlpha0(){return alpha0;};
     MatXd getAlphas(){return alphas;};
     VecXd getDeviance(){return deviance;}; // ESK
+    double getDeviance(const int &idx){return deviance[idx];};
 
 
     // save results for single penalty
-    virtual void add_results(double b0, VecXd coef, const int & idx) {
+    virtual void add_results(double b0, VecXd coef, double dev, const int & idx) {
+
+        deviance[idx] = dev;
 
         // unstandardize variables by sd of y (if continuous)
         coef = ys * coef.cwiseProduct(xs);
