@@ -46,7 +46,7 @@ $$\displaystyle\min_{\gamma, \alpha_0, \alpha}\ \dfrac{1}{2}||y - X\gamma - \alp
 
 This package extends the coordinate descent algorithm of Friedman [@friedman2010] to allow for this variable-specific penalization in order to fit the model described above. 
 
-Along with this extension, ``xrnet`` can fit standard regularized regression models and integrates popular features from the R packages ``glmnet`` and ``biglasso``. Below is a comparison of features that are available in ``xrnet``, ``glmnet``, and ``biglasso`` In addition to continuous and binary outcomes, there active development to extend ``xrnet`` to survival outcomes, including Cox regression and accelerated failure models.
+Along with this extension, ``xrnet`` can fit standard regularized regression models and integrates popular features from the R packages ``glmnet`` and ``biglasso``. Below is a comparison of features that are available in ``xrnet``, ``glmnet``, and ``biglasso``. In addition to continuous and binary outcomes, there is active development to extend ``xrnet`` to survival outcomes, including Cox regression and accelerated failure time models.
 
 | Feature | xrnet | glmnet | biglasso |
 |---------|-------|--------|----------|
@@ -60,7 +60,7 @@ Along with this extension, ``xrnet`` can fit standard regularized regression mod
 | Enhanced feature screening | no | no | yes |
 | Integration of external data | yes | no | no |
 
-The core functionality of the package is written in C++, with the Eigen linear algebra library [@eigenweb] used for the primary data structures. Overall, this R package aims to provide a set of functions to fit and tune hierarchical regularized regression models and unifies some of the best features from currently available R packages for regularized regression into a single easy to use interface.
+The core functionality of the package is written in C++ with integration to R by using the Rcpp R package [@rcpp]. The Eigen linear algebra library [@eigenweb] and RcppEigen [@rcppEigen] R package were utilized to handle the dense and sparse data structures. Overall, this R package aims to provide a set of functions to fit and tune hierarchical regularized regression models and unifies some of the best features from currently available R packages for regularized regression into a single easy to use interface.
 
 # Funding and Support
 

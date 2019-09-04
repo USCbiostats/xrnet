@@ -53,6 +53,7 @@ protected:
     Rcpp::LogicalVector strong_set;
     Rcpp::LogicalVector active_set;
     int status;
+    const double bigNum = 9.9e35;
 
 public:
     // constructor (dense X matrix)
@@ -245,12 +246,12 @@ public:
             if (strong_set[idx]) {
                 double gk = xs[idx] * (x.col(k).dot(residuals) - xm[idx] * residuals.sum());
                 double bk = betas[idx];
-                double u = gk + bk * xv[idx];
-                double v = std::abs(u) - cmult[idx] * penalty_type[idx] * lam;
-                if (v > 0.0) {
+                double grad = gk + bk * xv[idx];
+                double grad_thresh = std::abs(grad) - cmult[idx] * penalty_type[idx] * lam;
+                if (grad_thresh > 0.0) {
                     betas[idx] = std::max(lcl[idx],
                                           std::min(ucl[idx],
-                                          copysign(v, u) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
+                                          copysign(grad_thresh, grad) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
                 }
                 else {
                     betas[idx] = 0.0;
@@ -274,12 +275,12 @@ public:
             if (active_set[idx]) {
                 double gk = xs[idx] * (x.col(k).dot(residuals) - xm[idx] * residuals.sum());
                 double bk = betas[idx];
-                double u = gk + bk * xv[idx];
-                double v = std::abs(u) - cmult[idx] * penalty_type[idx] * lam;
-                if (v > 0.0) {
+                double grad = gk + bk * xv[idx];
+                double grad_thresh = std::abs(grad) - cmult[idx] * penalty_type[idx] * lam;
+                if (grad_thresh > 0.0) {
                     betas[idx] = std::max(lcl[idx],
                                           std::min(ucl[idx],
-                                          copysign(v, u) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
+                                          copysign(grad_thresh, grad) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
                 }
                 else {
                     betas[idx] = 0.0;
@@ -360,7 +361,7 @@ public:
                        const int & m,
                        const int & m2) {
         int idx = 0;
-        double penalty_old = (m == 0 || (m == 1 && path[m - 1] == 9.9e35)) ? 0.0 : path[m - 1];
+        double penalty_old = (m == 0 || (m == 1 && path[m - 1] == bigNum)) ? 0.0 : path[m - 1];
         double lam_diff = 2.0 * path[m] - penalty_old;
         for (int k = 0; k < X.cols(); ++k, ++idx) {
             if (!strong_set[idx]) {
@@ -373,7 +374,7 @@ public:
                 std::fill(strong_set.begin() + X.cols() + Fixed.cols(), strong_set.end(), false);
                 std::fill(active_set.begin() + X.cols() + Fixed.cols(), active_set.end(), false);
             }
-            penalty_old = (m2 == 0 || (m2 == 1 && path[m2 - 1] == 9.9e35)) ? 0.0 : path[m2 - 1];;
+            penalty_old = (m2 == 0 || (m2 == 1 && path[m2 - 1] == bigNum)) ? 0.0 : path[m2 - 1];;
             lam_diff = 2.0 * path_ext[m2] - penalty_old;
             for (int k = 0; k < XZ.cols(); ++k, ++idx) {
                 if (!strong_set[idx]) {

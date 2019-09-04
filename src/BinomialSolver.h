@@ -39,6 +39,8 @@ private:
     using CoordSolver<T>::penalty_type;
     using CoordSolver<T>::cmult;
     using CoordSolver<T>::strong_set;
+    const double prob_thresh = 1e-9;
+    double xbeta_thresh;
 
 
 public:
@@ -82,6 +84,7 @@ public:
                    xbeta(n),
                    prob(n)
                    {
+                       xbeta_thresh = log((1 - prob_thresh) / prob_thresh);
                        init();
                    };
 
@@ -125,6 +128,7 @@ public:
                        xbeta(n),
                        prob(n)
                        {
+                           xbeta_thresh = log((1 - prob_thresh) / prob_thresh);
                            init();
                        };
 
@@ -214,7 +218,7 @@ public:
 
         // compute predicted probabilities
         for (int i = 0; i < n; ++i) {
-            prob[i] = abs(xbeta[i]) < 20.72327 ? 1.0 / (1.0 + exp(-xbeta[i])) : xbeta[i] > 0 ? 1.0 : 0.0;
+            prob[i] = abs(xbeta[i]) < xbeta_thresh ? 1.0 / (1.0 + exp(-xbeta[i])) : xbeta[i] > 0 ? 1.0 : 0.0;
         }
 
         // update weights
@@ -243,7 +247,7 @@ public:
     // check convergence of IRLS
     virtual bool converged() {
         bool converged_outer = true;
-        if (wgts.sum() >= 1e-9) {
+        if (wgts.sum() >= prob_thresh) {
             if (wgts.sum() * std::pow(b0 - b0_prior, 2) > tolerance_irls) {
                 converged_outer = false;
             }
