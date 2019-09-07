@@ -79,9 +79,10 @@ future extensions to other outcomes (i.e. Cox regression) will be implemented in
 }
 \details{
 This function extends the coordinate descent algorithm of the R package \code{glmnet} to allow the
-type of regularization (i.e. ridge, lasso) to be feature-specific. In addition, elements of the R package \code{biglasso}
-are utilized to enable the use of standard R matrices, memory-mapped matrices from the \code{bigmemory} package,
-or sparse matrices from the \code{Matrix} package.
+type of regularization (i.e. ridge, lasso) to be feature-specific. This extension is used to enable fitting
+hierarchical regularized regression models, where external information for the predictors can be included in the
+\code{external=} argument. In addition, elements of the R package \code{biglasso} are utilized to enable
+the use of standard R matrices, memory-mapped matrices from the \code{bigmemory} package, or sparse matrices from the \code{Matrix} package.
 }
 \examples{
 ### hierarchical regularized linear regression ###

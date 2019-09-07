@@ -62,6 +62,15 @@
 #' \item{opt_penalty_ext}{second-level penalty value that achieves the optimal loss (if external data is present)}
 #' \item{fitted_model}{fitted xrnet object using all data, see \code{\link{xrnet}} for details of object}
 #'
+#' @details k-fold cross-validation is used to determine the 'optimal' combination of hyperparameter values, where
+#' optimal is based on the optimal value obtained for the user-selected loss function across the k folds. To efficiently traverse all possible
+#' combinations of the hyperparameter values, 'warm-starts' are used to traverse the penalty from largest
+#' to smallest penalty value(s). Note that the penalty grid for the folds is generated
+#' by fitting the model on the entire training data. Parallelization is enabled throught the \code{foreach} and
+#' \code{doParallel} R packages. To use parallelization, \code{parallel = TRUE}, you must first create the cluster
+#' \code{makeCluster} and then register the cluster \code{registerDoParallel}. See the \code{parallel}, \code{foreach},
+#' and/or \code{doParallel} R packages for more details on how to setup parallelization.
+#'
 #' @examples
 #' ## cross validation of hierarchical linear regression model
 #' data(GaussianExample)

@@ -214,9 +214,10 @@ Default is c(TRUE, FALSE).</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function extends the coordinate descent algorithm of the R package <code>glmnet</code> to allow the
-type of regularization (i.e. ridge, lasso) to be feature-specific. In addition, elements of the R package <code>biglasso</code>
-are utilized to enable the use of standard R matrices, memory-mapped matrices from the <code>bigmemory</code> package,
-or sparse matrices from the <code>Matrix</code> package.</p>
+type of regularization (i.e. ridge, lasso) to be feature-specific. This extension is used to enable fitting
+hierarchical regularized regression models, where external information for the predictors can be included in the
+<code>external=</code> argument. In addition, elements of the R package <code>biglasso</code> are utilized to enable
+the use of standard R matrices, memory-mapped matrices from the <code>bigmemory</code> package, or sparse matrices from the <code>Matrix</code> package.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -271,7 +272,7 @@ Journal of Statistical Software, 55(14), 1-19. URL http://www.jstatsoft.org/v55/
 
       <footer>
       <div class="copyright">
-  <p>Developed by Garrett M. Weaver.</p>
+  <p>Developed by Garrett Weaver.</p>
 </div>
 
 <div class="pkgdown">

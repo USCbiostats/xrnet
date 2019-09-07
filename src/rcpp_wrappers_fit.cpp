@@ -136,10 +136,10 @@ Rcpp::List fitModel(const TX & x,
     }
 
     // fix first penalties (when path automatically computed)
-    if (penalty_user[0] == 0.0) {
+    if (penalty_user[0] == 0.0 && num_penalty[0] >= 3) {
         path[0] = exp(2 * log(path[1]) - log(path[2]));
     }
-    if (penalty_user_ext[0] == 0.0 && nv_ext > 0) {
+    if (penalty_user_ext[0] == 0.0 && nv_ext > 0 && num_penalty[1] >= 3) {
         path_ext[0] = exp(2 * log(path_ext[1]) - log(path_ext[2]));
     }
 
