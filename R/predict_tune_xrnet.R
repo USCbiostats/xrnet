@@ -1,6 +1,7 @@
 #' Predict function for "tune_xrnet" object
 #'
-#' @description Predict coefficients or response in new data
+#' @description Extract coefficients or predict response in new data using fitted model from a \code{\link{tune_xrnet}} object.
+#' Note that we currently only support returning results that are in the original path(s).
 #'
 #' @param object A \code{\link{tune_xrnet}} object
 #' @param newdata matrix with new values for penalized variables
@@ -15,10 +16,24 @@
 #'    \item link (linear predictor)
 #'    \item coefficients
 #' }
-#' @param penalty (optional) regularization object applied to original model object, only needed
-#' if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
-#' more information on regularization object.
 #' @param ... pass other arguments to xrnet function (if needed)
+#' @examples
+#' data(GaussianExample)
+#'
+#' ## 5-fold cross validation
+#' cv_xrnet <- tune_xrnet(
+#'     x = x_linear,
+#'     y = y_linear,
+#'     external = ext_linear,
+#'     family = "gaussian",
+#'     control = xrnet.control(tolerance = 1e-6)
+#'  )
+#'
+#' \dontrun{
+#' ## Get coefficients and predictions at optimal penalty combination
+#' coef_xrnet <- predict(cv_xrnet, type = "coefficients")
+#' pred_xrnet <- predict(cv_xrnet, newdata = x_linear, type = "response")
+#' }
 
 #' @export
 predict.tune_xrnet <- function(object,
@@ -27,7 +42,6 @@ predict.tune_xrnet <- function(object,
                                p = "opt",
                                pext = "opt",
                                type = c("response", "link", "coefficients"),
-                               penalty = NULL,
                                ...)
 {
     if (p == "opt")
@@ -41,6 +55,6 @@ predict.tune_xrnet <- function(object,
             p = p,
             pext = pext,
             type = type,
-            penalty = penalty,
-            ...)
+            ...
+    )
 }

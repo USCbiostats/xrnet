@@ -131,12 +131,12 @@ across all penalties before returning an error. Default is 1e+05.</p></td>
     <tr>
       <th>dfmax</th>
       <td><p>maximum number of variables allowed in model. Default
-is \(ncol(x) + ncol(external) + intercept[1] + intercept[2]\).</p></td>
+is \(ncol(x) + ncol(unpen) + ncol(external) + intercept[1] + intercept[2]\).</p></td>
     </tr>
     <tr>
       <th>pmax</th>
       <td><p>maximum number of variables with nonzero coefficient estimate.
-Default is \(min(2 * dfmax + 20, ncol(x) + ncol(external) + intercept[2])\).</p></td>
+Default is \(min(2 * dfmax + 20, ncol(x) + ncol(unpen) + ncol(external) + intercept[2])\).</p></td>
     </tr>
     <tr>
       <th>lower_limits</th>
@@ -161,7 +161,7 @@ Default is \(min(2 * dfmax + 20, ncol(x) + ncol(external) + intercept[2])\).</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Garrett M. Weaver.</p>
+  <p>Developed by Garrett Weaver.</p>
 </div>
 
 <div class="pkgdown">

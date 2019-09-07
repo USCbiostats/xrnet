@@ -20,4 +20,5 @@ Default is 1 for all variables. 0 is no penalization.}
 }
 \description{
 Helper function to define a ridge penalty regularization object.
+See \code{define_penalty} for more details.
 }

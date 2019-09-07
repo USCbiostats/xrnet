@@ -33,3 +33,11 @@ Default is 1 for all variables. 0 is no penalization.}
 Defines regularization for predictors and external data variables in \code{\link{xrnet}} fitting.
 Use helper functions define_lasso, define_ridge, or define_enet to specify a common penalty on x or external.
 }
+\examples{
+
+# define ridge penalty with penalty grid split into 30 values
+my_penalty <- define_penalty(penalty_type = 0, num_penalty = 30)
+
+# define elastic net (0.5) penalty with user-defined penalty
+my_custom_penalty <- define_penalty(penalty_type = 0.5, user_penalty = c(100, 50, 10, 1, 0.1))
+}

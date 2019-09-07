@@ -32,7 +32,8 @@
 
 <meta property="og:title" content="Predict function for "tune_xrnet" object — predict.tune_xrnet" />
 
-<meta property="og:description" content="Predict coefficients or response in new data" />
+<meta property="og:description" content="Extract coefficients or predict response in new data using fitted model from a tune_xrnet object.
+Note that we currently only support returning results that are in the original path(s)." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -108,14 +109,15 @@
 
     <div class="ref-description">
     
-    <p>Predict coefficients or response in new data</p>
+    <p>Extract coefficients or predict response in new data using fitted model from a <code><a href='tune_xrnet.html'>tune_xrnet</a></code> object.
+Note that we currently only support returning results that are in the original path(s).</p>
     
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tune_xrnet</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/predict'>predict</a></span>(<span class='no'>object</span>, <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>newdata_fixed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='st'>"opt"</span>, <span class='kw'>pext</span> <span class='kw'>=</span> <span class='st'>"opt"</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"response"</span>, <span class='st'>"link"</span>, <span class='st'>"coefficients"</span>), <span class='kw'>penalty</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"response"</span>, <span class='st'>"link"</span>, <span class='st'>"coefficients"</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,31 +153,42 @@ Default is optimal value in tune_xrnet object.</p></td>
 </ul></td>
     </tr>
     <tr>
-      <th>penalty</th>
-      <td><p>(optional) regularization object applied to original model object, only needed
-if p or pext are not in the original path(s) computed. See <code><a href='define_penalty.html'>define_penalty</a></code> for
-more information on regularization object.</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>pass other arguments to xrnet function (if needed)</p></td>
     </tr>
     </table>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>GaussianExample</span>)
+
+<span class='co'>## 5-fold cross validation</span>
+<span class='no'>cv_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tune_xrnet.html'>tune_xrnet</a></span>(
+    <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x_linear</span>,
+    <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y_linear</span>,
+    <span class='kw'>external</span> <span class='kw'>=</span> <span class='no'>ext_linear</span>,
+    <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
+    <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='xrnet.control.html'>xrnet.control</a></span>(<span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>1e-6</span>)
+ )</div><span class='co'># NOT RUN {</span>
+<span class='co'>## Get coefficients and predictions at optimal penalty combination</span>
+<span class='no'>coef_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/predict'>predict</a></span>(<span class='no'>cv_xrnet</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"coefficients"</span>)
+<span class='no'>pred_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/predict'>predict</a></span>(<span class='no'>cv_xrnet</span>, <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='no'>x_linear</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"response"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Garrett M. Weaver.</p>
+  <p>Developed by Garrett Weaver.</p>
 </div>
 
 <div class="pkgdown">

@@ -222,6 +222,17 @@ a vector if there is no external data (external = NULL) and matrix if there is e
 <dt>fitted_model</dt><dd><p>fitted xrnet object using all data, see <code><a href='xrnet.html'>xrnet</a></code> for details of object</p></dd>
 
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>k-fold cross-validation is used to determine the 'optimal' combination of hyperparameter values, where
+optimal is based on the optimal value obtained for the user-selected loss function across the k folds. To efficiently traverse all possible
+combinations of the hyperparameter values, 'warm-starts' are used to traverse the penalty from largest
+to smallest penalty value(s). Note that the penalty grid for the folds is generated
+by fitting the model on the entire training data. Parallelization is enabled throught the <code>foreach</code> and
+<code>doParallel</code> R packages. To use parallelization, <code>parallel = TRUE</code>, you must first create the cluster
+<code>makeCluster</code> and then register the cluster <code>registerDoParallel</code>. See the <code>parallel</code>, <code>foreach</code>,
+and/or <code>doParallel</code> R packages for more details on how to setup parallelization.</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## cross validation of hierarchical linear regression model</span>
@@ -246,6 +257,8 @@ a vector if there is no external data (external = NULL) and matrix if there is e
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
@@ -255,7 +268,7 @@ a vector if there is no external data (external = NULL) and matrix if there is e
 
       <footer>
       <div class="copyright">
-  <p>Developed by Garrett M. Weaver.</p>
+  <p>Developed by Garrett Weaver.</p>
 </div>
 
 <div class="pkgdown">

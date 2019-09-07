@@ -45,9 +45,10 @@ NULL
 #' @param control specifies xrnet control object. See \code{\link{xrnet.control}} for more details.
 #'
 #' @details This function extends the coordinate descent algorithm of the R package \code{glmnet} to allow the
-#' type of regularization (i.e. ridge, lasso) to be feature-specific. In addition, elements of the R package \code{biglasso}
-#' are utilized to enable the use of standard R matrices, memory-mapped matrices from the \code{bigmemory} package,
-#' or sparse matrices from the \code{Matrix} package.
+#' type of regularization (i.e. ridge, lasso) to be feature-specific. This extension is used to enable fitting
+#' hierarchical regularized regression models, where external information for the predictors can be included in the
+#' \code{external=} argument. In addition, elements of the R package \code{biglasso} are utilized to enable
+#' the use of standard R matrices, memory-mapped matrices from the \code{bigmemory} package, or sparse matrices from the \code{Matrix} package.
 #'
 #' @references
 #' Jerome Friedman, Trevor Hastie, Robert Tibshirani (2010).
@@ -216,8 +217,8 @@ xrnet <- function(x,
         if (class(unpen) != "matrix") {
             unpen <- as.matrix(unpen)
         }
-        if (typeof(x) != "double") {
-            stop("Error: unpen contains non-numeric values")
+        if (typeof(unpen) != "double") {
+            stop("Error: unpen must be a numeric matrix of type 'double'")
         }
     } else {
         unpen <- matrix(vector("numeric", 0), 0, 0)
@@ -350,9 +351,9 @@ xrnet <- function(x,
 #' @param max_iterations maximum number of iterations to run coordinate gradient descent
 #' across all penalties before returning an error. Default is 1e+05.
 #' @param dfmax maximum number of variables allowed in model. Default
-#' is \eqn{ncol(x) + ncol(external) + intercept[1] + intercept[2]}.
+#' is \eqn{ncol(x) + ncol(unpen) + ncol(external) + intercept[1] + intercept[2]}.
 #' @param pmax maximum number of variables with nonzero coefficient estimate.
-#' Default is \eqn{min(2 * dfmax + 20, ncol(x) + ncol(external) + intercept[2])}.
+#' Default is \eqn{min(2 * dfmax + 20, ncol(x) + ncol(unpen) + ncol(external) + intercept[2])}.
 #' @param lower_limits vector of lower limits for each coefficient. Default is -Inf for all variables.
 #' @param upper_limits vector of upper limits for each coefficient. Default is Inf for all variables.
 

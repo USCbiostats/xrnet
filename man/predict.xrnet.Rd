@@ -6,7 +6,7 @@
 \usage{
 \method{predict}{xrnet}(object, newdata = NULL, newdata_fixed = NULL,
   p = NULL, pext = NULL, type = c("response", "link",
-  "coefficients"), penalty = NULL, ...)
+  "coefficients"), ...)
 }
 \arguments{
 \item{object}{A \code{\link{xrnet}} object}
@@ -26,10 +26,6 @@
    \item coefficients
 }}
 
-\item{penalty}{(optional) regularization object applied to original model object, only needed
-if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
-more information on regularization object.}
-
 \item{...}{pass other arguments to xrnet function (if needed)}
 }
 \value{
@@ -37,11 +33,12 @@ The object returned based on the type object is as follows:
 \itemize{
     \item response: An array with the response predictions based on the data for each penalty combination
     \item link: An array with linear predictions based on the data for each penalty combination
-    \item coefficients: A list with the coefficient estimates for each penalty combination
+    \item coefficients: A list with the coefficient estimates for each penalty combination. See \code{\link{coef.xrnet}}.
 }
 }
 \description{
-Predict coefficients or response in new data using fitted model from an \code{\link{xrnet}} object
+Extract coefficients or  predict response in new data using fitted model from an \code{\link{xrnet}} object.
+Note that we currently only support returning coefficient estimates that are in the original path(s).
 }
 \examples{
 data(GaussianExample)
