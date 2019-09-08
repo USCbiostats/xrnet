@@ -216,3 +216,15 @@ the coefficients for a combination of penalty values as well.
 predy <- predict(cv_xrnet, newdata = x_linear)
 estimates <- coef(cv_xrnet)
 ```
+
+## Contributing
+
+To report a bug, ask a question, or propose a feature, create a new
+issue [here](https://github.com/USCbiostats/xrnet/issues). This project
+is released with the following [Contributor Code of
+Conduct](CODE_OF_CONDUCT.md). If you would like to contribute, please
+abide by its terms.
+
+## Funding
+
+Supported by National Cancer Institute Grant \#1P01CA196596.
