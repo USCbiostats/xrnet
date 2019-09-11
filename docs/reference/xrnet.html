@@ -123,7 +123,8 @@ future extensions to other outcomes (i.e. Cox regression) will be implemented in
     </div>
 
     <pre class="usage"><span class='fu'>xrnet</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>external</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>unpen</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"gaussian"</span>,
-  <span class='st'>"binomial"</span>), <span class='kw'>penalty</span> <span class='kw'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(), <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='st'>"binomial"</span>), <span class='kw'>penalty_main</span> <span class='kw'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(),
+  <span class='kw'>penalty_external</span> <span class='kw'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(), <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>TRUE</span>, <span class='fl'>TRUE</span>), <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>TRUE</span>, <span class='fl'>FALSE</span>),
   <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
@@ -164,9 +165,12 @@ future extensions to other outcomes (i.e. Cox regression) will be implemented in
 </ul></td>
     </tr>
     <tr>
-      <th>penalty</th>
-      <td><p>specifies regularization object for x and external. See <code><a href='define_penalty.html'>define_penalty</a></code>
-for more details.</p></td>
+      <th>penalty_main</th>
+      <td><p>specifies regularization object for x. See <code><a href='define_penalty.html'>define_penalty</a></code> for more details.</p></td>
+    </tr>
+    <tr>
+      <th>penalty_external</th>
+      <td><p>specifies regularization object for external. See <code><a href='define_penalty.html'>define_penalty</a></code> for more details.</p></td>
     </tr>
     <tr>
       <th>weights</th>
@@ -210,9 +214,10 @@ Default is c(TRUE, FALSE).</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function extends the coordinate descent algorithm of the R package <code>glmnet</code> to allow the
-type of regularization (i.e. ridge, lasso) to be feature-specific. In addition, elements of the R package <code>biglasso</code>
-are utilized to enable the use of standard R matrices, memory-mapped matrices from the <code>bigmemory</code> package,
-or sparse matrices from the <code>Matrix</code> package.</p>
+type of regularization (i.e. ridge, lasso) to be feature-specific. This extension is used to enable fitting
+hierarchical regularized regression models, where external information for the predictors can be included in the
+<code>external=</code> argument. In addition, elements of the R package <code>biglasso</code> are utilized to enable
+the use of standard R matrices, memory-mapped matrices from the <code>bigmemory</code> package, or sparse matrices from the <code>Matrix</code> package.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -234,12 +239,9 @@ Journal of Statistical Software, 55(14), 1-19. URL http://www.jstatsoft.org/v55/
 <span class='co'>## define penalty for predictors and external variables</span>
 <span class='co'>## default is ridge for predictors and lasso for external</span>
 <span class='co'>## see define_penalty() function for more details</span>
-<span class='no'>penalty</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(
-    <span class='kw'>penalty_type</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-    <span class='kw'>penalty_type_ext</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-    <span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-    <span class='kw'>num_penalty_ext</span> <span class='kw'>=</span> <span class='fl'>30</span>
-)
+
+<span class='no'>penMain</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(<span class='fl'>0</span>, <span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>20</span>)
+<span class='no'>penExt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(<span class='fl'>1</span>, <span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>20</span>)
 
 <span class='co'>## fit model with defined regularization</span>
 <span class='no'>fit_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'>xrnet</span>(
@@ -247,7 +249,8 @@ Journal of Statistical Software, 55(14), 1-19. URL http://www.jstatsoft.org/v55/
     <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y_linear</span>,
     <span class='kw'>external</span> <span class='kw'>=</span> <span class='no'>ext_linear</span>,
     <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
-    <span class='kw'>penalty</span> <span class='kw'>=</span> <span class='no'>penalty</span>
+    <span class='kw'>penalty_main</span> <span class='kw'>=</span> <span class='no'>penMain</span>,
+    <span class='kw'>penalty_external</span> <span class='kw'>=</span> <span class='no'>penExt</span>
 )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -269,7 +272,7 @@ Journal of Statistical Software, 55(14), 1-19. URL http://www.jstatsoft.org/v55/
 
       <footer>
       <div class="copyright">
-  <p>Developed by Garrett M. Weaver.</p>
+  <p>Developed by Garrett Weaver.</p>
 </div>
 
 <div class="pkgdown">

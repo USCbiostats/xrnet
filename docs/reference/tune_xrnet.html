@@ -113,9 +113,10 @@
     </div>
 
     <pre class="usage"><span class='fu'>tune_xrnet</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>external</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>unpen</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span>), <span class='kw'>penalty</span> <span class='kw'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(),
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>TRUE</span>, <span class='fl'>TRUE</span>), <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>TRUE</span>,
-  <span class='fl'>FALSE</span>), <span class='kw'>loss</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"deviance"</span>, <span class='st'>"mse"</span>, <span class='st'>"mae"</span>, <span class='st'>"auc"</span>), <span class='kw'>nfolds</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span>), <span class='kw'>penalty_main</span> <span class='kw'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(),
+  <span class='kw'>penalty_external</span> <span class='kw'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(), <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>TRUE</span>, <span class='fl'>TRUE</span>), <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>TRUE</span>, <span class='fl'>FALSE</span>),
+  <span class='kw'>loss</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"deviance"</span>, <span class='st'>"mse"</span>, <span class='st'>"mae"</span>, <span class='st'>"auc"</span>), <span class='kw'>nfolds</span> <span class='kw'>=</span> <span class='fl'>5</span>,
   <span class='kw'>foldid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -155,8 +156,12 @@
 </ul></td>
     </tr>
     <tr>
-      <th>penalty</th>
-      <td><p>specifies regularization object for x and external.
+      <th>penalty_main</th>
+      <td><p>specifies regularization object for x. See <code><a href='define_penalty.html'>define_penalty</a></code> for more details.</p></td>
+    </tr>
+    <tr>
+      <th>penalty_external</th>
+      <td><p>specifies regularization object for external. See <code><a href='define_penalty.html'>define_penalty</a></code> for more details.
 See <code><a href='define_penalty.html'>define_penalty</a></code> for more details.</p></td>
     </tr>
     <tr>
@@ -217,6 +222,17 @@ a vector if there is no external data (external = NULL) and matrix if there is e
 <dt>fitted_model</dt><dd><p>fitted xrnet object using all data, see <code><a href='xrnet.html'>xrnet</a></code> for details of object</p></dd>
 
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>k-fold cross-validation is used to determine the 'optimal' combination of hyperparameter values, where
+optimal is based on the optimal value obtained for the user-selected loss function across the k folds. To efficiently traverse all possible
+combinations of the hyperparameter values, 'warm-starts' are used to traverse the penalty from largest
+to smallest penalty value(s). Note that the penalty grid for the folds is generated
+by fitting the model on the entire training data. Parallelization is enabled throught the <code>foreach</code> and
+<code>doParallel</code> R packages. To use parallelization, <code>parallel = TRUE</code>, you must first create the cluster
+<code>makeCluster</code> and then register the cluster <code>registerDoParallel</code>. See the <code>parallel</code>, <code>foreach</code>,
+and/or <code>doParallel</code> R packages for more details on how to setup parallelization.</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## cross validation of hierarchical linear regression model</span>
@@ -227,7 +243,8 @@ a vector if there is no external data (external = NULL) and matrix if there is e
     <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x_linear</span>,
     <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y_linear</span>,
     <span class='kw'>external</span> <span class='kw'>=</span> <span class='no'>ext_linear</span>,
-    <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>
+    <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
+    <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='xrnet.control.html'>xrnet.control</a></span>(<span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>1e-6</span>)
  )</div><span class='co'># NOT RUN {</span>
  <span class='co'>## contour plot of cross-validated error</span>
  <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>cv_xrnet</span>)
@@ -240,6 +257,8 @@ a vector if there is no external data (external = NULL) and matrix if there is e
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
@@ -249,7 +268,7 @@ a vector if there is no external data (external = NULL) and matrix if there is e
 
       <footer>
       <div class="copyright">
-  <p>Developed by Garrett M. Weaver.</p>
+  <p>Developed by Garrett Weaver.</p>
 </div>
 
 <div class="pkgdown">

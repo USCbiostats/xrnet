@@ -5,7 +5,8 @@
 \title{Fit hierarchical regularized regression model}
 \usage{
 xrnet(x, y, external = NULL, unpen = NULL, family = c("gaussian",
-  "binomial"), penalty = define_penalty(), weights = NULL,
+  "binomial"), penalty_main = define_penalty(),
+  penalty_external = define_penalty(), weights = NULL,
   standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
   control = list())
 }
@@ -37,8 +38,9 @@ xrnet(x, y, external = NULL, unpen = NULL, family = c("gaussian",
     \item binomial
 }}
 
-\item{penalty}{specifies regularization object for x and external. See \code{\link{define_penalty}}
-for more details.}
+\item{penalty_main}{specifies regularization object for x. See \code{\link{define_penalty}} for more details.}
+
+\item{penalty_external}{specifies regularization object for external. See \code{\link{define_penalty}} for more details.}
 
 \item{weights}{optional vector of observation-specific weights. Default is 1 for all observations.}
 
@@ -77,9 +79,10 @@ future extensions to other outcomes (i.e. Cox regression) will be implemented in
 }
 \details{
 This function extends the coordinate descent algorithm of the R package \code{glmnet} to allow the
-type of regularization (i.e. ridge, lasso) to be feature-specific. In addition, elements of the R package \code{biglasso}
-are utilized to enable the use of standard R matrices, memory-mapped matrices from the \code{bigmemory} package,
-or sparse matrices from the \code{Matrix} package.
+type of regularization (i.e. ridge, lasso) to be feature-specific. This extension is used to enable fitting
+hierarchical regularized regression models, where external information for the predictors can be included in the
+\code{external=} argument. In addition, elements of the R package \code{biglasso} are utilized to enable
+the use of standard R matrices, memory-mapped matrices from the \code{bigmemory} package, or sparse matrices from the \code{Matrix} package.
 }
 \examples{
 ### hierarchical regularized linear regression ###
@@ -88,12 +91,9 @@ data(GaussianExample)
 ## define penalty for predictors and external variables
 ## default is ridge for predictors and lasso for external
 ## see define_penalty() function for more details
-penalty <- define_penalty(
-    penalty_type = 0,
-    penalty_type_ext = 1,
-    num_penalty = 30,
-    num_penalty_ext = 30
-)
+
+penMain <- define_penalty(0, num_penalty = 20)
+penExt <- define_penalty(1, num_penalty = 20)
 
 ## fit model with defined regularization
 fit_xrnet <- xrnet(
@@ -101,7 +101,8 @@ fit_xrnet <- xrnet(
     y = y_linear,
     external = ext_linear,
     family = "gaussian",
-    penalty = penalty
+    penalty_main = penMain,
+    penalty_external = penExt
 )
 }
 \references{

@@ -4,8 +4,7 @@
 \alias{coef.xrnet}
 \title{Get coefficient estimates from "xrnet" model object}
 \usage{
-\method{coef}{xrnet}(object, p = NULL, pext = NULL, penalty = NULL,
-  ...)
+\method{coef}{xrnet}(object, p = NULL, pext = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link{xrnet}} object}
@@ -14,18 +13,19 @@
 
 \item{pext}{vector of penalty values to apply to external data variables.}
 
-\item{penalty}{(optional) regularization object applied to original model object, only needed
-if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
-more information on regularization object.}
-
 \item{...}{pass other arguments to xrnet function (if needed)}
 }
 \value{
 A list with coefficient estimates at each of the requested penalty combinations
+\item{beta0}{matrix of first-level intercepts indexed by penalty values, NULL if no first-level intercept in original model fit}
+\item{betas}{3-dimensional array of first-level penalized coefficients indexed by penalty values}
+\item{gammas}{3-dimensional array of first-level non-penalized coefficients indexed by penalty values, NULL if unpen NULL in original model fit}
+\item{alpha0}{matrix of second-level intercepts indexed by penalty values, NULL if no second-level intercept in original model fit}
+\item{alphas}{3-dimensional array of second-level external data coefficients indexed by penalty values, NULL if external NULL in original model fit}
 }
 \description{
-Returns coefficents from 'xrnet' model or refit model to estimate
-coefficients not computed in original path(s) of model object.
+Returns coefficents from 'xrnet' model. Note that we currently only support returning
+coefficient estimates that are in the original path(s).
 }
 \examples{
 data(GaussianExample)
@@ -38,7 +38,7 @@ fit_xrnet <- xrnet(
 )
 
 lambda1 <- fit_xrnet$penalty[10]
-lambda2 <- fit_xrnet$penalty[10]
+lambda2 <- fit_xrnet$penalty_ext[10]
 \dontrun{
 coef_xrnet <- coef(
     fit_xrnet,

@@ -9,16 +9,18 @@
 template <typename T>
 class CoordSolver {
 
-    typedef Eigen::VectorXd VecXd;
-    typedef Eigen::VectorXi VecXi;
     typedef Eigen::Map<const Eigen::MatrixXd> MapMat;
     typedef Eigen::MappedSparseMatrix<double> MapSpMat;
     typedef Eigen::Map<const Eigen::VectorXd> MapVec;
+    typedef Eigen::VectorXd VecXd;
+    typedef Eigen::VectorXi VecXi;
 
 protected:
     const int n;
     const int nv_total;
-    MapVec y;
+    MapMat y;
+    double ym;
+    double ys;
     T X;
     MapMat Fixed;
     MapMat XZ;
@@ -51,10 +53,11 @@ protected:
     Rcpp::LogicalVector strong_set;
     Rcpp::LogicalVector active_set;
     int status;
+    const double bigNum = 9.9e35;
 
 public:
     // constructor (dense X matrix)
-    CoordSolver(const Eigen::Ref<const Eigen::VectorXd> & y_,
+    CoordSolver(const Eigen::Ref<const Eigen::MatrixXd> & y_,
                 const Eigen::Ref<const Eigen::MatrixXd> & X_,
                 const Eigen::Ref<const Eigen::MatrixXd> & Fixed_,
                 const Eigen::Ref<const Eigen::MatrixXd> & XZ_,
@@ -72,9 +75,11 @@ public:
                 int nx_,
                 double tolerance_,
                 int max_iterations_) :
-    n(y_.size()),
+    n(X_.rows()),
     nv_total(X_.cols() + Fixed_.cols() + XZ_.cols()),
-    y(y_.data(), n),
+    y(y_.data(), n, y_.cols()),
+    ym(0.0),
+    ys(1.0),
     X(X_.data(), n, X_.cols()),
     Fixed(Fixed_.data(), n, Fixed_.cols()),
     XZ(XZ_.data(), n, XZ_.cols()),
@@ -107,13 +112,11 @@ public:
     active_set(nv_total, false),
     status(0)
     {
-        betas = Eigen::VectorXd::Zero(nv_total);
-        betas_prior = Eigen::VectorXd::Zero(nv_total);
         init();
     };
 
     // constructor (sparse X matrix)
-    CoordSolver(const Eigen::Ref<const Eigen::VectorXd> & y_,
+    CoordSolver(const Eigen::Ref<const Eigen::MatrixXd> & y_,
                 const MapSpMat X_,
                 const Eigen::Ref<const Eigen::MatrixXd> & Fixed_,
                 const Eigen::Ref<const Eigen::MatrixXd> & XZ_,
@@ -131,9 +134,11 @@ public:
                 int nx_,
                 double tolerance_,
                 int max_iterations_) :
-        n(y_.size()),
+        n(X_.rows()),
         nv_total(X_.cols() + Fixed_.cols() + XZ_.cols()),
-        y(y_.data(), n),
+        y(y_.data(), n, y_.cols()),
+        ym(0.0),
+        ys(1.0),
         X(X_),
         Fixed(Fixed_.data(), n, Fixed_.cols()),
         XZ(XZ_.data(), n, XZ_.cols()),
@@ -166,8 +171,6 @@ public:
         active_set(nv_total, false),
         status(0)
     {
-        betas = Eigen::VectorXd::Zero(nv_total);
-        betas_prior = Eigen::VectorXd::Zero(nv_total);
         init();
     };
 
@@ -191,6 +194,8 @@ public:
     Rcpp::LogicalVector getStrongSet(){return strong_set;}
     Rcpp::LogicalVector getActiveSet(){return active_set;}
     int getStatus(){return status;}
+    double getYm(){return ym;}
+    double getYs(){return ys;}
 
     // setters
     void setPenalty(double val, int pos) {penalty[pos] = val;}
@@ -241,12 +246,12 @@ public:
             if (strong_set[idx]) {
                 double gk = xs[idx] * (x.col(k).dot(residuals) - xm[idx] * residuals.sum());
                 double bk = betas[idx];
-                double u = gk + bk * xv[idx];
-                double v = std::abs(u) - cmult[idx] * penalty_type[idx] * lam;
-                if (v > 0.0) {
+                double grad = gk + bk * xv[idx];
+                double grad_thresh = std::abs(grad) - cmult[idx] * penalty_type[idx] * lam;
+                if (grad_thresh > 0.0) {
                     betas[idx] = std::max(lcl[idx],
                                           std::min(ucl[idx],
-                                          copysign(v, u) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
+                                          copysign(grad_thresh, grad) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
                 }
                 else {
                     betas[idx] = 0.0;
@@ -270,12 +275,12 @@ public:
             if (active_set[idx]) {
                 double gk = xs[idx] * (x.col(k).dot(residuals) - xm[idx] * residuals.sum());
                 double bk = betas[idx];
-                double u = gk + bk * xv[idx];
-                double v = std::abs(u) - cmult[idx] * penalty_type[idx] * lam;
-                if (v > 0.0) {
+                double grad = gk + bk * xv[idx];
+                double grad_thresh = std::abs(grad) - cmult[idx] * penalty_type[idx] * lam;
+                if (grad_thresh > 0.0) {
                     betas[idx] = std::max(lcl[idx],
                                           std::min(ucl[idx],
-                                          copysign(v, u) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
+                                          copysign(grad_thresh, grad) / (xv[idx] + cmult[idx] * (1 - penalty_type[idx]) * lam)));
                 }
                 else {
                     betas[idx] = 0.0;
@@ -298,11 +303,9 @@ public:
     }
 
     // base initialize function
-    virtual void init(){
-        wgts = wgts_user;
-        residuals = y.cwiseProduct(wgts);
-        wgts_sum = wgts.sum();
-        double resids_sum = residuals.sum();
+    void init(){
+        betas = Eigen::VectorXd::Zero(nv_total);
+        betas_prior = Eigen::VectorXd::Zero(nv_total);
 
         // add fixed vars to strong set
         std::fill(
@@ -310,20 +313,10 @@ public:
             strong_set.begin() + X.cols() + Fixed.cols(),
             true
         );
-
-        int idx = 0;
-        for (int k = 0; k < X.cols(); ++k, ++idx) {
-            gradient[idx] = xs[idx] * (X.col(k).dot(residuals) - xm[idx] * resids_sum);
-        }
-        idx += Fixed.cols();
-        for (int k = 0; k < XZ.cols(); ++k, ++idx) {
-            gradient[idx] = xs[idx] * (XZ.col(k).dot(residuals) - xm[idx] * resids_sum);
-        }
     }
 
     // warm start initialization given current estimates
-    virtual void warm_start(const Eigen::Ref<const Eigen::VectorXd> & y,
-                            const double & b0_start,
+    virtual void warm_start(const double & b0_start,
                             const Eigen::Ref<const Eigen::VectorXd> & betas_start) {
 
         // initialize estimates with provided values
@@ -332,7 +325,7 @@ public:
 
         // compute residuals given starting values
         int idx = 0;
-        residuals.array() = (y.array() - b0) * wgts.array();
+        residuals.array() = wgts.array() * ((y.col(0).array() - ym) / ys - b0);
         for (int k = 0; k < X.cols(); ++k, ++idx) {
             residuals -= betas[idx] * xs[idx] * (X.col(k) - xm[idx]  * Eigen::VectorXd::Ones(n)).cwiseProduct(wgts);
         }
@@ -343,7 +336,7 @@ public:
             residuals -= betas[idx] * xs[idx] * (XZ.col(k) - xm[idx]  * Eigen::VectorXd::Ones(n)).cwiseProduct(wgts);
         }
 
-        // compute partial gradients given current residuals (penalized features only)
+        // compute gradients given current residuals (penalized features only)
         idx = 0;
         double resids_sum = residuals.sum();
         for (int k = 0; k < X.cols(); ++k, ++idx) {
@@ -368,7 +361,7 @@ public:
                        const int & m,
                        const int & m2) {
         int idx = 0;
-        double penalty_old = (m == 0 || (m == 1 && path[m - 1] == 9.9e35)) ? 0.0 : path[m - 1];
+        double penalty_old = (m == 0 || (m == 1 && path[m - 1] == bigNum)) ? 0.0 : path[m - 1];
         double lam_diff = 2.0 * path[m] - penalty_old;
         for (int k = 0; k < X.cols(); ++k, ++idx) {
             if (!strong_set[idx]) {
@@ -381,7 +374,7 @@ public:
                 std::fill(strong_set.begin() + X.cols() + Fixed.cols(), strong_set.end(), false);
                 std::fill(active_set.begin() + X.cols() + Fixed.cols(), active_set.end(), false);
             }
-            penalty_old = (m2 == 0 || (m2 == 1 && path[m2 - 1] == 9.9e35)) ? 0.0 : path[m2 - 1];;
+            penalty_old = (m2 == 0 || (m2 == 1 && path[m2 - 1] == bigNum)) ? 0.0 : path[m2 - 1];;
             lam_diff = 2.0 * path_ext[m2] - penalty_old;
             for (int k = 0; k < XZ.cols(); ++k, ++idx) {
                 if (!strong_set[idx]) {

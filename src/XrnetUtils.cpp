@@ -13,18 +13,21 @@ void compute_penalty(Eigen::Ref<Eigen::VectorXd> path,
                      const int & begin,
                      const int & end,
                      const double & ys) {
+    const double bigNum = 9.9e35;
+    const double minPenaltyRatio = 1e-6;
+    const double maxInflationFactor = 1e-3;
     const int npenalty = path.size();
     if (penalty_user[0] == 0.0) {
-        path[0] = 9.9e35;
+        path[0] = bigNum;
         double max_penalty = 0.0;
         for (int k = begin; k < end; ++k) {
             if (cmult[k] > 0.0) {
                 max_penalty = std::max(max_penalty, std::abs(gradient[k] / cmult[k]));
             }
         }
-        double eqs = std::max(1e-6, penalty_ratio);
+        double eqs = std::max(minPenaltyRatio, penalty_ratio);
         double alf = pow(eqs, 1.0 / (npenalty - 1));
-        path[1] = alf * (max_penalty / std::max(penalty_type, 0.001));
+        path[1] = alf * (max_penalty / std::max(penalty_type, maxInflationFactor));
         for (int l = 2; l < npenalty; ++l) {
             path[l] = alf * path[l - 1];
         }
@@ -49,7 +52,8 @@ Eigen::MatrixXd computeResponseRcpp(SEXP X,
         MapMat xmap((const double *) &x_mat[0], x_mat.rows(), x_mat.cols());
         return computeResponse<MapMat>(xmap, Fixed, beta0, betas, gammas, response_type, family);
     } else if (mattype_x == 2) {
-        Rcpp::XPtr<BigMatrix> xptr(X);
+        Rcpp::S4 x_info(X);
+        Rcpp::XPtr<BigMatrix> xptr((SEXP) x_info.slot("address"));
         MapMat xmap((const double *)xptr->matrix(), xptr->nrow(), xptr->ncol());
         return computeResponse<MapMat>(xmap, Fixed, beta0, betas, gammas, response_type, family);
     } else {

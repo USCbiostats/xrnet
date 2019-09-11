@@ -32,8 +32,8 @@
 
 <meta property="og:title" content="Get coefficient estimates from "xrnet" model object — coef.xrnet" />
 
-<meta property="og:description" content="Returns coefficents from 'xrnet' model or refit model to estimate
-coefficients not computed in original path(s) of model object." />
+<meta property="og:description" content="Returns coefficents from 'xrnet' model. Note that we currently only support returning
+coefficient estimates that are in the original path(s)." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -109,14 +109,13 @@ coefficients not computed in original path(s) of model object." />
 
     <div class="ref-description">
     
-    <p>Returns coefficents from 'xrnet' model or refit model to estimate
-coefficients not computed in original path(s) of model object.</p>
+    <p>Returns coefficents from 'xrnet' model. Note that we currently only support returning
+coefficient estimates that are in the original path(s).</p>
     
     </div>
 
     <pre class="usage"><span class='co'># S3 method for xrnet</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>object</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>penalty</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>object</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pext</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,12 +133,6 @@ coefficients not computed in original path(s) of model object.</p>
       <td><p>vector of penalty values to apply to external data variables.</p></td>
     </tr>
     <tr>
-      <th>penalty</th>
-      <td><p>(optional) regularization object applied to original model object, only needed
-if p or pext are not in the original path(s) computed. See <code><a href='define_penalty.html'>define_penalty</a></code> for
-more information on regularization object.</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>pass other arguments to xrnet function (if needed)</p></td>
     </tr>
@@ -148,6 +141,12 @@ more information on regularization object.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A list with coefficient estimates at each of the requested penalty combinations</p>
+<dt>beta0</dt><dd><p>matrix of first-level intercepts indexed by penalty values, NULL if no first-level intercept in original model fit</p></dd>
+<dt>betas</dt><dd><p>3-dimensional array of first-level penalized coefficients indexed by penalty values</p></dd>
+<dt>gammas</dt><dd><p>3-dimensional array of first-level non-penalized coefficients indexed by penalty values, NULL if unpen NULL in original model fit</p></dd>
+<dt>alpha0</dt><dd><p>matrix of second-level intercepts indexed by penalty values, NULL if no second-level intercept in original model fit</p></dd>
+<dt>alphas</dt><dd><p>3-dimensional array of second-level external data coefficients indexed by penalty values, NULL if external NULL in original model fit</p></dd>
+
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -161,7 +160,7 @@ more information on regularization object.</p></td>
 )
 
 <span class='no'>lambda1</span> <span class='kw'>&lt;-</span> <span class='no'>fit_xrnet</span>$<span class='no'>penalty</span>[<span class='fl'>10</span>]
-<span class='no'>lambda2</span> <span class='kw'>&lt;-</span> <span class='no'>fit_xrnet</span>$<span class='no'>penalty</span>[<span class='fl'>10</span>]</div><span class='co'># NOT RUN {</span>
+<span class='no'>lambda2</span> <span class='kw'>&lt;-</span> <span class='no'>fit_xrnet</span>$<span class='no'>penalty_ext</span>[<span class='fl'>10</span>]</div><span class='co'># NOT RUN {</span>
 <span class='no'>coef_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(
     <span class='no'>fit_xrnet</span>,
     <span class='kw'>p</span> <span class='kw'>=</span> <span class='no'>lambda1</span>,
@@ -185,7 +184,7 @@ more information on regularization object.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Garrett M. Weaver.</p>
+  <p>Developed by Garrett Weaver.</p>
 </div>
 
 <div class="pkgdown">

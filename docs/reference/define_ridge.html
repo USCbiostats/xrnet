@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Simulated outcome data — y_linear • xrnet</title>
+<title>Define ridge regularization object for predictor and external data — define_ridge • xrnet</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Simulated outcome data — y_linear" />
+<meta property="og:title" content="Define ridge regularization object for predictor and external data — define_ridge" />
 
-<meta property="og:description" content="Simulated outcome data" />
+<meta property="og:description" content="Helper function to define a ridge penalty regularization object.
+See define_penalty for more details." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -101,31 +102,51 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Simulated outcome data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/USCbiostats/xrnet/blob/master/R/data.R'><code>R/data.R</code></a></small>
-    <div class="hidden name"><code>y_linear.Rd</code></div>
+    <h1>Define ridge regularization object for predictor and external data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/USCbiostats/xrnet/blob/master/R/define_penalty.R'><code>R/define_penalty.R</code></a></small>
+    <div class="hidden name"><code>define_ridge.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Simulated outcome data</p>
+    <p>Helper function to define a ridge penalty regularization object.
+See <code>define_penalty</code> for more details.</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>y_linear</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>A vector with 100 elements</p>
+    <pre class="usage"><span class='fu'>define_ridge</span>(<span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>penalty_ratio</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>user_penalty</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>custom_multiplier</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>num_penalty</th>
+      <td><p>number of penalty values to fit in grid. Default is 20.</p></td>
+    </tr>
+    <tr>
+      <th>penalty_ratio</th>
+      <td><p>ratio between minimum and maximum penalty for x.
+Default is 1e-04 if \(n &gt; p\) and 0.01 if \(n &lt;= p\).</p></td>
+    </tr>
+    <tr>
+      <th>user_penalty</th>
+      <td><p>user-defined vector of penalty values to use in penalty path.</p></td>
+    </tr>
+    <tr>
+      <th>custom_multiplier</th>
+      <td><p>variable-specific penalty multipliers to apply to overall penalty.
+Default is 1 for all variables. 0 is no penalization.</p></td>
+    </tr>
+    </table>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      
-      <li><a href="#format">Format</a></li>
-          </ul>
+      <li><a href="#arguments">Arguments</a></li>
+                </ul>
 
   </div>
 </div>

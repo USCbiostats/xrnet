@@ -32,8 +32,8 @@
 
 <meta property="og:title" content="Get coefficient estimates from "tune_xrnet" model object — coef.tune_xrnet" />
 
-<meta property="og:description" content="Returns coefficents from 'xrnet' model or refits model to estimate
-coefficients not computed in path(s)." />
+<meta property="og:description" content="Returns coefficents from 'xrnet' model. Note that we currently only support returning
+coefficient estimates that are in the original path(s)." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -109,14 +109,13 @@ coefficients not computed in path(s)." />
 
     <div class="ref-description">
     
-    <p>Returns coefficents from 'xrnet' model or refits model to estimate
-coefficients not computed in path(s).</p>
+    <p>Returns coefficents from 'xrnet' model. Note that we currently only support returning
+coefficient estimates that are in the original path(s).</p>
     
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tune_xrnet</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>object</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='st'>"opt"</span>, <span class='kw'>pext</span> <span class='kw'>=</span> <span class='st'>"opt"</span>,
-  <span class='kw'>penalty</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>object</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='st'>"opt"</span>, <span class='kw'>pext</span> <span class='kw'>=</span> <span class='st'>"opt"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,31 +135,55 @@ Default is optimal value in tune_xrnet object.</p></td>
 Default is optimal value in tune_xrnet object.</p></td>
     </tr>
     <tr>
-      <th>penalty</th>
-      <td><p>(optional) regularization object applied to original model object, only needed
-if p or pext are not in the original path(s) computed. See <code><a href='define_penalty.html'>define_penalty</a></code> for
-more information on regularization object.</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>pass other arguments to xrnet function (if needed)</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A list with coefficient estimates at each of the requested penalty combinations</p>
+<dt>beta0</dt><dd><p>matrix of first-level intercepts indexed by penalty values, NULL if no first-level intercept in original model fit</p></dd>
+<dt>betas</dt><dd><p>3-dimensional array of first-level penalized coefficients indexed by penalty values</p></dd>
+<dt>gammas</dt><dd><p>3-dimensional array of first-level non-penalized coefficients indexed by penalty values, NULL if unpen NULL in original model fit</p></dd>
+<dt>alpha0</dt><dd><p>matrix of second-level intercepts indexed by penalty values, NULL if no second-level intercept in original model fit</p></dd>
+<dt>alphas</dt><dd><p>3-dimensional array of second-level external data coefficients indexed by penalty values, NULL if external NULL in original model fit</p></dd>
+
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## cross validation of hierarchical linear regression model</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>GaussianExample</span>)
+
+<span class='co'>## 5-fold cross validation</span>
+<span class='no'>cv_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tune_xrnet.html'>tune_xrnet</a></span>(
+    <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x_linear</span>,
+    <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y_linear</span>,
+    <span class='kw'>external</span> <span class='kw'>=</span> <span class='no'>ext_linear</span>,
+    <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
+    <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='xrnet.control.html'>xrnet.control</a></span>(<span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>1e-6</span>)
+ )</div><span class='co'># NOT RUN {</span>
+ <span class='co'>## Get coefficient estimates at optimal penalty combination</span>
+ <span class='no'>coef_opt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>cv_xrnet</span>)
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Garrett M. Weaver.</p>
+  <p>Developed by Garrett Weaver.</p>
 </div>
 
 <div class="pkgdown">

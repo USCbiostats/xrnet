@@ -6,7 +6,7 @@
 \usage{
 \method{predict}{tune_xrnet}(object, newdata = NULL,
   newdata_fixed = NULL, p = "opt", pext = "opt",
-  type = c("response", "coefficients", "link"), penalty = NULL, ...)
+  type = c("response", "link", "coefficients"), ...)
 }
 \arguments{
 \item{object}{A \code{\link{tune_xrnet}} object}
@@ -23,17 +23,32 @@ Default is optimal value in tune_xrnet object.}
 
 \item{type}{type of prediction to make using the xrnet model, options include:
 \itemize{
-   \item coefficients
    \item response
    \item link (linear predictor)
+   \item coefficients
 }}
-
-\item{penalty}{(optional) regularization object applied to original model object, only needed
-if p or pext are not in the original path(s) computed. See \code{\link{define_penalty}} for
-more information on regularization object.}
 
 \item{...}{pass other arguments to xrnet function (if needed)}
 }
 \description{
-Predict coefficients or response in new data
+Extract coefficients or predict response in new data using fitted model from a \code{\link{tune_xrnet}} object.
+Note that we currently only support returning results that are in the original path(s).
+}
+\examples{
+data(GaussianExample)
+
+## 5-fold cross validation
+cv_xrnet <- tune_xrnet(
+    x = x_linear,
+    y = y_linear,
+    external = ext_linear,
+    family = "gaussian",
+    control = xrnet.control(tolerance = 1e-6)
+ )
+
+\dontrun{
+## Get coefficients and predictions at optimal penalty combination
+coef_xrnet <- predict(cv_xrnet, type = "coefficients")
+pred_xrnet <- predict(cv_xrnet, newdata = x_linear, type = "response")
+}
 }

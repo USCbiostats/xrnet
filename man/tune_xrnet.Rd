@@ -5,9 +5,10 @@
 \title{k-fold cross-validation for hierarchical regularized regression}
 \usage{
 tune_xrnet(x, y, external = NULL, unpen = NULL,
-  family = c("gaussian", "binomial"), penalty = define_penalty(),
-  weights = NULL, standardize = c(TRUE, TRUE), intercept = c(TRUE,
-  FALSE), loss = c("deviance", "mse", "mae", "auc"), nfolds = 5,
+  family = c("gaussian", "binomial"), penalty_main = define_penalty(),
+  penalty_external = define_penalty(), weights = NULL,
+  standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
+  loss = c("deviance", "mse", "mae", "auc"), nfolds = 5,
   foldid = NULL, parallel = FALSE, control = list())
 }
 \arguments{
@@ -38,7 +39,9 @@ tune_xrnet(x, y, external = NULL, unpen = NULL,
     \item binomial
 }}
 
-\item{penalty}{specifies regularization object for x and external.
+\item{penalty_main}{specifies regularization object for x. See \code{\link{define_penalty}} for more details.}
+
+\item{penalty_external}{specifies regularization object for external. See \code{\link{define_penalty}} for more details.
 See \code{\link{define_penalty}} for more details.}
 
 \item{weights}{optional vector of observation-specific weights.
@@ -83,6 +86,16 @@ a vector if there is no external data (external = NULL) and matrix if there is e
 \description{
 k-fold cross-validation for hierarchical regularized regression \code{\link{xrnet}}
 }
+\details{
+k-fold cross-validation is used to determine the 'optimal' combination of hyperparameter values, where
+optimal is based on the optimal value obtained for the user-selected loss function across the k folds. To efficiently traverse all possible
+combinations of the hyperparameter values, 'warm-starts' are used to traverse the penalty from largest
+to smallest penalty value(s). Note that the penalty grid for the folds is generated
+by fitting the model on the entire training data. Parallelization is enabled throught the \code{foreach} and
+\code{doParallel} R packages. To use parallelization, \code{parallel = TRUE}, you must first create the cluster
+\code{makeCluster} and then register the cluster \code{registerDoParallel}. See the \code{parallel}, \code{foreach},
+and/or \code{doParallel} R packages for more details on how to setup parallelization.
+}
 \examples{
 ## cross validation of hierarchical linear regression model
 data(GaussianExample)
@@ -92,7 +105,8 @@ cv_xrnet <- tune_xrnet(
     x = x_linear,
     y = y_linear,
     external = ext_linear,
-    family = "gaussian"
+    family = "gaussian",
+    control = xrnet.control(tolerance = 1e-6)
  )
  \dontrun{
  ## contour plot of cross-validated error

@@ -49,11 +49,6 @@ context("compare coefficent estimates to CVX (manual penalty)")
 
 test_that("x and ext standardized, both intercepts",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 1],
@@ -63,7 +58,8 @@ test_that("x and ext standardized, both intercepts",{
                         family = "gaussian",
                         intercept = c(T, T),
                         standardize = c(T, T),
-                        penalty = myPenalty,
+                        penalty_main = define_penalty(0, user_penalty = 1),
+                        penalty_external = define_penalty(1, user_penalty = 0.1),
                         control = myControl)$alphas[1:5, 1, 1] * sd_y,
                  tolerance = 1e-5)
     expect_equal(betas_cvx_mat[, 1],
@@ -73,7 +69,8 @@ test_that("x and ext standardized, both intercepts",{
                        family = "gaussian",
                        intercept = c(T, T),
                        standardize = c(T, T),
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
                  tolerance = 1e-5)
 
@@ -84,7 +81,8 @@ test_that("x and ext standardized, both intercepts",{
                        family = "gaussian",
                        intercept = c(T, T),
                        standardize = c(T, T),
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
                  tolerance = 1e-5)
     expect_equal(betas_cvx_mat[, 1],
@@ -94,17 +92,13 @@ test_that("x and ext standardized, both intercepts",{
                        family = "gaussian",
                        intercept = c(T, T),
                        standardize = c(T, T),
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
                  tolerance = 1e-5)
 })
 
 test_that("x NOT standardized, ext standardized, both intercepts",{
-
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
 
     myControl <- list(tolerance = 1e-20)
 
@@ -113,7 +107,8 @@ test_that("x NOT standardized, ext standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(F, T),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -124,7 +119,8 @@ test_that("x NOT standardized, ext standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(F, T),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -135,7 +131,8 @@ test_that("x NOT standardized, ext standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(F, T),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -146,7 +143,8 @@ test_that("x NOT standardized, ext standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(F, T),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -155,11 +153,6 @@ test_that("x NOT standardized, ext standardized, both intercepts",{
 
 test_that("x standardized, ext NOT standardized, both intercepts",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 3],
@@ -167,7 +160,8 @@ test_that("x standardized, ext NOT standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(T, F),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -178,7 +172,8 @@ test_that("x standardized, ext NOT standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(T, F),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -189,7 +184,8 @@ test_that("x standardized, ext NOT standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(T, F),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -200,7 +196,8 @@ test_that("x standardized, ext NOT standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(T, F),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -209,11 +206,6 @@ test_that("x standardized, ext NOT standardized, both intercepts",{
 
 test_that("x NOT standardized, ext NOT standardized, both intercepts",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 4],
@@ -221,7 +213,8 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(F, F),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -232,7 +225,8 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(F, F),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -243,7 +237,8 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(F, F),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -254,7 +249,8 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(T, T),
                        standardize = c(F, F),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -263,11 +259,6 @@ test_that("x NOT standardized, ext NOT standardized, both intercepts",{
 
 test_that("x standardized, ext standardized, no 2nd level intercept",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 5],
@@ -275,7 +266,8 @@ test_that("x standardized, ext standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(TRUE, TRUE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -286,7 +278,8 @@ test_that("x standardized, ext standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(TRUE, TRUE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -297,7 +290,8 @@ test_that("x standardized, ext standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(TRUE, TRUE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -308,7 +302,8 @@ test_that("x standardized, ext standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(TRUE, TRUE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -317,11 +312,6 @@ test_that("x standardized, ext standardized, no 2nd level intercept",{
 
 test_that("x NOT standardized, ext standardized, no 2nd level intercept",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 6],
@@ -329,7 +319,8 @@ test_that("x NOT standardized, ext standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(FALSE, TRUE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -340,7 +331,8 @@ test_that("x NOT standardized, ext standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(FALSE, TRUE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -351,7 +343,8 @@ test_that("x NOT standardized, ext standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(FALSE, TRUE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -362,7 +355,8 @@ test_that("x NOT standardized, ext standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(FALSE, TRUE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -371,11 +365,6 @@ test_that("x NOT standardized, ext standardized, no 2nd level intercept",{
 
 test_that("x standardized, ext NOT standardized, no 2nd level intercept",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 7],
@@ -383,7 +372,8 @@ test_that("x standardized, ext NOT standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(TRUE, FALSE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -394,7 +384,8 @@ test_that("x standardized, ext NOT standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(TRUE, FALSE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -405,7 +396,8 @@ test_that("x standardized, ext NOT standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(TRUE, FALSE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -416,7 +408,8 @@ test_that("x standardized, ext NOT standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(TRUE, FALSE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -425,11 +418,6 @@ test_that("x standardized, ext NOT standardized, no 2nd level intercept",{
 
 test_that("x NOT standardized, ext NOT standardized, no 2nd level intercept",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 8],
@@ -437,7 +425,8 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external  = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(FALSE, FALSE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -448,7 +437,8 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(FALSE, FALSE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -459,7 +449,8 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external  = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(FALSE, FALSE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -470,7 +461,8 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(TRUE, FALSE),
                        standardize = c(FALSE, FALSE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -479,11 +471,6 @@ test_that("x NOT standardized, ext NOT standardized, no 2nd level intercept",{
 
 test_that("x standardized, ext standardized, no 1st level intercept",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 9],
@@ -491,7 +478,8 @@ test_that("x standardized, ext standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(TRUE, TRUE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -502,7 +490,8 @@ test_that("x standardized, ext standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(TRUE, TRUE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -513,7 +502,8 @@ test_that("x standardized, ext standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(TRUE, TRUE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -524,7 +514,8 @@ test_that("x standardized, ext standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(TRUE, TRUE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -533,11 +524,6 @@ test_that("x standardized, ext standardized, no 1st level intercept",{
 
 test_that("x NOT standardized, ext standardized, no 1st level intercept",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 10],
@@ -545,7 +531,8 @@ test_that("x NOT standardized, ext standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(FALSE, TRUE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -556,7 +543,8 @@ test_that("x NOT standardized, ext standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(FALSE, TRUE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -567,7 +555,8 @@ test_that("x NOT standardized, ext standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(FALSE, TRUE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -578,7 +567,8 @@ test_that("x NOT standardized, ext standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(FALSE, TRUE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -587,11 +577,6 @@ test_that("x NOT standardized, ext standardized, no 1st level intercept",{
 
 test_that("x standardized, ext NOT standardized, no 1st level intercept",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 11],
@@ -599,7 +584,8 @@ test_that("x standardized, ext NOT standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(TRUE, FALSE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -610,7 +596,8 @@ test_that("x standardized, ext NOT standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(TRUE, FALSE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -621,7 +608,8 @@ test_that("x standardized, ext NOT standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(TRUE, FALSE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -632,7 +620,8 @@ test_that("x standardized, ext NOT standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(TRUE, FALSE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -641,11 +630,6 @@ test_that("x standardized, ext NOT standardized, no 1st level intercept",{
 
 test_that("x NOT standardized, ext NOT standardized, no 1st level intercept",{
 
-    myPenalty <- define_penalty(penalty_type = 0,
-                                penalty_type_ext = 1,
-                                user_penalty = 1,
-                                user_penalty_ext = 0.1)
-
     myControl <- list(tolerance = 1e-20)
 
     expect_equal(alphas_cvx_mat[, 12],
@@ -653,7 +637,8 @@ test_that("x NOT standardized, ext NOT standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(FALSE, FALSE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -664,7 +649,8 @@ test_that("x NOT standardized, ext NOT standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(FALSE, FALSE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
@@ -675,7 +661,8 @@ test_that("x NOT standardized, ext NOT standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(FALSE, FALSE),
                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
@@ -686,7 +673,8 @@ test_that("x NOT standardized, ext NOT standardized, no 1st level intercept",{
                        y = ytest_scaled,
                        external = ztest,
                        family = "gaussian",
-                       penalty = myPenalty,
+                       penalty_main = define_penalty(0, user_penalty = 1),
+                       penalty_external = define_penalty(1, user_penalty = 0.1),
                        intercept = c(FALSE, TRUE),
                        standardize = c(FALSE, FALSE),
                        control = myControl)$betas[1:50, 1, 1] * sd_y,
