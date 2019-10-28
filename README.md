@@ -55,12 +55,17 @@ extend to other outcomes (i.e. survival) in the next release.
 
 # Setup
 
-1.  For Windows users, install
-    [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an R
-    package)
+1.  OS-specific prerequisites
+      - *Windows*: Install
+        [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an
+        R package)
+      - *Mac*: If using R version \>= 3.6.0, verify your GNU Fortran
+        version is \>= 6.1. If you have an older version or are unsure,
+        go [here](https://cran.r-project.org/bin/macosx/tools/) to
+        install the required version
 2.  Install the R package [devtools](https://github.com/hadley/devtools)
-3.  Install xrnet package with the install\_github function (optionally
-    install most recent / potentially unstable development branch)
+3.  Install the **xrnet** package with the *install\_github()* function
+    (optionally install potentially unstable development branch)
 
 <!-- end list -->
 
@@ -215,6 +220,38 @@ the coefficients for a combination of penalty values as well.
 ``` r
 predy <- predict(cv_xrnet, newdata = x_linear)
 estimates <- coef(cv_xrnet)
+```
+
+#### Using the bigmemory R package with xrnet
+
+As an example of using `bigmemory` with `xrnet`, we have a provided a
+flat text version of the predictor matrix `x`. The `bigmemory` function
+`read.big.matrix()` can be used to create a `big.matrix` version of the
+file. Note that this function generates a copy and does not memory map
+the original ASCII
+file.
+
+``` r
+x_big <- bigmemory::read.big.matrix(system.file("extdata", "x_linear.txt", package = "xrnet"), type = "double")
+```
+
+We can now fit a ridge-lasso model again with `big.matrix` version of
+the data and verify that we get the same estimates:
+
+``` r
+xrnet_model_big <- xrnet(
+  x = x_big, 
+  y = y_linear, 
+  family = "gaussian", 
+  penalty_main = define_ridge(100)
+)
+
+all.equal(xrnet_model$beta0, xrnet_model_big$beta0)
+#> [1] TRUE
+all.equal(xrnet_model$betas, xrnet_model_big$betas)
+#> [1] TRUE
+all.equal(xrnet_model$alphas, xrnet_model_big$alphas)
+#> [1] TRUE
 ```
 
 ## Contributing
