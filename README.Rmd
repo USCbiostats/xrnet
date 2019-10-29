@@ -41,7 +41,7 @@ This package extends the coordinate descent algorithm of Friedman et al. 2010 (u
 
 1. OS-specific prerequisites
     + *Windows*: Install [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an R package)
-    + *Mac*: If using R version >= 3.6.0, verify your GNU Fortran version is >= 6.1. If you have an older version or are unsure, go [here](https://cran.r-project.org/bin/macosx/tools/) to install the required version 
+    + *Mac*: If using R version >= 3.6.0, verify your GNU Fortran version is >= 6.1. If you have an older version, go [here](https://cran.r-project.org/bin/macosx/tools/) to install the required version 
 2. Install the R package [devtools](https://github.com/hadley/devtools)
 3. Install the **xrnet** package with the *install_github()* function (optionally install potentially unstable development branch)
 
@@ -160,13 +160,13 @@ estimates <- coef(cv_xrnet)
 
 #### Using the bigmemory R package with xrnet
 
-As an example of using `bigmemory` with `xrnet`, we have a provided a flat text version of the predictor matrix `x`. The `bigmemory` function `read.big.matrix()` can be used to create a `big.matrix` version of the file. Note that this function generates a copy and does not memory map the original ASCII file.
+As an example of using `bigmemory` with `xrnet`, we have a provided a ASCII file that contains the data for `x`. The `bigmemory` function `read.big.matrix()` can be used to create a `big.matrix` version of this file.
 
 ```{r}
 x_big <- bigmemory::read.big.matrix(system.file("extdata", "x_linear.txt", package = "xrnet"), type = "double")
 ```
 
-We can now fit a ridge-lasso model again with `big.matrix` version of the data and verify that we get the same estimates:
+We can now fit a ridge regression model with the `big.matrix` version of the data and verify that we get the same estimates:
 
 ```{r}
 xrnet_model_big <- xrnet(
