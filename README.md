@@ -225,9 +225,14 @@ estimates <- coef(cv_xrnet)
 #### Using the bigmemory R package with xrnet
 
 As an example of using `bigmemory` with `xrnet`, we have a provided a
-ASCII file that contains the data for `x`. The `bigmemory` function
-`read.big.matrix()` can be used to create a `big.matrix` version of this
-file.
+ASCII file, `x_linear.txt`, that contains the data for `x`. The
+`bigmemory` function `read.big.matrix()` can be used to create a
+`big.matrix` version of this file. The ASCII file is located under
+`inst/extdata` in this repository and is also included when you install
+the R package. To access the file in the R package, use
+`system.file("extdata", "x_linear.txt", package = "xrnet")` as shown in
+the example
+below.
 
 ``` r
 x_big <- bigmemory::read.big.matrix(system.file("extdata", "x_linear.txt", package = "xrnet"), type = "double")
