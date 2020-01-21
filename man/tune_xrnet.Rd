@@ -4,12 +4,23 @@
 \alias{tune_xrnet}
 \title{k-fold cross-validation for hierarchical regularized regression}
 \usage{
-tune_xrnet(x, y, external = NULL, unpen = NULL,
-  family = c("gaussian", "binomial"), penalty_main = define_penalty(),
-  penalty_external = define_penalty(), weights = NULL,
-  standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
-  loss = c("deviance", "mse", "mae", "auc"), nfolds = 5,
-  foldid = NULL, parallel = FALSE, control = list())
+tune_xrnet(
+  x,
+  y,
+  external = NULL,
+  unpen = NULL,
+  family = c("gaussian", "binomial"),
+  penalty_main = define_penalty(),
+  penalty_external = define_penalty(),
+  weights = NULL,
+  standardize = c(TRUE, TRUE),
+  intercept = c(TRUE, FALSE),
+  loss = c("deviance", "mse", "mae", "auc"),
+  nfolds = 5,
+  foldid = NULL,
+  parallel = FALSE,
+  control = list()
+)
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options include:

@@ -292,8 +292,16 @@ xrnet <- function(x,
     )
 
     # check status of model fit
-    if (fit$status == 0) {
-        fit$status <- "0 (OK)"
+    if (fit$status %in% c(0, 1)) {
+
+        if (fit$status == 0) {
+            fit$status <- "0 (OK)"
+        }
+        else if (fit$status == 1) {
+            fit$status <- "1 (Error/Warning)"
+            fit$error_msg <- "Max number of iterations reached"
+            warning("Max number of iterations reached")
+        }
 
         # Create arrays ordering coefficients by 1st level penalty / 2nd level penalty
         fit$beta0 <- matrix(
@@ -330,12 +338,6 @@ xrnet <- function(x,
         } else {
             fit$gammas <- NULL
         }
-    } else {
-        if (fit$status == 1) {
-            fit$error_msg <- "Max number of iterations reached"
-            warning("Max number of iterations reached")
-        }
-        fit$status <- "1 (Error/Warning)"
     }
 
     fit$call <- this.call

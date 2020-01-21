@@ -3,11 +3,11 @@ Type: Package
 Title: Hierarchical Regularized Regression
 Version: 0.1.3
 Authors@R: c(
-  person("Garrett", "Weaver", email = "gmweaver@usc.edu", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9918-8386")),
+  person("Garrett", "Weaver", email = "gmweaver.usc@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9918-8386")),
   person("Juan Pablo", "Lewinger", email = "lewinger@usc.edu", role = c("ctb", "ths"))
   )
-Author: Garrett M. Weaver
-Maintainer: Garrett M. Weaver <gmweaver@usc.edu>
+Author: Garrett Weaver
+Maintainer: Garrett Weaver <gmweaver.usc@gmail.com>
 URL: https://github.com/USCbiostats/xrnet
 Description: Fits hierarchical regularized regression models
     to incoporate potentially informative external data. Utilizes coordinate
@@ -18,7 +18,7 @@ Description: Fits hierarchical regularized regression models
 License: GPL-2 | file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests: 
     knitr,
     rmarkdown,
@@ -38,5 +38,5 @@ Imports:
     bigmemory,
     methods
 Depends:
-    R (>= 3.0)
+    R (>= 3.6)
 SystemRequirements: C++11 

@@ -4,9 +4,15 @@
 \alias{predict.xrnet}
 \title{Predict function for "xrnet" object}
 \usage{
-\method{predict}{xrnet}(object, newdata = NULL, newdata_fixed = NULL,
-  p = NULL, pext = NULL, type = c("response", "link",
-  "coefficients"), ...)
+\method{predict}{xrnet}(
+  object,
+  newdata = NULL,
+  newdata_fixed = NULL,
+  p = NULL,
+  pext = NULL,
+  type = c("response", "link", "coefficients"),
+  ...
+)
 }
 \arguments{
 \item{object}{A \code{\link{xrnet}} object}
