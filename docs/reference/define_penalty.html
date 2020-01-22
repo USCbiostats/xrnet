@@ -78,7 +78,7 @@ Use helper functions define_lasso, define_ridge, or define_enet to specify a com
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">xrnet</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
       </span>
     </div>
 
@@ -124,9 +124,14 @@ Use helper functions define_lasso, define_ridge, or define_enet to specify a com
 Use helper functions define_lasso, define_ridge, or define_enet to specify a common penalty on x or external.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>define_penalty</span>(<span class='kw'>penalty_type</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>quantile</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>20</span>,
-  <span class='kw'>penalty_ratio</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>user_penalty</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>custom_multiplier</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>define_penalty</span>(
+  <span class='kw'>penalty_type</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>quantile</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+  <span class='kw'>num_penalty</span> <span class='kw'>=</span> <span class='fl'>20</span>,
+  <span class='kw'>penalty_ratio</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>user_penalty</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>custom_multiplier</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

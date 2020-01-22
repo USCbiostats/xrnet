@@ -231,8 +231,7 @@ ASCII file, `x_linear.txt`, that contains the data for `x`. The
 `inst/extdata` in this repository and is also included when you install
 the R package. To access the file in the R package, use
 `system.file("extdata", "x_linear.txt", package = "xrnet")` as shown in
-the example
-below.
+the example below.
 
 ``` r
 x_big <- bigmemory::read.big.matrix(system.file("extdata", "x_linear.txt", package = "xrnet"), type = "double")
