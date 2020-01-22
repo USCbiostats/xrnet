@@ -7,10 +7,6 @@ dist: trusty
 
 jobs:
   include:
-  - r: oldrel
-    os: linux
-  - r: oldrel
-    os: osx
   - r: release
     os: linux
   - r: release
