@@ -5,13 +5,18 @@ sudo: false
 cache: packages
 dist: trusty
 
-r:
-  - release
-  - devel
-
-os:
-  - linux
-  - osx
+jobs:
+  include:
+  - r: oldrel
+    os: linux
+  - r: oldrel
+    os: osx
+  - r: release
+    os: linux
+  - r: release
+    os: osx
+  - r: devel
+    os: linux
 
 osx_image: xcode10.2
 

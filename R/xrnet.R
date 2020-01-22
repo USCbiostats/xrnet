@@ -214,7 +214,7 @@ xrnet <- function(x,
         }
 
         # convert unpen to matrix
-        if (class(unpen) != "matrix") {
+        if (!("matrix" %in% class(unpen))) {
             unpen <- as.matrix(unpen)
         }
         if (typeof(unpen) != "double") {
