@@ -170,13 +170,12 @@ coefficient estimates that are in the original path(s).</p>
 
 <span class='no'>lambda1</span> <span class='kw'>&lt;-</span> <span class='no'>fit_xrnet</span>$<span class='no'>penalty</span>[<span class='fl'>10</span>]
 <span class='no'>lambda2</span> <span class='kw'>&lt;-</span> <span class='no'>fit_xrnet</span>$<span class='no'>penalty_ext</span>[<span class='fl'>10</span>]
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
 <span class='no'>coef_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(
     <span class='no'>fit_xrnet</span>,
     <span class='kw'>p</span> <span class='kw'>=</span> <span class='no'>lambda1</span>,
     <span class='kw'>pext</span> <span class='kw'>=</span> <span class='no'>lambda2</span>,
-)
-}</div></pre>
+)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

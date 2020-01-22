@@ -27,10 +27,10 @@
 #'     family = "gaussian",
 #'     control = xrnet.control(tolerance = 1e-6)
 #'  )
-#' \dontrun{
+#'
 #'  ## Get coefficient estimates at optimal penalty combination
 #'  coef_opt <- coef(cv_xrnet)
-#'  }
+#'
 
 #' @export
 coef.tune_xrnet <- function(object,

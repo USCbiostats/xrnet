@@ -25,13 +25,13 @@
 #'
 #' lambda1 <- fit_xrnet$penalty[10]
 #' lambda2 <- fit_xrnet$penalty_ext[10]
-#' \dontrun{
+#'
 #' coef_xrnet <- coef(
 #'     fit_xrnet,
 #'     p = lambda1,
 #'     pext = lambda2,
 #' )
-#' }
+#'
 #'
 
 #' @export

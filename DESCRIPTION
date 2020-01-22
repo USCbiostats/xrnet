@@ -6,11 +6,9 @@ Authors@R: c(
   person("Garrett", "Weaver", email = "gmweaver.usc@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9918-8386")),
   person("Juan Pablo", "Lewinger", email = "lewinger@usc.edu", role = c("ctb", "ths"))
   )
-Author: Garrett Weaver
-Maintainer: Garrett Weaver <gmweaver.usc@gmail.com>
 URL: https://github.com/USCbiostats/xrnet
 Description: Fits hierarchical regularized regression models
-    to incoporate potentially informative external data. Utilizes coordinate
+    to incorporate potentially informative external data. Utilizes coordinate
     descent to efficiently fit regularized regression models both with and without
     external information with the most common penalties used in practice
     (i.e. ridge, lasso, elastic net). Support for standard R matrices, sparse
