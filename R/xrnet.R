@@ -170,7 +170,7 @@ xrnet <- function(x,
             is_sparse_ext = TRUE
         } else {
             # convert to matrix
-            if (class(external) != "matrix") {
+            if (!("matrix" %in% class(external))) {
                 external <- as.matrix(external)
             }
             if (typeof(external) != "double") {
