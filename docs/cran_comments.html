@@ -76,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">xrnet</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -122,8 +122,9 @@
 <ul>
 <li>local Windows 10 x64 install, R 3.6.2</li>
 <li>ubuntu 14.04.5 LTS (travis ci), R 3.6.2 / 4.0.0</li>
-<li>osx (travis ci), R 3.6.2</li>
+<li>OS X (travis ci), R 3.6.2</li>
 <li>windows i386/x64 (appveyor), R 3.6.2 / 4.0.0</li>
+<li>win-builder, R 3.6.2 / 4.0.0</li>
 </ul>
 </div>
 <div id="r-cmd-check-results" class="section level2">
@@ -137,6 +138,12 @@
 <p>The size appears to be due to the use of Rcpp/RcppEigen.</p>
 </li>
 </ul>
+</div>
+<div id="bh-boost-dependency" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bh-boost-dependency" class="anchor"></a>BH (boost) dependency</h2>
+<p>Note that when compiling BH package, the following warning appears multiple times: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]</p>
+<p>This appears to be specific to the Boost header files in the BH package and cannot be altered.</p>
 </div>
 
 
