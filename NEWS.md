@@ -1,5 +1,5 @@
 # xrnet 0.1.4
 
-* First release of 'xrnet' to CRAN
+* First release to CRAN
 
-* Initial relase supports linear and logistic hierarchical regularized regression
+* Initial release supports linear and logistic hierarchical regularized regression
