@@ -1,6 +1,6 @@
 #' Get coefficient estimates from "tune_xrnet" model object
 #'
-#' @description Returns coefficents from 'xrnet' model. Note that we currently only support returning
+#' @description Returns coefficients from 'xrnet' model. Note that we currently only support returning
 #' coefficient estimates that are in the original path(s).
 #'
 #' @param object A \code{\link{tune_xrnet}} object

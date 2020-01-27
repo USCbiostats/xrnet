@@ -24,7 +24,7 @@ A list with coefficient estimates at each of the requested penalty combinations
 \item{alphas}{3-dimensional array of second-level external data coefficients indexed by penalty values, NULL if external NULL in original model fit}
 }
 \description{
-Returns coefficents from 'xrnet' model. Note that we currently only support returning
+Returns coefficients from 'xrnet' model. Note that we currently only support returning
 coefficient estimates that are in the original path(s).
 }
 \examples{
