@@ -261,8 +261,8 @@ all.equal(xrnet_model$alphas, xrnet_model_big$alphas)
 To report a bug, ask a question, or propose a feature, create a new
 issue [here](https://github.com/USCbiostats/xrnet/issues). This project
 is released with the following [Contributor Code of
-Conduct](CODE_OF_CONDUCT.md). If you would like to contribute, please
-abide by its terms.
+Conduct](https://github.com/USCbiostats/xrnet/blob/master/CODE_OF_CONDUCT.md).
+If you would like to contribute, please abide by its terms.
 
 ## Funding
 

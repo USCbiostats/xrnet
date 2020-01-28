@@ -24,7 +24,6 @@ Suggests:
     Matrix,
     glmnet,
     doParallel
-VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,
     RcppEigen,
