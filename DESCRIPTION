@@ -1,7 +1,7 @@
 Package: xrnet
 Type: Package
 Title: Hierarchical Regularized Regression
-Version: 0.1.4
+Version: 0.1.5
 Authors@R: c(
   person("Garrett", "Weaver", email = "gmweaver.usc@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9918-8386")),
   person("Juan Pablo", "Lewinger", email = "lewinger@usc.edu", role = c("ctb", "ths"))

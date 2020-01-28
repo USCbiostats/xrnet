@@ -1,4 +1,4 @@
-# xrnet 0.1.4
+# xrnet 0.1.5
 
 * First release to CRAN
 
