@@ -9,3 +9,4 @@ paper
 CODE_OF_CONDUCT.md
 cran_comments.md
 ^revdep$
+^CRAN-RELEASE$
