@@ -1,6 +1,6 @@
 #' Get coefficient estimates from "xrnet" model object
 #'
-#' @description Returns coefficents from 'xrnet' model. Note that we currently only support returning
+#' @description Returns coefficients from 'xrnet' model. Note that we currently only support returning
 #' coefficient estimates that are in the original path(s).
 #'
 #' @param object A \code{\link{xrnet}} object
@@ -25,13 +25,13 @@
 #'
 #' lambda1 <- fit_xrnet$penalty[10]
 #' lambda2 <- fit_xrnet$penalty_ext[10]
-#' \dontrun{
+#'
 #' coef_xrnet <- coef(
 #'     fit_xrnet,
 #'     p = lambda1,
 #'     pext = lambda2,
 #' )
-#' }
+#'
 #'
 
 #' @export

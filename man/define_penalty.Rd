@@ -4,9 +4,14 @@
 \alias{define_penalty}
 \title{Define regularization object for predictor and external data}
 \usage{
-define_penalty(penalty_type = 1, quantile = 0.5, num_penalty = 20,
-  penalty_ratio = NULL, user_penalty = NULL,
-  custom_multiplier = NULL)
+define_penalty(
+  penalty_type = 1,
+  quantile = 0.5,
+  num_penalty = 20,
+  penalty_ratio = NULL,
+  user_penalty = NULL,
+  custom_multiplier = NULL
+)
 }
 \arguments{
 \item{penalty_type}{type of regularization. Default is 1 (Lasso).

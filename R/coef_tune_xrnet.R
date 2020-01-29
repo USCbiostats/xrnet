@@ -1,6 +1,6 @@
 #' Get coefficient estimates from "tune_xrnet" model object
 #'
-#' @description Returns coefficents from 'xrnet' model. Note that we currently only support returning
+#' @description Returns coefficients from 'xrnet' model. Note that we currently only support returning
 #' coefficient estimates that are in the original path(s).
 #'
 #' @param object A \code{\link{tune_xrnet}} object
@@ -27,10 +27,10 @@
 #'     family = "gaussian",
 #'     control = xrnet.control(tolerance = 1e-6)
 #'  )
-#' \dontrun{
+#'
 #'  ## Get coefficient estimates at optimal penalty combination
 #'  coef_opt <- coef(cv_xrnet)
-#'  }
+#'
 
 #' @export
 coef.tune_xrnet <- function(object,

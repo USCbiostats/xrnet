@@ -4,8 +4,13 @@
 \alias{define_enet}
 \title{Define elastic net regularization object for predictor and external data}
 \usage{
-define_enet(en_param = 0.5, num_penalty = 20, penalty_ratio = NULL,
-  user_penalty = NULL, custom_multiplier = NULL)
+define_enet(
+  en_param = 0.5,
+  num_penalty = 20,
+  penalty_ratio = NULL,
+  user_penalty = NULL,
+  custom_multiplier = NULL
+)
 }
 \arguments{
 \item{en_param}{elastic net parameter, between 0 and 1}

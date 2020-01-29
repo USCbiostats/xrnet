@@ -4,11 +4,19 @@
 \alias{xrnet}
 \title{Fit hierarchical regularized regression model}
 \usage{
-xrnet(x, y, external = NULL, unpen = NULL, family = c("gaussian",
-  "binomial"), penalty_main = define_penalty(),
-  penalty_external = define_penalty(), weights = NULL,
-  standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
-  control = list())
+xrnet(
+  x,
+  y,
+  external = NULL,
+  unpen = NULL,
+  family = c("gaussian", "binomial"),
+  penalty_main = define_penalty(),
+  penalty_external = define_penalty(),
+  weights = NULL,
+  standardize = c(TRUE, TRUE),
+  intercept = c(TRUE, FALSE),
+  control = list()
+)
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options include:

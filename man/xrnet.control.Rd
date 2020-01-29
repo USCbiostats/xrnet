@@ -4,9 +4,14 @@
 \alias{xrnet.control}
 \title{Control function for xrnet fitting}
 \usage{
-xrnet.control(tolerance = 1e-08, max_iterations = 1e+05,
-  dfmax = NULL, pmax = NULL, lower_limits = NULL,
-  upper_limits = NULL)
+xrnet.control(
+  tolerance = 1e-08,
+  max_iterations = 1e+05,
+  dfmax = NULL,
+  pmax = NULL,
+  lower_limits = NULL,
+  upper_limits = NULL
+)
 }
 \arguments{
 \item{tolerance}{positive convergence criterion. Default is 1e-08.}

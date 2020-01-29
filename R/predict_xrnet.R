@@ -31,7 +31,6 @@
 #'     family = "gaussian"
 #' )
 #'
-#' \dontrun{
 #' lambda1 <- fit_xrnet$penalty[10]
 #' lambda2 <- fit_xrnet$penalty_ext[10]
 #'
@@ -49,7 +48,7 @@
 #'     newdata = x_linear,
 #'     type = "response"
 #' )
-#' }
+#'
 
 #' @export
 predict.xrnet <- function(object,

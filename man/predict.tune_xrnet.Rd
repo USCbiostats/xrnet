@@ -4,9 +4,15 @@
 \alias{predict.tune_xrnet}
 \title{Predict function for "tune_xrnet" object}
 \usage{
-\method{predict}{tune_xrnet}(object, newdata = NULL,
-  newdata_fixed = NULL, p = "opt", pext = "opt",
-  type = c("response", "link", "coefficients"), ...)
+\method{predict}{tune_xrnet}(
+  object,
+  newdata = NULL,
+  newdata_fixed = NULL,
+  p = "opt",
+  pext = "opt",
+  type = c("response", "link", "coefficients"),
+  ...
+)
 }
 \arguments{
 \item{object}{A \code{\link{tune_xrnet}} object}
@@ -46,9 +52,8 @@ cv_xrnet <- tune_xrnet(
     control = xrnet.control(tolerance = 1e-6)
  )
 
-\dontrun{
 ## Get coefficients and predictions at optimal penalty combination
 coef_xrnet <- predict(cv_xrnet, type = "coefficients")
 pred_xrnet <- predict(cv_xrnet, newdata = x_linear, type = "response")
-}
+
 }

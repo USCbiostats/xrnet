@@ -29,11 +29,10 @@
 #'     control = xrnet.control(tolerance = 1e-6)
 #'  )
 #'
-#' \dontrun{
 #' ## Get coefficients and predictions at optimal penalty combination
 #' coef_xrnet <- predict(cv_xrnet, type = "coefficients")
 #' pred_xrnet <- predict(cv_xrnet, newdata = x_linear, type = "response")
-#' }
+#'
 
 #' @export
 predict.tune_xrnet <- function(object,

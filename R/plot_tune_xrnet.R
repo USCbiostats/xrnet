@@ -3,7 +3,7 @@
 #' @description Generates plots to visualize the mean cross-validation error. If no external
 #' data was used in the model fit, a plot of the cross-validated error with standard error
 #' bars is generated for all penalty values. If external data was used in the model fit, a
-#' countour plot of the cross-validated errors is created. Error curves can also be
+#' contour plot of the cross-validated errors is created. Error curves can also be
 #' generated for a fixed value of the primary penalty on x (p) or the external penalty (pext) when
 #' external data is used.
 #'

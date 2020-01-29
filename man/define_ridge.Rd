@@ -4,8 +4,12 @@
 \alias{define_ridge}
 \title{Define ridge regularization object for predictor and external data}
 \usage{
-define_ridge(num_penalty = 20, penalty_ratio = NULL,
-  user_penalty = NULL, custom_multiplier = NULL)
+define_ridge(
+  num_penalty = 20,
+  penalty_ratio = NULL,
+  user_penalty = NULL,
+  custom_multiplier = NULL
+)
 }
 \arguments{
 \item{num_penalty}{number of penalty values to fit in grid. Default is 20.}
