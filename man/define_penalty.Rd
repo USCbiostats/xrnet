@@ -40,7 +40,7 @@ for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrne
 \item{penalty_type}{The penalty type, scalar with value in range [0, 1].}
 \item{quantile}{Quantile for quantile penalty, 0.5 defaults to lasso (not currently implemented).}
 \item{num_penalty}{The number of penalty values in the penalty path.}
-\item{penalty_ratio}{The ratio minimum penalty value compared to the maximum penalty value.}
+\item{penalty_ratio}{The ratio of the minimum penalty value compared to the maximum penalty value.}
 \item{user_penalty}{User-defined numeric vector of penalty values, NULL if not provided by user.}
 \item{custom_multiplier}{User-defined feature-specific penalty multipliers, NULL if not provided by user.}
 }

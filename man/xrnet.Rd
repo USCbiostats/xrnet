@@ -42,8 +42,8 @@ xrnet(
 
 \item{family}{error distribution for outcome variable, options include:
 \itemize{
-    \item gaussian
-    \item binomial
+    \item "gaussian"
+    \item "binomial"
 }}
 
 \item{penalty_main}{specifies regularization object for x. See \code{\link{define_penalty}} for more details.}

@@ -26,8 +26,8 @@
 #' }
 #' @param family error distribution for outcome variable, options include:
 #' \itemize{
-#'     \item gaussian
-#'     \item binomial
+#'     \item "gaussian"
+#'     \item "binomial"
 #' }
 #' @param penalty_main specifies regularization object for x. See \code{\link{define_penalty}} for more details.
 #' @param penalty_external specifies regularization object for external. See \code{\link{define_penalty}} for more details.
@@ -40,10 +40,10 @@
 #'  Default is c(TRUE, FALSE).
 #' @param loss loss function for cross-validation. Options include:
 #' \itemize{
-#'    \item deviance
-#'    \item mse (Mean Squared Error)
-#'    \item mae (Mean Absolute Error)
-#'    \item auc (Area under the curve)
+#'    \item "deviance"
+#'    \item "mse" (Mean Squared Error)
+#'    \item "mae" (Mean Absolute Error)
+#'    \item "auc" (Area under the curve)
 #' }
 #' @param nfolds number of folds for cross-validation. Default is 5.
 #' @param foldid (optional) vector that identifies user-specified fold for each observation.

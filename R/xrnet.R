@@ -33,8 +33,8 @@ NULL
 #' }
 #' @param family error distribution for outcome variable, options include:
 #' \itemize{
-#'     \item gaussian
-#'     \item binomial
+#'     \item "gaussian"
+#'     \item "binomial"
 #' }
 #' @param penalty_main specifies regularization object for x. See \code{\link{define_penalty}} for more details.
 #' @param penalty_external specifies regularization object for external. See \code{\link{define_penalty}} for more details.
@@ -358,6 +358,13 @@ xrnet <- function(x,
 #' Default is \eqn{min(2 * dfmax + 20, ncol(x) + ncol(unpen) + ncol(external) + intercept[2])}.
 #' @param lower_limits vector of lower limits for each coefficient. Default is -Inf for all variables.
 #' @param upper_limits vector of upper limits for each coefficient. Default is Inf for all variables.
+#'
+#' @return A list object with the following components:
+#' \item{tolerance}{The coordinate descent stopping criterion.}
+#' \item{dfmax}{The maximum number of variables that will be allowed in the model.}
+#' \item{pmax}{The maximum number of variables with nonzero coefficient estimate.}
+#' \item{lower_limits}{Feature-specific numeric vector of lower bounds for coefficient estimates}
+#' \item{upper_limits}{Feature-specific numeric vector of upper bounds for coefficient estimates}
 
 #' @export
 xrnet.control <- function(tolerance = 1e-08,
