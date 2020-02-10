@@ -128,19 +128,19 @@ xrnet <- function(x,
     # check type of x matrix
     if (is(x, "matrix")) {
         if (typeof(x) != "double")
-            stop("Error: x must be of type double")
+            stop("x must be of type double")
         mattype_x <- 1
     }
     else if (is.big.matrix(x)) {
         if (bigmemory::describe(x)@description$type != "double")
-            stop("Error: x must be of type double")
+            stop("x must be of type double")
         mattype_x <- 2
     } else if ("dgCMatrix" %in% class(x)) {
         if (typeof(x@x) != "double")
-            stop("Error: x must be of type double")
+            stop("x must be of type double")
         mattype_x <- 3
     } else {
-        stop("Error: x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
+        stop("x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
     }
 
     # check type of y
@@ -154,7 +154,7 @@ xrnet <- function(x,
     if (y_len != nr_x) {
         stop(
             paste(
-                "Error: Length of y (", y_len,
+                "Length of y (", y_len,
                 ") not equal to the number of rows of x (", nr_x,")",
                 sep = ""
              )
@@ -174,7 +174,7 @@ xrnet <- function(x,
                 external <- as.matrix(external)
             }
             if (typeof(external) != "double") {
-                stop("Error: external must be of type double")
+                stop("external must be of type double")
             }
         }
 
@@ -184,7 +184,7 @@ xrnet <- function(x,
 
         if (nc_x != nr_ext) {
             stop(
-                paste("Error: Number of columns in x (", nc_x,
+                paste("Number of columns in x (", nc_x,
                       ") not equal to the number of rows in external (", nr_ext,
                       ")", sep = ""
                 )
@@ -206,7 +206,7 @@ xrnet <- function(x,
         if (y_len != NROW(unpen)) {
             stop(
                 paste(
-                    "Error: Length of y (", y_len,
+                    "Length of y (", y_len,
                     ") not equal to the number of rows of unpen (", NROW(unpen),
                     ")", sep = ""
                 )
@@ -218,7 +218,7 @@ xrnet <- function(x,
             unpen <- as.matrix(unpen)
         }
         if (typeof(unpen) != "double") {
-            stop("Error: unpen must be a numeric matrix of type 'double'")
+            stop("unpen must be a numeric matrix of type 'double'")
         }
     } else {
         unpen <- matrix(vector("numeric", 0), 0, 0)
@@ -231,13 +231,13 @@ xrnet <- function(x,
     } else if (length(weights) != y_len) {
         stop(
             paste(
-                "Error: Length of weights (", length(weights),
+                "Length of weights (", length(weights),
                 ") not equal to length of y (", y_len,
                 ")", sep = ""
             )
         )
     } else if (any(weights < 0)) {
-        stop("Error: weights can only contain non-negative values")
+        stop("weights can only contain non-negative values")
     } else {
         weights <- as.double(weights)
     }
@@ -368,11 +368,11 @@ xrnet.control <- function(tolerance = 1e-08,
                           upper_limits = NULL) {
 
     if (tolerance <= 0) {
-        stop("Error: tolerance must be greater than 0")
+        stop("tolerance must be greater than 0")
     }
 
     if (max_iterations <= 0 || as.integer(max_iterations) != max_iterations) {
-        stop("Error: max_iterations must be a positive integer")
+        stop("max_iterations must be a positive integer")
     }
 
     control_obj <- list(
@@ -410,7 +410,7 @@ initialize_penalty <- function(penalty_main,
     if (length(penalty_obj$penalty_type) > 1) {
         if (length(penalty_obj$penalty_type) != nc_x) {
             stop(
-                "Error: Length of penalty_type (",
+                "Length of penalty_type (",
                 length(penalty_obj$penalty_type),
                 ") not equal to number of columns in x (",
                 nc_x,")"
@@ -429,7 +429,7 @@ initialize_penalty <- function(penalty_main,
             }
             if (penalty_obj$num_penalty < 3) {
                 penalty_obj$num_penalty <- 3
-                stop("Warning: num_penalty must be at least 3
+                stop("num_penalty must be at least 3
                      when automatically computing penalty path")
             }
         } else {
@@ -442,7 +442,7 @@ initialize_penalty <- function(penalty_main,
         penalty_obj$custom_multiplier <- rep(1.0, nc_x)
     } else if (length(penalty_obj$custom_multiplier) != nc_x) {
         stop(
-            "Error: Length of custom_multiplier (",
+            "Length of custom_multiplier (",
             length(penalty_obj$custom_multiplier),
             ") not equal to number of columns in x (",
             nc_x, ")"
@@ -454,7 +454,7 @@ initialize_penalty <- function(penalty_main,
         if (length(penalty_obj$penalty_type_ext) > 1) {
             if (length(penalty_obj$penalty_type_ext) != nc_ext) {
                 stop(
-                    "Error: Length of penalty_type_ext (",
+                    "Length of penalty_type_ext (",
                     length(penalty_obj$penalty_type_ext),
                     ") not equal to number of columns in external (",
                     nc_ext,
@@ -474,7 +474,7 @@ initialize_penalty <- function(penalty_main,
                 }
                 if (penalty_obj$num_penalty_ext < 3) {
                     penalty_obj$num_penalty_ext <- 3
-                    stop("Warning: num_penalty_ext must be at least
+                    stop("num_penalty_ext must be at least
                          3 when automatically computing penalty path")
                 }
             } else {
@@ -487,7 +487,7 @@ initialize_penalty <- function(penalty_main,
             penalty_obj$custom_multiplier_ext <- rep(1.0, nc_ext)
         } else if (length(penalty_obj$custom_multiplier_ext) != nc_ext && nc_ext > 0) {
             stop(
-                "Error: Length of custom_multiplier_ext (",
+                "Length of custom_multiplier_ext (",
                 length(penalty_obj$custom_multiplier_ext),
                 ") not equal to number of columns in external (",
                 nc_ext, ")"
@@ -538,20 +538,20 @@ initialize_control <- function(control_obj,
     if (is.null(control_obj$dfmax)) {
         control_obj$dfmax <- as.integer(nc_x + nc_ext + nc_unpen + intercept[1] + intercept[2])
     } else if (control_obj$dfmax <= 0 || as.integer(control_obj$dfmax) != control_obj$dfmax) {
-        stop("Error: dfmax can only contain postive integers")
+        stop("dfmax can only contain postive integers")
     }
 
     if (is.null(control_obj$pmax)) {
         control_obj$pmax <- as.integer(min(2 * control_obj$dfmax + 20, nc_x + nc_ext + nc_unpen + intercept[2]))
     } else if (control_obj$pmax <= 0 || as.integer(control_obj$pmax) != control_obj$pmax) {
-        stop("Error: pmax can only contain positive integers")
+        stop("pmax can only contain positive integers")
     }
 
     if (is.null(control_obj$lower_limits)) {
         control_obj$lower_limits <- rep(-Inf, nc_x + nc_ext + nc_unpen + intercept[2])
     } else if (length(control_obj$lower_limits) != nc_x + nc_ext + nc_unpen) {
         stop(
-            "Error: Length of lower_limits (",
+            "Length of lower_limits (",
             length(control_obj$lower_limits),
             ") not equal to sum of number of columns in x, unpen, and external (",
             nc_x + nc_ext + nc_unpen, ")"
@@ -568,7 +568,7 @@ initialize_control <- function(control_obj,
         control_obj$upper_limits <- rep(Inf, nc_x + nc_ext + nc_unpen + intercept[2])
     } else if (length(control_obj$upper_limits) != nc_x + nc_ext + nc_unpen) {
         stop(
-            "Error: Length of upper_limits (",
+            "Length of upper_limits (",
             length(control_obj$upper_limits),
             ") not equal to sum of number of columns in x, unpen, and external (",
             nc_x + nc_ext + nc_unpen, ")"

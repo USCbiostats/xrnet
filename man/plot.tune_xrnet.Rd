@@ -17,6 +17,9 @@ Use value "opt" to use the optimal penalty value.}
 
 \item{...}{Additional graphics parameters}
 }
+\value{
+None
+}
 \description{
 Generates plots to visualize the mean cross-validation error. If no external
 data was used in the model fit, a plot of the cross-validated error with standard error
@@ -31,6 +34,10 @@ the penalty on x or the penalty on external to a fixed value. You cannot specify
 both at the same time as this would only return a single point.
 }
 \examples{
+
+## load example data
+data(GaussianExample)
+
 ## 5-fold cross validation
 cv_xrnet <- tune_xrnet(
     x = x_linear,
@@ -39,11 +46,11 @@ cv_xrnet <- tune_xrnet(
     family = "gaussian",
     control = xrnet.control(tolerance = 1e-6)
  )
- \dontrun{
+
  ## contour plot of cross-validated error
  plot(cv_xrnet)
 
  ## error curve of external penalties at optimal penalty value
  plot(cv_xrnet, p = "opt")
- }
+
 }

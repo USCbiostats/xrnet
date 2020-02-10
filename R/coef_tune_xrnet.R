@@ -9,6 +9,7 @@
 #' @param pext vector of penalty values to apply to external data variables.
 #' Default is optimal value in tune_xrnet object.
 #' @param ... pass other arguments to xrnet function (if needed)
+#'
 #' @return A list with coefficient estimates at each of the requested penalty combinations
 #' \item{beta0}{matrix of first-level intercepts indexed by penalty values, NULL if no first-level intercept in original model fit}
 #' \item{betas}{3-dimensional array of first-level penalized coefficients indexed by penalty values}
