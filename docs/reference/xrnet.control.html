@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">xrnet</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -166,12 +166,22 @@ Default is \(min(2 * dfmax + 20, ncol(x) + ncol(unpen) + ncol(external) + interc
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list object with the following components:</p>
+<dt>tolerance</dt><dd><p>The coordinate descent stopping criterion.</p></dd>
+<dt>dfmax</dt><dd><p>The maximum number of variables that will be allowed in the model.</p></dd>
+<dt>pmax</dt><dd><p>The maximum number of variables with nonzero coefficient estimate.</p></dd>
+<dt>lower_limits</dt><dd><p>Feature-specific numeric vector of lower bounds for coefficient estimates</p></dd>
+<dt>upper_limits</dt><dd><p>Feature-specific numeric vector of upper bounds for coefficient estimates</p></dd>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>

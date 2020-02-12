@@ -18,6 +18,15 @@
 #' @param custom_multiplier variable-specific penalty multipliers to apply to overall penalty.
 #' Default is 1 for all variables. 0 is no penalization.
 #'
+#' @return A list object with regularization settings that are used to define the regularization
+#' for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}:
+#' \item{penalty_type}{The penalty type, scalar with value in range [0, 1].}
+#' \item{quantile}{Quantile for quantile penalty, 0.5 defaults to lasso (not currently implemented).}
+#' \item{num_penalty}{The number of penalty values in the penalty path.}
+#' \item{penalty_ratio}{The ratio of the minimum penalty value compared to the maximum penalty value.}
+#' \item{user_penalty}{User-defined numeric vector of penalty values, NULL if not provided by user.}
+#' \item{custom_multiplier}{User-defined feature-specific penalty multipliers, NULL if not provided by user.}
+#'
 #' @examples
 #'
 #' # define ridge penalty with penalty grid split into 30 values
@@ -35,13 +44,13 @@ define_penalty <- function(penalty_type = 1,
                            custom_multiplier = NULL) {
 
     if (any(penalty_type < 0) || any(penalty_type > 1)) {
-        stop("Error: Invalid penalty type")
+        stop("Invalid penalty type")
     } else {
         penalty_type <- as.double(penalty_type)
     }
 
     if (quantile < 0 || quantile > 1) {
-        stop("Error: invalid value for quantile, must be between 0 and 1")
+        stop("Invalid value for quantile, must be between 0 and 1")
     } else {
         quantile <- as.double(quantile)
     }
@@ -51,7 +60,7 @@ define_penalty <- function(penalty_type = 1,
         num_penalty <- as.integer(num_penalty)
         if (!is.null(penalty_ratio)) {
             if (penalty_ratio <= 0 | penalty_ratio >= 1) {
-                stop("Error: penalty_ratio should be between 0 and 1")
+                stop("penalty_ratio should be between 0 and 1")
             } else {
                 penalty_ratio <- as.double(penalty_ratio)
             }
@@ -59,14 +68,14 @@ define_penalty <- function(penalty_type = 1,
     } else {
         penalty_ratio <- as.double(0)
         if (any(user_penalty < 0)) {
-            stop("Error: user_penalty can only contain non-negative values")
+            stop("user_penalty can only contain non-negative values")
         }
         user_penalty <- as.double(rev(sort(user_penalty)))
         num_penalty <- as.integer(length(user_penalty))
     }
 
     if (!is.null(custom_multiplier) && any(custom_multiplier < 0)) {
-        stop("Error: custom_multiplier can only contain non-negative values")
+        stop("custom_multiplier can only contain non-negative values")
     }
 
     penalty_obj <- list(
@@ -90,6 +99,10 @@ define_penalty <- function(penalty_type = 1,
 #' @param user_penalty user-defined vector of penalty values to use in penalty path.
 #' @param custom_multiplier variable-specific penalty multipliers to apply to overall penalty.
 #' Default is 1 for all variables. 0 is no penalization.
+#' @return A list object with regularization settings that are used to define the regularization
+#' for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}. The list
+#' elements will match those returned by \code{\link{define_penalty}}, but with the penalty_type
+#' automatically set to 1.
 
 #' @export
 define_lasso <- function(num_penalty = 20,
@@ -118,6 +131,11 @@ define_lasso <- function(num_penalty = 20,
 #' @param user_penalty user-defined vector of penalty values to use in penalty path.
 #' @param custom_multiplier variable-specific penalty multipliers to apply to overall penalty.
 #' Default is 1 for all variables. 0 is no penalization.
+#'
+#' @return A list object with regularization settings that are used to define the regularization
+#' for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}. The list
+#' elements will match those returned by \code{\link{define_penalty}}, but with the penalty_type
+#' automatically set to 0.
 
 #' @export
 define_ridge <- function(num_penalty = 20,
@@ -147,6 +165,11 @@ define_ridge <- function(num_penalty = 20,
 #' @param user_penalty user-defined vector of penalty values to use in penalty path.
 #' @param custom_multiplier variable-specific penalty multipliers to apply to overall penalty.
 #' Default is 1 for all variables. 0 is no penalization.
+#'
+#' @return A list object with regularization settings that are used to define the regularization
+#' for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}. The list
+#' elements will match those returned by \code{\link{define_penalty}}, but with the penalty_type
+#' set to match the value of \code{en_param}.
 
 #' @export
 define_enet <- function(en_param = 0.5,

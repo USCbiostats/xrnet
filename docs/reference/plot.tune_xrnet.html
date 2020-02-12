@@ -82,7 +82,7 @@ external data is used." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">xrnet</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -161,6 +161,9 @@ Use value "opt" to use the optimal penalty value.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>None</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The parameter values p and pext can be used to generate profiled error curves by fixing either
@@ -168,7 +171,11 @@ the penalty on x or the penalty on external to a fixed value. You cannot specify
 both at the same time as this would only return a single point.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## 5-fold cross validation</span>
+    <pre class="examples"><div class='input'>
+<span class='co'>## load example data</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>GaussianExample</span>)
+
+<span class='co'>## 5-fold cross validation</span>
 <span class='no'>cv_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tune_xrnet.html'>tune_xrnet</a></span>(
     <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x_linear</span>,
     <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y_linear</span>,
@@ -176,18 +183,18 @@ both at the same time as this would only return a single point.</p>
     <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
     <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='xrnet.control.html'>xrnet.control</a></span>(<span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>1e-6</span>)
  )
- <span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
- <span class='co'>## contour plot of cross-validated error</span>
- <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>cv_xrnet</span>)
 
+ <span class='co'>## contour plot of cross-validated error</span>
+ <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>cv_xrnet</span>)</div><div class='img'><img src='plot.tune_xrnet-1.png' alt='' width='700' height='433' /></div><div class='input'>
  <span class='co'>## error curve of external penalties at optimal penalty value</span>
- <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>cv_xrnet</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='st'>"opt"</span>)
- }</div></pre>
+ <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>cv_xrnet</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='st'>"opt"</span>)</div><div class='img'><img src='plot.tune_xrnet-2.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#details">Details</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

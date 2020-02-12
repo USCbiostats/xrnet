@@ -15,7 +15,8 @@
 #'    \item coefficients
 #' }
 #' @param ... pass other arguments to xrnet function (if needed)
-#' @return The object returned based on the type object is as follows:
+#'
+#' @return The object returned is based on the value of type as follows:
 #' \itemize{
 #'     \item response: An array with the response predictions based on the data for each penalty combination
 #'     \item link: An array with linear predictions based on the data for each penalty combination
@@ -67,19 +68,19 @@ predict.xrnet <- function(object,
     }
 
     if (missing(newdata) && !match(type, c("coefficients"), FALSE)) {
-        stop("Error: 'newdata' needs to be specified")
+        stop("newdata needs to be specified")
     }
 
     if (is.null(p)){
-        stop("Error: p not specified")
+        stop("p not specified")
     }
 
     if (!is.null(object$penalty_ext) && is.null(pext)) {
-        stop("Error: pext not specified")
+        stop("pext not specified")
     }
 
     if (!(all(p %in% object$penalty)) || !(all(pext %in% object$penalty_ext))) {
-        stop("Error: Not all penalty values in path(s), please refit xrnet() model with desired penalty values")
+        stop("Not all penalty values in path(s), please refit xrnet() model with desired penalty values")
     }
 
     p <- rev(sort(p))
@@ -113,22 +114,22 @@ predict.xrnet <- function(object,
 
         if (is(newdata, "matrix")) {
             if (typeof(newdata) != "double") {
-                stop("Error: newdata must be of type double")
+                stop("newdata must be of type double")
             }
             mattype_x <- 1
         }
         else if (is.big.matrix(newdata)) {
             if (bigmemory::describe(newdata)@description$type != "double") {
-                stop("Error: newdata must be of type double")
+                stop("newdata must be of type double")
             }
             mattype_x <- 2
         } else if ("dgCMatrix" %in% class(newdata)) {
             if (typeof(newdata@x) != "double") {
-                stop("Error: newdata must be of type double")
+                stop("newdata must be of type double")
             }
             mattype_x <- 3
         } else {
-            stop("Error: newdata must be a matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
+            stop("newdata must be a matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
         }
 
         beta0 <- as.vector(beta0)

@@ -35,7 +35,7 @@
 \item{...}{pass other arguments to xrnet function (if needed)}
 }
 \value{
-The object returned based on the type object is as follows:
+The object returned is based on the value of type as follows:
 \itemize{
     \item response: An array with the response predictions based on the data for each penalty combination
     \item link: An array with linear predictions based on the data for each penalty combination

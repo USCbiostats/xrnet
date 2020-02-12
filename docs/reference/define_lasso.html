@@ -78,7 +78,7 @@ See define_penalty for more details." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">xrnet</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -157,12 +157,19 @@ Default is 1 for all variables. 0 is no penalization.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list object with regularization settings that are used to define the regularization
+for predictors or external data in <code><a href='xrnet.html'>xrnet</a></code> and <code><a href='tune_xrnet.html'>tune_xrnet</a></code>. The list
+elements will match those returned by <code><a href='define_penalty.html'>define_penalty</a></code>, but with the penalty_type
+automatically set to 1.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>

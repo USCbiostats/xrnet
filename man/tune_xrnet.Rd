@@ -46,8 +46,8 @@ tune_xrnet(
 
 \item{family}{error distribution for outcome variable, options include:
 \itemize{
-    \item gaussian
-    \item binomial
+    \item "gaussian"
+    \item "binomial"
 }}
 
 \item{penalty_main}{specifies regularization object for x. See \code{\link{define_penalty}} for more details.}
@@ -66,10 +66,10 @@ Default is c(TRUE, FALSE).}
 
 \item{loss}{loss function for cross-validation. Options include:
 \itemize{
-   \item deviance
-   \item mse (Mean Squared Error)
-   \item mae (Mean Absolute Error)
-   \item auc (Area under the curve)
+   \item "deviance"
+   \item "mse" (Mean Squared Error)
+   \item "mae" (Mean Absolute Error)
+   \item "auc" (Area under the curve)
 }}
 
 \item{nfolds}{number of folds for cross-validation. Default is 5.}
