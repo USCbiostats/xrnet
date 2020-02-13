@@ -4,8 +4,13 @@
 \alias{define_enet}
 \title{Define elastic net regularization object for predictor and external data}
 \usage{
-define_enet(en_param = 0.5, num_penalty = 20, penalty_ratio = NULL,
-  user_penalty = NULL, custom_multiplier = NULL)
+define_enet(
+  en_param = 0.5,
+  num_penalty = 20,
+  penalty_ratio = NULL,
+  user_penalty = NULL,
+  custom_multiplier = NULL
+)
 }
 \arguments{
 \item{en_param}{elastic net parameter, between 0 and 1}
@@ -19,6 +24,12 @@ Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.}
 
 \item{custom_multiplier}{variable-specific penalty multipliers to apply to overall penalty.
 Default is 1 for all variables. 0 is no penalization.}
+}
+\value{
+A list object with regularization settings that are used to define the regularization
+for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}. The list
+elements will match those returned by \code{\link{define_penalty}}, but with the penalty_type
+set to match the value of \code{en_param}.
 }
 \description{
 Helper function to define a elastic net penalty regularization object.

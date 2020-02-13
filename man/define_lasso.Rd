@@ -4,8 +4,12 @@
 \alias{define_lasso}
 \title{Define lasso regularization object for predictor and external data}
 \usage{
-define_lasso(num_penalty = 20, penalty_ratio = NULL,
-  user_penalty = NULL, custom_multiplier = NULL)
+define_lasso(
+  num_penalty = 20,
+  penalty_ratio = NULL,
+  user_penalty = NULL,
+  custom_multiplier = NULL
+)
 }
 \arguments{
 \item{num_penalty}{number of penalty values to fit in grid. Default is 20.}
@@ -17,6 +21,12 @@ Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.}
 
 \item{custom_multiplier}{variable-specific penalty multipliers to apply to overall penalty.
 Default is 1 for all variables. 0 is no penalization.}
+}
+\value{
+A list object with regularization settings that are used to define the regularization
+for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}. The list
+elements will match those returned by \code{\link{define_penalty}}, but with the penalty_type
+automatically set to 1.
 }
 \description{
 Helper function to define a lasso penalty regularization object.

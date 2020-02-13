@@ -4,9 +4,15 @@
 \alias{predict.xrnet}
 \title{Predict function for "xrnet" object}
 \usage{
-\method{predict}{xrnet}(object, newdata = NULL, newdata_fixed = NULL,
-  p = NULL, pext = NULL, type = c("response", "link",
-  "coefficients"), ...)
+\method{predict}{xrnet}(
+  object,
+  newdata = NULL,
+  newdata_fixed = NULL,
+  p = NULL,
+  pext = NULL,
+  type = c("response", "link", "coefficients"),
+  ...
+)
 }
 \arguments{
 \item{object}{A \code{\link{xrnet}} object}
@@ -29,7 +35,7 @@
 \item{...}{pass other arguments to xrnet function (if needed)}
 }
 \value{
-The object returned based on the type object is as follows:
+The object returned is based on the value of type as follows:
 \itemize{
     \item response: An array with the response predictions based on the data for each penalty combination
     \item link: An array with linear predictions based on the data for each penalty combination
@@ -50,7 +56,6 @@ fit_xrnet <- xrnet(
     family = "gaussian"
 )
 
-\dontrun{
 lambda1 <- fit_xrnet$penalty[10]
 lambda2 <- fit_xrnet$penalty_ext[10]
 
@@ -68,5 +73,5 @@ pred_xrnet <- predict(
     newdata = x_linear,
     type = "response"
 )
-}
+
 }

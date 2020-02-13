@@ -4,3 +4,9 @@
 ^README\.Rmd$
 ^README-.*\.png$
 ^appveyor\.yml$
+docs
+paper
+CODE_OF_CONDUCT.md
+cran-comments.md
+^revdep$
+^CRAN-RELEASE$

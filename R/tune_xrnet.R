@@ -26,8 +26,8 @@
 #' }
 #' @param family error distribution for outcome variable, options include:
 #' \itemize{
-#'     \item gaussian
-#'     \item binomial
+#'     \item "gaussian"
+#'     \item "binomial"
 #' }
 #' @param penalty_main specifies regularization object for x. See \code{\link{define_penalty}} for more details.
 #' @param penalty_external specifies regularization object for external. See \code{\link{define_penalty}} for more details.
@@ -40,10 +40,10 @@
 #'  Default is c(TRUE, FALSE).
 #' @param loss loss function for cross-validation. Options include:
 #' \itemize{
-#'    \item deviance
-#'    \item mse (Mean Squared Error)
-#'    \item mae (Mean Absolute Error)
-#'    \item auc (Area under the curve)
+#'    \item "deviance"
+#'    \item "mse" (Mean Squared Error)
+#'    \item "mae" (Mean Absolute Error)
+#'    \item "auc" (Area under the curve)
 #' }
 #' @param nfolds number of folds for cross-validation. Default is 5.
 #' @param foldid (optional) vector that identifies user-specified fold for each observation.
@@ -51,6 +51,7 @@
 #' @param parallel use \code{foreach} function to fit folds in parallel if TRUE,
 #' must register cluster (\code{doParallel}) before using.
 #' @param control specifies xrnet control object. See \code{\link{xrnet.control}} for more details.
+#'
 #' @return A list of class \code{tune_xrnet} with components
 #' \item{cv_mean}{mean cross-validated error for each penalty combination. Object returned is
 #' a vector if there is no external data (external = NULL) and matrix if there is external data.}
@@ -66,7 +67,7 @@
 #' optimal is based on the optimal value obtained for the user-selected loss function across the k folds. To efficiently traverse all possible
 #' combinations of the hyperparameter values, 'warm-starts' are used to traverse the penalty from largest
 #' to smallest penalty value(s). Note that the penalty grid for the folds is generated
-#' by fitting the model on the entire training data. Parallelization is enabled throught the \code{foreach} and
+#' by fitting the model on the entire training data. Parallelization is enabled through the \code{foreach} and
 #' \code{doParallel} R packages. To use parallelization, \code{parallel = TRUE}, you must first create the cluster
 #' \code{makeCluster} and then register the cluster \code{registerDoParallel}. See the \code{parallel}, \code{foreach},
 #' and/or \code{doParallel} R packages for more details on how to setup parallelization.
@@ -83,10 +84,10 @@
 #'     family = "gaussian",
 #'     control = xrnet.control(tolerance = 1e-6)
 #'  )
-#'  \dontrun{
+#'
 #'  ## contour plot of cross-validated error
 #'  plot(cv_xrnet)
-#'  }
+#'
 
 #' @export
 tune_xrnet <- function(x,
@@ -127,28 +128,28 @@ tune_xrnet <- function(x,
             loss_available <- FALSE
         }
         if (!loss_available) {
-            stop(paste0("Error: loss = '", loss, "' is not available for family = '", family,"'"))
+            stop(paste0("loss = '", loss, "' is not available for family = '", family,"'"))
         }
     }
 
     # check type of x matrix
     if (is(x, "matrix")) {
         if (!(typeof(x) %in% c("integer", "double"))) {
-            stop("Error: x contains non-numeric values")
+            stop("x contains non-numeric values")
         }
         mattype_x <- 1
     } else if (is.big.matrix(x)) {
         if (!(bigmemory::describe(x)@description$type %in% c("integer", "double"))) {
-            stop("Error: x contains non-numeric values")
+            stop("x contains non-numeric values")
         }
         mattype_x <- 2
     } else if ("dgCMatrix" %in% class(x)) {
         if (!(typeof(x@x) %in% c("integer", "double"))) {
-            stop("Error: x contains non-numeric values")
+            stop("x contains non-numeric values")
         }
         mattype_x <- 3
     } else {
-        stop("Error: x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
+        stop("x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
     }
 
     # check external type
@@ -244,7 +245,7 @@ tune_xrnet <- function(x,
         foldid <- sample(rep(seq(nfolds), length = n))
     } else {
         if (length(foldid) != n) {
-            stop("Error: length of foldid (", length(foldid), ") not equal to number of observations (", n, ")")
+            stop("length of foldid (", length(foldid), ") not equal to number of observations (", n, ")")
         }
         foldid <- as.numeric(factor(foldid))
         nfolds <- length(unique(foldid))

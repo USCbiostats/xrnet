@@ -55,12 +55,17 @@ extend to other outcomes (i.e. survival) in the next release.
 
 # Setup
 
-1.  For Windows users, install
-    [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an R
-    package)
+1.  OS-specific prerequisites
+      - *Windows*: Install
+        [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an
+        R package)
+      - *Mac*: If using R version \>= 3.6.0, verify your GNU Fortran
+        version is \>= 6.1. If you have an older version, go
+        [here](https://cran.r-project.org/bin/macosx/tools/) to install
+        the required version
 2.  Install the R package [devtools](https://github.com/hadley/devtools)
-3.  Install xrnet package with the install\_github function (optionally
-    install most recent / potentially unstable development branch)
+3.  Install the **xrnet** package with the *install\_github()* function
+    (optionally install potentially unstable development branch)
 
 <!-- end list -->
 
@@ -217,13 +222,47 @@ predy <- predict(cv_xrnet, newdata = x_linear)
 estimates <- coef(cv_xrnet)
 ```
 
+#### Using the bigmemory R package with xrnet
+
+As an example of using `bigmemory` with `xrnet`, we have a provided a
+ASCII file, `x_linear.txt`, that contains the data for `x`. The
+`bigmemory` function `read.big.matrix()` can be used to create a
+`big.matrix` version of this file. The ASCII file is located under
+`inst/extdata` in this repository and is also included when you install
+the R package. To access the file in the R package, use
+`system.file("extdata", "x_linear.txt", package = "xrnet")` as shown in
+the example below.
+
+``` r
+x_big <- bigmemory::read.big.matrix(system.file("extdata", "x_linear.txt", package = "xrnet"), type = "double")
+```
+
+We can now fit a ridge regression model with the `big.matrix` version of
+the data and verify that we get the same estimates:
+
+``` r
+xrnet_model_big <- xrnet(
+  x = x_big, 
+  y = y_linear, 
+  family = "gaussian", 
+  penalty_main = define_ridge(100)
+)
+
+all.equal(xrnet_model$beta0, xrnet_model_big$beta0)
+#> [1] TRUE
+all.equal(xrnet_model$betas, xrnet_model_big$betas)
+#> [1] TRUE
+all.equal(xrnet_model$alphas, xrnet_model_big$alphas)
+#> [1] TRUE
+```
+
 ## Contributing
 
 To report a bug, ask a question, or propose a feature, create a new
 issue [here](https://github.com/USCbiostats/xrnet/issues). This project
 is released with the following [Contributor Code of
-Conduct](CODE_OF_CONDUCT.md). If you would like to contribute, please
-abide by its terms.
+Conduct](https://github.com/USCbiostats/xrnet/blob/master/CODE_OF_CONDUCT.md).
+If you would like to contribute, please abide by its terms.
 
 ## Funding
 

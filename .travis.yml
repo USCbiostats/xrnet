@@ -5,16 +5,14 @@ sudo: false
 cache: packages
 dist: trusty
 
-r_github_packages:
-  - r-lib/covr
-
-r:
-  - release
-  - oldrel
-
-os:
-  - linux
-  - osx
+jobs:
+  include:
+  - r: release
+    os: linux
+  - r: release
+    os: osx
+  - r: devel
+    os: linux
 
 osx_image: xcode10.2
 

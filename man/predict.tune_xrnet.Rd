@@ -4,9 +4,15 @@
 \alias{predict.tune_xrnet}
 \title{Predict function for "tune_xrnet" object}
 \usage{
-\method{predict}{tune_xrnet}(object, newdata = NULL,
-  newdata_fixed = NULL, p = "opt", pext = "opt",
-  type = c("response", "link", "coefficients"), ...)
+\method{predict}{tune_xrnet}(
+  object,
+  newdata = NULL,
+  newdata_fixed = NULL,
+  p = "opt",
+  pext = "opt",
+  type = c("response", "link", "coefficients"),
+  ...
+)
 }
 \arguments{
 \item{object}{A \code{\link{tune_xrnet}} object}
@@ -30,6 +36,14 @@ Default is optimal value in tune_xrnet object.}
 
 \item{...}{pass other arguments to xrnet function (if needed)}
 }
+\value{
+The object returned is based on the value of type as follows:
+\itemize{
+    \item response: An array with the response predictions based on the data for each penalty combination
+    \item link: An array with linear predictions based on the data for each penalty combination
+    \item coefficients: A list with the coefficient estimates for each penalty combination. See \code{\link{coef.xrnet}}.
+}
+}
 \description{
 Extract coefficients or predict response in new data using fitted model from a \code{\link{tune_xrnet}} object.
 Note that we currently only support returning results that are in the original path(s).
@@ -46,9 +60,8 @@ cv_xrnet <- tune_xrnet(
     control = xrnet.control(tolerance = 1e-6)
  )
 
-\dontrun{
 ## Get coefficients and predictions at optimal penalty combination
 coef_xrnet <- predict(cv_xrnet, type = "coefficients")
 pred_xrnet <- predict(cv_xrnet, newdata = x_linear, type = "response")
-}
+
 }

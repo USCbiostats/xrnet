@@ -17,6 +17,14 @@
 #'    \item coefficients
 #' }
 #' @param ... pass other arguments to xrnet function (if needed)
+#'
+#' @return The object returned is based on the value of type as follows:
+#' \itemize{
+#'     \item response: An array with the response predictions based on the data for each penalty combination
+#'     \item link: An array with linear predictions based on the data for each penalty combination
+#'     \item coefficients: A list with the coefficient estimates for each penalty combination. See \code{\link{coef.xrnet}}.
+#' }
+#'
 #' @examples
 #' data(GaussianExample)
 #'
@@ -29,11 +37,10 @@
 #'     control = xrnet.control(tolerance = 1e-6)
 #'  )
 #'
-#' \dontrun{
 #' ## Get coefficients and predictions at optimal penalty combination
 #' coef_xrnet <- predict(cv_xrnet, type = "coefficients")
 #' pred_xrnet <- predict(cv_xrnet, newdata = x_linear, type = "response")
-#' }
+#'
 
 #' @export
 predict.tune_xrnet <- function(object,

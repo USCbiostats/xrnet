@@ -19,7 +19,7 @@ test_that("throw error when dimensions of x and y do not match", {
     external <- matrix(runif(10), nrow = 2)
     expect_error(
         xrnet(x, y, external, "gaussian"),
-        "Error: Length of y (10) not equal to the number of rows of x (5)",
+        "Length of y (10) not equal to the number of rows of x (5)",
         fixed = TRUE
     )
 })
@@ -31,7 +31,7 @@ test_that("throw error when dimensions of unpen and y do not match", {
     external <- matrix(runif(10), nrow = 2)
     expect_error(
         xrnet(x, y, external, unpen = unpen, family = "gaussian"),
-        "Error: Length of y (10) not equal to the number of rows of unpen (5)",
+        "Length of y (10) not equal to the number of rows of unpen (5)",
         fixed = TRUE
     )
 })
@@ -42,7 +42,7 @@ test_that("throw error when ncol(x) not equal to nrow(external)", {
     external <- matrix(runif(10), nrow = 5)
     expect_error(
         xrnet(x, y, external, "gaussian"),
-        "Error: Number of columns in x (2) not equal to the number of rows in external (5)",
+        "Number of columns in x (2) not equal to the number of rows in external (5)",
         fixed = TRUE
     )
 })
@@ -74,7 +74,7 @@ test_that("throw error when dimensions of weights and y do not match", {
     wgts <- rep(1:3)
     expect_error(
         xrnet(x, y, weights = wgts, family = "gaussian"),
-        "Error: Length of weights (3) not equal to length of y (5)",
+        "Length of weights (3) not equal to length of y (5)",
         fixed = TRUE
     )
 })

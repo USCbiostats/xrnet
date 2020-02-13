@@ -6,16 +6,22 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hierarchical Regularized Regression • xrnet</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Hierarchical Regularized Regression">
 <meta property="og:description" content="Fits hierarchical regularized regression models
-    to incoporate potentially informative external data. Utilizes coordinate
-    descent to efficiently fit regularized regression models both with and without
-    external information with the most common penalties used in practice
-    (i.e. ridge, lasso, elastic net). Support for standard R matrices, sparse
-    matrices and big.matrix objects.">
+    to incorporate potentially informative external data, Weaver and Lewinger (2019) &lt;doi:10.21105/joss.01761&gt;. 
+    Utilizes coordinate descent to efficiently fit regularized regression models both with and without
+    external information with the most common penalties used in practice (i.e. ridge, lasso, elastic net). 
+    Support for standard R matrices, sparse matrices and big.matrix objects.">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -24,7 +30,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-article">
+    <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -36,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">xrnet</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -44,18 +50,21 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/USCbiostats/xrnet">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -68,15 +77,13 @@
 <!--/.navbar -->
 
       
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    
 
-    
-    
-<div id="xrnet-r-package-for-hierarchical-regularized-regression-to-incorporate-external-data" class="section level1">
+      </header><div class="row">
+  <div class="contents col-md-9">
+
+<div id="xrnet-r-package-for-hierarchical-regularized-regression-to-incorporate-external-data-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#xrnet-r-package-for-hierarchical-regularized-regression-to-incorporate-external-data" class="anchor"></a>xrnet: R Package for Hierarchical Regularized Regression to Incorporate External Data <img src="reference/figures/logo.png" align="right" height="180px">
+<a href="#xrnet-r-package-for-hierarchical-regularized-regression-to-incorporate-external-data-" class="anchor"></a>xrnet: R Package for Hierarchical Regularized Regression to Incorporate External Data <img src="reference/figures/logo.png" align="right" height="180px">
 </h1></div>
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -84,49 +91,56 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>The <strong>xrnet</strong> R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of predictors on an outcome of interest. Let <span class="math inline">\(y\)</span> be an n-dimensional observed outcome vector, <span class="math inline">\(X\)</span> be a set of <em>p</em> potential predictors observed on the <em>n</em> observations, and <span class="math inline">\(Z\)</span> be a set of <em>q</em> external features available for the <em>p</em> predictors. Our model builds off the standard two-level hierarchical regression model,</p>
+<p>The <strong>xrnet</strong> R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of predictors on an outcome of interest. Let (y) be an n-dimensional observed outcome vector, (X) be a set of <em>p</em> potential predictors observed on the <em>n</em> observations, and (Z) be a set of <em>q</em> external features available for the <em>p</em> predictors. Our model builds off the standard two-level hierarchical regression model,</p>
 <p><img src="reference/figures/eqn1.gif"></p>
 <p><img src="reference/figures/eqn2.gif"></p>
 <p>but allows regularization of both the predictors and the external features, where beta is the vector of coefficients describing the association of each predictor with the outcome and alpha is the vector of coefficients describing the association of each external feature with the predictor coefficients, beta. As an example, assume that the outcome is continuous and that we want to apply a ridge penalty to the predictors and lasso penalty to the external features. We minimize the following objective function (ignoring intercept terms):</p>
 <p><img src="reference/figures/eqn3.gif"></p>
-<p>Note that our model allows for the predictor coefficients, beta, to shrink towards potentially informative values based on the matrix <span class="math inline">\(Z\)</span>. In the event the external data is not informative, we can shrink alpha towards zero, returning back to a standard regularized regression. To efficiently fit the model, we rewrite this convex optimization with the variable substitution <span class="math inline">\(gamma = beta - Z * alpha\)</span>. The problem is then solved as a standard regularized regression in which we allow the penalty value and type (ridge / lasso) to be variable-specific:</p>
+<p>Note that our model allows for the predictor coefficients, beta, to shrink towards potentially informative values based on the matrix (Z). In the event the external data is not informative, we can shrink alpha towards zero, returning back to a standard regularized regression. To efficiently fit the model, we rewrite this convex optimization with the variable substitution (gamma = beta - Z * alpha). The problem is then solved as a standard regularized regression in which we allow the penalty value and type (ridge / lasso) to be variable-specific:</p>
 <p><img src="reference/figures/eqn4.gif"></p>
 <p>This package extends the coordinate descent algorithm of Friedman et al. 2010 (used in the R package <strong>glmnet</strong>) to allow for this variable-specific generalization and to fit the model described above. Currently, we allow for continuous and binary outcomes, but plan to extend to other outcomes (i.e. survival) in the next release.</p>
 </div>
 <div id="setup" class="section level1">
 <h1 class="hasAnchor">
 <a href="#setup" class="anchor"></a>Setup</h1>
-<ol style="list-style-type: decimal">
-<li>For Windows users, install <a href="https://cran.r-project.org/bin/windows/Rtools/">RTools</a> (not an R package)</li>
+<ol>
+<li>OS-specific prerequisites
+<ul>
+<li>
+<em>Windows</em>: Install <a href="https://cran.r-project.org/bin/windows/Rtools/">RTools</a> (not an R package)</li>
+<li>
+<em>Mac</em>: If using R version &gt;= 3.6.0, verify your GNU Fortran version is &gt;= 6.1. If you have an older version, go <a href="https://cran.r-project.org/bin/macosx/tools/">here</a> to install the required version</li>
+</ul>
+</li>
 <li>Install the R package <a href="https://github.com/hadley/devtools">devtools</a>
 </li>
-<li>Install xrnet package with the install_github function (optionally install most recent / potentially unstable development branch)</li>
+<li>Install the <strong>xrnet</strong> package with the <em>install_github()</em> function (optionally install potentially unstable development branch)</li>
 </ol>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># Master branch</span></a>
-<a class="sourceLine" id="cb1-2" title="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"USCbiostats/xrnet"</span>)</a>
-<a class="sourceLine" id="cb1-3" title="3"></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="co"># Development branch</span></a>
-<a class="sourceLine" id="cb1-5" title="5">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"USCbiostats/xrnet"</span>, <span class="dt">ref =</span> <span class="st">"development"</span>)</a></code></pre></div>
-<ol start="4" style="list-style-type: decimal">
+<!-- end list --><div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Master branch</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"USCbiostats/xrnet"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Development branch</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"USCbiostats/xrnet"</span>, <span class="dt">ref =</span> <span class="st">"development"</span>)</span></code></pre></div>
+<ol>
 <li>Load the package</li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(xrnet)</a></code></pre></div>
+<!-- end list --><div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(xrnet)</span></code></pre></div>
 </div>
 <div id="a-first-example" class="section level1">
 <h1 class="hasAnchor">
 <a href="#a-first-example" class="anchor"></a>A First Example</h1>
 <p>As an example of how you might use xrnet, we have provided a small set of simulated external data variables (ext), predictors (x), and a continuous outcome variable (y). First, load the example data:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(GaussianExample)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(GaussianExample)</span></code></pre></div>
 <div id="fitting-a-model" class="section level4">
 <h4 class="hasAnchor">
 <a href="#fitting-a-model" class="anchor"></a>Fitting a Model</h4>
 <p>To fit a linear hierarchical regularized regression model, use the main <code>xrnet</code> function. At a minimum, you should specify the predictor matrix <code>x</code>, outcome variable <code>y</code>, and <code>family</code> (outcome distribution). The <code>external</code> option allows you to incorporate external data in the regularized regression model. If you do not include external data, a standard regularized regression model will be fit. By default, a lasso penalty is applied to both the predictors and the external data.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</a>
-<a class="sourceLine" id="cb4-2" title="2">  <span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb4-3" title="3">  <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb4-4" title="4">  <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb4-5" title="5">  <span class="dt">family =</span> <span class="st">"gaussian"</span></a>
-<a class="sourceLine" id="cb4-6" title="6">)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="dt">x =</span> x_linear, </span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="dt">y =</span> y_linear, </span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="dt">external =</span> ext_linear, </span>
+<span id="cb4-5"><a href="#cb4-5"></a>  <span class="dt">family =</span> <span class="st">"gaussian"</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>)</span></code></pre></div>
 </div>
 <div id="modifying-regularization-terms" class="section level4">
 <h4 class="hasAnchor">
@@ -149,54 +163,70 @@
 <li>User-defined set of penalties</li>
 </ul>
 <p>As an example, we may want to apply a ridge penalty to the x variables and a lasso penalty to the external data variables. In addition, we may want to have 30 penalty values computed for the regularization path associated with both x and external. We modify our model call to <code>xrnet</code> follows.</p>
-<ol style="list-style-type: decimal">
-<li>
-<code>penalty_main</code> is used to specify the regularization for the x variables</li>
-<li>
-<code>penalty_external</code> is used to specify the regularization for the external variables</li>
-</ol>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</a>
-<a class="sourceLine" id="cb5-2" title="2">  <span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb5-3" title="3">  <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb5-4" title="4">  <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb5-5" title="5">  <span class="dt">family =</span> <span class="st">"gaussian"</span>, </a>
-<a class="sourceLine" id="cb5-6" title="6">  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dv">0</span>, <span class="dt">num_penalty =</span> <span class="dv">30</span>),</a>
-<a class="sourceLine" id="cb5-7" title="7">  <span class="dt">penalty_external =</span> <span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dv">1</span>, <span class="dt">num_penalty =</span> <span class="dv">30</span>)</a>
-<a class="sourceLine" id="cb5-8" title="8">)</a></code></pre></div>
+<p>1) <code>penalty_main</code> is used to specify the regularization for the x variables 2) <code>penalty_external</code> is used to specify the regularization for the external variables</p>
+<!-- end list -->
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="dt">x =</span> x_linear, </span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="dt">y =</span> y_linear, </span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="dt">external =</span> ext_linear, </span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="dt">family =</span> <span class="st">"gaussian"</span>, </span>
+<span id="cb5-6"><a href="#cb5-6"></a>  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dv">0</span>, <span class="dt">num_penalty =</span> <span class="dv">30</span>),</span>
+<span id="cb5-7"><a href="#cb5-7"></a>  <span class="dt">penalty_external =</span> <span class="kw"><a href="reference/define_penalty.html">define_penalty</a></span>(<span class="dv">1</span>, <span class="dt">num_penalty =</span> <span class="dv">30</span>)</span>
+<span id="cb5-8"><a href="#cb5-8"></a>)</span></code></pre></div>
 <p>Helper functions are also available to define the available penalty types (<code>define_lasso</code>, <code>define_ridge</code>, and <code>define_enet</code>). The example below exemplifies fitting a standard ridge regression model with 100 penalty values by using the <code>define_ridge</code> helper function. As mentioned previously, a standard regularized regression is fit if no external data is provided.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</a>
-<a class="sourceLine" id="cb6-2" title="2">  <span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb6-3" title="3">  <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb6-4" title="4">  <span class="dt">family =</span> <span class="st">"gaussian"</span>, </a>
-<a class="sourceLine" id="cb6-5" title="5">  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_ridge.html">define_ridge</a></span>(<span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb6-6" title="6">)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>xrnet_model &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="dt">x =</span> x_linear, </span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="dt">y =</span> y_linear, </span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="dt">family =</span> <span class="st">"gaussian"</span>, </span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_ridge.html">define_ridge</a></span>(<span class="dv">100</span>)</span>
+<span id="cb6-6"><a href="#cb6-6"></a>)</span></code></pre></div>
 </div>
 <div id="tuning-penalty-parameters-by-cross-validation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#tuning-penalty-parameters-by-cross-validation" class="anchor"></a>Tuning Penalty Parameters by Cross-Validation</h4>
 <p>In general, we need a method to determine the penalty values that produce the optimal out-of-sample prediction. We provide a simple two-dimensional grid search that uses k-fold cross-validation to determine the optimal values for the penalties. The cross-validation function <code>tune_xrnet</code> is used as follows.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">cv_xrnet &lt;-<span class="st"> </span><span class="kw"><a href="reference/tune_xrnet.html">tune_xrnet</a></span>(</a>
-<a class="sourceLine" id="cb7-2" title="2">  <span class="dt">x =</span> x_linear, </a>
-<a class="sourceLine" id="cb7-3" title="3">  <span class="dt">y =</span> y_linear, </a>
-<a class="sourceLine" id="cb7-4" title="4">  <span class="dt">external =</span> ext_linear, </a>
-<a class="sourceLine" id="cb7-5" title="5">  <span class="dt">family =</span> <span class="st">"gaussian"</span>,</a>
-<a class="sourceLine" id="cb7-6" title="6">  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_ridge.html">define_ridge</a></span>(),</a>
-<a class="sourceLine" id="cb7-7" title="7">  <span class="dt">penalty_external =</span> <span class="kw"><a href="reference/define_lasso.html">define_lasso</a></span>()</a>
-<a class="sourceLine" id="cb7-8" title="8">)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>cv_xrnet &lt;-<span class="st"> </span><span class="kw"><a href="reference/tune_xrnet.html">tune_xrnet</a></span>(</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="dt">x =</span> x_linear, </span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="dt">y =</span> y_linear, </span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="dt">external =</span> ext_linear, </span>
+<span id="cb7-5"><a href="#cb7-5"></a>  <span class="dt">family =</span> <span class="st">"gaussian"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_ridge.html">define_ridge</a></span>(),</span>
+<span id="cb7-7"><a href="#cb7-7"></a>  <span class="dt">penalty_external =</span> <span class="kw"><a href="reference/define_lasso.html">define_lasso</a></span>()</span>
+<span id="cb7-8"><a href="#cb7-8"></a>)</span></code></pre></div>
 <p>To visualize the results of the cross-validation we provide a contour plot of the mean cross-validation error across the grid of penalties with the <code>plot</code> function.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(cv_xrnet)</a></code></pre></div>
-<p><img src="reference/figures/cv_results-1.png" width="700"></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(cv_xrnet)</span></code></pre></div>
+<p><img src="reference/figures/cv_results-1.png"><!-- --></p>
 <p>Cross-validation error curves can also be generated with <code>plot</code> by fixing the value of either the penalty on <code>x</code> or the external penalty on <code>external</code>. By default, either penalty defaults the optimal penalty on <code>x</code> or <code>external</code>.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(cv_xrnet, <span class="dt">p =</span> <span class="st">"opt"</span>)</a></code></pre></div>
-<p><img src="reference/figures/plot-error-curve-1.png" width="700"></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(cv_xrnet, <span class="dt">p =</span> <span class="st">"opt"</span>)</span></code></pre></div>
+<p><img src="reference/figures/plot-error-curve-1.png"><!-- --></p>
 <p>The <code>predict</code> function can be used to predict responses and to obtain the coefficient estimates at the optimal penalty combination (the default) or any other penalty combination that is within the penalty path(s). <code>coef</code> is a another help function that can be used to return the coefficients for a combination of penalty values as well.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">predy &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(cv_xrnet, <span class="dt">newdata =</span> x_linear)</a>
-<a class="sourceLine" id="cb10-2" title="2">estimates &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(cv_xrnet)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>predy &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(cv_xrnet, <span class="dt">newdata =</span> x_linear)</span>
+<span id="cb10-2"><a href="#cb10-2"></a>estimates &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(cv_xrnet)</span></code></pre></div>
+</div>
+<div id="using-the-bigmemory-r-package-with-xrnet" class="section level4">
+<h4 class="hasAnchor">
+<a href="#using-the-bigmemory-r-package-with-xrnet" class="anchor"></a>Using the bigmemory R package with xrnet</h4>
+<p>As an example of using <code>bigmemory</code> with <code>xrnet</code>, we have a provided a ASCII file, <code>x_linear.txt</code>, that contains the data for <code>x</code>. The <code>bigmemory</code> function <code>read.big.matrix()</code> can be used to create a <code>big.matrix</code> version of this file. The ASCII file is located under <code>inst/extdata</code> in this repository and is also included when you install the R package. To access the file in the R package, use <code><a href="https://rdrr.io/r/base/system.file.html">system.file("extdata", "x_linear.txt", package = "xrnet")</a></code> as shown in the example below.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>x_big &lt;-<span class="st"> </span>bigmemory<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/bigmemory/man/write.big.matrix.html">read.big.matrix</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"x_linear.txt"</span>, <span class="dt">package =</span> <span class="st">"xrnet"</span>), <span class="dt">type =</span> <span class="st">"double"</span>)</span></code></pre></div>
+<p>We can now fit a ridge regression model with the <code>big.matrix</code> version of the data and verify that we get the same estimates:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>xrnet_model_big &lt;-<span class="st"> </span><span class="kw"><a href="reference/xrnet.html">xrnet</a></span>(</span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="dt">x =</span> x_big, </span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="dt">y =</span> y_linear, </span>
+<span id="cb12-4"><a href="#cb12-4"></a>  <span class="dt">family =</span> <span class="st">"gaussian"</span>, </span>
+<span id="cb12-5"><a href="#cb12-5"></a>  <span class="dt">penalty_main =</span> <span class="kw"><a href="reference/define_ridge.html">define_ridge</a></span>(<span class="dv">100</span>)</span>
+<span id="cb12-6"><a href="#cb12-6"></a>)</span>
+<span id="cb12-7"><a href="#cb12-7"></a></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="kw"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(xrnet_model<span class="op">$</span>beta0, xrnet_model_big<span class="op">$</span>beta0)</span>
+<span id="cb12-9"><a href="#cb12-9"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="kw"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(xrnet_model<span class="op">$</span>betas, xrnet_model_big<span class="op">$</span>betas)</span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb12-12"><a href="#cb12-12"></a><span class="kw"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(xrnet_model<span class="op">$</span>alphas, xrnet_model_big<span class="op">$</span>alphas)</span>
+<span id="cb12-13"><a href="#cb12-13"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>
 <div id="contributing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#contributing" class="anchor"></a>Contributing</h2>
-<p>To report a bug, ask a question, or propose a feature, create a new issue <a href="https://github.com/USCbiostats/xrnet/issues">here</a>. This project is released with the following <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. If you would like to contribute, please abide by its terms.</p>
+<p>To report a bug, ask a question, or propose a feature, create a new issue <a href="https://github.com/USCbiostats/xrnet/issues">here</a>. This project is released with the following <a href="https://github.com/USCbiostats/xrnet/blob/master/CODE_OF_CONDUCT.md">Contributor Code of Conduct</a>. If you would like to contribute, please abide by its terms.</p>
 </div>
 <div id="funding" class="section level2">
 <h2 class="hasAnchor">
@@ -204,6 +234,7 @@
 <p>Supported by National Cancer Institute Grant #1P01CA196596.</p>
 </div>
 </div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -217,20 +248,24 @@
 <div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
-<li>
-<a href="https://www.r-project.org/Licenses/GPL-2">GPL-2</a> | file <a href="LICENSE-text.html">LICENSE</a>
-</li>
+<li><a href="https://www.r-project.org/Licenses/GPL-2">GPL-2</a></li>
+</ul>
+</div>
+<div class="community">
+<h2>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Garrett Weaver <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9918-8386" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID" height="16"></a> </li>
+<li>Garrett Weaver <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9918-8386" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
 
-      <div class="dev-status">
+  <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://travis-ci.org/USCbiostats/xrnet"><img src="https://travis-ci.org/USCbiostats/xrnet.svg?branch=development" alt="Build Status"></a></li>
@@ -240,7 +275,6 @@
 </ul>
 </div>
 </div>
-
 </div>
 
 
@@ -249,12 +283,14 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

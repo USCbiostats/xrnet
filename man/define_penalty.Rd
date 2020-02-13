@@ -4,9 +4,14 @@
 \alias{define_penalty}
 \title{Define regularization object for predictor and external data}
 \usage{
-define_penalty(penalty_type = 1, quantile = 0.5, num_penalty = 20,
-  penalty_ratio = NULL, user_penalty = NULL,
-  custom_multiplier = NULL)
+define_penalty(
+  penalty_type = 1,
+  quantile = 0.5,
+  num_penalty = 20,
+  penalty_ratio = NULL,
+  user_penalty = NULL,
+  custom_multiplier = NULL
+)
 }
 \arguments{
 \item{penalty_type}{type of regularization. Default is 1 (Lasso).
@@ -28,6 +33,16 @@ Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.}
 
 \item{custom_multiplier}{variable-specific penalty multipliers to apply to overall penalty.
 Default is 1 for all variables. 0 is no penalization.}
+}
+\value{
+A list object with regularization settings that are used to define the regularization
+for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}:
+\item{penalty_type}{The penalty type, scalar with value in range [0, 1].}
+\item{quantile}{Quantile for quantile penalty, 0.5 defaults to lasso (not currently implemented).}
+\item{num_penalty}{The number of penalty values in the penalty path.}
+\item{penalty_ratio}{The ratio of the minimum penalty value compared to the maximum penalty value.}
+\item{user_penalty}{User-defined numeric vector of penalty values, NULL if not provided by user.}
+\item{custom_multiplier}{User-defined feature-specific penalty multipliers, NULL if not provided by user.}
 }
 \description{
 Defines regularization for predictors and external data variables in \code{\link{xrnet}} fitting.

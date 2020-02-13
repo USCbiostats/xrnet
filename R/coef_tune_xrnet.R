@@ -1,6 +1,6 @@
 #' Get coefficient estimates from "tune_xrnet" model object
 #'
-#' @description Returns coefficents from 'xrnet' model. Note that we currently only support returning
+#' @description Returns coefficients from 'xrnet' model. Note that we currently only support returning
 #' coefficient estimates that are in the original path(s).
 #'
 #' @param object A \code{\link{tune_xrnet}} object
@@ -9,6 +9,7 @@
 #' @param pext vector of penalty values to apply to external data variables.
 #' Default is optimal value in tune_xrnet object.
 #' @param ... pass other arguments to xrnet function (if needed)
+#'
 #' @return A list with coefficient estimates at each of the requested penalty combinations
 #' \item{beta0}{matrix of first-level intercepts indexed by penalty values, NULL if no first-level intercept in original model fit}
 #' \item{betas}{3-dimensional array of first-level penalized coefficients indexed by penalty values}
@@ -27,10 +28,10 @@
 #'     family = "gaussian",
 #'     control = xrnet.control(tolerance = 1e-6)
 #'  )
-#' \dontrun{
+#'
 #'  ## Get coefficient estimates at optimal penalty combination
 #'  coef_opt <- coef(cv_xrnet)
-#'  }
+#'
 
 #' @export
 coef.tune_xrnet <- function(object,

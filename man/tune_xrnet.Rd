@@ -4,12 +4,23 @@
 \alias{tune_xrnet}
 \title{k-fold cross-validation for hierarchical regularized regression}
 \usage{
-tune_xrnet(x, y, external = NULL, unpen = NULL,
-  family = c("gaussian", "binomial"), penalty_main = define_penalty(),
-  penalty_external = define_penalty(), weights = NULL,
-  standardize = c(TRUE, TRUE), intercept = c(TRUE, FALSE),
-  loss = c("deviance", "mse", "mae", "auc"), nfolds = 5,
-  foldid = NULL, parallel = FALSE, control = list())
+tune_xrnet(
+  x,
+  y,
+  external = NULL,
+  unpen = NULL,
+  family = c("gaussian", "binomial"),
+  penalty_main = define_penalty(),
+  penalty_external = define_penalty(),
+  weights = NULL,
+  standardize = c(TRUE, TRUE),
+  intercept = c(TRUE, FALSE),
+  loss = c("deviance", "mse", "mae", "auc"),
+  nfolds = 5,
+  foldid = NULL,
+  parallel = FALSE,
+  control = list()
+)
 }
 \arguments{
 \item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options include:
@@ -35,8 +46,8 @@ tune_xrnet(x, y, external = NULL, unpen = NULL,
 
 \item{family}{error distribution for outcome variable, options include:
 \itemize{
-    \item gaussian
-    \item binomial
+    \item "gaussian"
+    \item "binomial"
 }}
 
 \item{penalty_main}{specifies regularization object for x. See \code{\link{define_penalty}} for more details.}
@@ -55,10 +66,10 @@ Default is c(TRUE, FALSE).}
 
 \item{loss}{loss function for cross-validation. Options include:
 \itemize{
-   \item deviance
-   \item mse (Mean Squared Error)
-   \item mae (Mean Absolute Error)
-   \item auc (Area under the curve)
+   \item "deviance"
+   \item "mse" (Mean Squared Error)
+   \item "mae" (Mean Absolute Error)
+   \item "auc" (Area under the curve)
 }}
 
 \item{nfolds}{number of folds for cross-validation. Default is 5.}
@@ -91,7 +102,7 @@ k-fold cross-validation is used to determine the 'optimal' combination of hyperp
 optimal is based on the optimal value obtained for the user-selected loss function across the k folds. To efficiently traverse all possible
 combinations of the hyperparameter values, 'warm-starts' are used to traverse the penalty from largest
 to smallest penalty value(s). Note that the penalty grid for the folds is generated
-by fitting the model on the entire training data. Parallelization is enabled throught the \code{foreach} and
+by fitting the model on the entire training data. Parallelization is enabled through the \code{foreach} and
 \code{doParallel} R packages. To use parallelization, \code{parallel = TRUE}, you must first create the cluster
 \code{makeCluster} and then register the cluster \code{registerDoParallel}. See the \code{parallel}, \code{foreach},
 and/or \code{doParallel} R packages for more details on how to setup parallelization.
@@ -108,8 +119,8 @@ cv_xrnet <- tune_xrnet(
     family = "gaussian",
     control = xrnet.control(tolerance = 1e-6)
  )
- \dontrun{
+
  ## contour plot of cross-validated error
  plot(cv_xrnet)
- }
+
 }

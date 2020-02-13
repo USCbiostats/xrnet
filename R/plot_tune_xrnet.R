@@ -3,7 +3,7 @@
 #' @description Generates plots to visualize the mean cross-validation error. If no external
 #' data was used in the model fit, a plot of the cross-validated error with standard error
 #' bars is generated for all penalty values. If external data was used in the model fit, a
-#' countour plot of the cross-validated errors is created. Error curves can also be
+#' contour plot of the cross-validated errors is created. Error curves can also be
 #' generated for a fixed value of the primary penalty on x (p) or the external penalty (pext) when
 #' external data is used.
 #'
@@ -14,11 +14,17 @@
 #' Use value "opt" to use the optimal penalty value.
 #' @param ... Additional graphics parameters
 #'
+#' @return None
+#'
 #' @details The parameter values p and pext can be used to generate profiled error curves by fixing either
 #' the penalty on x or the penalty on external to a fixed value. You cannot specify
 #' both at the same time as this would only return a single point.
 #'
 #' @examples
+#'
+#' ## load example data
+#' data(GaussianExample)
+#'
 #' ## 5-fold cross validation
 #' cv_xrnet <- tune_xrnet(
 #'     x = x_linear,
@@ -27,13 +33,13 @@
 #'     family = "gaussian",
 #'     control = xrnet.control(tolerance = 1e-6)
 #'  )
-#'  \dontrun{
+#'
 #'  ## contour plot of cross-validated error
 #'  plot(cv_xrnet)
 #'
 #'  ## error curve of external penalties at optimal penalty value
 #'  plot(cv_xrnet, p = "opt")
-#'  }
+#'
 
 #' @export
 #' @importFrom graphics filled.contour axis points
@@ -49,14 +55,14 @@ plot.tune_xrnet <- function(x, p = NULL, pext = NULL, ...) {
             xopt_val <- log(x$opt_penalty)
         } else {
             if (!is.null(p) && !is.null(pext)) {
-                stop("Error: Please only specify either penalty or penalty_ext, cannot specify both at the same time")
+                stop("Please only specify either penalty or penalty_ext, cannot specify both at the same time")
             } else if (!is.null(p)) {
                 if (p == "opt") {
                     p <- x$opt_penalty
                 }
                 p_idx <- match(p, x$fitted_model$penalty)
                 if (is.na(p_idx)) {
-                    stop("Error: The penalty value 'p' is not in the fitted model")
+                    stop("The penalty value 'p' is not in the fitted model")
                 }
                 xval <- log(as.numeric(colnames(x$cv_mean)))
                 cverr <- x$cv_mean[p_idx, ]
@@ -69,7 +75,7 @@ plot.tune_xrnet <- function(x, p = NULL, pext = NULL, ...) {
                 }
                 pext_idx <- match(pext, x$fitted_model$penalty_ext)
                 if (is.na(pext_idx)) {
-                    stop("Error: The penalty value 'p' is not in the fitted model")
+                    stop("The penalty value 'p' is not in the fitted model")
                 }
                 xval <- log(as.numeric(rownames(x$cv_mean)))
                 cverr <- x$cv_mean[, pext_idx]

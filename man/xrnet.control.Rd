@@ -4,9 +4,14 @@
 \alias{xrnet.control}
 \title{Control function for xrnet fitting}
 \usage{
-xrnet.control(tolerance = 1e-08, max_iterations = 1e+05,
-  dfmax = NULL, pmax = NULL, lower_limits = NULL,
-  upper_limits = NULL)
+xrnet.control(
+  tolerance = 1e-08,
+  max_iterations = 1e+05,
+  dfmax = NULL,
+  pmax = NULL,
+  lower_limits = NULL,
+  upper_limits = NULL
+)
 }
 \arguments{
 \item{tolerance}{positive convergence criterion. Default is 1e-08.}
@@ -23,6 +28,14 @@ Default is \eqn{min(2 * dfmax + 20, ncol(x) + ncol(unpen) + ncol(external) + int
 \item{lower_limits}{vector of lower limits for each coefficient. Default is -Inf for all variables.}
 
 \item{upper_limits}{vector of upper limits for each coefficient. Default is Inf for all variables.}
+}
+\value{
+A list object with the following components:
+\item{tolerance}{The coordinate descent stopping criterion.}
+\item{dfmax}{The maximum number of variables that will be allowed in the model.}
+\item{pmax}{The maximum number of variables with nonzero coefficient estimate.}
+\item{lower_limits}{Feature-specific numeric vector of lower bounds for coefficient estimates}
+\item{upper_limits}{Feature-specific numeric vector of upper bounds for coefficient estimates}
 }
 \description{
 Control function for \code{\link{xrnet}} fitting.
