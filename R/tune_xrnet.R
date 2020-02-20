@@ -371,7 +371,7 @@ tune_xrnet <- function(x,
         }
     }
     cv_mean <- rowMeans(errormat)
-    cv_sd <- sqrt(rowSums((errormat - cv_mean)^2) / n)
+    cv_sd <- sqrt(rowSums((errormat - cv_mean)^2) / nfolds)
     cv_mean <- matrix(cv_mean, nrow = num_pen, byrow = TRUE)
     cv_sd <- matrix(cv_sd, nrow = num_pen, byrow = TRUE)
     rownames(cv_mean) <- rev(sort(xrnet_object$penalty))

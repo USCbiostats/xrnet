@@ -87,7 +87,7 @@ Eigen::VectorXd fitModelCV(const TX & x,
         n, nv_x, nv_fixed, nv_ext, nv_total,
         intr[0], intr[1], ext, xm.data(), cent.data(),
         xs.data(), solver->getYm(), solver->getYs(), num_combn, family, user_loss,
-        test_idx, x, y
+        test_idx, x, fixedmap, y
     );
 
     // compute penalty path for 1st level variables
