@@ -1,12 +1,9 @@
 ## Resubmission
-This is a resubmission. In this version I have:
 
-* Added reference to paper describing methods in DESCRIPTION
+This is a resubmission. 
 
-* Removed the copy of GPL-2 license
+Another resusmission is already under review, but I am hoping for this to be
+the released version due to following change. Apologies for this change, but
+it is critical for the utlity of the R package:
 
-* Added \value to any exported methods that were missing it in .Rd files
-
-* Removed \dontrun from example in plot.tune_xrnet documentation
-
-* Cleaned up error messages from stop("Error: ...") to stop("...")
+* Fixed tune_xrnet function to compute correct test set performance with unpenalized variables 
