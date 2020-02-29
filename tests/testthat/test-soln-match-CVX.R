@@ -51,422 +51,552 @@ test_that("x and ext standardized, both intercepts",{
 
     myControl <- list(tolerance = 1e-20)
 
-    expect_equal(alphas_cvx_mat[, 1],
-                  xrnet(x = xtest,
-                        y = ytest_scaled,
-                        external = ztest,
-                        family = "gaussian",
-                        intercept = c(T, T),
-                        standardize = c(T, T),
-                        penalty_main = define_penalty(0, user_penalty = 1),
-                        penalty_external = define_penalty(1, user_penalty = 0.1),
-                        control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
-    expect_equal(betas_cvx_mat[, 1],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       intercept = c(T, T),
-                       standardize = c(T, T),
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 1],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            intercept = c(T, T),
+            standardize = c(T, T),
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(alphas_cvx_mat[, 1],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       intercept = c(T, T),
-                       standardize = c(T, T),
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
-    expect_equal(betas_cvx_mat[, 1],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       intercept = c(T, T),
-                       standardize = c(T, T),
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 1],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            intercept = c(T, T),
+            standardize = c(T, T),
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
+
+    expect_equal(
+        alphas_cvx_mat[, 1],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            intercept = c(T, T),
+            standardize = c(T, T),
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
+
+    expect_equal(
+        betas_cvx_mat[, 1],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            intercept = c(T, T),
+            standardize = c(T, T),
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 })
 
 test_that("x NOT standardized, ext standardized, both intercepts",{
 
     myControl <- list(tolerance = 1e-20)
 
-    expect_equal(alphas_cvx_mat[, 2],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(F, T),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 2],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(F, T),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 2],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(F, T),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 2],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(F, T),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(alphas_cvx_mat[, 2],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(F, T),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 2],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(F, T),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 2],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(F, T),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 2],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(F, T),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 })
 
 test_that("x standardized, ext NOT standardized, both intercepts",{
 
     myControl <- list(tolerance = 1e-20)
 
-    expect_equal(alphas_cvx_mat[, 3],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(T, F),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 3],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(T, F),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 3],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(T, F),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 3],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(T, F),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(alphas_cvx_mat[, 3],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(T, F),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 3],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(T, F),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 3],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(T, F),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 3],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(T, F),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 })
 
 test_that("x NOT standardized, ext NOT standardized, both intercepts",{
 
     myControl <- list(tolerance = 1e-20)
 
-    expect_equal(alphas_cvx_mat[, 4],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(F, F),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 4],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(F, F),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 4],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(F, F),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 4],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(F, F),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(alphas_cvx_mat[, 4],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(F, F),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 4],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(F, F),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 4],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(T, T),
-                       standardize = c(F, F),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 4],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(T, T),
+            standardize = c(F, F),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 })
 
 test_that("x standardized, ext standardized, no 2nd level intercept",{
 
     myControl <- list(tolerance = 1e-20)
 
-    expect_equal(alphas_cvx_mat[, 5],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(TRUE, TRUE),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 5],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(TRUE, TRUE),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 5],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(TRUE, TRUE),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 5],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(TRUE, TRUE),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(alphas_cvx_mat[, 5],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(TRUE, TRUE),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 5],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(TRUE, TRUE),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 5],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(TRUE, TRUE),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 5],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(TRUE, TRUE),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 })
 
 test_that("x NOT standardized, ext standardized, no 2nd level intercept",{
 
     myControl <- list(tolerance = 1e-20)
 
-    expect_equal(alphas_cvx_mat[, 6],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(FALSE, TRUE),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 6],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(FALSE, TRUE),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 6],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(FALSE, TRUE),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 6],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(FALSE, TRUE),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(alphas_cvx_mat[, 6],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(FALSE, TRUE),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 6],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(FALSE, TRUE),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 6],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(FALSE, TRUE),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 6],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(FALSE, TRUE),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 })
 
 test_that("x standardized, ext NOT standardized, no 2nd level intercept",{
 
     myControl <- list(tolerance = 1e-20)
 
-    expect_equal(alphas_cvx_mat[, 7],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(TRUE, FALSE),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 7],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(TRUE, FALSE),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 7],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(TRUE, FALSE),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 7],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(TRUE, FALSE),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(alphas_cvx_mat[, 7],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(TRUE, FALSE),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 7],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(TRUE, FALSE),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 7],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(TRUE, FALSE),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 7],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(TRUE, FALSE),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 })
 
 test_that("x NOT standardized, ext NOT standardized, no 2nd level intercept",{
 
     myControl <- list(tolerance = 1e-20)
 
-    expect_equal(alphas_cvx_mat[, 8],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external  = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(FALSE, FALSE),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 8],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external  = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(FALSE, FALSE),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 8],
-                 xrnet(x = xtest,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(FALSE, FALSE),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 8],
+        xrnet(
+            x = xtest,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(FALSE, FALSE),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(alphas_cvx_mat[, 8],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external  = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(FALSE, FALSE),
-                       control = myControl)$alphas[1:5, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        alphas_cvx_mat[, 8],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external  = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(FALSE, FALSE),
+            control = myControl
+        )$alphas[1:5, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 
-    expect_equal(betas_cvx_mat[, 8],
-                 xrnet(x = xsparse,
-                       y = ytest_scaled,
-                       external = ztest,
-                       family = "gaussian",
-                       penalty_main = define_penalty(0, user_penalty = 1),
-                       penalty_external = define_penalty(1, user_penalty = 0.1),
-                       intercept = c(TRUE, FALSE),
-                       standardize = c(FALSE, FALSE),
-                       control = myControl)$betas[1:50, 1, 1] * sd_y,
-                 tolerance = 1e-5)
+    expect_equal(
+        betas_cvx_mat[, 8],
+        xrnet(
+            x = xsparse,
+            y = ytest_scaled,
+            external = ztest,
+            family = "gaussian",
+            penalty_main = define_penalty(0, user_penalty = 1),
+            penalty_external = define_penalty(1, user_penalty = 0.1),
+            intercept = c(TRUE, FALSE),
+            standardize = c(FALSE, FALSE),
+            control = myControl
+        )$betas[1:50, 1, 1] * sd_y,
+        tolerance = 1e-5
+    )
 })
 
 test_that("x standardized, ext standardized, no 1st level intercept",{

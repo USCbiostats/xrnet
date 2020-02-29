@@ -1,2 +1,6 @@
-cv_mean <- readRDS(file = "testdata/cv_mean.rds")
-foldid <- readRDS(file = "testdata/foldid.rds")
+cv_mean <- readRDS(file = "testdata/cv_checks/cv_mean.rds")
+foldid <- readRDS(file = "testdata/cv_checks/foldid.rds")
+cv_mae <- readRDS(file = "testdata/cv_checks/cv_mae_glmnet.rds")
+foldid_binomial <- readRDS("testdata/cv_checks/foldid_binomial.rds")
+cv_auc <- readRDS(file = "testdata/cv_checks/cv_auc_glmnet.rds")
+cv_deviance <- readRDS(file = "testdata/cv_checks/cv_deviance_glmnet.rds")
