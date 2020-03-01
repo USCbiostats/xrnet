@@ -13,6 +13,10 @@ jobs:
     os: osx
   - r: devel
     os: linux
+  - r: oldrel
+    os: linux
+  - r: oldrel
+    os: osx
 
 osx_image: xcode10.2
 

@@ -3,12 +3,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![Build
+[![Travis Build
 Status](https://travis-ci.org/USCbiostats/xrnet.svg?branch=development)](https://travis-ci.org/USCbiostats/xrnet)
-[![Build
+[![Appveyor Build
 status](https://ci.appveyor.com/api/projects/status/6pr8hlc4wg9vjcxd?svg=true)](https://ci.appveyor.com/project/gmweaver/xrnet)
-[![codecov](https://codecov.io/gh/USCbiostats/xrnet/branch/development/graph/badge.svg)](https://codecov.io/gh/USCbiostats/xrnet)
+[![codecov](https://codecov.io/gh/USCbiostats/xrnet/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/xrnet)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.01761/status.svg)](https://doi.org/10.21105/joss.01761)
 
 # Introduction
 
@@ -53,7 +54,15 @@ variable-specific generalization and to fit the model described above.
 Currently, we allow for continuous and binary outcomes, but plan to
 extend to other outcomes (i.e. survival) in the next release.
 
-# Setup
+# Installation
+
+#### From CRAN
+
+``` r
+install.packages("xrnet")
+```
+
+#### From Github (most up-to-date)
 
 1.  OS-specific prerequisites
       - *Windows*: Install
@@ -77,21 +86,15 @@ devtools::install_github("USCbiostats/xrnet")
 devtools::install_github("USCbiostats/xrnet", ref = "development")
 ```
 
-4.  Load the package
-
-<!-- end list -->
-
-``` r
-library(xrnet)
-```
-
 # A First Example
 
 As an example of how you might use xrnet, we have provided a small set
 of simulated external data variables (ext), predictors (x), and a
-continuous outcome variable (y). First, load the example data:
+continuous outcome variable (y). First, load the package and the example
+data:
 
 ``` r
+library(xrnet)
 data(GaussianExample)
 ```
 

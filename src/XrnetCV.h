@@ -20,6 +20,7 @@ class XrnetCV : public Xrnet<TX, TZ>  {
 protected:
     Eigen::Map<const Eigen::VectorXi> test_idx;
     TX X;
+    MapMat Fixed;
     MapMat y;
     VecXd error_mat;
     lossPtr loss_func;
@@ -59,6 +60,7 @@ public:
             const std::string & user_loss_,
             const Eigen::Ref<const Eigen::VectorXi> & test_idx_,
             const Eigen::Ref<const Eigen::MatrixXd> & X_,
+            const Eigen::Ref<const Eigen::MatrixXd> & Fixed_,
             const Eigen::Ref<const Eigen::MatrixXd> & y_) :
     Xrnet<TX, TZ>(
             n_,
@@ -77,6 +79,7 @@ public:
             1),
             test_idx(test_idx_.data(), test_idx_.size()),
             X(X_.data(), n_, X_.cols()),
+            Fixed(Fixed_.data(), n, Fixed_.cols()),
             y(y_.data(), n_, y_.cols())
             {
                 error_mat = Eigen::VectorXd::Zero(num_penalty_);
@@ -102,6 +105,7 @@ public:
             const std::string & user_loss_,
             const Eigen::Ref<const Eigen::VectorXi> & test_idx_,
             const MapSpMat X_,
+            const Eigen::Ref<const Eigen::MatrixXd> & Fixed_,
             const Eigen::Ref<const Eigen::MatrixXd> & y_) :
         Xrnet<TX, TZ>(
                 n_,
@@ -120,6 +124,7 @@ public:
                 1),
                 test_idx(test_idx_.data(), test_idx_.size()),
                 X(X_),
+                Fixed(Fixed_.data(), n, Fixed_.cols()),
                 y(y_.data(), n_, y_.cols())
                 {
                     error_mat = Eigen::VectorXd::Zero(num_penalty_);
@@ -175,6 +180,9 @@ public:
         // compute predicted values
         VecXd yhat = Eigen::VectorXd::Constant(n, beta0[0]);
         yhat += X * betas.sparseView();
+        if (nv_fixed > 0) {
+            yhat += Fixed * gammas;
+        }
 
         // compute error for test data
         error_mat[idx] = loss_func(y, yhat, test_idx);
