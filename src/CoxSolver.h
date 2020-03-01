@@ -180,15 +180,11 @@ public:
 
         // initial wgts and residuals
         VecXd exp_eta = VectorXd::Ones(n);
-        double sum_exp_eta_prime = exp_eta.sum();
+        double sum_exp_eta_prime = 0;
         VectorXd sum_exp_eta(m);
-        for (int i = 0; i < m; i++) {
-            if (ri[i] == ri[i+1]) {
-                sum_exp_eta[i] = sum_exp_eta_prime;
-            } else {
-                sum_exp_eta[i] = sum_exp_eta_prime - exp_eta.segment((n-ri[i]), (ri[i]-ri[i+1])).sum();
-                sum_exp_eta_prime = sum_exp_eta[i];
-            }
+        for (int i = m-1; i >= 0 && i < m; i--) {
+            sum_exp_eta[i] = sum_exp_eta_prime + exp_eta.segment((n-ri[i]), (ri[i]-ri[i+1])).sum();
+            sum_exp_eta_prime = sum_exp_eta[i];
         }
         double u_prime = 0;
         double u2_prime = 0;
@@ -260,15 +256,11 @@ public:
             }
         }
         VecXd exp_eta = eta.array().exp();
-        double sum_exp_eta_prime = exp_eta.sum();
+        double sum_exp_eta_prime = 0;
         VectorXd sum_exp_eta(m);
-        for (int i = 0; i < m; i++) {
-            if (ri[i] == ri[i+1]) {
-                sum_exp_eta[i] = sum_exp_eta_prime;
-            } else {
-                sum_exp_eta[i] = sum_exp_eta_prime - exp_eta.segment((n-ri[i]), (ri[i]-ri[i+1])).sum();
-                sum_exp_eta_prime = sum_exp_eta[i];
-            }
+        for (int i = m-1; i >= 0 && i < m; i--) {
+            sum_exp_eta[i] = sum_exp_eta_prime + exp_eta.segment((n-ri[i]), (ri[i]-ri[i+1])).sum();
+            sum_exp_eta_prime = sum_exp_eta[i];
         }
         double u_prime = 0;
         double u2_prime = 0;
