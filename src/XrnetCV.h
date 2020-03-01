@@ -4,6 +4,7 @@
 #include <RcppEigen.h>
 #include <unordered_map>
 #include "Xrnet.h"
+#include <vector>
 
 template <typename TX, typename TZ>
 class XrnetCV : public Xrnet<TX, TZ>  {
@@ -20,7 +21,6 @@ class XrnetCV : public Xrnet<TX, TZ>  {
 protected:
     Eigen::Map<const Eigen::VectorXi> test_idx;
     TX X;
-    MapMat Fixed;
     MapMat y;
     VecXd error_mat;
     lossPtr loss_func;
@@ -60,7 +60,6 @@ public:
             const std::string & user_loss_,
             const Eigen::Ref<const Eigen::VectorXi> & test_idx_,
             const Eigen::Ref<const Eigen::MatrixXd> & X_,
-            const Eigen::Ref<const Eigen::MatrixXd> & Fixed_,
             const Eigen::Ref<const Eigen::MatrixXd> & y_) :
     Xrnet<TX, TZ>(
             n_,
@@ -79,7 +78,6 @@ public:
             1),
             test_idx(test_idx_.data(), test_idx_.size()),
             X(X_.data(), n_, X_.cols()),
-            Fixed(Fixed_.data(), n, Fixed_.cols()),
             y(y_.data(), n_, y_.cols())
             {
                 error_mat = Eigen::VectorXd::Zero(num_penalty_);
@@ -105,7 +103,6 @@ public:
             const std::string & user_loss_,
             const Eigen::Ref<const Eigen::VectorXi> & test_idx_,
             const MapSpMat X_,
-            const Eigen::Ref<const Eigen::MatrixXd> & Fixed_,
             const Eigen::Ref<const Eigen::MatrixXd> & y_) :
         Xrnet<TX, TZ>(
                 n_,
@@ -124,7 +121,6 @@ public:
                 1),
                 test_idx(test_idx_.data(), test_idx_.size()),
                 X(X_),
-                Fixed(Fixed_.data(), n, Fixed_.cols()),
                 y(y_.data(), n_, y_.cols())
                 {
                     error_mat = Eigen::VectorXd::Zero(num_penalty_);
@@ -180,9 +176,6 @@ public:
         // compute predicted values
         VecXd yhat = Eigen::VectorXd::Constant(n, beta0[0]);
         yhat += X * betas.sparseView();
-        if (nv_fixed > 0) {
-            yhat += Fixed * gammas;
-        }
 
         // compute error for test data
         error_mat[idx] = loss_func(y, yhat, test_idx);
@@ -284,6 +277,29 @@ public:
             error += (actual(test_idx[i], 0) * predicted[test_idx[i]] - log(1.0 + exp(predicted[test_idx[i]]))) / test_idx.size();
         }
         return -2 * error;
+    }
+
+    // data passing in need to be sorted in increasing / non-decreasing order
+    static double cindex(const Eigen::Ref<const Eigen::MatrixXd> & actual,
+                         const Eigen::Ref<const Eigen::VectorXd> & predicted,
+                         const Eigen::Ref<const Eigen::VectorXi> & test_idx) {
+        std::vector<int> wh;
+        for (int i = 0; i < test_idx.size()-1; i++) {
+            if (actual(test_idx[i],1) == 1) {
+                wh.push_back(i);
+            }
+        }
+        double total(0), concordant(0);
+        for (auto e : wh) {
+            for (int j = e+1; j < test_idx.size(); j++) {
+                if (actual(test_idx[j], 0) > actual(test_idx[e], 0)) {
+                    total += 1;
+                    if (predicted[test_idx[j]] < predicted[test_idx[e]]) concordant += 1;
+                    else if (predicted[test_idx[j]] == predicted[test_idx[e]]) concordant += 0.5;
+                }
+            }
+        }
+        return concordant / total;
     }
 };
 
