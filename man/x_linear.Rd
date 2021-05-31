@@ -4,7 +4,9 @@
 \name{x_linear}
 \alias{x_linear}
 \title{Simulated example data for hierarchical regularized linear regression}
-\format{A matrix with 100 rows and 50 variables}
+\format{
+A matrix with 100 rows and 50 variables
+}
 \usage{
 x_linear
 }

@@ -4,7 +4,9 @@
 \name{ext_linear}
 \alias{ext_linear}
 \title{Simulated external data}
-\format{A matrix with 50 rows and 4 columns}
+\format{
+A matrix with 50 rows and 4 columns
+}
 \usage{
 ext_linear
 }

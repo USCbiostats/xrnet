@@ -4,7 +4,9 @@
 \name{y_linear}
 \alias{y_linear}
 \title{Simulated outcome data}
-\format{A vector with 100 elements}
+\format{
+A vector with 100 elements
+}
 \usage{
 y_linear
 }
