@@ -4,9 +4,9 @@ Title: Hierarchical Regularized Regression
 Version: 0.1.7
 Authors@R: c(
   person("Garrett", "Weaver", email = "gmweaver.usc@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-9918-8386")),
-  person("Dixin", "Shen", email = "dixinshe@usc.edu", role = c("aut", "cre"),
+  person("Dixin", "Shen", email = "dixinshe@usc.edu", role = c("aut", "cre")),
   person("Juan Pablo", "Lewinger", email = "lewinger@usc.edu", role = c("ctb", "ths"))
-  )
+)
 URL: https://github.com/USCbiostats/xrnet
 Description: Fits hierarchical regularized regression models
     to incorporate potentially informative external data, Weaver and Lewinger (2019) <doi:10.21105/joss.01761>. 
