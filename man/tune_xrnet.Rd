@@ -113,14 +113,13 @@ data(GaussianExample)
 
 ## 5-fold cross validation
 cv_xrnet <- tune_xrnet(
-    x = x_linear,
-    y = y_linear,
-    external = ext_linear,
-    family = "gaussian",
-    control = xrnet.control(tolerance = 1e-6)
- )
+  x = x_linear,
+  y = y_linear,
+  external = ext_linear,
+  family = "gaussian",
+  control = xrnet.control(tolerance = 1e-6)
+)
 
- ## contour plot of cross-validated error
- plot(cv_xrnet)
-
+## contour plot of cross-validated error
+plot(cv_xrnet)
 }

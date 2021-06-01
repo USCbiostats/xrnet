@@ -105,12 +105,12 @@ penExt <- define_penalty(1, num_penalty = 20)
 
 ## fit model with defined regularization
 fit_xrnet <- xrnet(
-    x = x_linear,
-    y = y_linear,
-    external = ext_linear,
-    family = "gaussian",
-    penalty_main = penMain,
-    penalty_external = penExt
+  x = x_linear,
+  y = y_linear,
+  external = ext_linear,
+  family = "gaussian",
+  penalty_main = penMain,
+  penalty_external = penExt
 )
 }
 \references{

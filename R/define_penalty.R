@@ -34,7 +34,6 @@
 #'
 #' # define elastic net (0.5) penalty with user-defined penalty
 #' my_custom_penalty <- define_penalty(penalty_type = 0.5, user_penalty = c(100, 50, 10, 1, 0.1))
-
 #' @export
 define_penalty <- function(penalty_type = 1,
                            quantile = 0.5,
@@ -42,50 +41,49 @@ define_penalty <- function(penalty_type = 1,
                            penalty_ratio = NULL,
                            user_penalty = NULL,
                            custom_multiplier = NULL) {
+  if (any(penalty_type < 0) || any(penalty_type > 1)) {
+    stop("Invalid penalty type")
+  } else {
+    penalty_type <- as.double(penalty_type)
+  }
 
-    if (any(penalty_type < 0) || any(penalty_type > 1)) {
-        stop("Invalid penalty type")
-    } else {
-        penalty_type <- as.double(penalty_type)
+  if (quantile < 0 || quantile > 1) {
+    stop("Invalid value for quantile, must be between 0 and 1")
+  } else {
+    quantile <- as.double(quantile)
+  }
+
+  if (is.null(user_penalty)) {
+    user_penalty <- as.double(0)
+    num_penalty <- as.integer(num_penalty)
+    if (!is.null(penalty_ratio)) {
+      if (penalty_ratio <= 0 | penalty_ratio >= 1) {
+        stop("penalty_ratio should be between 0 and 1")
+      } else {
+        penalty_ratio <- as.double(penalty_ratio)
+      }
     }
-
-    if (quantile < 0 || quantile > 1) {
-        stop("Invalid value for quantile, must be between 0 and 1")
-    } else {
-        quantile <- as.double(quantile)
+  } else {
+    penalty_ratio <- as.double(0)
+    if (any(user_penalty < 0)) {
+      stop("user_penalty can only contain non-negative values")
     }
+    user_penalty <- as.double(rev(sort(user_penalty)))
+    num_penalty <- as.integer(length(user_penalty))
+  }
 
-    if (is.null(user_penalty)) {
-        user_penalty <- as.double(0)
-        num_penalty <- as.integer(num_penalty)
-        if (!is.null(penalty_ratio)) {
-            if (penalty_ratio <= 0 | penalty_ratio >= 1) {
-                stop("penalty_ratio should be between 0 and 1")
-            } else {
-                penalty_ratio <- as.double(penalty_ratio)
-            }
-        }
-    } else {
-        penalty_ratio <- as.double(0)
-        if (any(user_penalty < 0)) {
-            stop("user_penalty can only contain non-negative values")
-        }
-        user_penalty <- as.double(rev(sort(user_penalty)))
-        num_penalty <- as.integer(length(user_penalty))
-    }
+  if (!is.null(custom_multiplier) && any(custom_multiplier < 0)) {
+    stop("custom_multiplier can only contain non-negative values")
+  }
 
-    if (!is.null(custom_multiplier) && any(custom_multiplier < 0)) {
-        stop("custom_multiplier can only contain non-negative values")
-    }
-
-    penalty_obj <- list(
-        penalty_type = penalty_type,
-        quantile = quantile,
-        num_penalty = num_penalty,
-        penalty_ratio = penalty_ratio,
-        user_penalty = user_penalty,
-        custom_multiplier = custom_multiplier
-    )
+  penalty_obj <- list(
+    penalty_type = penalty_type,
+    quantile = quantile,
+    num_penalty = num_penalty,
+    penalty_ratio = penalty_ratio,
+    user_penalty = user_penalty,
+    custom_multiplier = custom_multiplier
+  )
 }
 
 #' Define lasso regularization object for predictor and external data
@@ -109,15 +107,14 @@ define_lasso <- function(num_penalty = 20,
                          penalty_ratio = NULL,
                          user_penalty = NULL,
                          custom_multiplier = NULL) {
-
-    define_penalty(
-        penalty_type = 1,
-        quantile = 0.5,
-        num_penalty = num_penalty,
-        penalty_ratio = penalty_ratio,
-        user_penalty = user_penalty,
-        custom_multiplier = custom_multiplier
-    )
+  define_penalty(
+    penalty_type = 1,
+    quantile = 0.5,
+    num_penalty = num_penalty,
+    penalty_ratio = penalty_ratio,
+    user_penalty = user_penalty,
+    custom_multiplier = custom_multiplier
+  )
 }
 
 #' Define ridge regularization object for predictor and external data
@@ -142,15 +139,14 @@ define_ridge <- function(num_penalty = 20,
                          penalty_ratio = NULL,
                          user_penalty = NULL,
                          custom_multiplier = NULL) {
-
-    define_penalty(
-        penalty_type = 0,
-        quantile = 0.5,
-        num_penalty = num_penalty,
-        penalty_ratio = penalty_ratio,
-        user_penalty = user_penalty,
-        custom_multiplier = custom_multiplier
-    )
+  define_penalty(
+    penalty_type = 0,
+    quantile = 0.5,
+    num_penalty = num_penalty,
+    penalty_ratio = penalty_ratio,
+    user_penalty = user_penalty,
+    custom_multiplier = custom_multiplier
+  )
 }
 
 #' Define elastic net regularization object for predictor and external data
@@ -177,14 +173,12 @@ define_enet <- function(en_param = 0.5,
                         penalty_ratio = NULL,
                         user_penalty = NULL,
                         custom_multiplier = NULL) {
-
-    define_penalty(
-        penalty_type = en_param,
-        quantile = 0.5,
-        num_penalty = num_penalty,
-        penalty_ratio = penalty_ratio,
-        user_penalty = user_penalty,
-        custom_multiplier = custom_multiplier
-    )
-
+  define_penalty(
+    penalty_type = en_param,
+    quantile = 0.5,
+    num_penalty = num_penalty,
+    penalty_ratio = penalty_ratio,
+    user_penalty = user_penalty,
+    custom_multiplier = custom_multiplier
+  )
 }

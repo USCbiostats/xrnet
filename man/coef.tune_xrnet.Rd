@@ -35,14 +35,13 @@ data(GaussianExample)
 
 ## 5-fold cross validation
 cv_xrnet <- tune_xrnet(
-    x = x_linear,
-    y = y_linear,
-    external = ext_linear,
-    family = "gaussian",
-    control = xrnet.control(tolerance = 1e-6)
- )
+  x = x_linear,
+  y = y_linear,
+  external = ext_linear,
+  family = "gaussian",
+  control = xrnet.control(tolerance = 1e-6)
+)
 
- ## Get coefficient estimates at optimal penalty combination
- coef_opt <- coef(cv_xrnet)
-
+## Get coefficient estimates at optimal penalty combination
+coef_opt <- coef(cv_xrnet)
 }

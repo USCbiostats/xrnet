@@ -18,35 +18,32 @@
 #' data(GaussianExample)
 #'
 #' fit_xrnet <- xrnet(
-#'     x = x_linear,
-#'     y = y_linear,
-#'     external = ext_linear,
-#'     family = "gaussian"
+#'   x = x_linear,
+#'   y = y_linear,
+#'   external = ext_linear,
+#'   family = "gaussian"
 #' )
 #'
 #' lambda1 <- fit_xrnet$penalty[10]
 #' lambda2 <- fit_xrnet$penalty_ext[10]
 #'
 #' coef_xrnet <- coef(
-#'     fit_xrnet,
-#'     p = lambda1,
-#'     pext = lambda2,
+#'   fit_xrnet,
+#'   p = lambda1,
+#'   pext = lambda2,
 #' )
-#'
-#'
-
 #' @export
 coef.xrnet <- function(object,
                        p = NULL,
                        pext = NULL,
                        ...) {
-    predict(
-        object,
-        newdata = NULL,
-        newdata_fixed = NULL,
-        p = p,
-        pext = pext,
-        type = "coefficients",
-        ...
-    )
+  predict(
+    object,
+    newdata = NULL,
+    newdata_fixed = NULL,
+    p = p,
+    pext = pext,
+    type = "coefficients",
+    ...
+  )
 }

@@ -30,18 +30,16 @@
 #'
 #' ## 5-fold cross validation
 #' cv_xrnet <- tune_xrnet(
-#'     x = x_linear,
-#'     y = y_linear,
-#'     external = ext_linear,
-#'     family = "gaussian",
-#'     control = xrnet.control(tolerance = 1e-6)
-#'  )
+#'   x = x_linear,
+#'   y = y_linear,
+#'   external = ext_linear,
+#'   family = "gaussian",
+#'   control = xrnet.control(tolerance = 1e-6)
+#' )
 #'
 #' ## Get coefficients and predictions at optimal penalty combination
 #' coef_xrnet <- predict(cv_xrnet, type = "coefficients")
 #' pred_xrnet <- predict(cv_xrnet, newdata = x_linear, type = "response")
-#'
-
 #' @export
 predict.tune_xrnet <- function(object,
                                newdata = NULL,
@@ -49,19 +47,20 @@ predict.tune_xrnet <- function(object,
                                p = "opt",
                                pext = "opt",
                                type = c("response", "link", "coefficients"),
-                               ...)
-{
-    if (p == "opt")
-        p <- object$opt_penalty
-    if (pext == "opt")
-        pext <- object$opt_penalty_ext
+                               ...) {
+  if (p == "opt") {
+    p <- object$opt_penalty
+  }
+  if (pext == "opt") {
+    pext <- object$opt_penalty_ext
+  }
 
-    predict(object$fitted_model,
-            newdata = newdata,
-            newdata_fixed = newdata_fixed,
-            p = p,
-            pext = pext,
-            type = type,
-            ...
-    )
+  predict(object$fitted_model,
+    newdata = newdata,
+    newdata_fixed = newdata_fixed,
+    p = p,
+    pext = pext,
+    type = type,
+    ...
+  )
 }

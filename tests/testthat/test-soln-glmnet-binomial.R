@@ -151,375 +151,361 @@ context("compare coefficients to glmnet when no external data (binomial)")
 
 # Ridge Regression #
 
-test_that("x standardized, intercept, ridge",{
+test_that("x standardized, intercept, ridge", {
+  myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  fit_xrnet_sparse <- xrnet(
+    x = Matrix(xtest_binomial, sparse = TRUE),
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet_sparse <- xrnet(
-        x = Matrix(xtest_binomial, sparse = TRUE),
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 1],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1,1],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 1],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[-1,1],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[1, 1],
+    drop(fit_xrnet_sparse$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1,1],
-        drop(fit_xrnet_sparse$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1,1],
-        drop(fit_xrnet_sparse$betas)[, 10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 1],
+    drop(fit_xrnet_sparse$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
-test_that("x NOT standardized, intercept, ridge",{
+test_that("x NOT standardized, intercept, ridge", {
+  myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    standardize = c(FALSE, FALSE),
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        standardize = c(FALSE, FALSE),
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 2],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 2],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 2],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 2],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
-test_that("x standardized, NO intercept, ridge",{
+test_that("x standardized, NO intercept, ridge", {
+  myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    intercept = c(FALSE, FALSE),
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        intercept = c(FALSE, FALSE),
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 3],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 3],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 3],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 3],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
-test_that("x NOT standardized, NO intercept, ridge",{
+test_that("x NOT standardized, NO intercept, ridge", {
+  myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    standardize = c(FALSE, FALSE),
+    intercept = c(FALSE, FALSE),
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        standardize = c(FALSE, FALSE),
-        intercept = c(FALSE, FALSE),
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 4],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 4],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 4],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 4],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
 # Lasso Regression #
 
-test_that("x standardized, intercept, lasso",{
+test_that("x standardized, intercept, lasso", {
+  myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 5],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 5],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 5],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 5],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
-test_that("x NOT standardized, intercept, lasso",{
+test_that("x NOT standardized, intercept, lasso", {
+  myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    standardize = c(FALSE, FALSE),
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        standardize = c(FALSE, FALSE),
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 6],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 6],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 6],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 6],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
-test_that("x standardized, NO intercept, lasso",{
+test_that("x standardized, NO intercept, lasso", {
+  myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    intercept = c(FALSE, FALSE),
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        intercept = c(FALSE, FALSE),
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 7],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 7],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 7],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 7],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
-test_that("x NOT standardized, NO intercept, lasso",{
+test_that("x NOT standardized, NO intercept, lasso", {
+  myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    standardize = c(FALSE, FALSE),
+    intercept = c(FALSE, FALSE),
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        standardize = c(FALSE, FALSE),
-        intercept = c(FALSE, FALSE),
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 8],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 8],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 8],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 8],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
 # Elastic Net Regression #
 
-test_that("x standardized, intercept, en",{
+test_that("x standardized, intercept, en", {
+  myPenalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 9],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 9],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 9],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 9],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
-test_that("x NOT standardized, intercept, en",{
+test_that("x NOT standardized, intercept, en", {
+  myPenalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    standardize = c(FALSE, FALSE),
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        standardize = c(FALSE, FALSE),
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 10],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 10],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 10],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 10],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
-test_that("x standardized, NO intercept, en",{
+test_that("x standardized, NO intercept, en", {
+  myPenalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    intercept = c(FALSE, FALSE),
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        intercept = c(FALSE, FALSE),
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 11],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 11],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 11],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 11],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
-test_that("x NOT standardized, NO intercept, en",{
+test_that("x NOT standardized, NO intercept, en", {
+  myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100, penalty_ratio = 0.01)
 
-    myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100, penalty_ratio = 0.01)
+  fit_xrnet <- xrnet(
+    x = xtest_binomial,
+    y = ytest_binomial,
+    family = "binomial",
+    penalty_main = myPenalty,
+    standardize = c(FALSE, FALSE),
+    intercept = c(FALSE, FALSE),
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial,
-        y = ytest_binomial,
-        family = "binomial",
-        penalty_main = myPenalty,
-        standardize = c(FALSE, FALSE),
-        intercept = c(FALSE, FALSE),
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  expect_equal(
+    betas_binomial[1, 12],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 12],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 12],
-        drop(fit_xrnet$betas)[,10],
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 12],
+    drop(fit_xrnet$betas)[, 10],
+    tolerance = 1e-5
+  )
 })
 
 # Elastic Net - No Penalty on 1st two variables #
 
-test_that("x standardized, intercept, unpenalized variables",{
+test_that("x standardized, intercept, unpenalized variables", {
+  pf <- c(rep(0, 2), rep(1, NCOL(xtest_binomial) - 2))
 
-    pf <- c(rep(0, 2), rep(1, NCOL(xtest_binomial) - 2))
+  myPenalty <- define_enet(
+    en_param = 0.5,
+    user_penalty = lambda_binomial,
+    custom_multiplier = (NCOL(xtest_binomial) / sum(pf)) * rep(1, NCOL(xtest_binomial) - 2)
+  )
 
-    myPenalty <- define_enet(
-        en_param = 0.5,
-        user_penalty = lambda_binomial,
-        custom_multiplier = (NCOL(xtest_binomial) / sum(pf)) * rep(1, NCOL(xtest_binomial) - 2)
-    )
+  fit_xrnet <- xrnet(
+    x = xtest_binomial[, -c(1, 2)],
+    y = ytest_binomial,
+    unpen = xtest_binomial[, c(1, 2)],
+    family = "binomial",
+    penalty_main = myPenalty,
+    control = xrnet.control(tolerance = 1e-15)
+  )
 
-    fit_xrnet <- xrnet(
-        x = xtest_binomial[, -c(1, 2)],
-        y = ytest_binomial,
-        unpen = xtest_binomial[, c(1, 2)],
-        family = "binomial",
-        penalty_main = myPenalty,
-        control = xrnet.control(tolerance = 1e-15)
-    )
+  betas_all <- c(drop(fit_xrnet$gammas)[, 10], drop(fit_xrnet$betas)[, 10])
 
-    betas_all <- c(drop(fit_xrnet$gammas)[,10], drop(fit_xrnet$betas)[,10])
+  expect_equal(
+    betas_binomial[1, 13],
+    drop(fit_xrnet$beta0)[10],
+    tolerance = 1e-5
+  )
 
-    expect_equal(
-        betas_binomial[1, 13],
-        drop(fit_xrnet$beta0)[10],
-        tolerance = 1e-5
-    )
-
-    expect_equal(
-        betas_binomial[-1, 13],
-        betas_all,
-        tolerance = 1e-5
-    )
+  expect_equal(
+    betas_binomial[-1, 13],
+    betas_all,
+    tolerance = 1e-5
+  )
 })
-

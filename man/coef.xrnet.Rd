@@ -31,20 +31,18 @@ coefficient estimates that are in the original path(s).
 data(GaussianExample)
 
 fit_xrnet <- xrnet(
-    x = x_linear,
-    y = y_linear,
-    external = ext_linear,
-    family = "gaussian"
+  x = x_linear,
+  y = y_linear,
+  external = ext_linear,
+  family = "gaussian"
 )
 
 lambda1 <- fit_xrnet$penalty[10]
 lambda2 <- fit_xrnet$penalty_ext[10]
 
 coef_xrnet <- coef(
-    fit_xrnet,
-    p = lambda1,
-    pext = lambda2,
+  fit_xrnet,
+  p = lambda1,
+  pext = lambda2,
 )
-
-
 }

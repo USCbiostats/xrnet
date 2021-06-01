@@ -50,28 +50,27 @@ Note that we currently only support returning coefficient estimates that are in 
 data(GaussianExample)
 
 fit_xrnet <- xrnet(
-    x = x_linear,
-    y = y_linear,
-    external = ext_linear,
-    family = "gaussian"
+  x = x_linear,
+  y = y_linear,
+  external = ext_linear,
+  family = "gaussian"
 )
 
 lambda1 <- fit_xrnet$penalty[10]
 lambda2 <- fit_xrnet$penalty_ext[10]
 
 coef_xrnet <- predict(
-    fit_xrnet,
-    p = lambda1,
-    pext = lambda2,
-    type = "coefficients"
+  fit_xrnet,
+  p = lambda1,
+  pext = lambda2,
+  type = "coefficients"
 )
 
 pred_xrnet <- predict(
-    fit_xrnet,
-    p = lambda1,
-    pext = lambda2,
-    newdata = x_linear,
-    type = "response"
+  fit_xrnet,
+  p = lambda1,
+  pext = lambda2,
+  newdata = x_linear,
+  type = "response"
 )
-
 }
