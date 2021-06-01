@@ -9,11 +9,12 @@
 \arguments{
 \item{x}{A tune_xrnet class object}
 
-\item{p}{(optional) penalty value for x (for generating an error curve across external penalties).
-Use value "opt" to use the optimal penalty value.}
+\item{p}{(optional) penalty value for x (for generating an error curve across
+external penalties). Use value "opt" to use the optimal penalty value.}
 
-\item{pext}{(optional) penalty value for external (for generating an error curve across primary penalties)
-Use value "opt" to use the optimal penalty value.}
+\item{pext}{(optional) penalty value for external (for generating an error
+curve across primary penalties). Use value "opt" to use the optimal penalty
+value.}
 
 \item{...}{Additional graphics parameters}
 }
@@ -21,17 +22,19 @@ Use value "opt" to use the optimal penalty value.}
 None
 }
 \description{
-Generates plots to visualize the mean cross-validation error. If no external
-data was used in the model fit, a plot of the cross-validated error with standard error
-bars is generated for all penalty values. If external data was used in the model fit, a
-contour plot of the cross-validated errors is created. Error curves can also be
-generated for a fixed value of the primary penalty on x (p) or the external penalty (pext) when
-external data is used.
+Generates plots to visualize the mean cross-validation error.
+If no external data was used in the model fit, a plot of the cross-validated
+error with standard error bars is generated for all penalty values. If
+external data was used in the model fit, a contour plot of the
+cross-validated errors is created. Error curves can also be generated for a
+fixed value of the primary penalty on x (p) or the external penalty (pext)
+when external data is used.
 }
 \details{
-The parameter values p and pext can be used to generate profiled error curves by fixing either
-the penalty on x or the penalty on external to a fixed value. You cannot specify
-both at the same time as this would only return a single point.
+The parameter values p and pext can be used to generate profiled
+error curves by fixing either the penalty on x or the penalty on external to
+a fixed value. You cannot specify both at the same time as this would only
+return a single point.
 }
 \examples{
 

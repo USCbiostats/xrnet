@@ -17,16 +17,18 @@ define_ridge(
 \item{penalty_ratio}{ratio between minimum and maximum penalty for x.
 Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.}
 
-\item{user_penalty}{user-defined vector of penalty values to use in penalty path.}
+\item{user_penalty}{user-defined vector of penalty values to use in penalty
+path.}
 
-\item{custom_multiplier}{variable-specific penalty multipliers to apply to overall penalty.
-Default is 1 for all variables. 0 is no penalization.}
+\item{custom_multiplier}{variable-specific penalty multipliers to apply to
+overall penalty. Default is 1 for all variables. 0 is no penalization.}
 }
 \value{
-A list object with regularization settings that are used to define the regularization
-for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}. The list
-elements will match those returned by \code{\link{define_penalty}}, but with the penalty_type
-automatically set to 0.
+A list object with regularization settings that are used to define
+the regularization for predictors or external data in \code{\link{xrnet}} and
+\code{\link{tune_xrnet}}. The list elements will match those returned by
+\code{\link{define_penalty}}, but with the penalty_type automatically set
+to 0.
 }
 \description{
 Helper function to define a ridge penalty regularization object.

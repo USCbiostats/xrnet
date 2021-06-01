@@ -23,7 +23,8 @@ tune_xrnet(
 )
 }
 \arguments{
-\item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options include:
+\item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options
+include:
 \itemize{
    \item matrix
    \item big.matrix
@@ -33,13 +34,15 @@ tune_xrnet(
 
 \item{y}{outcome vector of length \eqn{n}}
 
-\item{external}{(optional) external data design matrix of dimension \eqn{p x q}, matrix options include:
+\item{external}{(optional) external data design matrix of dimension
+\eqn{p x q}, matrix options include:
 \itemize{
     \item matrix
     \item sparse matrix (dgCMatrix)
 }}
 
-\item{unpen}{(optional) unpenalized predictor design matrix, matrix options include:
+\item{unpen}{(optional) unpenalized predictor design matrix, matrix options
+include:
 \itemize{
     \item matrix
 }}
@@ -50,19 +53,21 @@ tune_xrnet(
     \item "binomial"
 }}
 
-\item{penalty_main}{specifies regularization object for x. See \code{\link{define_penalty}} for more details.}
+\item{penalty_main}{specifies regularization object for x. See
+\code{\link{define_penalty}} for more details.}
 
-\item{penalty_external}{specifies regularization object for external. See \code{\link{define_penalty}} for more details.
+\item{penalty_external}{specifies regularization object for external. See
+\code{\link{define_penalty}} for more details.
 See \code{\link{define_penalty}} for more details.}
 
 \item{weights}{optional vector of observation-specific weights.
 Default is 1 for all observations.}
 
-\item{standardize}{indicates whether x and/or external should be standardized.
-Default is c(TRUE, TRUE).}
+\item{standardize}{indicates whether x and/or external should be
+standardized. Default is c(TRUE, TRUE).}
 
-\item{intercept}{indicates whether an intercept term is included for x and/or external.
-Default is c(TRUE, FALSE).}
+\item{intercept}{indicates whether an intercept term is included for x and/or
+external. Default is c(TRUE, FALSE).}
 
 \item{loss}{loss function for cross-validation. Options include:
 \itemize{
@@ -74,38 +79,49 @@ Default is c(TRUE, FALSE).}
 
 \item{nfolds}{number of folds for cross-validation. Default is 5.}
 
-\item{foldid}{(optional) vector that identifies user-specified fold for each observation.
-If NULL, folds are automatically generated.}
+\item{foldid}{(optional) vector that identifies user-specified fold for each
+observation. If NULL, folds are automatically generated.}
 
 \item{parallel}{use \code{foreach} function to fit folds in parallel if TRUE,
 must register cluster (\code{doParallel}) before using.}
 
-\item{control}{specifies xrnet control object. See \code{\link{xrnet_control}} for more details.}
+\item{control}{specifies xrnet control object. See
+\code{\link{xrnet_control}} for more details.}
 }
 \value{
 A list of class \code{tune_xrnet} with components
-\item{cv_mean}{mean cross-validated error for each penalty combination. Object returned is
-a vector if there is no external data (external = NULL) and matrix if there is external data.}
-\item{cv_sd}{estimated standard deviation for cross-validated errorsObject returned is
-a vector if there is no external data (external = NULL) and matrix if there is external data.}
+\item{cv_mean}{mean cross-validated error for each penalty combination.
+Object returned is a vector if there is no external data (external = NULL)
+and matrix if there is external data.}
+\item{cv_sd}{estimated standard deviation for cross-validated errors.
+Object returned is a vector if there is no external data (external = NULL)
+and matrix if there is external data.}
 \item{loss}{loss function used to compute cross-validation error}
-\item{opt_loss}{the value of the loss function for the optimal cross-validated error}
+\item{opt_loss}{the value of the loss function for the optimal
+cross-validated error}
 \item{opt_penalty}{first-level penalty value that achieves the optimal loss}
-\item{opt_penalty_ext}{second-level penalty value that achieves the optimal loss (if external data is present)}
-\item{fitted_model}{fitted xrnet object using all data, see \code{\link{xrnet}} for details of object}
+\item{opt_penalty_ext}{second-level penalty value that achieves the optimal
+loss (if external data is present)}
+\item{fitted_model}{fitted xrnet object using all data, see
+\code{\link{xrnet}} for details of object}
 }
 \description{
-k-fold cross-validation for hierarchical regularized regression \code{\link{xrnet}}
+k-fold cross-validation for hierarchical regularized
+regression \code{\link{xrnet}}
 }
 \details{
-k-fold cross-validation is used to determine the 'optimal' combination of hyperparameter values, where
-optimal is based on the optimal value obtained for the user-selected loss function across the k folds. To efficiently traverse all possible
-combinations of the hyperparameter values, 'warm-starts' are used to traverse the penalty from largest
-to smallest penalty value(s). Note that the penalty grid for the folds is generated
-by fitting the model on the entire training data. Parallelization is enabled through the \code{foreach} and
-\code{doParallel} R packages. To use parallelization, \code{parallel = TRUE}, you must first create the cluster
-\code{makeCluster} and then register the cluster \code{registerDoParallel}. See the \code{parallel}, \code{foreach},
-and/or \code{doParallel} R packages for more details on how to setup parallelization.
+k-fold cross-validation is used to determine the 'optimal'
+combination of hyperparameter values, where optimal is based on the optimal
+value obtained for the user-selected loss function across the k folds. To
+efficiently traverse all possible combinations of the hyperparameter values,
+'warm-starts' are used to traverse the penalty from largest to smallest
+penalty value(s). Note that the penalty grid for the folds is generated
+by fitting the model on the entire training data. Parallelization is enabled
+through the \code{foreach} and \code{doParallel} R packages. To use
+parallelization, \code{parallel = TRUE}, you must first create the cluster
+\code{makeCluster} and then register the cluster \code{registerDoParallel}.
+See the \code{parallel}, \code{foreach}, and/or \code{doParallel} R packages
+for more details on how to setup parallelization.
 }
 \examples{
 ## cross validation of hierarchical linear regression model

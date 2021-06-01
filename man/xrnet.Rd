@@ -19,7 +19,8 @@ xrnet(
 )
 }
 \arguments{
-\item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options include:
+\item{x}{predictor design matrix of dimension \eqn{n x p}, matrix options
+include:
 \itemize{
    \item matrix
    \item big.matrix
@@ -29,13 +30,16 @@ xrnet(
 
 \item{y}{outcome vector of length \eqn{n}}
 
-\item{external}{(optional) external data design matrix of dimension \eqn{p x q}, matrix options include:
+\item{external}{(optional) external data design matrix of dimension
+\eqn{p x q},
+matrix options include:
 \itemize{
     \item matrix
     \item sparse matrix (dgCMatrix)
 }}
 
-\item{unpen}{(optional) unpenalized predictor design matrix, matrix options include:
+\item{unpen}{(optional) unpenalized predictor design matrix, matrix options
+include:
 \itemize{
     \item matrix
 }}
@@ -46,30 +50,39 @@ xrnet(
     \item "binomial"
 }}
 
-\item{penalty_main}{specifies regularization object for x. See \code{\link{define_penalty}} for more details.}
+\item{penalty_main}{specifies regularization object for x. See
+\code{\link{define_penalty}} for more details.}
 
-\item{penalty_external}{specifies regularization object for external. See \code{\link{define_penalty}} for more details.}
+\item{penalty_external}{specifies regularization object for external. See
+\code{\link{define_penalty}} for more details.}
 
-\item{weights}{optional vector of observation-specific weights. Default is 1 for all observations.}
+\item{weights}{optional vector of observation-specific weights. Default is 1
+for all observations.}
 
-\item{standardize}{indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).}
+\item{standardize}{indicates whether x and/or external should be
+standardized. Default is c(TRUE, TRUE).}
 
-\item{intercept}{indicates whether an intercept term is included for x and/or external.
-Default is c(TRUE, FALSE).}
+\item{intercept}{indicates whether an intercept term is included for x
+and/or external. Default is c(TRUE, FALSE).}
 
-\item{control}{specifies xrnet control object. See \code{\link{xrnet_control}} for more details.}
+\item{control}{specifies xrnet control object. See
+\code{\link{xrnet_control}} for more details.}
 }
 \value{
 A list of class \code{xrnet} with components:
 \item{beta0}{matrix of first-level intercepts indexed by penalty values}
-\item{betas}{3-dimensional array of first-level penalized coefficients indexed by penalty values}
-\item{gammas}{3-dimensional array of first-level non-penalized coefficients indexed by penalty values}
+\item{betas}{3-dimensional array of first-level penalized coefficients
+indexed by penalty values}
+\item{gammas}{3-dimensional array of first-level non-penalized coefficients
+indexed by penalty values}
 \item{alpha0}{matrix of second-level intercepts indexed by penalty values}
-\item{alphas}{3-dimensional array of second-level external data coefficients indexed by penalty values}
+\item{alphas}{3-dimensional array of second-level external data coefficients
+indexed by penalty values}
 \item{penalty}{vector of first-level penalty values}
 \item{penalty_ext}{vector of second-level penalty values}
 \item{family}{error distribution for outcome variable}
-\item{num_passes}{total number of passes over the data in the coordinate descent algorithm}
+\item{num_passes}{total number of passes over the data in the coordinate
+descent algorithm}
 \item{status}{error status for xrnet fitting}
 \itemize{
     \item 0 = OK
@@ -78,19 +91,24 @@ A list of class \code{xrnet} with components:
 \item{error_msg}{description of error}
 }
 \description{
-Fits hierarchical regularized regression model that enables the incorporation of external data
-for predictor variables. Both the predictor variables and external data can be regularized
-by the most common penalties (lasso, ridge, elastic net).
-Solutions are computed across a two-dimensional grid of penalties (a separate penalty path is computed
-for the predictors and external variables). Currently support regularized linear and logistic regression,
-future extensions to other outcomes (i.e. Cox regression) will be implemented in the next major update.
+Fits hierarchical regularized regression model that enables the
+incorporation of external data for predictor variables. Both the predictor
+variables and external data can be regularized by the most common penalties
+(lasso, ridge, elastic net). Solutions are computed across a two-dimensional
+grid of penalties (a separate penalty path is computed for the predictors and
+external variables). Currently support regularized linear and logistic
+regression, future extensions to other outcomes (i.e. Cox regression) will be
+implemented in the next major update.
 }
 \details{
-This function extends the coordinate descent algorithm of the R package \code{glmnet} to allow the
-type of regularization (i.e. ridge, lasso) to be feature-specific. This extension is used to enable fitting
-hierarchical regularized regression models, where external information for the predictors can be included in the
-\code{external=} argument. In addition, elements of the R package \code{biglasso} are utilized to enable
-the use of standard R matrices, memory-mapped matrices from the \code{bigmemory} package, or sparse matrices from the \code{Matrix} package.
+This function extends the coordinate descent algorithm of the
+R package \code{glmnet} to allow the type of regularization (i.e. ridge,
+lasso) to be feature-specific. This extension is used to enable fitting
+hierarchical regularized regression models, where external information for
+the predictors can be included in the \code{external=} argument. In addition,
+elements of the R package \code{biglasso} are utilized to enable the use of
+standard R matrices, memory-mapped matrices from the \code{bigmemory}
+package, or sparse matrices from the \code{Matrix} package.
 }
 \examples{
 ### hierarchical regularized linear regression ###
@@ -116,13 +134,16 @@ fit_xrnet <- xrnet(
 \references{
 Jerome Friedman, Trevor Hastie, Robert Tibshirani (2010).
 Regularization Paths for Generalized Linear Models via Coordinate Descent.
-Journal of Statistical Software, 33(1), 1-22. URL http://www.jstatsoft.org/v33/i01/.
+Journal of Statistical Software, 33(1), 1-22. URL
+http://www.jstatsoft.org/v33/i01/.
 
 Zeng, Y., and Breheny, P. (2017).
-The biglasso Package: A Memory- and Computation-Efficient Solver for Lasso Model Fitting with Big Data in R.
-arXiv preprint arXiv:1701.05936. URL https://arxiv.org/abs/1701.05936.
+The biglasso Package: A Memory- and Computation-Efficient Solver for Lasso
+Model Fitting with Big Data in R. arXiv preprint arXiv:1701.05936. URL
+https://arxiv.org/abs/1701.05936.
 
 Michael J. Kane, John Emerson, Stephen Weston (2013).
 Scalable Strategies for Computing with Massive Data.
-Journal of Statistical Software, 55(14), 1-19. URL http://www.jstatsoft.org/v55/i14/.
+Journal of Statistical Software, 55(14), 1-19. URL
+http://www.jstatsoft.org/v55/i14/.
 }
