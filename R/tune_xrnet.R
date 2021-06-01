@@ -259,7 +259,7 @@ tune_xrnet <- function(x,
         if (is.big.matrix(x)) {
             xdesc <- describe(x)
             errormat <- foreach(k = 1L:nfolds,
-                                .packages = c("xrnet", "bigmemory"),
+                                .packages = c("bigmemory"),
                                 .combine = cbind) %dopar% {
                 weights_train <- weights
                 weights_train[foldid == k] <- 0.0
@@ -296,7 +296,7 @@ tune_xrnet <- function(x,
             }
         } else {
             errormat <- foreach(k = 1L:nfolds,
-                                .packages = c("xrnet", "Matrix"),
+                                .packages = c("Matrix"),
                                 .combine = cbind) %dopar% {
                 weights_train <- weights
                 weights_train[foldid == k] <- 0.0
