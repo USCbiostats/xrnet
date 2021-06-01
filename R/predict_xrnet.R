@@ -1,14 +1,16 @@
 #' Predict function for "xrnet" object
 #'
-#' @description Extract coefficients or  predict response in new data using fitted model from an \code{\link{xrnet}} object.
-#' Note that we currently only support returning coefficient estimates that are in the original path(s).
+#' @description Extract coefficients or  predict response in new data using
+#' fitted model from an \code{\link{xrnet}} object. Note that we currently only
+#' support returning coefficient estimates that are in the original path(s).
 #'
 #' @param object A \code{\link{xrnet}} object
 #' @param newdata matrix with new values for penalized variables
 #' @param newdata_fixed matrix with new values for unpenalized variables
 #' @param p vector of penalty values to apply to predictor variables
 #' @param pext vector of penalty values to apply to external data variables
-#' @param type type of prediction to make using the xrnet model, options include
+#' @param type type of prediction to make using the xrnet model, options
+#' include:
 #' \itemize{
 #'    \item response
 #'    \item link (linear predictor)
@@ -18,9 +20,12 @@
 #'
 #' @return The object returned is based on the value of type as follows:
 #' \itemize{
-#'     \item response: An array with the response predictions based on the data for each penalty combination
-#'     \item link: An array with linear predictions based on the data for each penalty combination
-#'     \item coefficients: A list with the coefficient estimates for each penalty combination. See \code{\link{coef.xrnet}}.
+#'     \item response: An array with the response predictions based on the data
+#'     for each penalty combination
+#'     \item link: An array with linear predictions based on the data for each
+#'     penalty combination
+#'     \item coefficients: A list with the coefficient estimates for each
+#'     penalty combination. See \code{\link{coef.xrnet}}.
 #' }
 #' @examples
 #' data(GaussianExample)
@@ -76,7 +81,10 @@ predict.xrnet <- function(object,
   }
 
   if (!(all(p %in% object$penalty)) || !(all(pext %in% object$penalty_ext))) {
-    stop("Not all penalty values in path(s), please refit xrnet() model with desired penalty values")
+    stop(
+      "Not all penalty values in path(s),
+      please refit xrnet() model with desired penalty values"
+    )
   }
 
   p <- rev(sort(p))
@@ -124,7 +132,10 @@ predict.xrnet <- function(object,
       }
       mattype_x <- 3
     } else {
-      stop("newdata must be a matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
+      stop(
+        "newdata must be a matrix, big.matrix,
+        filebacked.big.matrix, or dgCMatrix"
+      )
     }
 
     beta0 <- as.vector(beta0)

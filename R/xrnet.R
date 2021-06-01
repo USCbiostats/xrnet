@@ -7,14 +7,17 @@ NULL
 
 #' Fit hierarchical regularized regression model
 #'
-#' @description Fits hierarchical regularized regression model that enables the incorporation of external data
-#' for predictor variables. Both the predictor variables and external data can be regularized
-#' by the most common penalties (lasso, ridge, elastic net).
-#' Solutions are computed across a two-dimensional grid of penalties (a separate penalty path is computed
-#' for the predictors and external variables). Currently support regularized linear and logistic regression,
-#' future extensions to other outcomes (i.e. Cox regression) will be implemented in the next major update.
+#' @description Fits hierarchical regularized regression model that enables the
+#' incorporation of external data for predictor variables. Both the predictor
+#' variables and external data can be regularized by the most common penalties
+#' (lasso, ridge, elastic net). Solutions are computed across a two-dimensional
+#' grid of penalties (a separate penalty path is computed for the predictors and
+#' external variables). Currently support regularized linear and logistic
+#' regression, future extensions to other outcomes (i.e. Cox regression) will be
+#' implemented in the next major update.
 #'
-#' @param x predictor design matrix of dimension \eqn{n x p}, matrix options include:
+#' @param x predictor design matrix of dimension \eqn{n x p}, matrix options
+#' include:
 #' \itemize{
 #'    \item matrix
 #'    \item big.matrix
@@ -22,12 +25,15 @@ NULL
 #'    \item sparse matrix (dgCMatrix)
 #' }
 #' @param y outcome vector of length \eqn{n}
-#' @param external (optional) external data design matrix of dimension \eqn{p x q}, matrix options include:
+#' @param external (optional) external data design matrix of dimension
+#' \eqn{p x q},
+#' matrix options include:
 #' \itemize{
 #'     \item matrix
 #'     \item sparse matrix (dgCMatrix)
 #' }
-#' @param unpen (optional) unpenalized predictor design matrix, matrix options include:
+#' @param unpen (optional) unpenalized predictor design matrix, matrix options
+#' include:
 #' \itemize{
 #'     \item matrix
 #' }
@@ -36,45 +42,60 @@ NULL
 #'     \item "gaussian"
 #'     \item "binomial"
 #' }
-#' @param penalty_main specifies regularization object for x. See \code{\link{define_penalty}} for more details.
-#' @param penalty_external specifies regularization object for external. See \code{\link{define_penalty}} for more details.
-#' @param weights optional vector of observation-specific weights. Default is 1 for all observations.
-#' @param standardize indicates whether x and/or external should be standardized. Default is c(TRUE, TRUE).
-#' @param intercept indicates whether an intercept term is included for x and/or external.
-#' Default is c(TRUE, FALSE).
-#' @param control specifies xrnet control object. See \code{\link{xrnet.control}} for more details.
+#' @param penalty_main specifies regularization object for x. See
+#' \code{\link{define_penalty}} for more details.
+#' @param penalty_external specifies regularization object for external. See
+#' \code{\link{define_penalty}} for more details.
+#' @param weights optional vector of observation-specific weights. Default is 1
+#' for all observations.
+#' @param standardize indicates whether x and/or external should be
+#' standardized. Default is c(TRUE, TRUE).
+#' @param intercept indicates whether an intercept term is included for x
+#' and/or external. Default is c(TRUE, FALSE).
+#' @param control specifies xrnet control object. See
+#' \code{\link{xrnet_control}} for more details.
 #'
-#' @details This function extends the coordinate descent algorithm of the R package \code{glmnet} to allow the
-#' type of regularization (i.e. ridge, lasso) to be feature-specific. This extension is used to enable fitting
-#' hierarchical regularized regression models, where external information for the predictors can be included in the
-#' \code{external=} argument. In addition, elements of the R package \code{biglasso} are utilized to enable
-#' the use of standard R matrices, memory-mapped matrices from the \code{bigmemory} package, or sparse matrices from the \code{Matrix} package.
+#' @details This function extends the coordinate descent algorithm of the
+#' R package \code{glmnet} to allow the type of regularization (i.e. ridge,
+#' lasso) to be feature-specific. This extension is used to enable fitting
+#' hierarchical regularized regression models, where external information for
+#' the predictors can be included in the \code{external=} argument. In addition,
+#' elements of the R package \code{biglasso} are utilized to enable the use of
+#' standard R matrices, memory-mapped matrices from the \code{bigmemory}
+#' package, or sparse matrices from the \code{Matrix} package.
 #'
 #' @references
 #' Jerome Friedman, Trevor Hastie, Robert Tibshirani (2010).
 #' Regularization Paths for Generalized Linear Models via Coordinate Descent.
-#' Journal of Statistical Software, 33(1), 1-22. URL http://www.jstatsoft.org/v33/i01/.
+#' Journal of Statistical Software, 33(1), 1-22. URL
+#' http://www.jstatsoft.org/v33/i01/.
 #'
 #' @references
 #' Zeng, Y., and Breheny, P. (2017).
-#' The biglasso Package: A Memory- and Computation-Efficient Solver for Lasso Model Fitting with Big Data in R.
-#' arXiv preprint arXiv:1701.05936. URL https://arxiv.org/abs/1701.05936.
+#' The biglasso Package: A Memory- and Computation-Efficient Solver for Lasso
+#' Model Fitting with Big Data in R. arXiv preprint arXiv:1701.05936. URL
+#' https://arxiv.org/abs/1701.05936.
 #'
 #' @references
 #' Michael J. Kane, John Emerson, Stephen Weston (2013).
 #' Scalable Strategies for Computing with Massive Data.
-#' Journal of Statistical Software, 55(14), 1-19. URL http://www.jstatsoft.org/v55/i14/.
+#' Journal of Statistical Software, 55(14), 1-19. URL
+#' http://www.jstatsoft.org/v55/i14/.
 #'
 #' @return A list of class \code{xrnet} with components:
 #' \item{beta0}{matrix of first-level intercepts indexed by penalty values}
-#' \item{betas}{3-dimensional array of first-level penalized coefficients indexed by penalty values}
-#' \item{gammas}{3-dimensional array of first-level non-penalized coefficients indexed by penalty values}
+#' \item{betas}{3-dimensional array of first-level penalized coefficients
+#' indexed by penalty values}
+#' \item{gammas}{3-dimensional array of first-level non-penalized coefficients
+#' indexed by penalty values}
 #' \item{alpha0}{matrix of second-level intercepts indexed by penalty values}
-#' \item{alphas}{3-dimensional array of second-level external data coefficients indexed by penalty values}
+#' \item{alphas}{3-dimensional array of second-level external data coefficients
+#' indexed by penalty values}
 #' \item{penalty}{vector of first-level penalty values}
 #' \item{penalty_ext}{vector of second-level penalty values}
 #' \item{family}{error distribution for outcome variable}
-#' \item{num_passes}{total number of passes over the data in the coordinate descent algorithm}
+#' \item{num_passes}{total number of passes over the data in the coordinate
+#' descent algorithm}
 #' \item{status}{error status for xrnet fitting}
 #' \itemize{
 #'     \item 0 = OK
@@ -115,7 +136,7 @@ xrnet <- function(x,
                   intercept = c(TRUE, FALSE),
                   control = list()) {
 
-  this.call <- match.call()
+  this_call <- match.call()
   family <- match.arg(family)
 
   # check type of x matrix
@@ -136,7 +157,10 @@ xrnet <- function(x,
     }
     mattype_x <- 3
   } else {
-    stop("x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
+    stop(
+      "x must be a standard R matrix,
+      big.matrix, filebacked.big.matrix, or dgCMatrix"
+    )
   }
 
   y <- as.double(drop(y))
@@ -248,7 +272,7 @@ xrnet <- function(x,
     intercept = intercept
   )
 
-  control <- do.call("xrnet.control", control)
+  control <- do.call("xrnet_control", control)
   control <- initialize_control(
     control_obj = control,
     nc_x = nc_x,
@@ -294,7 +318,7 @@ xrnet <- function(x,
       warning("Max number of iterations reached")
     }
 
-    # Create arrays ordering coefficients by 1st level penalty / 2nd level penalty
+    # Create arrays ordering coefficients by 1st level / 2nd level penalty
     fit$beta0 <- matrix(
       fit$beta0,
       nrow = penalty$num_penalty,
@@ -324,14 +348,16 @@ xrnet <- function(x,
     }
 
     if (nc_unpen > 0) {
-      dim(fit$gammas) <- c(nc_unpen, penalty$num_penalty_ext, penalty$num_penalty)
+      dim(fit$gammas) <- c(
+        nc_unpen, penalty$num_penalty_ext, penalty$num_penalty
+      )
       fit$gammas <- aperm(fit$gammas, c(1, 3, 2))
     } else {
       fit$gammas <- NULL
     }
   }
 
-  fit$call <- this.call
+  fit$call <- this_call
   class(fit) <- "xrnet"
   return(fit)
 }
@@ -341,24 +367,32 @@ xrnet <- function(x,
 #' @description Control function for \code{\link{xrnet}} fitting.
 #'
 #' @param tolerance positive convergence criterion. Default is 1e-08.
-#' @param max_iterations maximum number of iterations to run coordinate gradient descent
-#' across all penalties before returning an error. Default is 1e+05.
-#' @param dfmax maximum number of variables allowed in model. Default
-#' is \eqn{ncol(x) + ncol(unpen) + ncol(external) + intercept[1] + intercept[2]}.
+#' @param max_iterations maximum number of iterations to run coordinate
+#' gradient descent across all penalties before returning an error.
+#' Default is 1e+05.
+#' @param dfmax maximum number of variables allowed in model. Default is
+#' \eqn{ncol(x) + ncol(unpen) + ncol(external) + intercept[1] + intercept[2]}.
 #' @param pmax maximum number of variables with nonzero coefficient estimate.
-#' Default is \eqn{min(2 * dfmax + 20, ncol(x) + ncol(unpen) + ncol(external) + intercept[2])}.
-#' @param lower_limits vector of lower limits for each coefficient. Default is -Inf for all variables.
-#' @param upper_limits vector of upper limits for each coefficient. Default is Inf for all variables.
+#' Default is \eqn{min(2 * dfmax + 20, ncol(x) + ncol(unpen) + ncol(external)
+#' + intercept[2])}.
+#' @param lower_limits vector of lower limits for each coefficient. Default is
+#' -Inf for all variables.
+#' @param upper_limits vector of upper limits for each coefficient. Default is
+#' Inf for all variables.
 #'
 #' @return A list object with the following components:
 #' \item{tolerance}{The coordinate descent stopping criterion.}
-#' \item{dfmax}{The maximum number of variables that will be allowed in the model.}
-#' \item{pmax}{The maximum number of variables with nonzero coefficient estimate.}
-#' \item{lower_limits}{Feature-specific numeric vector of lower bounds for coefficient estimates}
-#' \item{upper_limits}{Feature-specific numeric vector of upper bounds for coefficient estimates}
+#' \item{dfmax}{The maximum number of variables that will be allowed in the
+#' model.}
+#' \item{pmax}{The maximum number of variables with nonzero coefficient
+#' estimate.}
+#' \item{lower_limits}{Feature-specific numeric vector of lower bounds for
+#' coefficient estimates}
+#' \item{upper_limits}{Feature-specific numeric vector of upper bounds for
+#' coefficient estimates}
 
 #' @export
-xrnet.control <- function(tolerance = 1e-08,
+xrnet_control <- function(tolerance = 1e-08,
                           max_iterations = 1e+05,
                           dfmax = NULL,
                           pmax = NULL,
@@ -481,7 +515,9 @@ initialize_penalty <- function(penalty_main,
 
     if (is.null(penalty_obj$custom_multiplier_ext)) {
       penalty_obj$custom_multiplier_ext <- rep(1.0, nc_ext)
-    } else if (length(penalty_obj$custom_multiplier_ext) != nc_ext && nc_ext > 0) {
+    } else if (
+      length(penalty_obj$custom_multiplier_ext) != nc_ext && nc_ext > 0
+    ) {
       stop(
         "Length of custom_multiplier_ext (",
         length(penalty_obj$custom_multiplier_ext),
@@ -531,19 +567,29 @@ initialize_control <- function(control_obj,
                                nc_ext,
                                intercept) {
   if (is.null(control_obj$dfmax)) {
-    control_obj$dfmax <- as.integer(nc_x + nc_ext + nc_unpen + intercept[1] + intercept[2])
-  } else if (control_obj$dfmax <= 0 || as.integer(control_obj$dfmax) != control_obj$dfmax) {
+    control_obj$dfmax <- as.integer(
+      nc_x + nc_ext + nc_unpen + intercept[1] + intercept[2]
+    )
+  } else if (
+    control_obj$dfmax <= 0 || as.integer(control_obj$dfmax) != control_obj$dfmax
+  ) {
     stop("dfmax can only contain postive integers")
   }
 
   if (is.null(control_obj$pmax)) {
-    control_obj$pmax <- as.integer(min(2 * control_obj$dfmax + 20, nc_x + nc_ext + nc_unpen + intercept[2]))
-  } else if (control_obj$pmax <= 0 || as.integer(control_obj$pmax) != control_obj$pmax) {
+    control_obj$pmax <- as.integer(
+      min(2 * control_obj$dfmax + 20, nc_x + nc_ext + nc_unpen + intercept[2])
+    )
+  } else if (
+    control_obj$pmax <= 0 || as.integer(control_obj$pmax) != control_obj$pmax
+  ) {
     stop("pmax can only contain positive integers")
   }
 
   if (is.null(control_obj$lower_limits)) {
-    control_obj$lower_limits <- rep(-Inf, nc_x + nc_ext + nc_unpen + intercept[2])
+    control_obj$lower_limits <- rep(
+      -Inf, nc_x + nc_ext + nc_unpen + intercept[2]
+    )
   } else if (length(control_obj$lower_limits) != nc_x + nc_ext + nc_unpen) {
     stop(
       "Length of lower_limits (",
@@ -555,12 +601,16 @@ initialize_control <- function(control_obj,
     control_obj$lower_limits <- c(
       control_obj$lower_limits[1:(nc_x + nc_unpen)],
       -Inf,
-      control_obj$lower_limits[(nc_x + nc_unpen + 1):length(control_obj$lower_limits)]
+      control_obj$lower_limits[
+        (nc_x + nc_unpen + 1):length(control_obj$lower_limits)
+      ]
     )
   }
 
   if (is.null(control_obj$upper_limits)) {
-    control_obj$upper_limits <- rep(Inf, nc_x + nc_ext + nc_unpen + intercept[2])
+    control_obj$upper_limits <- rep(
+      Inf, nc_x + nc_ext + nc_unpen + intercept[2]
+    )
   } else if (length(control_obj$upper_limits) != nc_x + nc_ext + nc_unpen) {
     stop(
       "Length of upper_limits (",
@@ -572,7 +622,9 @@ initialize_control <- function(control_obj,
     control_obj$upper_limits <- c(
       control_obj$upper_limits[1:(nc_x + nc_unpen)],
       -Inf,
-      control_obj$upper_limits[(nc_x + nc_unpen + 1):length(control_obj$upper_limits)]
+      control_obj$upper_limits[
+        (nc_x + nc_unpen + 1):length(control_obj$upper_limits)
+      ]
     )
   }
   return(control_obj)

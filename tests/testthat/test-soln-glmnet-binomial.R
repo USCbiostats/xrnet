@@ -159,7 +159,7 @@ test_that("x standardized, intercept, ridge", {
     y = ytest_binomial,
     family = "binomial",
     penalty_main = myPenalty,
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   fit_xrnet_sparse <- xrnet(
@@ -167,7 +167,7 @@ test_that("x standardized, intercept, ridge", {
     y = ytest_binomial,
     family = "binomial",
     penalty_main = myPenalty,
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -204,7 +204,7 @@ test_that("x NOT standardized, intercept, ridge", {
     family = "binomial",
     penalty_main = myPenalty,
     standardize = c(FALSE, FALSE),
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -229,7 +229,7 @@ test_that("x standardized, NO intercept, ridge", {
     family = "binomial",
     penalty_main = myPenalty,
     intercept = c(FALSE, FALSE),
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -255,7 +255,7 @@ test_that("x NOT standardized, NO intercept, ridge", {
     penalty_main = myPenalty,
     standardize = c(FALSE, FALSE),
     intercept = c(FALSE, FALSE),
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -281,7 +281,7 @@ test_that("x standardized, intercept, lasso", {
     y = ytest_binomial,
     family = "binomial",
     penalty_main = myPenalty,
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -306,7 +306,7 @@ test_that("x NOT standardized, intercept, lasso", {
     family = "binomial",
     penalty_main = myPenalty,
     standardize = c(FALSE, FALSE),
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -331,7 +331,7 @@ test_that("x standardized, NO intercept, lasso", {
     family = "binomial",
     penalty_main = myPenalty,
     intercept = c(FALSE, FALSE),
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -357,7 +357,7 @@ test_that("x NOT standardized, NO intercept, lasso", {
     penalty_main = myPenalty,
     standardize = c(FALSE, FALSE),
     intercept = c(FALSE, FALSE),
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -383,7 +383,7 @@ test_that("x standardized, intercept, en", {
     y = ytest_binomial,
     family = "binomial",
     penalty_main = myPenalty,
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -408,7 +408,7 @@ test_that("x NOT standardized, intercept, en", {
     family = "binomial",
     penalty_main = myPenalty,
     standardize = c(FALSE, FALSE),
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -433,7 +433,7 @@ test_that("x standardized, NO intercept, en", {
     family = "binomial",
     penalty_main = myPenalty,
     intercept = c(FALSE, FALSE),
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -459,7 +459,7 @@ test_that("x NOT standardized, NO intercept, en", {
     penalty_main = myPenalty,
     standardize = c(FALSE, FALSE),
     intercept = c(FALSE, FALSE),
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   expect_equal(
@@ -492,7 +492,7 @@ test_that("x standardized, intercept, unpenalized variables", {
     unpen = xtest_binomial[, c(1, 2)],
     family = "binomial",
     penalty_main = myPenalty,
-    control = xrnet.control(tolerance = 1e-15)
+    control = xrnet_control(tolerance = 1e-15)
   )
 
   betas_all <- c(drop(fit_xrnet$gammas)[, 10], drop(fit_xrnet$betas)[, 10])

@@ -90,17 +90,17 @@ test_that("throw error when weights negative", {
 
 
 
-######################### xrnet.control() errors #########################
+######################### xrnet_control() errors #########################
 
 test_that("throw error when tolerance non-positive", {
-  expect_error(xrnet.control(tolerance = 0))
-  expect_error(xrnet.control(tolerance = -1))
+  expect_error(xrnet_control(tolerance = 0))
+  expect_error(xrnet_control(tolerance = -1))
 })
 
 test_that("throw error when max iterations non-positive or not an integer", {
-  expect_error(xrnet.control(max_iterations = 0))
-  expect_error(xrnet.control(max_iterations = -1))
-  expect_error(xrnet.control(max_iterations = 2.5))
+  expect_error(xrnet_control(max_iterations = 0))
+  expect_error(xrnet_control(max_iterations = -1))
+  expect_error(xrnet_control(max_iterations = 2.5))
 })
 
 ######################### initialize_penalty() errors #########################
@@ -161,7 +161,7 @@ test_that("throw error when dfmax non-positive or not an integer", {
       x = x,
       y = y,
       family = "gaussian",
-      control = xrnet.control(dfmax = 0)
+      control = xrnet_control(dfmax = 0)
     )
   )
 
@@ -170,7 +170,7 @@ test_that("throw error when dfmax non-positive or not an integer", {
       x = x,
       y = y,
       family = "gaussian",
-      control = xrnet.control(dfmax = -1)
+      control = xrnet_control(dfmax = -1)
     )
   )
 
@@ -179,7 +179,7 @@ test_that("throw error when dfmax non-positive or not an integer", {
       x = x,
       y = y,
       family = "gaussian",
-      control = xrnet.control(dfmax = 2.5)
+      control = xrnet_control(dfmax = 2.5)
     )
   )
 })
@@ -194,7 +194,7 @@ test_that("throw error when pmax non-positive or not an integer", {
       x = x,
       y = y,
       family = "gaussian",
-      control = xrnet.control(pmax = 0)
+      control = xrnet_control(pmax = 0)
     )
   )
 
@@ -203,7 +203,7 @@ test_that("throw error when pmax non-positive or not an integer", {
       x = x,
       y = y,
       family = "gaussian",
-      control = xrnet.control(pmax = -1)
+      control = xrnet_control(pmax = -1)
     )
   )
 
@@ -212,7 +212,7 @@ test_that("throw error when pmax non-positive or not an integer", {
       x = x,
       y = y,
       family = "gaussian",
-      control = xrnet.control(pmax = 2.5)
+      control = xrnet_control(pmax = 2.5)
     )
   )
 })
@@ -226,7 +226,7 @@ test_that("throw error when length lower_limits or upper_limits does not match t
       x = x,
       y = y,
       family = "gaussian",
-      control = xrnet.control(lower_limits = rep(0, 2))
+      control = xrnet_control(lower_limits = rep(0, 2))
     )
   )
 
@@ -235,7 +235,7 @@ test_that("throw error when length lower_limits or upper_limits does not match t
       x = x,
       y = y,
       family = "gaussian",
-      control = xrnet.control(upper_limits = rep(0, 2))
+      control = xrnet_control(upper_limits = rep(0, 2))
     )
   )
 })

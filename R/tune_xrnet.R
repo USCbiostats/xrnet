@@ -5,9 +5,11 @@
 #' @importFrom bigmemory describe
 #' @importFrom bigmemory attach.big.matrix
 #'
-#' @description k-fold cross-validation for hierarchical regularized regression \code{\link{xrnet}}
+#' @description k-fold cross-validation for hierarchical regularized
+#' regression \code{\link{xrnet}}
 #'
-#' @param x predictor design matrix of dimension \eqn{n x p}, matrix options include:
+#' @param x predictor design matrix of dimension \eqn{n x p}, matrix options
+#' include:
 #' \itemize{
 #'    \item matrix
 #'    \item big.matrix
@@ -15,12 +17,14 @@
 #'    \item sparse matrix (dgCMatrix)
 #' }
 #' @param y outcome vector of length \eqn{n}
-#' @param external (optional) external data design matrix of dimension \eqn{p x q}, matrix options include:
+#' @param external (optional) external data design matrix of dimension
+#' \eqn{p x q}, matrix options include:
 #' \itemize{
 #'     \item matrix
 #'     \item sparse matrix (dgCMatrix)
 #' }
-#' @param unpen (optional) unpenalized predictor design matrix, matrix options include:
+#' @param unpen (optional) unpenalized predictor design matrix, matrix options
+#' include:
 #' \itemize{
 #'     \item matrix
 #' }
@@ -29,15 +33,17 @@
 #'     \item "gaussian"
 #'     \item "binomial"
 #' }
-#' @param penalty_main specifies regularization object for x. See \code{\link{define_penalty}} for more details.
-#' @param penalty_external specifies regularization object for external. See \code{\link{define_penalty}} for more details.
+#' @param penalty_main specifies regularization object for x. See
+#' \code{\link{define_penalty}} for more details.
+#' @param penalty_external specifies regularization object for external. See
+#' \code{\link{define_penalty}} for more details.
 #' See \code{\link{define_penalty}} for more details.
 #' @param weights optional vector of observation-specific weights.
 #' Default is 1 for all observations.
-#' @param standardize indicates whether x and/or external should be standardized.
-#' Default is c(TRUE, TRUE).
-#' @param intercept indicates whether an intercept term is included for x and/or external.
-#'  Default is c(TRUE, FALSE).
+#' @param standardize indicates whether x and/or external should be
+#' standardized. Default is c(TRUE, TRUE).
+#' @param intercept indicates whether an intercept term is included for x and/or
+#' external. Default is c(TRUE, FALSE).
 #' @param loss loss function for cross-validation. Options include:
 #' \itemize{
 #'    \item "deviance"
@@ -46,31 +52,41 @@
 #'    \item "auc" (Area under the curve)
 #' }
 #' @param nfolds number of folds for cross-validation. Default is 5.
-#' @param foldid (optional) vector that identifies user-specified fold for each observation.
-#' If NULL, folds are automatically generated.
+#' @param foldid (optional) vector that identifies user-specified fold for each
+#' observation. If NULL, folds are automatically generated.
 #' @param parallel use \code{foreach} function to fit folds in parallel if TRUE,
 #' must register cluster (\code{doParallel}) before using.
-#' @param control specifies xrnet control object. See \code{\link{xrnet.control}} for more details.
+#' @param control specifies xrnet control object. See
+#' \code{\link{xrnet_control}} for more details.
 #'
 #' @return A list of class \code{tune_xrnet} with components
-#' \item{cv_mean}{mean cross-validated error for each penalty combination. Object returned is
-#' a vector if there is no external data (external = NULL) and matrix if there is external data.}
-#' \item{cv_sd}{estimated standard deviation for cross-validated errorsObject returned is
-#' a vector if there is no external data (external = NULL) and matrix if there is external data.}
+#' \item{cv_mean}{mean cross-validated error for each penalty combination.
+#' Object returned is a vector if there is no external data (external = NULL)
+#' and matrix if there is external data.}
+#' \item{cv_sd}{estimated standard deviation for cross-validated errors.
+#' Object returned is a vector if there is no external data (external = NULL)
+#' and matrix if there is external data.}
 #' \item{loss}{loss function used to compute cross-validation error}
-#' \item{opt_loss}{the value of the loss function for the optimal cross-validated error}
+#' \item{opt_loss}{the value of the loss function for the optimal
+#' cross-validated error}
 #' \item{opt_penalty}{first-level penalty value that achieves the optimal loss}
-#' \item{opt_penalty_ext}{second-level penalty value that achieves the optimal loss (if external data is present)}
-#' \item{fitted_model}{fitted xrnet object using all data, see \code{\link{xrnet}} for details of object}
+#' \item{opt_penalty_ext}{second-level penalty value that achieves the optimal
+#' loss (if external data is present)}
+#' \item{fitted_model}{fitted xrnet object using all data, see
+#' \code{\link{xrnet}} for details of object}
 #'
-#' @details k-fold cross-validation is used to determine the 'optimal' combination of hyperparameter values, where
-#' optimal is based on the optimal value obtained for the user-selected loss function across the k folds. To efficiently traverse all possible
-#' combinations of the hyperparameter values, 'warm-starts' are used to traverse the penalty from largest
-#' to smallest penalty value(s). Note that the penalty grid for the folds is generated
-#' by fitting the model on the entire training data. Parallelization is enabled through the \code{foreach} and
-#' \code{doParallel} R packages. To use parallelization, \code{parallel = TRUE}, you must first create the cluster
-#' \code{makeCluster} and then register the cluster \code{registerDoParallel}. See the \code{parallel}, \code{foreach},
-#' and/or \code{doParallel} R packages for more details on how to setup parallelization.
+#' @details k-fold cross-validation is used to determine the 'optimal'
+#' combination of hyperparameter values, where optimal is based on the optimal
+#' value obtained for the user-selected loss function across the k folds. To
+#' efficiently traverse all possible combinations of the hyperparameter values,
+#' 'warm-starts' are used to traverse the penalty from largest to smallest
+#' penalty value(s). Note that the penalty grid for the folds is generated
+#' by fitting the model on the entire training data. Parallelization is enabled
+#' through the \code{foreach} and \code{doParallel} R packages. To use
+#' parallelization, \code{parallel = TRUE}, you must first create the cluster
+#' \code{makeCluster} and then register the cluster \code{registerDoParallel}.
+#' See the \code{parallel}, \code{foreach}, and/or \code{doParallel} R packages
+#' for more details on how to setup parallelization.
 #'
 #' @examples
 #' ## cross validation of hierarchical linear regression model
@@ -82,7 +98,7 @@
 #'   y = y_linear,
 #'   external = ext_linear,
 #'   family = "gaussian",
-#'   control = xrnet.control(tolerance = 1e-6)
+#'   control = xrnet_control(tolerance = 1e-6)
 #' )
 #'
 #' ## contour plot of cross-validated error
@@ -125,7 +141,15 @@ tune_xrnet <- function(x,
       loss_available <- FALSE
     }
     if (!loss_available) {
-      stop(paste0("loss = '", loss, "' is not available for family = '", family, "'"))
+      stop(
+        paste0(
+          "loss = '",
+          loss,
+          "' is not available for family = '",
+          family,
+          "'"
+        )
+      )
     }
   }
 
@@ -136,7 +160,9 @@ tune_xrnet <- function(x,
     }
     mattype_x <- 1
   } else if (is.big.matrix(x)) {
-    if (!(bigmemory::describe(x)@description$type %in% c("integer", "double"))) {
+    if (
+      !(bigmemory::describe(x)@description$type %in% c("integer", "double"))
+    ) {
       stop("x contains non-numeric values")
     }
     mattype_x <- 2
@@ -146,7 +172,10 @@ tune_xrnet <- function(x,
     }
     mattype_x <- 3
   } else {
-    stop("x must be a standard R matrix, big.matrix, filebacked.big.matrix, or dgCMatrix")
+    stop(
+      "x must be a standard R matrix,
+      big.matrix, filebacked.big.matrix, or dgCMatrix"
+    )
   }
 
   # check external type
@@ -155,9 +184,13 @@ tune_xrnet <- function(x,
   # check y type
   y <- drop(as.numeric(y))
 
-  # Get arguments to tune_xrnet() function and filter for calls to fitting procedure
+  # Get arguments to tune_xrnet() function and filter for calls to fitting
   xrnet_call <- match.call(expand.dots = TRUE)
-  cv_args <- match(c("loss", "nfolds", "foldid", "parallel"), names(xrnet_call), FALSE)
+
+  cv_args <- match(
+    c("loss", "nfolds", "foldid", "parallel"), names(xrnet_call),
+    FALSE
+  )
 
   if (any(cv_args)) {
     xrnet_call <- xrnet_call[-cv_args]
@@ -225,7 +258,7 @@ tune_xrnet <- function(x,
   num_pen <- penalty_fold$num_penalty
   num_pen_ext <- penalty_fold$num_penalty_ext
 
-  control <- do.call("xrnet.control", control)
+  control <- do.call("xrnet_control", control)
   control <- initialize_control(
     control_obj = control,
     nc_x = NCOL(x),
@@ -242,7 +275,10 @@ tune_xrnet <- function(x,
     foldid <- sample(rep(seq(nfolds), length = n))
   } else {
     if (length(foldid) != n) {
-      stop("length of foldid (", length(foldid), ") not equal to number of observations (", n, ")")
+      stop(
+        "length of foldid (", length(foldid), ")
+        not equal to number of observations (", n, ")"
+      )
     }
     foldid <- as.numeric(factor(foldid))
     nfolds <- length(unique(foldid))
@@ -277,9 +313,15 @@ tune_xrnet <- function(x,
           stnd = standardize,
           penalty_type = penalty_fold$ptype,
           cmult = penalty_fold$cmult,
-          quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
-          num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
-          penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
+          quantiles = c(
+            penalty_fold$quantile, penalty_fold$quantile_ext
+          ),
+          num_penalty = c(
+            penalty_fold$num_penalty, penalty_fold$num_penalty_ext
+          ),
+          penalty_ratio = c(
+            penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext
+          ),
           penalty_user = penalty_fold$user_penalty,
           penalty_user_ext = penalty_fold$user_penalty_ext,
           lower_cl = control$lower_limits,
@@ -316,9 +358,15 @@ tune_xrnet <- function(x,
           stnd = standardize,
           penalty_type = penalty_fold$ptype,
           cmult = penalty_fold$cmult,
-          quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
-          num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
-          penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
+          quantiles = c(
+            penalty_fold$quantile, penalty_fold$quantile_ext
+          ),
+          num_penalty = c(
+            penalty_fold$num_penalty, penalty_fold$num_penalty_ext
+          ),
+          penalty_ratio = c(
+            penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext
+          ),
           penalty_user = penalty_fold$user_penalty,
           penalty_user_ext = penalty_fold$user_penalty_ext,
           lower_cl = control$lower_limits,
@@ -354,9 +402,15 @@ tune_xrnet <- function(x,
         stnd = standardize,
         penalty_type = penalty_fold$ptype,
         cmult = penalty_fold$cmult,
-        quantiles = c(penalty_fold$quantile, penalty_fold$quantile_ext),
-        num_penalty = c(penalty_fold$num_penalty, penalty_fold$num_penalty_ext),
-        penalty_ratio = c(penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext),
+        quantiles = c(
+          penalty_fold$quantile, penalty_fold$quantile_ext
+        ),
+        num_penalty = c(
+          penalty_fold$num_penalty, penalty_fold$num_penalty_ext
+        ),
+        penalty_ratio = c(
+          penalty_fold$penalty_ratio, penalty_fold$penalty_ratio_ext
+        ),
         penalty_user = penalty_fold$user_penalty,
         penalty_user_ext = penalty_fold$user_penalty_ext,
         lower_cl = control$lower_limits,
@@ -383,18 +437,18 @@ tune_xrnet <- function(x,
   }
   if (loss %in% c("deviance", "mse", "mae")) {
     opt_loss <- min(cv_mean, na.rm = TRUE)
-    optIndex <- which(opt_loss == cv_mean, arr.ind = TRUE)
+    opt_index <- which(opt_loss == cv_mean, arr.ind = TRUE)
   } else {
     opt_loss <- max(cv_mean, na.rm = TRUE)
-    optIndex <- which(opt_loss == cv_mean, arr.ind = TRUE)
+    opt_index <- which(opt_loss == cv_mean, arr.ind = TRUE)
   }
 
-  if (is.null(dim(optIndex))) {
-    opt_penalty <- xrnet_object$penalty[optIndex[1]]
-    opt_penalty_ext <- xrnet_object$penalty_ext[optIndex[2]]
+  if (is.null(dim(opt_index))) {
+    opt_penalty <- xrnet_object$penalty[opt_index[1]]
+    opt_penalty_ext <- xrnet_object$penalty_ext[opt_index[2]]
   } else {
-    opt_penalty <- xrnet_object$penalty[optIndex[1, 1]]
-    opt_penalty_ext <- xrnet_object$penalty_ext[optIndex[1, 2]]
+    opt_penalty <- xrnet_object$penalty[opt_index[1, 1]]
+    opt_penalty_ext <- xrnet_object$penalty_ext[opt_index[1, 2]]
   }
 
   cvfit <- list(

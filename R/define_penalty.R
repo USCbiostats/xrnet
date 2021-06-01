@@ -105,13 +105,17 @@ define_penalty <- function(penalty_type = 1,
 #' @param num_penalty number of penalty values to fit in grid. Default is 20.
 #' @param penalty_ratio ratio between minimum and maximum penalty for x.
 #' Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.
-#' @param user_penalty user-defined vector of penalty values to use in penalty path.
-#' @param custom_multiplier variable-specific penalty multipliers to apply to overall penalty.
+#' @param user_penalty user-defined vector of penalty values to use in penalty
+#' path.
+#' @param custom_multiplier variable-specific penalty multipliers to apply to
+#' overall penalty.
 #' Default is 1 for all variables. 0 is no penalization.
-#' @return A list object with regularization settings that are used to define the regularization
-#' for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}. The list
-#' elements will match those returned by \code{\link{define_penalty}}, but with the penalty_type
-#' automatically set to 1.
+#' @return A list object with regularization settings that are used to define
+#' the regularization
+#' for predictors or external data in \code{\link{xrnet}} and
+#' \code{\link{tune_xrnet}}. The list
+#' elements will match those returned by \code{\link{define_penalty}},
+#' but with the penalty_type automatically set to 1.
 
 #' @export
 define_lasso <- function(num_penalty = 20,
@@ -136,14 +140,16 @@ define_lasso <- function(num_penalty = 20,
 #' @param num_penalty number of penalty values to fit in grid. Default is 20.
 #' @param penalty_ratio ratio between minimum and maximum penalty for x.
 #' Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.
-#' @param user_penalty user-defined vector of penalty values to use in penalty path.
-#' @param custom_multiplier variable-specific penalty multipliers to apply to overall penalty.
-#' Default is 1 for all variables. 0 is no penalization.
+#' @param user_penalty user-defined vector of penalty values to use in penalty
+#' path.
+#' @param custom_multiplier variable-specific penalty multipliers to apply to
+#' overall penalty. Default is 1 for all variables. 0 is no penalization.
 #'
-#' @return A list object with regularization settings that are used to define the regularization
-#' for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}. The list
-#' elements will match those returned by \code{\link{define_penalty}}, but with the penalty_type
-#' automatically set to 0.
+#' @return A list object with regularization settings that are used to define
+#' the regularization for predictors or external data in \code{\link{xrnet}} and
+#' \code{\link{tune_xrnet}}. The list elements will match those returned by
+#' \code{\link{define_penalty}}, but with the penalty_type automatically set
+#' to 0.
 
 #' @export
 define_ridge <- function(num_penalty = 20,
@@ -162,21 +168,23 @@ define_ridge <- function(num_penalty = 20,
 
 #' Define elastic net regularization object for predictor and external data
 #'
-#' @description Helper function to define a elastic net penalty regularization object.
-#' See \code{define_penalty} for more details.
+#' @description Helper function to define a elastic net penalty regularization
+#' object. See \code{define_penalty} for more details.
 #'
 #' @param en_param elastic net parameter, between 0 and 1
 #' @param num_penalty number of penalty values to fit in grid. Default is 20.
 #' @param penalty_ratio ratio between minimum and maximum penalty for x.
 #' Default is 1e-04 if \eqn{n > p} and 0.01 if \eqn{n <= p}.
-#' @param user_penalty user-defined vector of penalty values to use in penalty path.
-#' @param custom_multiplier variable-specific penalty multipliers to apply to overall penalty.
-#' Default is 1 for all variables. 0 is no penalization.
+#' @param user_penalty user-defined vector of penalty values to use in penalty
+#' path.
+#' @param custom_multiplier variable-specific penalty multipliers to apply to
+#' overall penalty. Default is 1 for all variables. 0 is no penalization.
 #'
-#' @return A list object with regularization settings that are used to define the regularization
-#' for predictors or external data in \code{\link{xrnet}} and \code{\link{tune_xrnet}}. The list
-#' elements will match those returned by \code{\link{define_penalty}}, but with the penalty_type
-#' set to match the value of \code{en_param}.
+#' @return A list object with regularization settings that are used to define
+#' the regularization for predictors or external data in \code{\link{xrnet}} and
+#' \code{\link{tune_xrnet}}. The list elements will match those returned by
+#' \code{\link{define_penalty}}, but with the penalty_type set to match the
+#' value of \code{en_param}.
 
 #' @export
 define_enet <- function(en_param = 0.5,

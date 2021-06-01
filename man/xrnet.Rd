@@ -57,7 +57,7 @@ xrnet(
 \item{intercept}{indicates whether an intercept term is included for x and/or external.
 Default is c(TRUE, FALSE).}
 
-\item{control}{specifies xrnet control object. See \code{\link{xrnet.control}} for more details.}
+\item{control}{specifies xrnet control object. See \code{\link{xrnet_control}} for more details.}
 }
 \value{
 A list of class \code{xrnet} with components:

@@ -80,7 +80,7 @@ If NULL, folds are automatically generated.}
 \item{parallel}{use \code{foreach} function to fit folds in parallel if TRUE,
 must register cluster (\code{doParallel}) before using.}
 
-\item{control}{specifies xrnet control object. See \code{\link{xrnet.control}} for more details.}
+\item{control}{specifies xrnet control object. See \code{\link{xrnet_control}} for more details.}
 }
 \value{
 A list of class \code{tune_xrnet} with components
@@ -117,7 +117,7 @@ cv_xrnet <- tune_xrnet(
   y = y_linear,
   external = ext_linear,
   family = "gaussian",
-  control = xrnet.control(tolerance = 1e-6)
+  control = xrnet_control(tolerance = 1e-6)
 )
 
 ## contour plot of cross-validated error

@@ -46,7 +46,7 @@ cv_xrnet <- tune_xrnet(
   y = y_linear,
   external = ext_linear,
   family = "gaussian",
-  control = xrnet.control(tolerance = 1e-6)
+  control = xrnet_control(tolerance = 1e-6)
 )
 
 ## Get coefficient estimates at optimal penalty combination

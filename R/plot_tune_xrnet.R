@@ -1,24 +1,27 @@
 #' Plot k-fold cross-validation error grid
 #'
-#' @description Generates plots to visualize the mean cross-validation error. If no external
-#' data was used in the model fit, a plot of the cross-validated error with standard error
-#' bars is generated for all penalty values. If external data was used in the model fit, a
-#' contour plot of the cross-validated errors is created. Error curves can also be
-#' generated for a fixed value of the primary penalty on x (p) or the external penalty (pext) when
-#' external data is used.
+#' @description Generates plots to visualize the mean cross-validation error.
+#' If no external data was used in the model fit, a plot of the cross-validated
+#' error with standard error bars is generated for all penalty values. If
+#' external data was used in the model fit, a contour plot of the
+#' cross-validated errors is created. Error curves can also be generated for a
+#' fixed value of the primary penalty on x (p) or the external penalty (pext)
+#' when external data is used.
 #'
 #' @param x A tune_xrnet class object
-#' @param p (optional) penalty value for x (for generating an error curve across external penalties).
-#' Use value "opt" to use the optimal penalty value.
-#' @param pext (optional) penalty value for external (for generating an error curve across primary penalties)
-#' Use value "opt" to use the optimal penalty value.
+#' @param p (optional) penalty value for x (for generating an error curve across
+#' external penalties). Use value "opt" to use the optimal penalty value.
+#' @param pext (optional) penalty value for external (for generating an error
+#' curve across primary penalties). Use value "opt" to use the optimal penalty
+#' value.
 #' @param ... Additional graphics parameters
 #'
 #' @return None
 #'
-#' @details The parameter values p and pext can be used to generate profiled error curves by fixing either
-#' the penalty on x or the penalty on external to a fixed value. You cannot specify
-#' both at the same time as this would only return a single point.
+#' @details The parameter values p and pext can be used to generate profiled
+#' error curves by fixing either the penalty on x or the penalty on external to
+#' a fixed value. You cannot specify both at the same time as this would only
+#' return a single point.
 #'
 #' @examples
 #'
@@ -31,7 +34,7 @@
 #'   y = y_linear,
 #'   external = ext_linear,
 #'   family = "gaussian",
-#'   control = xrnet.control(tolerance = 1e-6)
+#'   control = xrnet_control(tolerance = 1e-6)
 #' )
 #'
 #' ## contour plot of cross-validated error
@@ -53,7 +56,10 @@ plot.tune_xrnet <- function(x, p = NULL, pext = NULL, ...) {
       xopt_val <- log(x$opt_penalty)
     } else {
       if (!is.null(p) && !is.null(pext)) {
-        stop("Please only specify either penalty or penalty_ext, cannot specify both at the same time")
+        stop(
+          "Please only specify either penalty or penalty_ext,
+          cannot specify both at the same time"
+        )
       } else if (!is.null(p)) {
         if (p == "opt") {
           p <- x$opt_penalty

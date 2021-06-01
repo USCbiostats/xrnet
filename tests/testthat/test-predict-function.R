@@ -6,7 +6,7 @@ test_that("predict returns estimates for penalties already fit by xrnet object",
   mainPen <- define_penalty(0, user_penalty = c(2, 1, 0.05))
   extPen <- define_penalty(1, user_penalty = c(0.2, 0.1, 0.05))
 
-  myControl <- xrnet.control(tolerance = 1e-15)
+  myControl <- xrnet_control(tolerance = 1e-15)
 
   xrnet_object <- xrnet(
     x = xtest,
@@ -32,7 +32,7 @@ test_that("predict returns right predictions for penalties already fit by xrnet 
   mainPen <- define_penalty(0, user_penalty = c(2, 1, 0.05))
   extPen <- define_penalty(1, user_penalty = c(0.2, 0.1, 0.05))
 
-  myControl <- xrnet.control(tolerance = 1e-15)
+  myControl <- xrnet_control(tolerance = 1e-15)
 
   xrnet_object <- xrnet(
     x = xtest,
@@ -74,7 +74,7 @@ test_that("predict returns right predictions for penalties already fit by xrnet 
 test_that("predict returns right predictions for penalties already fit by xrnet object, no external data", {
   mainPen <- define_penalty(penalty_type = 0, user_penalty = c(2, 1, 0.05))
 
-  myControl <- xrnet.control(tolerance = 1e-15)
+  myControl <- xrnet_control(tolerance = 1e-15)
 
   xrnet_object <- xrnet(
     x = xtest,
@@ -96,7 +96,7 @@ test_that("predict returns right estimates for penalties already fit by tune_xrn
   mainPen <- define_penalty(0, user_penalty = c(2, 1, 0.05))
   extPen <- define_penalty(1, user_penalty = c(0.2, 0.1, 0.05))
 
-  myControl <- xrnet.control(tolerance = 1e-15)
+  myControl <- xrnet_control(tolerance = 1e-15)
 
   xrnet_object <- tune_xrnet(
     x = xtest,
