@@ -1,23 +1,31 @@
-#' Get coefficient estimates from "tune_xrnet" model object
+#' Get coefficient estimates from "tune_xrnet" model object.
 #'
-#' @description Returns coefficients from 'xrnet' model. Note that we currently only support returning
-#' coefficient estimates that are in the original path(s).
+#' @description Returns coefficients from 'xrnet' model. Note that we currently
+#' only support returning coefficient estimates that are in the original
+#' path(s).
 #'
-#' @param object A \code{\link{tune_xrnet}} object
+#' @param object A \code{\link{tune_xrnet}} object.
 #' @param p vector of penalty values to apply to predictor variables.
 #' Default is optimal value in tune_xrnet object.
 #' @param pext vector of penalty values to apply to external data variables.
 #' Default is optimal value in tune_xrnet object.
-#' @param ... pass other arguments to xrnet function (if needed)
+#' @param ... pass other arguments to xrnet function (if needed).
 #'
-#' @return A list with coefficient estimates at each of the requested penalty combinations
-#' \item{beta0}{matrix of first-level intercepts indexed by penalty values, NULL if no first-level intercept in original model fit}
-#' \item{betas}{3-dimensional array of first-level penalized coefficients indexed by penalty values}
-#' \item{gammas}{3-dimensional array of first-level non-penalized coefficients indexed by penalty values, NULL if unpen NULL in original model fit}
-#' \item{alpha0}{matrix of second-level intercepts indexed by penalty values, NULL if no second-level intercept in original model fit}
-#' \item{alphas}{3-dimensional array of second-level external data coefficients indexed by penalty values, NULL if external NULL in original model fit}
+#' @return A list with coefficient estimates at each of the requested penalty
+#' combinations.
+#' \item{beta0}{matrix of first-level intercepts indexed by penalty values, NULL
+#' if no first-level intercept in original model fit.}
+#' \item{betas}{3-dimensional array of first-level penalized coefficients
+#' indexed by penalty values.}
+#' \item{gammas}{3-dimensional array of first-level non-penalized coefficients
+#' indexed by penalty values, NULL if unpen NULL in original model fit.}
+#' \item{alpha0}{matrix of second-level intercepts indexed by penalty values,
+#' NULL if no second-level intercept in original model fit.}
+#' \item{alphas}{3-dimensional array of second-level external data coefficients
+#' indexed by penalty values, NULL if external NULL in original model fit.}
+#'
 #' @examples
-#' ## cross validation of hierarchical linear regression model
+#' ## Cross validation of hierarchical linear regression model
 #' data(GaussianExample)
 #'
 #' ## 5-fold cross validation
