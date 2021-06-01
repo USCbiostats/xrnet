@@ -3,11 +3,11 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![R-CMD-check](https://github.com/USCbiostats/xrnet/workflows/R-CMD-check/badge.svg)](https://github.com/USCbiostats/xrnet/actions)
 [![Travis Build
 Status](https://travis-ci.org/USCbiostats/xrnet.svg?branch=master)](https://travis-ci.org/USCbiostats/xrnet)
+[![Appveyor Build
+status](https://ci.appveyor.com/api/projects/status/6pr8hlc4wg9vjcxd/branch/master?svg=true)](https://ci.appveyor.com/project/gmweaver/xrnet)
 [![codecov](https://codecov.io/gh/USCbiostats/xrnet/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/xrnet)
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.01761/status.svg)](https://doi.org/10.21105/joss.01761)
 
 # Introduction
