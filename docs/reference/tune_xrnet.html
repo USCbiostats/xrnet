@@ -17,23 +17,27 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -43,9 +47,9 @@
 
 
 <meta property="og:title" content="k-fold cross-validation for hierarchical regularized regression — tune_xrnet" />
-<meta property="og:description" content="k-fold cross-validation for hierarchical regularized regression xrnet" />
+<meta property="og:description" content="k-fold cross-validation for hierarchical regularized
+regression xrnet" />
 <meta property="og:image" content="/logo.png" />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -63,7 +67,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -85,7 +89,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -98,8 +102,8 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/USCbiostats/xrnet">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/USCbiostats/xrnet/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -122,33 +126,35 @@
     </div>
 
     <div class="ref-description">
-    <p>k-fold cross-validation for hierarchical regularized regression <code><a href='xrnet.html'>xrnet</a></code></p>
+    <p>k-fold cross-validation for hierarchical regularized
+regression <code><a href='xrnet.html'>xrnet</a></code></p>
     </div>
 
-    <pre class="usage"><span class='fu'>tune_xrnet</span>(
-  <span class='no'>x</span>,
-  <span class='no'>y</span>,
-  <span class='kw'>external</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>unpen</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span>),
-  <span class='kw'>penalty_main</span> <span class='kw'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(),
-  <span class='kw'>penalty_external</span> <span class='kw'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span>(),
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>TRUE</span>, <span class='fl'>TRUE</span>),
-  <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>TRUE</span>, <span class='fl'>FALSE</span>),
-  <span class='kw'>loss</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"deviance"</span>, <span class='st'>"mse"</span>, <span class='st'>"mae"</span>, <span class='st'>"auc"</span>),
-  <span class='kw'>nfolds</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>foldid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()
-)</pre>
+    <pre class="usage"><span class='fu'>tune_xrnet</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>y</span>,
+  external <span class='op'>=</span> <span class='cn'>NULL</span>,
+  unpen <span class='op'>=</span> <span class='cn'>NULL</span>,
+  family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span><span class='op'>)</span>,
+  penalty_main <span class='op'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span><span class='op'>(</span><span class='op'>)</span>,
+  penalty_external <span class='op'>=</span> <span class='fu'><a href='define_penalty.html'>define_penalty</a></span><span class='op'>(</span><span class='op'>)</span>,
+  weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+  standardize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>TRUE</span><span class='op'>)</span>,
+  intercept <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>FALSE</span><span class='op'>)</span>,
+  loss <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"deviance"</span>, <span class='st'>"mse"</span>, <span class='st'>"mae"</span>, <span class='st'>"auc"</span><span class='op'>)</span>,
+  nfolds <span class='op'>=</span> <span class='fl'>5</span>,
+  foldid <span class='op'>=</span> <span class='cn'>NULL</span>,
+  parallel <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>predictor design matrix of dimension \(n x p\), matrix options include:</p><ul>
+      <td><p>predictor design matrix of dimension \(n x p\), matrix options
+include:</p><ul>
 <li><p>matrix</p></li>
 <li><p>big.matrix</p></li>
 <li><p>filebacked.big.matrix</p></li>
@@ -161,14 +167,16 @@
     </tr>
     <tr>
       <th>external</th>
-      <td><p>(optional) external data design matrix of dimension \(p x q\), matrix options include:</p><ul>
+      <td><p>(optional) external data design matrix of dimension
+\(p x q\), matrix options include:</p><ul>
 <li><p>matrix</p></li>
 <li><p>sparse matrix (dgCMatrix)</p></li>
 </ul></td>
     </tr>
     <tr>
       <th>unpen</th>
-      <td><p>(optional) unpenalized predictor design matrix, matrix options include:</p><ul>
+      <td><p>(optional) unpenalized predictor design matrix, matrix options
+include:</p><ul>
 <li><p>matrix</p></li>
 </ul></td>
     </tr>
@@ -181,11 +189,13 @@
     </tr>
     <tr>
       <th>penalty_main</th>
-      <td><p>specifies regularization object for x. See <code><a href='define_penalty.html'>define_penalty</a></code> for more details.</p></td>
+      <td><p>specifies regularization object for x. See
+<code><a href='define_penalty.html'>define_penalty</a></code> for more details.</p></td>
     </tr>
     <tr>
       <th>penalty_external</th>
-      <td><p>specifies regularization object for external. See <code><a href='define_penalty.html'>define_penalty</a></code> for more details.
+      <td><p>specifies regularization object for external. See
+<code><a href='define_penalty.html'>define_penalty</a></code> for more details.
 See <code><a href='define_penalty.html'>define_penalty</a></code> for more details.</p></td>
     </tr>
     <tr>
@@ -195,13 +205,13 @@ Default is 1 for all observations.</p></td>
     </tr>
     <tr>
       <th>standardize</th>
-      <td><p>indicates whether x and/or external should be standardized.
-Default is c(TRUE, TRUE).</p></td>
+      <td><p>indicates whether x and/or external should be
+standardized. Default is c(TRUE, TRUE).</p></td>
     </tr>
     <tr>
       <th>intercept</th>
-      <td><p>indicates whether an intercept term is included for x and/or external.
-Default is c(TRUE, FALSE).</p></td>
+      <td><p>indicates whether an intercept term is included for x and/or
+external. Default is c(TRUE, FALSE).</p></td>
     </tr>
     <tr>
       <th>loss</th>
@@ -218,8 +228,8 @@ Default is c(TRUE, FALSE).</p></td>
     </tr>
     <tr>
       <th>foldid</th>
-      <td><p>(optional) vector that identifies user-specified fold for each observation.
-If NULL, folds are automatically generated.</p></td>
+      <td><p>(optional) vector that identifies user-specified fold for each
+observation. If NULL, folds are automatically generated.</p></td>
     </tr>
     <tr>
       <th>parallel</th>
@@ -228,71 +238,76 @@ must register cluster (<code>doParallel</code>) before using.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>specifies xrnet control object. See <code><a href='xrnet_control.html'>xrnet_control</a></code> for more details.</p></td>
+      <td><p>specifies xrnet control object. See
+<code><a href='xrnet_control.html'>xrnet_control</a></code> for more details.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A list of class <code>tune_xrnet</code> with components</p>
-<dt>cv_mean</dt><dd><p>mean cross-validated error for each penalty combination. Object returned is
-a vector if there is no external data (external = NULL) and matrix if there is external data.</p></dd>
-<dt>cv_sd</dt><dd><p>estimated standard deviation for cross-validated errorsObject returned is
-a vector if there is no external data (external = NULL) and matrix if there is external data.</p></dd>
+<dt>cv_mean</dt><dd><p>mean cross-validated error for each penalty combination.
+Object returned is a vector if there is no external data (external = NULL)
+and matrix if there is external data.</p></dd>
+<dt>cv_sd</dt><dd><p>estimated standard deviation for cross-validated errors.
+Object returned is a vector if there is no external data (external = NULL)
+and matrix if there is external data.</p></dd>
 <dt>loss</dt><dd><p>loss function used to compute cross-validation error</p></dd>
-<dt>opt_loss</dt><dd><p>the value of the loss function for the optimal cross-validated error</p></dd>
+<dt>opt_loss</dt><dd><p>the value of the loss function for the optimal
+cross-validated error</p></dd>
 <dt>opt_penalty</dt><dd><p>first-level penalty value that achieves the optimal loss</p></dd>
-<dt>opt_penalty_ext</dt><dd><p>second-level penalty value that achieves the optimal loss (if external data is present)</p></dd>
-<dt>fitted_model</dt><dd><p>fitted xrnet object using all data, see <code><a href='xrnet.html'>xrnet</a></code> for details of object</p></dd>
+<dt>opt_penalty_ext</dt><dd><p>second-level penalty value that achieves the optimal
+loss (if external data is present)</p></dd>
+<dt>fitted_model</dt><dd><p>fitted xrnet object using all data, see
+<code><a href='xrnet.html'>xrnet</a></code> for details of object</p></dd>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>k-fold cross-validation is used to determine the 'optimal' combination of hyperparameter values, where
-optimal is based on the optimal value obtained for the user-selected loss function across the k folds. To efficiently traverse all possible
-combinations of the hyperparameter values, 'warm-starts' are used to traverse the penalty from largest
-to smallest penalty value(s). Note that the penalty grid for the folds is generated
-by fitting the model on the entire training data. Parallelization is enabled through the <code>foreach</code> and
-<code>doParallel</code> R packages. To use parallelization, <code>parallel = TRUE</code>, you must first create the cluster
-<code>makeCluster</code> and then register the cluster <code>registerDoParallel</code>. See the <code>parallel</code>, <code>foreach</code>,
-and/or <code>doParallel</code> R packages for more details on how to setup parallelization.</p>
+    <p>k-fold cross-validation is used to determine the 'optimal'
+combination of hyperparameter values, where optimal is based on the optimal
+value obtained for the user-selected loss function across the k folds. To
+efficiently traverse all possible combinations of the hyperparameter values,
+'warm-starts' are used to traverse the penalty from largest to smallest
+penalty value(s). Note that the penalty grid for the folds is generated
+by fitting the model on the entire training data. Parallelization is enabled
+through the <code>foreach</code> and <code>doParallel</code> R packages. To use
+parallelization, <code>parallel = TRUE</code>, you must first create the cluster
+<code>makeCluster</code> and then register the cluster <code>registerDoParallel</code>.
+See the <code>parallel</code>, <code>foreach</code>, and/or <code>doParallel</code> R packages
+for more details on how to setup parallelization.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## cross validation of hierarchical linear regression model</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>GaussianExample</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>GaussianExample</span><span class='op'>)</span>
 
 <span class='co'>## 5-fold cross validation</span>
-<span class='no'>cv_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'>tune_xrnet</span>(
-    <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x_linear</span>,
-    <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y_linear</span>,
-    <span class='kw'>external</span> <span class='kw'>=</span> <span class='no'>ext_linear</span>,
-    <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
-    <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='xrnet_control.html'>xrnet_control</a></span>(<span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>1e-6</span>)
- )
+<span class='va'>cv_xrnet</span> <span class='op'>&lt;-</span> <span class='fu'>tune_xrnet</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>x_linear</span>,
+  y <span class='op'>=</span> <span class='va'>y_linear</span>,
+  external <span class='op'>=</span> <span class='va'>ext_linear</span>,
+  family <span class='op'>=</span> <span class='st'>"gaussian"</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='xrnet_control.html'>xrnet_control</a></span><span class='op'>(</span>tolerance <span class='op'>=</span> <span class='fl'>1e-6</span><span class='op'>)</span>
+<span class='op'>)</span>
 
- <span class='co'>## contour plot of cross-validated error</span>
- <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>cv_xrnet</span>)</div><div class='img'><img src='tune_xrnet-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+<span class='co'>## contour plot of cross-validated error</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>cv_xrnet</span><span class='op'>)</span>
+</div><div class='img'><img src='tune_xrnet-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
 
       <footer>
       <div class="copyright">
-  <p>Developed by Garrett Weaver.</p>
+  <p>Developed by Garrett Weaver, Dixin Shen.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

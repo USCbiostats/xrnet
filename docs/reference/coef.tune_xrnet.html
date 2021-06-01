@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get coefficient estimates from "tune_xrnet" model object — coef.tune_xrnet • xrnet</title>
+<title>Get coefficient estimates from "tune_xrnet" model object. — coef.tune_xrnet • xrnet</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -17,23 +17,27 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -42,11 +46,11 @@
 
 
 
-<meta property="og:title" content="Get coefficient estimates from "tune_xrnet" model object — coef.tune_xrnet" />
-<meta property="og:description" content="Returns coefficients from 'xrnet' model. Note that we currently only support returning
-coefficient estimates that are in the original path(s)." />
+<meta property="og:title" content="Get coefficient estimates from "tune_xrnet" model object. — coef.tune_xrnet" />
+<meta property="og:description" content="Returns coefficients from 'xrnet' model. Note that we currently
+only support returning coefficient estimates that are in the original
+path(s)." />
 <meta property="og:image" content="/logo.png" />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -64,7 +68,7 @@ coefficient estimates that are in the original path(s)." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -86,7 +90,7 @@ coefficient estimates that are in the original path(s)." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -99,8 +103,8 @@ coefficient estimates that are in the original path(s)." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/USCbiostats/xrnet">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/USCbiostats/xrnet/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -117,25 +121,26 @@ coefficient estimates that are in the original path(s)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get coefficient estimates from "tune_xrnet" model object</h1>
+    <h1>Get coefficient estimates from "tune_xrnet" model object.</h1>
     <small class="dont-index">Source: <a href='https://github.com/USCbiostats/xrnet/blob/master/R/coef_tune_xrnet.R'><code>R/coef_tune_xrnet.R</code></a></small>
     <div class="hidden name"><code>coef.tune_xrnet.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Returns coefficients from 'xrnet' model. Note that we currently only support returning
-coefficient estimates that are in the original path(s).</p>
+    <p>Returns coefficients from 'xrnet' model. Note that we currently
+only support returning coefficient estimates that are in the original
+path(s).</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tune_xrnet</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='no'>object</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='st'>"opt"</span>, <span class='kw'>pext</span> <span class='kw'>=</span> <span class='st'>"opt"</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>object</span>, p <span class='op'>=</span> <span class='st'>"opt"</span>, pext <span class='op'>=</span> <span class='st'>"opt"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A <code><a href='tune_xrnet.html'>tune_xrnet</a></code> object</p></td>
+      <td><p>A <code><a href='tune_xrnet.html'>tune_xrnet</a></code> object.</p></td>
     </tr>
     <tr>
       <th>p</th>
@@ -149,55 +154,58 @@ Default is optimal value in tune_xrnet object.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>pass other arguments to xrnet function (if needed)</p></td>
+      <td><p>pass other arguments to xrnet function (if needed).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list with coefficient estimates at each of the requested penalty combinations</p>
-<dt>beta0</dt><dd><p>matrix of first-level intercepts indexed by penalty values, NULL if no first-level intercept in original model fit</p></dd>
-<dt>betas</dt><dd><p>3-dimensional array of first-level penalized coefficients indexed by penalty values</p></dd>
-<dt>gammas</dt><dd><p>3-dimensional array of first-level non-penalized coefficients indexed by penalty values, NULL if unpen NULL in original model fit</p></dd>
-<dt>alpha0</dt><dd><p>matrix of second-level intercepts indexed by penalty values, NULL if no second-level intercept in original model fit</p></dd>
-<dt>alphas</dt><dd><p>3-dimensional array of second-level external data coefficients indexed by penalty values, NULL if external NULL in original model fit</p></dd>
+    <p>A list with coefficient estimates at each of the requested penalty
+combinations.</p>
+<dt>beta0</dt><dd><p>matrix of first-level intercepts indexed by penalty values, NULL
+if no first-level intercept in original model fit.</p></dd>
+<dt>betas</dt><dd><p>3-dimensional array of first-level penalized coefficients
+indexed by penalty values.</p></dd>
+<dt>gammas</dt><dd><p>3-dimensional array of first-level non-penalized coefficients
+indexed by penalty values, NULL if unpen NULL in original model fit.</p></dd>
+<dt>alpha0</dt><dd><p>matrix of second-level intercepts indexed by penalty values,
+NULL if no second-level intercept in original model fit.</p></dd>
+<dt>alphas</dt><dd><p>3-dimensional array of second-level external data coefficients
+indexed by penalty values, NULL if external NULL in original model fit.</p></dd>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## cross validation of hierarchical linear regression model</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>GaussianExample</span>)
+    <pre class="examples"><div class='input'><span class='co'>## Cross validation of hierarchical linear regression model</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>GaussianExample</span><span class='op'>)</span>
 
 <span class='co'>## 5-fold cross validation</span>
-<span class='no'>cv_xrnet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tune_xrnet.html'>tune_xrnet</a></span>(
-    <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>x_linear</span>,
-    <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y_linear</span>,
-    <span class='kw'>external</span> <span class='kw'>=</span> <span class='no'>ext_linear</span>,
-    <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
-    <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='xrnet_control.html'>xrnet_control</a></span>(<span class='kw'>tolerance</span> <span class='kw'>=</span> <span class='fl'>1e-6</span>)
- )
+<span class='va'>cv_xrnet</span> <span class='op'>&lt;-</span> <span class='fu'><a href='tune_xrnet.html'>tune_xrnet</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>x_linear</span>,
+  y <span class='op'>=</span> <span class='va'>y_linear</span>,
+  external <span class='op'>=</span> <span class='va'>ext_linear</span>,
+  family <span class='op'>=</span> <span class='st'>"gaussian"</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='xrnet_control.html'>xrnet_control</a></span><span class='op'>(</span>tolerance <span class='op'>=</span> <span class='fl'>1e-6</span><span class='op'>)</span>
+<span class='op'>)</span>
 
- <span class='co'>## Get coefficient estimates at optimal penalty combination</span>
- <span class='no'>coef_opt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='no'>cv_xrnet</span>)</div></pre>
+<span class='co'>## Get coefficient estimates at optimal penalty combination</span>
+<span class='va'>coef_opt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>cv_xrnet</span><span class='op'>)</span>
+</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
 
       <footer>
       <div class="copyright">
-  <p>Developed by Garrett Weaver.</p>
+  <p>Developed by Garrett Weaver, Dixin Shen.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

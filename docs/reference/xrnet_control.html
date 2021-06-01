@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Define elastic net regularization object for predictor and external data — define_enet • xrnet</title>
+<title>Control function for xrnet fitting — xrnet_control • xrnet</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,8 @@
 
 
 
-<meta property="og:title" content="Define elastic net regularization object for predictor and external data — define_enet" />
-<meta property="og:description" content="Helper function to define a elastic net penalty regularization
-object. See define_penalty for more details." />
+<meta property="og:title" content="Control function for xrnet fitting — xrnet_control" />
+<meta property="og:description" content="Control function for xrnet fitting." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -120,59 +119,73 @@ object. See define_penalty for more details." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Define elastic net regularization object for predictor and external data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/USCbiostats/xrnet/blob/master/R/define_penalty.R'><code>R/define_penalty.R</code></a></small>
-    <div class="hidden name"><code>define_enet.Rd</code></div>
+    <h1>Control function for xrnet fitting</h1>
+    <small class="dont-index">Source: <a href='https://github.com/USCbiostats/xrnet/blob/master/R/xrnet.R'><code>R/xrnet.R</code></a></small>
+    <div class="hidden name"><code>xrnet_control.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Helper function to define a elastic net penalty regularization
-object. See <code>define_penalty</code> for more details.</p>
+    <p>Control function for <code><a href='xrnet.html'>xrnet</a></code> fitting.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>define_enet</span><span class='op'>(</span>
-  en_param <span class='op'>=</span> <span class='fl'>0.5</span>,
-  num_penalty <span class='op'>=</span> <span class='fl'>20</span>,
-  penalty_ratio <span class='op'>=</span> <span class='cn'>NULL</span>,
-  user_penalty <span class='op'>=</span> <span class='cn'>NULL</span>,
-  custom_multiplier <span class='op'>=</span> <span class='cn'>NULL</span>
+    <pre class="usage"><span class='fu'>xrnet_control</span><span class='op'>(</span>
+  tolerance <span class='op'>=</span> <span class='fl'>1e-08</span>,
+  max_iterations <span class='op'>=</span> <span class='fl'>1e+05</span>,
+  dfmax <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pmax <span class='op'>=</span> <span class='cn'>NULL</span>,
+  lower_limits <span class='op'>=</span> <span class='cn'>NULL</span>,
+  upper_limits <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>en_param</th>
-      <td><p>elastic net parameter, between 0 and 1</p></td>
+      <th>tolerance</th>
+      <td><p>positive convergence criterion. Default is 1e-08.</p></td>
     </tr>
     <tr>
-      <th>num_penalty</th>
-      <td><p>number of penalty values to fit in grid. Default is 20.</p></td>
+      <th>max_iterations</th>
+      <td><p>maximum number of iterations to run coordinate
+gradient descent across all penalties before returning an error.
+Default is 1e+05.</p></td>
     </tr>
     <tr>
-      <th>penalty_ratio</th>
-      <td><p>ratio between minimum and maximum penalty for x.
-Default is 1e-04 if \(n &gt; p\) and 0.01 if \(n &lt;= p\).</p></td>
+      <th>dfmax</th>
+      <td><p>maximum number of variables allowed in model. Default is
+\(ncol(x) + ncol(unpen) + ncol(external) + intercept[1] + intercept[2]\).</p></td>
     </tr>
     <tr>
-      <th>user_penalty</th>
-      <td><p>user-defined vector of penalty values to use in penalty
-path.</p></td>
+      <th>pmax</th>
+      <td><p>maximum number of variables with nonzero coefficient estimate.
+Default is \(min(2 * dfmax + 20, ncol(x) + ncol(unpen) + ncol(external)
++ intercept[2])\).</p></td>
     </tr>
     <tr>
-      <th>custom_multiplier</th>
-      <td><p>variable-specific penalty multipliers to apply to
-overall penalty. Default is 1 for all variables. 0 is no penalization.</p></td>
+      <th>lower_limits</th>
+      <td><p>vector of lower limits for each coefficient. Default is
+-Inf for all variables.</p></td>
+    </tr>
+    <tr>
+      <th>upper_limits</th>
+      <td><p>vector of upper limits for each coefficient. Default is
+Inf for all variables.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list object with regularization settings that are used to define
-the regularization for predictors or external data in <code><a href='xrnet.html'>xrnet</a></code> and
-<code><a href='tune_xrnet.html'>tune_xrnet</a></code>. The list elements will match those returned by
-<code><a href='define_penalty.html'>define_penalty</a></code>, but with the penalty_type set to match the
-value of <code>en_param</code>.</p>
+    <p>A list object with the following components:</p>
+<dt>tolerance</dt><dd><p>The coordinate descent stopping criterion.</p></dd>
+<dt>dfmax</dt><dd><p>The maximum number of variables that will be allowed in the
+model.</p></dd>
+<dt>pmax</dt><dd><p>The maximum number of variables with nonzero coefficient
+estimate.</p></dd>
+<dt>lower_limits</dt><dd><p>Feature-specific numeric vector of lower bounds for
+coefficient estimates</p></dd>
+<dt>upper_limits</dt><dd><p>Feature-specific numeric vector of upper bounds for
+coefficient estimates</p></dd>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
