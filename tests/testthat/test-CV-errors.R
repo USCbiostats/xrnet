@@ -66,6 +66,8 @@ test_that("gaussian, mse (parallel)", {
   mainPen <- define_penalty(0, num_penalty = 20)
   extPen <- define_penalty(1, num_penalty = 20)
 
+  library(xrnet)
+
   cl <- makeCluster(2, type = "PSOCK")
   registerDoParallel(cl)
 
