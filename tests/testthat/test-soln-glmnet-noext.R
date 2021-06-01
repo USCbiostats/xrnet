@@ -53,7 +53,7 @@ test_that("x standardized, intercept", {
 
   # coef_glmnet <- glmnet(x = x, y = y, family = "gaussian", alpha = 0, thresh = 1e-15)
 
-  myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 0, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 1],
@@ -62,8 +62,8 @@ test_that("x standardized, intercept", {
       y = ytest_scaled,
       family = "gaussian",
       intercept = c(T, F),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -75,8 +75,8 @@ test_that("x standardized, intercept", {
       y = ytest_scaled,
       family = "gaussian",
       intercept = c(T, F),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$beta0[10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -86,7 +86,7 @@ test_that("x NOT standardized, intercept", {
 
   # coef_glmnet <- glmnet(x = x, y = y, family = "gaussian", standardize = FALSE, alpha = 0, thresh = 1e-15)
 
-  myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 0, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 2],
@@ -96,8 +96,8 @@ test_that("x NOT standardized, intercept", {
       family = "gaussian",
       intercept = c(T, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -110,8 +110,8 @@ test_that("x NOT standardized, intercept", {
       family = "gaussian",
       intercept = c(T, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$beta0[10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -121,7 +121,7 @@ test_that("x standardized, NO intercept", {
 
   # coef_glmnet <- glmnet(x = x, y = y, family = "gaussian", intercept = FALSE, alpha = 0, thresh = 1e-15)
 
-  myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 0, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 3],
@@ -130,8 +130,8 @@ test_that("x standardized, NO intercept", {
       y = ytest_scaled,
       family = "gaussian",
       intercept = c(F, F),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -141,7 +141,7 @@ test_that("x NOT standardized, NO intercept", {
 
   # coef_glmnet <- glmnet(x = x, y = y, family = "gaussian", standardize = FALSE, intercept = FALSE, alpha = 0, thresh = 1e-15)
 
-  myPenalty <- define_penalty(penalty_type = 0, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 0, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 4],
@@ -151,8 +151,8 @@ test_that("x NOT standardized, NO intercept", {
       family = "gaussian",
       intercept = c(F, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -165,8 +165,8 @@ test_that("x NOT standardized, NO intercept", {
       family = "gaussian",
       intercept = c(F, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$beta0[10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -178,7 +178,7 @@ test_that("x standardized, intercept", {
 
   # coef_glmnet <- glmnet(x = x, y = y, family = "gaussian", alpha = 1, thresh = 1e-15)
 
-  myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 1, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 5],
@@ -187,8 +187,8 @@ test_that("x standardized, intercept", {
       y = ytest_scaled,
       family = "gaussian",
       intercept = c(T, F),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -200,8 +200,8 @@ test_that("x standardized, intercept", {
       y = ytest_scaled,
       family = "gaussian",
       intercept = c(T, F),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$beta0[10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -211,7 +211,7 @@ test_that("x NOT standardized, intercept", {
 
   # coef_glmnet <- glmnet(x = x, y = y, family = "gaussian", standardize = FALSE, alpha = 1, thresh = 1e-15)
 
-  myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 1, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 6],
@@ -221,8 +221,8 @@ test_that("x NOT standardized, intercept", {
       family = "gaussian",
       intercept = c(T, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -235,8 +235,8 @@ test_that("x NOT standardized, intercept", {
       family = "gaussian",
       intercept = c(T, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$beta0[10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -246,7 +246,7 @@ test_that("x standardized, NO intercept", {
 
   # coef_glmnet <- glmnet(x = x, y = y, family = "gaussian", intercept = FALSE, alpha = 1, thresh = 1e-15)
 
-  myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 1, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 7],
@@ -255,8 +255,8 @@ test_that("x standardized, NO intercept", {
       y = ytest_scaled,
       family = "gaussian",
       intercept = c(F, F),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -266,7 +266,7 @@ test_that("x NOT standardized, NO intercept", {
 
   # coef_glmnet <- glmnet::glmnet(x = x, y = y, family = "gaussian", standardize = FALSE, intercept = FALSE, alpha = 1, thresh = 1e-15)
 
-  myPenalty <- define_penalty(penalty_type = 1, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 1, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 8],
@@ -276,8 +276,8 @@ test_that("x NOT standardized, NO intercept", {
       family = "gaussian",
       intercept = c(F, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -291,7 +291,7 @@ test_that("x standardized, intercept", {
   # betas_glmnet9 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
   # b0_glmnet9 <- unname(coef_glmnet$a0[10])
 
-  myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 9],
@@ -300,8 +300,8 @@ test_that("x standardized, intercept", {
       y = ytest_scaled,
       family = "gaussian",
       intercept = c(T, F),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -313,8 +313,8 @@ test_that("x standardized, intercept", {
       y = ytest_scaled,
       family = "gaussian",
       intercept = c(T, F),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$beta0[10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -326,7 +326,7 @@ test_that("x NOT standardized, intercept", {
   # betas_glmnet10 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
   # b0_glmnet10 <- unname(coef_glmnet$a0[10])
 
-  myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 10],
@@ -336,8 +336,8 @@ test_that("x NOT standardized, intercept", {
       family = "gaussian",
       intercept = c(T, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -350,8 +350,8 @@ test_that("x NOT standardized, intercept", {
       family = "gaussian",
       intercept = c(T, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$beta0[10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -363,7 +363,7 @@ test_that("x standardized, NO intercept", {
   # betas_glmnet11 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
   # b0_glmnet11 <- unname(coef_glmnet$a0[10])
 
-  myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 11],
@@ -372,8 +372,8 @@ test_that("x standardized, NO intercept", {
       y = ytest_scaled,
       family = "gaussian",
       intercept = c(F, F),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -385,7 +385,7 @@ test_that("x NOT standardized, NO intercept", {
   # betas_glmnet12 <- drop(unname(as.matrix(coef_glmnet$beta[,10])))
   # b0_glmnet12 <- unname(coef_glmnet$a0[10])
 
-  myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
+  penalty <- define_penalty(penalty_type = 0.5, num_penalty = 100)
 
   expect_equal(
     betas_glmnet[, 12],
@@ -395,8 +395,8 @@ test_that("x NOT standardized, NO intercept", {
       family = "gaussian",
       intercept = c(F, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1] * sd_y,
     tolerance = 1e-5
   )
@@ -409,7 +409,7 @@ test_that("x NOT standardized, intercept", {
   pf <- c(rep(0, 2), rep(1, NCOL(xtest) - 2))
   # coef_glmnet <- glmnet(x = xtest, y = ytest, family = "gaussian", standardize = FALSE, alpha = 0, thresh = 1e-15, penalty.factor = pf)
 
-  myPenalty <- define_penalty(
+  penalty <- define_penalty(
     penalty_type = 0,
     user_penalty = path_ridge,
     custom_multiplier = NCOL(xtest) * pf[-c(1, 2)] / sum(pf)
@@ -424,8 +424,8 @@ test_that("x NOT standardized, intercept", {
       family = "gaussian",
       intercept = c(T, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1],
     tolerance = 1e-5
   )
@@ -437,7 +437,7 @@ test_that("x NOT standardized, intercept", {
   pf <- c(rep(0, 2), rep(1, NCOL(xtest) - 2))
   # coef_glmnet <- glmnet(x = xtest, y = ytest, family = "gaussian", standardize = FALSE, alpha = 1, thresh = 1e-15,penalty.factor = pf)
 
-  myPenalty <- define_penalty(
+  penalty <- define_penalty(
     penalty_type = 1,
     user_penalty = path_lasso,
     custom_multiplier = NCOL(xtest) * pf[-c(1, 2)] / sum(pf)
@@ -452,8 +452,8 @@ test_that("x NOT standardized, intercept", {
       family = "gaussian",
       intercept = c(T, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1],
     tolerance = 1e-5
   )
@@ -465,7 +465,7 @@ test_that("x NOT standardized, intercept", {
   pf <- c(rep(0, 2), rep(1, NCOL(xtest) - 2))
   # coef_glmnet <- glmnet(x = xtest, y = ytest, family = "gaussian", standardize = FALSE, alpha = 0.5, thresh = 1e-15, penalty.factor = pf)
 
-  myPenalty <- define_penalty(
+  penalty <- define_penalty(
     penalty_type = 0.5,
     user_penalty = path_en,
     custom_multiplier = NCOL(xtest) * pf[-c(1, 2)] / sum(pf)
@@ -480,8 +480,8 @@ test_that("x NOT standardized, intercept", {
       family = "gaussian",
       intercept = c(T, F),
       standardize = c(F, T),
-      penalty_main = myPenalty,
-      control = myControl
+      penalty_main = penalty,
+      control = test_control
     )$betas[, 10, 1],
     tolerance = 1e-5
   )

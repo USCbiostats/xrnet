@@ -7,6 +7,7 @@
 Status](https://travis-ci.org/USCbiostats/xrnet.svg?branch=master)](https://travis-ci.org/USCbiostats/xrnet)
 [![Build
 status](https://ci.appveyor.com/api/projects/status/vvlithictabcik9o/branch/master?svg=true)](https://ci.appveyor.com/project/gmweaver/xrnet/branch/master)
+[![codecov](https://codecov.io/gh/USCbiostats/xrnet/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/xrnet)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/xrnet)](https://cran.r-project.org/package=xrnet)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.01761/status.svg)](https://doi.org/10.21105/joss.01761)
 

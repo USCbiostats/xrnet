@@ -4,16 +4,16 @@ library(bigmemory)
 context("check computation of CV fold errors")
 
 test_that("gaussian, mse (sequential)", {
-  mainPen <- define_penalty(0, num_penalty = 20)
-  extPen <- define_penalty(1, num_penalty = 20)
+  main_penalty <- define_penalty(0, num_penalty = 20)
+  external_penalty <- define_penalty(1, num_penalty = 20)
 
   fit_xrnet <- tune_xrnet(
     x = xtest,
     y = ytest,
     external = ztest,
     family = "gaussian",
-    penalty_main = mainPen,
-    penalty_external = extPen,
+    penalty_main = main_penalty,
+    penalty_external = external_penalty,
     control = list(tolerance = 1e-10),
     loss = "mse",
     foldid = foldid
@@ -30,8 +30,8 @@ test_that("gaussian, mse (sequential)", {
     y = ytest,
     external = ztest,
     family = "gaussian",
-    penalty_main = mainPen,
-    penalty_external = extPen,
+    penalty_main = main_penalty,
+    penalty_external = external_penalty,
     control = list(tolerance = 1e-10),
     loss = "mse",
     foldid = foldid
@@ -48,8 +48,8 @@ test_that("gaussian, mse (sequential)", {
     y = ytest,
     external = zsparse,
     family = "gaussian",
-    penalty_main = mainPen,
-    penalty_external = extPen,
+    penalty_main = main_penalty,
+    penalty_external = external_penalty,
     control = list(tolerance = 1e-10),
     loss = "mse",
     foldid = foldid
@@ -63,8 +63,8 @@ test_that("gaussian, mse (sequential)", {
 })
 
 test_that("gaussian, mse (parallel)", {
-  mainPen <- define_penalty(0, num_penalty = 20)
-  extPen <- define_penalty(1, num_penalty = 20)
+  main_penalty <- define_penalty(0, num_penalty = 20)
+  external_penalty <- define_penalty(1, num_penalty = 20)
 
   cl <- makeCluster(2, type = "PSOCK")
   registerDoParallel(cl)
@@ -74,8 +74,8 @@ test_that("gaussian, mse (parallel)", {
     y = ytest,
     external = ztest,
     family = "gaussian",
-    penalty_main = mainPen,
-    penalty_external = extPen,
+    penalty_main = main_penalty,
+    penalty_external = external_penalty,
     control = list(tolerance = 1e-10),
     loss = "mse",
     foldid = foldid,
@@ -93,8 +93,8 @@ test_that("gaussian, mse (parallel)", {
     y = ytest,
     external = ztest,
     family = "gaussian",
-    penalty_main = mainPen,
-    penalty_external = extPen,
+    penalty_main = main_penalty,
+    penalty_external = external_penalty,
     control = list(tolerance = 1e-10),
     loss = "mse",
     foldid = foldid,
@@ -109,13 +109,13 @@ test_that("gaussian, mse (parallel)", {
 })
 
 test_that("gaussian, mae (sequential)", {
-  mainPen <- define_penalty(0, num_penalty = 20)
+  main_penalty <- define_penalty(0, num_penalty = 20)
 
   fit_xrnet <- tune_xrnet(
     x = xtest,
     y = ytest,
     family = "gaussian",
-    penalty_main = mainPen,
+    penalty_main = main_penalty,
     control = list(tolerance = 1e-12),
     loss = "mae",
     foldid = foldid
@@ -130,7 +130,7 @@ test_that("gaussian, mae (sequential)", {
 })
 
 test_that("binomial, auc (sequential)", {
-  mainPen <- define_penalty(
+  main_penalty <- define_penalty(
     penalty_type = 0,
     num_penalty = 20,
     penalty_ratio = 0.001
@@ -140,7 +140,7 @@ test_that("binomial, auc (sequential)", {
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = mainPen,
+    penalty_main = main_penalty,
     control = list(tolerance = 1e-10),
     loss = "auc",
     foldid = foldid_binomial
@@ -155,7 +155,7 @@ test_that("binomial, auc (sequential)", {
 })
 
 test_that("binomial, deviance (sequential)", {
-  mainPen <- define_penalty(
+  main_penalty <- define_penalty(
     penalty_type = 0,
     num_penalty = 20,
     penalty_ratio = 0.001
@@ -165,7 +165,7 @@ test_that("binomial, deviance (sequential)", {
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = mainPen,
+    penalty_main = main_penalty,
     control = list(tolerance = 1e-10),
     loss = "deviance",
     foldid = foldid_binomial

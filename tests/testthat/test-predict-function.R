@@ -3,19 +3,19 @@ library(bigmemory)
 context("test predict function works correctly")
 
 test_that("predict returns estimates for penalties already fit by xrnet object", {
-  mainPen <- define_penalty(0, user_penalty = c(2, 1, 0.05))
-  extPen <- define_penalty(1, user_penalty = c(0.2, 0.1, 0.05))
+  main_penalty <- define_penalty(0, user_penalty = c(2, 1, 0.05))
+  external_penalty <- define_penalty(1, user_penalty = c(0.2, 0.1, 0.05))
 
-  myControl <- xrnet_control(tolerance = 1e-15)
+  test_control <- xrnet_control(tolerance = 1e-15)
 
   xrnet_object <- xrnet(
     x = xtest,
     y = ytest,
     external = ztest,
     family = "gaussian",
-    penalty_main = mainPen,
-    penalty_external = extPen,
-    control = myControl
+    penalty_main = main_penalty,
+    penalty_external = external_penalty,
+    control = test_control
   )
 
   test_pred <- predict(xrnet_object, p = 1, pext = 0.05, type = "coefficients")
@@ -29,19 +29,19 @@ test_that("predict returns estimates for penalties already fit by xrnet object",
 })
 
 test_that("predict returns right predictions for penalties already fit by xrnet object", {
-  mainPen <- define_penalty(0, user_penalty = c(2, 1, 0.05))
-  extPen <- define_penalty(1, user_penalty = c(0.2, 0.1, 0.05))
+  main_penalty <- define_penalty(0, user_penalty = c(2, 1, 0.05))
+  external_penalty <- define_penalty(1, user_penalty = c(0.2, 0.1, 0.05))
 
-  myControl <- xrnet_control(tolerance = 1e-15)
+  test_control <- xrnet_control(tolerance = 1e-15)
 
   xrnet_object <- xrnet(
     x = xtest,
     y = ytest,
     external = ztest,
     family = "gaussian",
-    penalty_main = mainPen,
-    penalty_external = extPen,
-    control = myControl
+    penalty_main = main_penalty,
+    penalty_external = external_penalty,
+    control = test_control
   )
 
   xtest_big <- as.big.matrix(xtest)
@@ -72,17 +72,17 @@ test_that("predict returns right predictions for penalties already fit by xrnet 
 })
 
 test_that("predict returns right predictions for penalties already fit by xrnet object, no external data", {
-  mainPen <- define_penalty(penalty_type = 0, user_penalty = c(2, 1, 0.05))
+  main_penalty <- define_penalty(penalty_type = 0, user_penalty = c(2, 1, 0.05))
 
-  myControl <- xrnet_control(tolerance = 1e-15)
+  test_control <- xrnet_control(tolerance = 1e-15)
 
   xrnet_object <- xrnet(
     x = xtest,
     y = ytest,
     family = "gaussian",
     intercept = c(T, F),
-    penalty_main = mainPen,
-    control = myControl
+    penalty_main = main_penalty,
+    control = test_control
   )
 
   predy1 <- cbind(1, xtest) %*% c(xrnet_object$beta0[1, 1], xrnet_object$betas[, 1, 1])
@@ -93,19 +93,19 @@ test_that("predict returns right predictions for penalties already fit by xrnet 
 })
 
 test_that("predict returns right estimates for penalties already fit by tune_xrnet object", {
-  mainPen <- define_penalty(0, user_penalty = c(2, 1, 0.05))
-  extPen <- define_penalty(1, user_penalty = c(0.2, 0.1, 0.05))
+  main_penalty <- define_penalty(0, user_penalty = c(2, 1, 0.05))
+  external_penalty <- define_penalty(1, user_penalty = c(0.2, 0.1, 0.05))
 
-  myControl <- xrnet_control(tolerance = 1e-15)
+  test_control <- xrnet_control(tolerance = 1e-15)
 
   xrnet_object <- tune_xrnet(
     x = xtest,
     y = ytest,
     external = ztest,
     family = "gaussian",
-    penalty_main = mainPen,
-    penalty_external = extPen,
-    control = myControl
+    penalty_main = main_penalty,
+    penalty_external = external_penalty,
+    control = test_control
   )
 
   test_pred <- predict(xrnet_object, p = "opt", pext = "opt", type = "coefficients")

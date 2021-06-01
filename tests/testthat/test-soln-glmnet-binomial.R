@@ -152,13 +152,13 @@ context("compare coefficients to glmnet when no external data (binomial)")
 # Ridge Regression #
 
 test_that("x standardized, intercept, ridge", {
-  myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     control = xrnet_control(tolerance = 1e-15)
   )
 
@@ -166,7 +166,7 @@ test_that("x standardized, intercept, ridge", {
     x = Matrix(xtest_binomial, sparse = TRUE),
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     control = xrnet_control(tolerance = 1e-15)
   )
 
@@ -196,13 +196,13 @@ test_that("x standardized, intercept, ridge", {
 })
 
 test_that("x NOT standardized, intercept, ridge", {
-  myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     standardize = c(FALSE, FALSE),
     control = xrnet_control(tolerance = 1e-15)
   )
@@ -221,13 +221,13 @@ test_that("x NOT standardized, intercept, ridge", {
 })
 
 test_that("x standardized, NO intercept, ridge", {
-  myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     intercept = c(FALSE, FALSE),
     control = xrnet_control(tolerance = 1e-15)
   )
@@ -246,13 +246,13 @@ test_that("x standardized, NO intercept, ridge", {
 })
 
 test_that("x NOT standardized, NO intercept, ridge", {
-  myPenalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_ridge(num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     standardize = c(FALSE, FALSE),
     intercept = c(FALSE, FALSE),
     control = xrnet_control(tolerance = 1e-15)
@@ -274,13 +274,13 @@ test_that("x NOT standardized, NO intercept, ridge", {
 # Lasso Regression #
 
 test_that("x standardized, intercept, lasso", {
-  myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     control = xrnet_control(tolerance = 1e-15)
   )
 
@@ -298,13 +298,13 @@ test_that("x standardized, intercept, lasso", {
 })
 
 test_that("x NOT standardized, intercept, lasso", {
-  myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     standardize = c(FALSE, FALSE),
     control = xrnet_control(tolerance = 1e-15)
   )
@@ -323,13 +323,13 @@ test_that("x NOT standardized, intercept, lasso", {
 })
 
 test_that("x standardized, NO intercept, lasso", {
-  myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     intercept = c(FALSE, FALSE),
     control = xrnet_control(tolerance = 1e-15)
   )
@@ -348,13 +348,13 @@ test_that("x standardized, NO intercept, lasso", {
 })
 
 test_that("x NOT standardized, NO intercept, lasso", {
-  myPenalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_lasso(num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     standardize = c(FALSE, FALSE),
     intercept = c(FALSE, FALSE),
     control = xrnet_control(tolerance = 1e-15)
@@ -376,13 +376,13 @@ test_that("x NOT standardized, NO intercept, lasso", {
 # Elastic Net Regression #
 
 test_that("x standardized, intercept, en", {
-  myPenalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     control = xrnet_control(tolerance = 1e-15)
   )
 
@@ -400,13 +400,13 @@ test_that("x standardized, intercept, en", {
 })
 
 test_that("x NOT standardized, intercept, en", {
-  myPenalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     standardize = c(FALSE, FALSE),
     control = xrnet_control(tolerance = 1e-15)
   )
@@ -425,13 +425,13 @@ test_that("x NOT standardized, intercept, en", {
 })
 
 test_that("x standardized, NO intercept, en", {
-  myPenalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_enet(en_param = 0.5, num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     intercept = c(FALSE, FALSE),
     control = xrnet_control(tolerance = 1e-15)
   )
@@ -450,13 +450,13 @@ test_that("x standardized, NO intercept, en", {
 })
 
 test_that("x NOT standardized, NO intercept, en", {
-  myPenalty <- define_penalty(penalty_type = 0.5, num_penalty = 100, penalty_ratio = 0.01)
+  penalty <- define_penalty(penalty_type = 0.5, num_penalty = 100, penalty_ratio = 0.01)
 
   fit_xrnet <- xrnet(
     x = xtest_binomial,
     y = ytest_binomial,
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     standardize = c(FALSE, FALSE),
     intercept = c(FALSE, FALSE),
     control = xrnet_control(tolerance = 1e-15)
@@ -480,7 +480,7 @@ test_that("x NOT standardized, NO intercept, en", {
 test_that("x standardized, intercept, unpenalized variables", {
   pf <- c(rep(0, 2), rep(1, NCOL(xtest_binomial) - 2))
 
-  myPenalty <- define_enet(
+  penalty <- define_enet(
     en_param = 0.5,
     user_penalty = lambda_binomial,
     custom_multiplier = (NCOL(xtest_binomial) / sum(pf)) * rep(1, NCOL(xtest_binomial) - 2)
@@ -491,7 +491,7 @@ test_that("x standardized, intercept, unpenalized variables", {
     y = ytest_binomial,
     unpen = xtest_binomial[, c(1, 2)],
     family = "binomial",
-    penalty_main = myPenalty,
+    penalty_main = penalty,
     control = xrnet_control(tolerance = 1e-15)
   )
 

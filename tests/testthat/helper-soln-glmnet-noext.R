@@ -5,7 +5,7 @@ betas_glmnet <- readRDS(file = "testdata/betas_glmnet.rds")
 n <- length(ytest)
 sd_y <- sqrt(var(ytest) * (n - 1) / n)
 ytest_scaled <- ytest / sd_y
-myControl <- list(tolerance = 1e-15)
+test_control <- list(tolerance = 1e-15)
 path_ridge <- readRDS(file = "testdata/path_ridge.rds")
 path_lasso <- readRDS(file = "testdata/path_lasso.rds")
 path_en <- readRDS(file = "testdata/path_en.rds")
