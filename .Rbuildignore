@@ -11,3 +11,6 @@ cran-comments.md
 ^revdep$
 ^CRAN-RELEASE$
 ^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
