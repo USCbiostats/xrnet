@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // computeResponseRcpp
 Eigen::MatrixXd computeResponseRcpp(SEXP X, const int& mattype_x, const Eigen::Map<Eigen::MatrixXd> Fixed, const Eigen::Map<Eigen::VectorXd> beta0, const Eigen::Map<Eigen::MatrixXd> betas, const Eigen::Map<Eigen::MatrixXd> gammas, const std::string& response_type, const std::string& family);
 RcppExport SEXP _xrnet_computeResponseRcpp(SEXP XSEXP, SEXP mattype_xSEXP, SEXP FixedSEXP, SEXP beta0SEXP, SEXP betasSEXP, SEXP gammasSEXP, SEXP response_typeSEXP, SEXP familySEXP) {
