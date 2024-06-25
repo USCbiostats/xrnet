@@ -16,6 +16,8 @@ void compute_penalty(Eigen::Ref<Eigen::VectorXd> path,
 
 double logit_inv(double x);
 
+Eigen::Map<const Eigen::MatrixXd> createEigenMapFromRcppNumericMatrix(const Rcpp::NumericMatrix& mat);
+
 template <typename TX>
 Eigen::MatrixXd computeResponse(const TX & X,
                                 const Eigen::Ref<const Eigen::MatrixXd> & Fixed,

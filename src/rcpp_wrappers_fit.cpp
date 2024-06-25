@@ -6,6 +6,7 @@
 #include "GaussianSolver.h"
 #include "BinomialSolver.h"
 
+
 template <typename TX, typename TZ>
 Rcpp::List fitModel(const TX & x,
                     const bool & is_sparse_x,
@@ -198,7 +199,7 @@ Rcpp::List fitModelRcpp(SEXP x,
                 );
         else {
             Rcpp::NumericMatrix ext_mat(ext);
-            MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
+            MapMat extmap = createEigenMapFromRcppNumericMatrix(ext);
             return fitModel<MapMat, MapMat>(
                     xmap, is_sparse_x, y, extmap, fixed, weights_user,
                     intr, stnd, penalty_type, cmult, quantiles, num_penalty,
@@ -221,7 +222,7 @@ Rcpp::List fitModelRcpp(SEXP x,
         }
         else {
             Rcpp::NumericMatrix ext_mat(ext);
-            MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
+            MapMat extmap = createEigenMapFromRcppNumericMatrix(ext);
             return fitModel<MapMat, MapMat>(
                     xmap, is_sparse_x, y, extmap, fixed, weights_user, intr, stnd,
                     penalty_type, cmult, quantiles, num_penalty,
@@ -241,7 +242,7 @@ Rcpp::List fitModelRcpp(SEXP x,
             );
         else {
             Rcpp::NumericMatrix ext_mat(ext);
-            MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
+            MapMat extmap = createEigenMapFromRcppNumericMatrix(ext);
             return fitModel<MapSpMat, MapMat>(
                     Rcpp::as<MapSpMat>(x), is_sparse_x, y, extmap, fixed, weights_user,
                     intr, stnd, penalty_type, cmult, quantiles, num_penalty,

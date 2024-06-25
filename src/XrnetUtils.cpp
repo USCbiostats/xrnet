@@ -64,3 +64,11 @@ Eigen::MatrixXd computeResponseRcpp(SEXP X,
 double logit_inv(double x) {
     return 1 / (1 + std::exp(-x));
 }
+
+Eigen::Map<const Eigen::MatrixXd> createEigenMapFromRcppNumericMatrix(const Rcpp::NumericMatrix& mat) {
+    if (mat.rows() == 0 || mat.cols() == 0) {
+        Eigen::MatrixXd emptyMat;
+        return Eigen::Map<const Eigen::MatrixXd>(emptyMat.data(), emptyMat.rows(), emptyMat.cols());
+    }
+    return Eigen::Map<const Eigen::MatrixXd>(mat.begin(), mat.rows(), mat.cols());
+}
