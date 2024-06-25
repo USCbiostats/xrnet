@@ -33,5 +33,4 @@ Imports:
     bigmemory,
     methods
 Depends:
-    R (>= 3.5)
-SystemRequirements: C++17 
+    R (>= 4.0)
