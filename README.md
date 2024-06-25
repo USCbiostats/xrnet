@@ -1,14 +1,11 @@
-
 # xrnet: R Package for Hierarchical Regularized Regression to Incorporate External Data <img src="man/figures/logo.png" align="right" height="180px"/>
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![Travis Build
-Status](https://travis-ci.org/USCbiostats/xrnet.svg?branch=master)](https://travis-ci.org/USCbiostats/xrnet)
-[![Build
-status](https://ci.appveyor.com/api/projects/status/vvlithictabcik9o/branch/master?svg=true)](https://ci.appveyor.com/project/gmweaver/xrnet/branch/master)
-[![codecov](https://codecov.io/gh/USCbiostats/xrnet/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/xrnet)
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/xrnet)](https://cran.r-project.org/package=xrnet)
+[![R-CMD-check](https://github.com/USCbiostats/xrnet/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/USCbiostats/xrnet/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/USCbiostats/xrnet/branch/master/graph/badge.svg)](https://app.codecov.io/gh/USCbiostats/xrnet?branch=master)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/xrnet)](https://cran.r-project.org/package=xrnet)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.01761/status.svg)](https://doi.org/10.21105/joss.01761)
 
 # Introduction
