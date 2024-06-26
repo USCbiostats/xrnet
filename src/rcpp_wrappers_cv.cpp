@@ -184,7 +184,7 @@ Eigen::VectorXd fitModelCVRcpp(SEXP x,
                 );
         else {
             Rcpp::NumericMatrix ext_mat(ext);
-            MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
+            MapMat extmap = createEigenMapFromRcppNumericMatrix(ext);
             return fitModelCV<MapMat, MapMat>(
                     xmap, is_sparse_x, y, extmap, fixed,
                     weights_user, intr, stnd, penalty_type,
@@ -211,7 +211,7 @@ Eigen::VectorXd fitModelCVRcpp(SEXP x,
         }
         else {
             Rcpp::NumericMatrix ext_mat(ext);
-            MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
+            MapMat extmap = createEigenMapFromRcppNumericMatrix(ext);
             return fitModelCV<MapMat, MapMat>(
                     xmap, is_sparse_x, y, extmap, fixed, weights_user,
                     intr, stnd, penalty_type, cmult,
@@ -235,7 +235,7 @@ Eigen::VectorXd fitModelCVRcpp(SEXP x,
         }
         else {
             Rcpp::NumericMatrix ext_mat(ext);
-            MapMat extmap((const double *) &ext_mat[0], ext_mat.rows(), ext_mat.cols());
+            MapMat extmap = createEigenMapFromRcppNumericMatrix(ext);
             return fitModelCV<MapSpMat, MapMat>(
                     Rcpp::as<MapSpMat>(x), is_sparse_x, y, extmap,
                     fixed, weights_user, intr, stnd, penalty_type, cmult,
