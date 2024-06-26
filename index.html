@@ -78,12 +78,12 @@
 <div class="section level1">
 <h1 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h1>
-<p>The <strong>xrnet</strong> R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of predictors on an outcome of interest. Let <em>y</em> be an n-dimensional observed outcome vector, <em>X</em> be a set of <em>p</em> potential predictors observed on the <em>n</em> observations, and <em>Z</em> be a set of <em>q</em> external features available for the <em>p</em> predictors. Our model builds off the standard two-level hierarchical regression model,</p>
+<p>The <strong>xrnet</strong> R package is an extension of regularized regression (i.e. ridge regression) that enables the incorporation of external data that may be informative for the effects of predictors on an outcome of interest. Let <span class="math inline"><em>y</em></span> be an n-dimensional observed outcome vector, <span class="math inline"><em>X</em></span> be a set of <em>p</em> potential predictors observed on the <em>n</em> observations, and <span class="math inline"><em>Z</em></span> be a set of <em>q</em> external features available for the <em>p</em> predictors. Our model builds off the standard two-level hierarchical regression model,</p>
 <p><img src="reference/figures/eqn1.gif"></p>
 <p><img src="reference/figures/eqn2.gif"></p>
 <p>but allows regularization of both the predictors and the external features, where beta is the vector of coefficients describing the association of each predictor with the outcome and alpha is the vector of coefficients describing the association of each external feature with the predictor coefficients, beta. As an example, assume that the outcome is continuous and that we want to apply a ridge penalty to the predictors and lasso penalty to the external features. We minimize the following objective function (ignoring intercept terms):</p>
 <p><img src="reference/figures/eqn3.gif"></p>
-<p>Note that our model allows for the predictor coefficients, beta, to shrink towards potentially informative values based on the matrix <em>Z</em>. In the event the external data is not informative, we can shrink alpha towards zero, returning back to a standard regularized regression. To efficiently fit the model, we rewrite this convex optimization with the variable substitution <em>g<strong>a</strong>m<strong>m</strong>a</em> = *b<strong>e</strong>t<strong>a<em> − </em>Z<em> * </em>a</strong>l<strong>p</strong>h**a*. The problem is then solved as a standard regularized regression in which we allow the penalty value and type (ridge / lasso) to be variable-specific:</p>
+<p>Note that our model allows for the predictor coefficients, beta, to shrink towards potentially informative values based on the matrix <span class="math inline"><em>Z</em></span>. In the event the external data is not informative, we can shrink alpha towards zero, returning back to a standard regularized regression. To efficiently fit the model, we rewrite this convex optimization with the variable substitution <span class="math inline"><em>g</em><em>a</em><em>m</em><em>m</em><em>a</em> = <em>b</em><em>e</em><em>t</em><em>a</em> − <em>Z</em> * <em>a</em><em>l</em><em>p</em><em>h</em><em>a</em></span>. The problem is then solved as a standard regularized regression in which we allow the penalty value and type (ridge / lasso) to be variable-specific:</p>
 <p><img src="reference/figures/eqn4.gif"></p>
 <p>This package extends the coordinate descent algorithm of Friedman et al. 2010 (used in the R package <strong>glmnet</strong>) to allow for this variable-specific generalization and to fit the model described above. Currently, we allow for continuous and binary outcomes, but plan to extend to other outcomes (i.e. survival) in the next release.</p>
 </div>
@@ -226,10 +226,12 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">xrnet_model</span><span class="op">$</span><span class="va">beta0</span>, <span class="va">xrnet_model_big</span><span class="op">$</span><span class="va">beta0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">xrnet_model</span><span class="op">$</span><span class="va">betas</span>, <span class="va">xrnet_model_big</span><span class="op">$</span><span class="va">betas</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">xrnet_model</span><span class="op">$</span><span class="va">alphas</span>, <span class="va">xrnet_model_big</span><span class="op">$</span><span class="va">alphas</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">xrnet_model</span><span class="op">$</span><span class="va">betas</span>, <span class="va">xrnet_model_big</span><span class="op">$</span><span class="va">betas</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">xrnet_model</span><span class="op">$</span><span class="va">alphas</span>, <span class="va">xrnet_model_big</span><span class="op">$</span><span class="va">alphas</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>
 <div class="section level2">
