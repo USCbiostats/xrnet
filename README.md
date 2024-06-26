@@ -1,3 +1,4 @@
+
 # xrnet: R Package for Hierarchical Regularized Regression to Incorporate External Data <img src="man/figures/logo.png" align="right" height="180px"/>
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -13,9 +14,9 @@ coverage](https://codecov.io/gh/USCbiostats/xrnet/branch/master/graph/badge.svg)
 The **xrnet** R package is an extension of regularized regression
 (i.e. ridge regression) that enables the incorporation of external data
 that may be informative for the effects of predictors on an outcome of
-interest. Let *y* be an n-dimensional observed outcome vector, *X* be a
+interest. Let $y$ be an n-dimensional observed outcome vector, $X$ be a
 set of *p* potential predictors observed on the *n* observations, and
-*Z* be a set of *q* external features available for the *p* predictors.
+$Z$ be a set of *q* external features available for the *p* predictors.
 Our model builds off the standard two-level hierarchical regression
 model,
 
@@ -35,13 +36,12 @@ following objective function (ignoring intercept terms):
 ![](man/figures/eqn3.gif)
 
 Note that our model allows for the predictor coefficients, beta, to
-shrink towards potentially informative values based on the matrix *Z*.
+shrink towards potentially informative values based on the matrix $Z$.
 In the event the external data is not informative, we can shrink alpha
 towards zero, returning back to a standard regularized regression. To
 efficiently fit the model, we rewrite this convex optimization with the
-variable substitution
-*g**a**m**m**a* = *b**e**t**a* − *Z* \* *a**l**p**h**a*. The problem is
-then solved as a standard regularized regression in which we allow the
+variable substitution $gamma = beta - Z * alpha$. The problem is then
+solved as a standard regularized regression in which we allow the
 penalty value and type (ridge / lasso) to be variable-specific:
 
 ![](man/figures/eqn4.gif)
@@ -63,15 +63,15 @@ install.packages("xrnet")
 #### From Github (most up-to-date)
 
 1.  OS-specific prerequisites
-    -   *Windows*: Install
-        [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an
-        R package)
-    -   *Mac*: If using R version &gt;= 3.6.0, verify your GNU Fortran
-        version is &gt;= 6.1. If you have an older version, go
-        [here](https://cran.r-project.org/bin/macosx/tools/) to install
-        the required version
+    - *Windows*: Install
+      [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an R
+      package)
+    - *Mac*: If using R version \>= 3.6.0, verify your GNU Fortran
+      version is \>= 6.1. If you have an older version, go
+      [here](https://cran.r-project.org/bin/macosx/tools/) to install
+      the required version
 2.  Install the R package [devtools](https://github.com/hadley/devtools)
-3.  Install the **xrnet** package with the *install\_github()* function
+3.  Install the **xrnet** package with the *install_github()* function
     (optionally install potentially unstable development branch)
 
 ``` r
@@ -120,15 +120,15 @@ predictors or external data, you can use the `define_penalty` function.
 This function allows you to configure the following regularization
 attributes:
 
--   Regularization type
-    -   Ridge = 0
-    -   Elastic Net = (0, 1)
-    -   Lasso / Quantile = 1 (additional parameter `quantile` used to
-        specify quantile, not currently implemented)
--   Penalty path
-    -   Number of penalty values in the full penalty path (default = 20)
-    -   Ratio of min(penalty) / max(penalty)
--   User-defined set of penalties
+- Regularization type
+  - Ridge = 0
+  - Elastic Net = (0, 1)
+  - Lasso / Quantile = 1 (additional parameter `quantile` used to
+    specify quantile, not currently implemented)
+- Penalty path
+  - Number of penalty values in the full penalty path (default = 20)
+  - Ratio of min(penalty) / max(penalty)
+- User-defined set of penalties
 
 As an example, we may want to apply a ridge penalty to the x variables
 and a lasso penalty to the external data variables. In addition, we may
@@ -136,9 +136,9 @@ want to have 30 penalty values computed for the regularization path
 associated with both x and external. We modify our model call to `xrnet`
 follows.
 
-1.  `penalty_main` is used to specify the regularization for the x
+1)  `penalty_main` is used to specify the regularization for the x
     variables
-2.  `penalty_external` is used to specify the regularization for the
+2)  `penalty_external` is used to specify the regularization for the
     external variables
 
 ``` r
@@ -247,8 +247,14 @@ xrnet_model_big <- xrnet(
 
 all.equal(xrnet_model$beta0, xrnet_model_big$beta0)
 #> [1] TRUE
+```
+
+``` r
 all.equal(xrnet_model$betas, xrnet_model_big$betas)
 #> [1] TRUE
+```
+
+``` r
 all.equal(xrnet_model$alphas, xrnet_model_big$alphas)
 #> [1] TRUE
 ```
