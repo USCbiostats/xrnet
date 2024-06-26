@@ -66,10 +66,10 @@ install.packages("xrnet")
     - *Windows*: Install
       [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an R
       package)
-    - *Mac*: If using R version \>= 3.6.0, verify your GNU Fortran
-      version is \>= 6.1. If you have an older version, go
+    - *Mac*: Verify your GNU Fortran version is \>= 6.1. If you have an
+      older version, go
       [here](https://cran.r-project.org/bin/macosx/tools/) to install
-      the required version
+      the required version.
 2.  Install the R package [devtools](https://github.com/hadley/devtools)
 3.  Install the **xrnet** package with the *install_github()* function
     (optionally install potentially unstable development branch)
@@ -77,9 +77,6 @@ install.packages("xrnet")
 ``` r
 # Master branch
 devtools::install_github("USCbiostats/xrnet")
-
-# Development branch
-devtools::install_github("USCbiostats/xrnet", ref = "development")
 ```
 
 # A First Example
