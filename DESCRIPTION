@@ -34,3 +34,4 @@ Imports:
     methods
 Depends:
     R (>= 4.0)
+BugReports: https://github.com/USCbiostats/xrnet/issues
