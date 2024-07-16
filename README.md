@@ -70,7 +70,7 @@ install.packages("xrnet")
       older version, go
       [here](https://cran.r-project.org/bin/macosx/tools/) to install
       the required version.
-2.  Install the R package [devtools](https://github.com/hadley/devtools)
+2.  Install the R package [devtools](https://github.com/r-lib/devtools)
 3.  Install the **xrnet** package with the *install_github()* function
     (optionally install potentially unstable development branch)
 
