@@ -1,66 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/404.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/index.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/coef.tune_xrnet.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/coef.xrnet.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/define_enet.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/define_lasso.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/define_penalty.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/define_ridge.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/ext_linear.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/plot.tune_xrnet.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/predict.tune_xrnet.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/predict.xrnet.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/tune_xrnet.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/x_linear.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/xrnet.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/xrnet_control.html</loc>
-  </url>
-  <url>
-    <loc>https://uscbiostats.github.io/xrnet/reference/y_linear.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://uscbiostats.github.io/xrnet/404.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/authors.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/index.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/news/index.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/coef.tune_xrnet.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/coef.xrnet.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/define_enet.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/define_lasso.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/define_penalty.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/define_ridge.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/ext_linear.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/index.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/plot.tune_xrnet.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/predict.tune_xrnet.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/predict.xrnet.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/tune_xrnet.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/x_linear.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/xrnet.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/xrnet_control.html</loc></url>
+<url><loc>https://uscbiostats.github.io/xrnet/reference/y_linear.html</loc></url>
 </urlset>
+
