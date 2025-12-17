@@ -1,3 +1,7 @@
+# xrnet 1.0.1
+
+* Updates author metadata.
+
 # xrnet 1.0.0
 
 * Changes minimum supported R version 4.0.
