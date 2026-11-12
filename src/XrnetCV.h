@@ -12,7 +12,7 @@ class XrnetCV : public Xrnet<TX, TZ>  {
     typedef Eigen::MatrixXd MatXd;
     typedef Eigen::Map<const Eigen::VectorXd> MapVec;
     typedef Eigen::Map<const Eigen::MatrixXd> MapMat;
-    typedef Eigen::MappedSparseMatrix<double> MapSpMat;
+    typedef Eigen::Map<Eigen::SparseMatrix<double>> MapSpMat;
     typedef double (*lossPtr)(const Eigen::Ref<const Eigen::MatrixXd> &,
                               const Eigen::Ref<const Eigen::VectorXd> &,
                               const Eigen::Ref<const Eigen::VectorXi> &);

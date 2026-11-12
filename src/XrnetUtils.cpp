@@ -2,7 +2,7 @@
 #include <bigmemory/MatrixAccessor.hpp>
 
 typedef Eigen::Map<const Eigen::MatrixXd> MapMat;
-typedef Eigen::MappedSparseMatrix<double> MapSpMat;
+typedef Eigen::Map<Eigen::SparseMatrix<double>> MapSpMat;
 
 void compute_penalty(Eigen::Ref<Eigen::VectorXd> path,
                      const Eigen::Ref<const Eigen::VectorXd> & penalty_user,
