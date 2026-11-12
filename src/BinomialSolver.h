@@ -9,7 +9,7 @@ class BinomialSolver : public CoordSolver<T> {
     typedef Eigen::VectorXd VecXd;
     typedef Eigen::VectorXi VecXi;
     typedef Eigen::Map<const Eigen::MatrixXd> MapMat;
-    typedef Eigen::MappedSparseMatrix<double> MapSpMat;
+    typedef Eigen::Map<Eigen::SparseMatrix<double>> MapSpMat;
     typedef Eigen::Map<const Eigen::VectorXd> MapVec;
 
 private:

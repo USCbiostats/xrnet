@@ -10,7 +10,7 @@ template <typename T>
 class CoordSolver {
 
     typedef Eigen::Map<const Eigen::MatrixXd> MapMat;
-    typedef Eigen::MappedSparseMatrix<double> MapSpMat;
+    typedef Eigen::Map<Eigen::SparseMatrix<double>> MapSpMat;
     typedef Eigen::Map<const Eigen::VectorXd> MapVec;
     typedef Eigen::VectorXd VecXd;
     typedef Eigen::VectorXi VecXi;

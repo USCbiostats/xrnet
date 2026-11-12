@@ -77,7 +77,7 @@ public:
           const int & nv_total_,
           const bool & intr_,
           const bool & intr_ext_,
-          const Eigen::MappedSparseMatrix<double> & ext_,
+          const Eigen::Map<Eigen::SparseMatrix<double>> & ext_,
           const double * xmptr,
           const double * centptr,
           const double * xsptr,
